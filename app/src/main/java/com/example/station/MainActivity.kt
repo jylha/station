@@ -1,38 +1,23 @@
 package com.example.station
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Text
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.setContent
-import androidx.ui.tooling.preview.Preview
-import com.example.station.ui.StationTheme
 
 class MainActivity : AppCompatActivity() {
+
+    private val navigationViewModel: NavigationViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            StationTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
-                }
-            }
+            StationApp(navigationViewModel)
         }
     }
-}
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    StationTheme {
-        Greeting("Android")
+    override fun onBackPressed() {
+        if (!navigationViewModel.navigateBack())
+            super.onBackPressed()
     }
 }
