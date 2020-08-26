@@ -4,5 +4,5 @@ versions.coroutines = '1.3.9'
 versions.compose = '1.0.0-alpha01'
 versions.store = '4.0.0-alpha06'
 versions.lifecycle = '2.2.0'
-
+versions.retrofit = "2.9.0"
 ext.versions = versions

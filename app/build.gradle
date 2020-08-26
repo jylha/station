@@ -55,7 +55,8 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
     implementation "androidx.ui:ui-tooling:${versions.compose}"
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
-
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
 
     testImplementation 'junit:junit:4.13'
 
