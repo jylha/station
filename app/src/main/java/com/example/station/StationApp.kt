@@ -6,26 +6,20 @@ import androidx.compose.runtime.Composable
 import com.example.station.ui.StationTheme
 import com.example.station.ui.home.HomeScreen
 import com.example.station.ui.select.SelectStationScreen
-import com.example.station.ui.select.SelectStationsViewModel
 import com.example.station.ui.timetable.TimetableScreen
 
 @Composable
 fun StationApp(
-    navigationViewModel: NavigationViewModel,
-    stationsViewModel: SelectStationsViewModel
+    navigationViewModel: NavigationViewModel
 ) {
     StationTheme {
-        StationAppContent(
-            navigationViewModel,
-            stationsViewModel
-        )
+        StationAppContent(navigationViewModel)
     }
 }
 
 @Composable
 fun StationAppContent(
-    navigationViewModel: NavigationViewModel,
-    stationsViewModel: SelectStationsViewModel
+    navigationViewModel: NavigationViewModel
 ) {
     Surface(color = MaterialTheme.colors.background) {
         when (val screen = navigationViewModel.screen) {
@@ -33,8 +27,7 @@ fun StationAppContent(
                 navigateTo = navigationViewModel::navigateTo,
             )
             is Screen.SelectStation -> SelectStationScreen(
-                navigateTo = navigationViewModel::navigateTo,
-                viewModel = stationsViewModel
+                navigateTo = navigationViewModel::navigateTo
             )
             is Screen.Timetable -> TimetableScreen(screen.stationId)
         }

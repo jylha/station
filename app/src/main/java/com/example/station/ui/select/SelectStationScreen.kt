@@ -7,13 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.Screen
 
 @Composable
 fun SelectStationScreen(
-    navigateTo: (Screen) -> Unit,
-    viewModel: SelectStationsViewModel
+    navigateTo: (Screen) -> Unit
 ) {
+    val viewModel =  viewModel<SelectStationsViewModel>()
     val stations by viewModel.stations.observeAsState()
     Column {
         Text("Select station")
