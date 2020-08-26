@@ -1,6 +1,7 @@
 package com.example.station.data.stations
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -14,6 +15,7 @@ class StationsRepository() {
         return flow {
             val stations = listOf("Helsinki", "Pasila", "Tikkurila")
                 .map { Station(it) }
+            delay(1000)
             emit(stations)
         }.flowOn(Dispatchers.IO)
     }
