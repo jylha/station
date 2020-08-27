@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -57,6 +59,11 @@ dependencies {
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    implementation "com.google.dagger:hilt-android:${versions.hilt}"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:${versions.hilt_vm}"
+
+    kapt "com.google.dagger:hilt-android-compiler:${versions.hilt}"
+    kapt "androidx.hilt:hilt-compiler:${versions.hilt_vm}"
 
     testImplementation 'junit:junit:4.13'
 
