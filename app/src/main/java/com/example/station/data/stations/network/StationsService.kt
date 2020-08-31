@@ -4,6 +4,6 @@ import retrofit2.http.GET
 
 interface StationsService {
 
-    @GET("stations")
+    @GET("metadata/stations")
     suspend fun fetchStations(): List<StationNetworkEntity>
 }
