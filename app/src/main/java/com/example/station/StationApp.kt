@@ -29,7 +29,7 @@ fun StationAppContent(
             is Screen.SelectStation -> SelectStationScreen(
                 navigateTo = navigationViewModel::navigateTo
             )
-            is Screen.Timetable -> TimetableScreen(screen.stationId)
+            is Screen.Timetable -> TimetableScreen(screen.station)
         }
     }
 }

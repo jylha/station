@@ -4,14 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.station.model.Station
 
 sealed class Screen(val title: String) {
-
     object Home : Screen("Home")
     object SelectStation : Screen("Select Station")
-    data class Timetable(val stationId: String) : Screen("Timetable")
+    data class Timetable(val station: Station) : Screen("Timetable")
 }
-
 
 class NavigationViewModel : ViewModel() {
 

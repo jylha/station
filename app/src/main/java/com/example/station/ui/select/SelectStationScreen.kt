@@ -34,7 +34,7 @@ fun SelectStationScreen(
     ) {
         if (stations != null) {
             StationList(stations!!, onSelect = { station ->
-                navigateTo(Screen.Timetable(station.name))
+                navigateTo(Screen.Timetable(station))
             })
         } else {
             LoadingStations()
