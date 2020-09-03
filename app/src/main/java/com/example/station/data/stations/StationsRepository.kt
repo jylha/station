@@ -15,7 +15,7 @@ class StationsRepository @Inject constructor(
     fun fetchStations(): Flow<List<Station>> {
         return flow {
             val stations = stationsService.fetchStations()
-                .filter { it.passengerTraffic }
+                .filter { it.passengerTraffic && it.countryCode == "FI" }
                 .map { it.toDomainObject() }
                 .filter { it.type == Station.Type.Station }
             emit(stations)
