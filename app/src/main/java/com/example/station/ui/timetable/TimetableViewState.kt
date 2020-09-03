@@ -8,7 +8,7 @@ import com.example.station.model.Train
 data class TimetableViewState(
     val loading: Boolean = true,
     val station: Station? = null,
-    val timetable: List<Train>? = null,
+    val timetable: List<Train> = emptyList(),
     val error: String? = null
 )
 
@@ -17,7 +17,7 @@ fun reduce(currentState: TimetableViewState, result: TimetableResult): Timetable
         is TimetableResult.Loading -> currentState.copy(
             loading = true,
             station = result.station,
-            timetable = null
+            timetable = emptyList()
         )
         is TimetableResult.Success -> currentState.copy(
             loading = false,
