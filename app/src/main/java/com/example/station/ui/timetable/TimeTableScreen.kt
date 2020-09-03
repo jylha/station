@@ -80,6 +80,6 @@ fun Timetable(station: Station, trains: List<Train>) {
 @Composable
 fun TimetableRow(train: Train) {
     Row {
-        Text("${train.number}")
+        Text("${train.type} ${train.number}")
     }
 }

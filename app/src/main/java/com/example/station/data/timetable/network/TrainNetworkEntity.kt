@@ -4,5 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class TrainNetworkEntity(
     @SerializedName("trainNumber")
-    val number: Int
+    val number: Int,
+
+    @SerializedName("trainType")
+    val type: String
 )
