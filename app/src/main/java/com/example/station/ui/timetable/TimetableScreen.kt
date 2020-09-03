@@ -2,7 +2,14 @@ package com.example.station.ui.timetable
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
@@ -48,7 +55,7 @@ fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> 
 }
 
 @Composable
-fun LoadingTimetable(message: String ) {
+private fun LoadingTimetable(message: String ) {
     Box(
         modifier = Modifier.fillMaxSize(),
         gravity = Alignment.Center
@@ -63,7 +70,7 @@ fun LoadingTimetable(message: String ) {
 
 @Preview(showBackground = true)
 @Composable
-fun Loading() {
+private fun Loading() {
     LoadingTimetable("Loading timetable...")
 }
 
@@ -72,16 +79,18 @@ fun Timetable(station: Station, trains: List<Train>) {
     Column {
         Text(station.name)
         LazyColumnFor(items = trains) { train ->
-            TimetableRow(train)
+            TimetableRow(station, train)
         }
     }
 }
 
 @Composable
-fun TimetableRow(train: Train) {
+private fun TimetableRow(station: Station, train: Train) {
     Row {
         Text("${train.type} ${train.number}")
-        Spacer(Modifier.width(16.dp))
+        Spacer(Modifier.width(30.dp))
         Text("${train.origin()} -> ${train.destination()}")
+        Spacer(Modifier.width(30.dp))
+        Text("track: ${train.track(station.uicCode) ?: "-"}")
     }
 }

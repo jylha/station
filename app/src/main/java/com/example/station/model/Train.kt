@@ -22,4 +22,9 @@ data class Train(
     fun destination(): String? {
         return timetable.lastOrNull()?.stationCode
     }
+
+    /** Returns the track for the given [stationUicCode]. */
+    fun track(stationUicCode: Int): String? {
+        return timetable.firstOrNull { it.stationUicCode == stationUicCode }?.track
+    }
 }
