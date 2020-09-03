@@ -81,5 +81,7 @@ fun Timetable(station: Station, trains: List<Train>) {
 fun TimetableRow(train: Train) {
     Row {
         Text("${train.type} ${train.number}")
+        Spacer(Modifier.width(16.dp))
+        Text("${train.origin()} -> ${train.destination()}")
     }
 }

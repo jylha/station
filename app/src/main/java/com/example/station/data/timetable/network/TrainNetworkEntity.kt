@@ -7,5 +7,8 @@ data class TrainNetworkEntity(
     val number: Int,
 
     @SerializedName("trainType")
-    val type: String
+    val type: String,
+
+    @SerializedName("timeTableRows")
+    val timetable: List<TimetableRowNetworkEntity>
 )
