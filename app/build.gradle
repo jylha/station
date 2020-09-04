@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0'
     implementation "androidx.compose.foundation:foundation-layout:${versions.compose}"
     implementation "androidx.compose.material:material:${versions.compose}"
+    implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
     implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
     implementation "androidx.ui:ui-tooling:${versions.compose}"
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
