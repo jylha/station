@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.Screen
 import com.example.station.model.Station
-import timber.log.Timber
 
 @Composable
 fun SelectStationScreen(
@@ -43,42 +42,38 @@ fun SelectStationScreen(
 
     var searchEnabled by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
-    val filteredStation by remember(searchText, stations) {
-        mutableStateOf(stations?.filter { it.name.contains(searchText, ignoreCase = true) }
-            ?: emptyList())
+
+    val filteredStations = remember(searchEnabled, searchText, stations) {
+        stations?.filterWhen(searchEnabled) { station ->
+            station.name.contains(searchText, ignoreCase = true)
+        } ?: emptyList()
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text("Select station")
-                },
-                actions = {
-                    if (!searchEnabled) {
+            if (searchEnabled) {
+                SearchBar(
+                    text = searchText,
+                    hintText = "Search stations",
+                    onValueChanged = { value -> searchText = value },
+                    onClose = { searchEnabled = false; searchText = "" }
+                )
+            } else {
+                TopAppBar(
+                    title = { Text("Select station") },
+                    actions = {
                         IconButton(onClick = { searchEnabled = true }) {
                             Icon(Icons.Default.Search)
                         }
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         if (stations != null) {
-            StationList(filteredStation, onSelect = { station ->
+            StationList(filteredStations, onSelect = { station ->
                 navigateTo(Screen.Timetable(station))
-            }, Modifier.padding(innerPadding), searchBar = {
-                if (searchEnabled) {
-                    SearchBar(
-                        text = searchText,
-                        onChange = { text ->
-                            searchText = text
-                            Timber.d("search text: $text")
-                        },
-                        onClose = { searchEnabled = false; searchText = "" }
-                    )
-                }
-            })
+            }, Modifier.padding(innerPadding))
         } else {
             LoadingStations()
         }
@@ -89,13 +84,9 @@ fun SelectStationScreen(
 fun StationList(
     stations: List<Station>,
     onSelect: (Station) -> Any,
-    modifier: Modifier = Modifier,
-    searchBar: @Composable (() -> Unit)? = null
+    modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        if (searchBar != null) {
-            searchBar()
-        }
         LazyColumnFor(stations) { station ->
             Text(
                 text = station.name,
@@ -120,10 +111,13 @@ fun LoadingStations() {
 @Composable
 fun SearchBar(
     text: String,
-    onChange: (String) -> Unit,
+    onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
+    hintText: String = "",
     onClose: (() -> Unit)?
 ) {
+    var active by remember { mutableStateOf(false) }
+
     Surface(modifier, color = MaterialTheme.colors.surface, elevation = 4.dp) {
         Row(
             Modifier.fillMaxWidth().padding(8.dp),
@@ -136,8 +130,9 @@ fun SearchBar(
             }
             TextField(
                 value = text,
-                onValueChange = onChange,
-                label = {},
+                onValueChange = onValueChanged,
+                label = { if (!active) Text(hintText) },
+                onTextInputStarted = { active = true },
                 modifier = Modifier.fillMaxWidth(),
                 backgroundColor = MaterialTheme.colors.surface,
                 keyboardType = KeyboardType.Ascii,
@@ -149,4 +144,8 @@ fun SearchBar(
             )
         }
     }
+}
+
+private inline fun <T> List<T>.filterWhen(condition: Boolean, predicate: (T) -> Boolean): List<T> {
+    return if (condition) filterTo(ArrayList(), predicate) else this
 }
