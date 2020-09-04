@@ -3,7 +3,7 @@ package com.example.station
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import com.example.station.ui.StationTheme
+import com.example.station.ui.theme.StationTheme
 import com.example.station.ui.home.HomeScreen
 import com.example.station.ui.select.SelectStationScreen
 import com.example.station.ui.timetable.TimetableScreen

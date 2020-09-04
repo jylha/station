@@ -1,4 +1,4 @@
-package com.example.station.ui
+package com.example.station.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

@@ -1,4 +1,4 @@
-package com.example.station.ui
+package com.example.station.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
