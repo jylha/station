@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.Screen
 import com.example.station.model.Station
+import com.example.station.ui.components.LoadingMessage
 import com.example.station.ui.components.SearchBar
 
 @Composable
@@ -76,7 +77,7 @@ fun SelectStationScreen(
                 highlightedText = searchText
             )
         } else {
-            LoadingStations()
+            LoadingMessage("Loading stations...")
         }
     }
 }
@@ -123,16 +124,7 @@ private fun StationListEntry(
     }
 }
 
-@Composable
-fun LoadingStations() {
-    Surface(Modifier.fillMaxSize()) {
-        Text(
-            text = "Loading stations...",
-            modifier = Modifier.padding(16.dp)
-        )
-    }
-}
-
+/** Filter a list with [predicate] only when given [condition] is true. */
 private inline fun <T> List<T>.filterWhen(condition: Boolean, predicate: (T) -> Boolean): List<T> {
     return if (condition) filterTo(ArrayList(), predicate) else this
 }
