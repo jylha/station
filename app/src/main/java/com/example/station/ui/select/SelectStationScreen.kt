@@ -4,19 +4,14 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardBackspace
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,14 +19,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.Screen
 import com.example.station.model.Station
+import com.example.station.ui.components.SearchBar
 
 @Composable
 fun SelectStationScreen(
@@ -54,7 +47,7 @@ fun SelectStationScreen(
             if (searchEnabled) {
                 SearchBar(
                     text = searchText,
-                    hintText = "Search stations",
+                    placeholderText = "Search stations",
                     onValueChanged = { value -> searchText = value },
                     onClose = { searchEnabled = false; searchText = "" }
                 )
@@ -105,44 +98,6 @@ fun LoadingStations() {
             text = "Loading stations...",
             modifier = Modifier.padding(16.dp)
         )
-    }
-}
-
-@Composable
-fun SearchBar(
-    text: String,
-    onValueChanged: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    hintText: String = "",
-    onClose: (() -> Unit)?
-) {
-    var active by remember { mutableStateOf(false) }
-
-    Surface(modifier, color = MaterialTheme.colors.surface, elevation = 4.dp) {
-        Row(
-            Modifier.fillMaxWidth().padding(8.dp),
-            verticalGravity = Alignment.CenterVertically
-        ) {
-            if (onClose != null) {
-                IconButton(onClick = onClose) {
-                    Icon(Icons.Default.KeyboardBackspace)
-                }
-            }
-            TextField(
-                value = text,
-                onValueChange = onValueChanged,
-                label = { if (!active) Text(hintText) },
-                onTextInputStarted = { active = true },
-                modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colors.surface,
-                keyboardType = KeyboardType.Ascii,
-                imeAction = ImeAction.Done,
-                onImeActionPerformed = { _, kb ->
-                    kb?.hideSoftwareKeyboard()
-                    onClose?.invoke()
-                }
-            )
-        }
     }
 }
 
