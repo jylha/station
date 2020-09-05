@@ -1,8 +1,8 @@
 package com.example.station.model
 
 import androidx.compose.runtime.Immutable
+import com.example.station.util.atLocalZone
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 /**
  * Domain Model for train information.
@@ -32,7 +32,19 @@ data class Train(
 
     /** Returns the scheduled time of arrival to the specified station. */
     fun scheduledArrivalAt(stationUicCode: Int): LocalDateTime? {
-        return timetable.firstOrNull { it.stationUicCode == stationUicCode}
-            ?.scheduledTime?.withZoneSameInstant(ZoneId.systemDefault())?.toLocalDateTime()
+        return arrivalAt(stationUicCode)?.scheduledTime?.atLocalZone()
+    }
+
+    /** Returns the scheduled time of departure from the specified station. */
+    fun scheduledDepartureAt(stationUicCode: Int): LocalDateTime? {
+        return departureAt(stationUicCode)?.scheduledTime?.atLocalZone()
+    }
+
+    private fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {
+        it.stationUicCode == stationUicCode && it.type == TimetableRow.Type.Arrival
+    }
+
+    private fun departureAt(stationUicCode: Int) = timetable.firstOrNull {
+        it.stationUicCode == stationUicCode && it.type == TimetableRow.Type.Departure
     }
 }

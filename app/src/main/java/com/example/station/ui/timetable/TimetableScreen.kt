@@ -28,8 +28,7 @@ import com.example.station.model.Train
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.ZonedDateTime
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -96,8 +95,16 @@ private fun TimetableEntry(station: Station, train: Train) {
             }
             Row {
                 val scheduledArrival = train.scheduledArrivalAt(station.uicCode)?.toLocalTime()
-                Text("Arrives at $scheduledArrival", Modifier.weight(1f))
-                Text("Leaves at ${"-"}", Modifier.weight(1f))
+                Text(
+                    if (scheduledArrival != null) "Arrives at $scheduledArrival" else "",
+                    Modifier.weight(1f)
+                )
+
+                val scheduledDeparture = train.scheduledDepartureAt(station.uicCode)?.toLocalTime()
+                Text(
+                    if (scheduledDeparture != null) "Leaves at $scheduledDeparture" else "",
+                    Modifier.weight(1f)
+                )
             }
         }
     }
@@ -135,16 +142,24 @@ private fun Timetable() {
         Train(
             1, "S", timetable = listOf(
                 TimetableRow(
-                    "RS", 12345, TimetableRow.Type.Departure, "3",
-                    LocalDateTime.MIN.atZone(ZoneId.systemDefault())
+                    "RS", 12345, TimetableRow.Type.Departure, "1",
+                    ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
+                ),
+                TimetableRow(
+                    "ZZ", 54321, TimetableRow.Type.Arrival, "2",
+                    ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
                 )
             )
         ),
         Train(
             2, "IC", timetable = listOf(
                 TimetableRow(
-                    "RS", 12345, TimetableRow.Type.Departure, "4",
-                    LocalDateTime.MIN.atZone(ZoneId.systemDefault())
+                    "ZZ", 54321, TimetableRow.Type.Departure, "3",
+                    ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
+                ),
+                TimetableRow(
+                    "RS", 12345, TimetableRow.Type.Arrival, "4",
+                    ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
                 )
             )
         )
