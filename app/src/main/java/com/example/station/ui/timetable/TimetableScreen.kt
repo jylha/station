@@ -4,7 +4,6 @@ import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,6 +28,7 @@ import com.example.station.model.Train
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.time.LocalDateTime
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -76,21 +76,28 @@ private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier 
 @Composable
 private fun TimetableEntry(station: Station, train: Train) {
     TimetableEntryBubble {
-        Row {
-            Text(
-                text = "${train.type} ${train.number}",
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = "${train.origin()} -> ${train.destination()}",
-                modifier = Modifier.weight(2f),
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "track: ${train.track(station.uicCode) ?: "-"}",
-                modifier = Modifier.weight(1f)
-            )
+        Column {
+            Row {
+                Text(
+                    text = "${train.type} ${train.number}",
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.h6
+                )
+                Text(
+                    text = "${train.origin()} -> ${train.destination()}",
+                    modifier = Modifier.weight(2f),
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "track: ${train.track(station.uicCode) ?: "-"}",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Row {
+                val scheduledArrival = train.scheduledArrivalAt(station.uicCode)?.toLocalTime()
+                Text("Arrives at $scheduledArrival", Modifier.weight(1f))
+                Text("Leaves at ${"-"}", Modifier.weight(1f))
+            }
         }
     }
 }
@@ -126,12 +133,12 @@ private fun Timetable() {
     val trains = listOf(
         Train(
             1, "S", timetable = listOf(
-                TimetableRow("RS", 12345, "3")
+                TimetableRow("RS", 12345, "3", LocalDateTime.MIN)
             )
         ),
         Train(
             2, "IC", timetable = listOf(
-                TimetableRow("RS", 12345, "4")
+                TimetableRow("RS", 12345, "4", LocalDateTime.MIN)
             )
         )
     )

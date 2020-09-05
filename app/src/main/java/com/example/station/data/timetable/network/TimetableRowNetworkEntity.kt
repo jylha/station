@@ -11,5 +11,15 @@ data class TimetableRowNetworkEntity(
     val stationUicCode: Int,
 
     @SerializedName("commercialTrack")
-    val track: String
-)
+    val track: String,
+
+    @SerializedName("scheduledTime")
+    val scheduledTime: String,
+
+    @SerializedName("liveEstimateTime")
+    val liveEstimateTime: String? = null,
+
+    @SerializedName("actualTime")
+    val actualTime: String? = null,
+
+    )

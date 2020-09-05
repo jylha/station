@@ -4,6 +4,7 @@ import com.example.station.data.timetable.network.TimetableRowNetworkEntity
 import com.example.station.data.timetable.network.TrainNetworkEntity
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import java.time.ZonedDateTime
 
 /** Maps train network data transfer object into domain model. */
 fun TrainNetworkEntity.toDomainObject(): Train {
@@ -19,6 +20,7 @@ fun TimetableRowNetworkEntity.toDomainObject(): TimetableRow {
     return TimetableRow(
         stationCode = this.stationCode,
         stationUicCode = this.stationUicCode,
-        track = this.track
+        track = this.track,
+        scheduledTime = ZonedDateTime.parse(this.scheduledTime).toLocalDateTime()
     )
 }

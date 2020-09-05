@@ -1,6 +1,7 @@
 package com.example.station.model
 
 import androidx.compose.runtime.Immutable
+import java.time.LocalDateTime
 
 /**
  * Domain Model for train information.
@@ -26,5 +27,10 @@ data class Train(
     /** Returns the track for the given [stationUicCode]. */
     fun track(stationUicCode: Int): String? {
         return timetable.firstOrNull { it.stationUicCode == stationUicCode }?.track
+    }
+
+    /** Returns the scheduled time of arrival to the specified station. */
+    fun scheduledArrivalAt(stationUicCode: Int): LocalDateTime? {
+        return timetable.firstOrNull { it.stationUicCode == stationUicCode}?.scheduledTime
     }
 }
