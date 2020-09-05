@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,6 +26,7 @@ import androidx.ui.tooling.preview.Preview
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -46,15 +46,14 @@ fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> 
         TopAppBar {
             Text(modifier = Modifier.padding(16.dp), text = "Timetable")
         }
-    }) {
-        Stack {
-            if (viewState.loading) {
-                LoadingMessage("Loading timetable...")
-            } else if (viewState.station != null && viewState.timetable.isNotEmpty()) {
-                Timetable(station = viewState.station, trains = viewState.timetable)
-            } else {
-                EmptyTimetable()
-            }
+    }) { innerPadding ->
+        val modifier = Modifier.padding(innerPadding)
+        if (viewState.loading) {
+            LoadingMessage("Loading timetable...")
+        } else if (viewState.station != null && viewState.timetable.isNotEmpty()) {
+            Timetable(station = viewState.station, trains = viewState.timetable)
+        } else {
+            EmptyState("No trains scheduled to stop in the near future.", modifier)
         }
     }
 }
@@ -117,8 +116,8 @@ private fun Timetable() {
     val station = Station(
         passengerTraffic = true,
         type = Station.Type.Station,
-        name = "Rautatieasema",
-        code = "RA",
+        name = "Railway Station",
+        code = "RS",
         uicCode = 12345,
         countryCode = "FI",
         longitude = 1.0,
@@ -127,21 +126,14 @@ private fun Timetable() {
     val trains = listOf(
         Train(
             1, "S", timetable = listOf(
-                TimetableRow("RA", 12345, "3")
+                TimetableRow("RS", 12345, "3")
             )
         ),
         Train(
             2, "IC", timetable = listOf(
-                TimetableRow("RA", 12345, "4")
+                TimetableRow("RS", 12345, "4")
             )
         )
     )
     Timetable(station, trains)
-}
-
-@Composable
-private fun EmptyTimetable() {
-    Box(modifier = Modifier.fillMaxSize(), gravity = Alignment.Center) {
-        Text("(empty)")
-    }
 }

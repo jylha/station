@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.Screen
 import com.example.station.model.Station
+import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import com.example.station.ui.components.SearchBar
 
@@ -69,15 +70,16 @@ fun SelectStationScreen(
             }
         }
     ) { innerPadding ->
-        if (stations != null) {
-            StationList(
+        val modifier = Modifier.padding(innerPadding)
+        when {
+            stations == null -> LoadingMessage("Loading stations...")
+            filteredStations.isEmpty() -> EmptyState("No matching stations.", modifier)
+            else -> StationList(
                 filteredStations,
                 onSelect = { station -> navigateTo(Screen.Timetable(station)) },
-                Modifier.padding(innerPadding),
+                modifier,
                 highlightedText = searchText
             )
-        } else {
-            LoadingMessage("Loading stations...")
         }
     }
 }
