@@ -133,12 +133,12 @@ private fun Timetable() {
     val trains = listOf(
         Train(
             1, "S", timetable = listOf(
-                TimetableRow("RS", 12345, "3", LocalDateTime.MIN)
+                TimetableRow("RS", 12345, TimetableRow.Type.Departure,"3", LocalDateTime.MIN)
             )
         ),
         Train(
             2, "IC", timetable = listOf(
-                TimetableRow("RS", 12345, "4", LocalDateTime.MIN)
+                TimetableRow("RS", 12345, TimetableRow.Type.Departure,"4", LocalDateTime.MIN)
             )
         )
     )

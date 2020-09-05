@@ -10,6 +10,9 @@ data class TimetableRowNetworkEntity(
     @SerializedName("stationUICCode")
     val stationUicCode: Int,
 
+    @SerializedName("type")
+    val type: String,
+
     @SerializedName("commercialTrack")
     val track: String,
 

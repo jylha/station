@@ -11,9 +11,10 @@ class TrainTest {
     private val dateTime3 = LocalDateTime.of(2020, 9, 5, 10, 50)
     private val train1 = Train(
         1, "S", timetable = listOf(
-            TimetableRow("A", 100, "5", dateTime1),
-            TimetableRow("B", 200, "1", dateTime2),
-            TimetableRow("C", 300, "3", dateTime3)
+            TimetableRow("A", 100, TimetableRow.Type.Departure,"5", dateTime1),
+            TimetableRow("B", 200, TimetableRow.Type.Arrival,"1", dateTime2),
+            TimetableRow("B", 200, TimetableRow.Type.Departure,"1", dateTime2),
+            TimetableRow("C", 300, TimetableRow.Type.Arrival,"3", dateTime3)
         )
     )
 
