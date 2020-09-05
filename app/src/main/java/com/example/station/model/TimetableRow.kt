@@ -1,6 +1,6 @@
 package com.example.station.model
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 
 /**
@@ -17,7 +17,7 @@ data class TimetableRow(
     val stationUicCode: Int,
     val type: Type,
     val track: String,
-    val scheduledTime: LocalDateTime
+    val scheduledTime: ZonedDateTime
 ) {
     sealed class Type {
         object Arrival : Type()

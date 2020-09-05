@@ -16,6 +16,6 @@ fun TimetableRowNetworkEntity.toDomainObject(): TimetableRow {
             else -> throw IllegalArgumentException("Unknown type: ${this.type}")
         },
         track = this.track,
-        scheduledTime = ZonedDateTime.parse(this.scheduledTime).toLocalDateTime()
+        scheduledTime = ZonedDateTime.parse(this.scheduledTime)
     )
 }

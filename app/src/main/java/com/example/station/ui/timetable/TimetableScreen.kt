@@ -29,6 +29,7 @@ import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -133,12 +134,18 @@ private fun Timetable() {
     val trains = listOf(
         Train(
             1, "S", timetable = listOf(
-                TimetableRow("RS", 12345, TimetableRow.Type.Departure,"3", LocalDateTime.MIN)
+                TimetableRow(
+                    "RS", 12345, TimetableRow.Type.Departure, "3",
+                    LocalDateTime.MIN.atZone(ZoneId.systemDefault())
+                )
             )
         ),
         Train(
             2, "IC", timetable = listOf(
-                TimetableRow("RS", 12345, TimetableRow.Type.Departure,"4", LocalDateTime.MIN)
+                TimetableRow(
+                    "RS", 12345, TimetableRow.Type.Departure, "4",
+                    LocalDateTime.MIN.atZone(ZoneId.systemDefault())
+                )
             )
         )
     )

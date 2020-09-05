@@ -5,6 +5,8 @@ import com.example.station.model.TimetableRow
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 class TimetableRowDataMapperTest {
 
@@ -52,7 +54,10 @@ class TimetableRowDataMapperTest {
     @Test fun `scheduledTime is mapped correctly into domain model`() {
         val result = arrivalNetworkData.toDomainObject()
         assertThat(result.scheduledTime).isEqualTo(
-            LocalDateTime.of(2020, 9, 5, 10, 40)
+            ZonedDateTime.of(
+                LocalDateTime.of(2020, 9, 5, 10, 40),
+                ZoneOffset.UTC
+            )
         )
     }
 

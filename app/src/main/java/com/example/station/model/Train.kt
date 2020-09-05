@@ -2,6 +2,7 @@ package com.example.station.model
 
 import androidx.compose.runtime.Immutable
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 /**
  * Domain Model for train information.
@@ -31,6 +32,7 @@ data class Train(
 
     /** Returns the scheduled time of arrival to the specified station. */
     fun scheduledArrivalAt(stationUicCode: Int): LocalDateTime? {
-        return timetable.firstOrNull { it.stationUicCode == stationUicCode}?.scheduledTime
+        return timetable.firstOrNull { it.stationUicCode == stationUicCode}
+            ?.scheduledTime?.withZoneSameInstant(ZoneId.systemDefault())?.toLocalDateTime()
     }
 }
