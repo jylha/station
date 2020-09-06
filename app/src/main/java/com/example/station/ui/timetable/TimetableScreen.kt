@@ -43,9 +43,7 @@ fun TimetableScreen(station: Station) {
 @Composable
 fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> Unit) {
     Scaffold(topBar = {
-        TopAppBar {
-            Text(modifier = Modifier.padding(16.dp), text = "Timetable")
-        }
+        TopAppBar(title = { Text(viewState.station?.name ?: "Timetable") })
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         if (viewState.loading) {
@@ -65,7 +63,6 @@ private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier 
         modifier = modifier.fillMaxSize()
     ) {
         Column {
-            Text(station.name)
             LazyColumnFor(items = trains) { train ->
                 TimetableEntry(station, train)
             }
