@@ -25,4 +25,6 @@ data class TimetableRowNetworkEntity(
     @SerializedName("actualTime")
     val actualTime: String? = null,
 
-    )
+    @SerializedName("differenceInMinutes")
+    val differenceInMinutes: Int? = null,
+)

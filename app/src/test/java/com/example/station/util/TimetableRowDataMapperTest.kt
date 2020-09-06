@@ -15,7 +15,9 @@ class TimetableRowDataMapperTest {
         stationUicCode = 123,
         type = "ARRIVAL",
         track = "1",
-        scheduledTime = "2020-09-05T10:40:00.000Z"
+        scheduledTime = "2020-09-05T10:40:00.000Z",
+        actualTime = "2020-09-05T10:42:00.000Z",
+        differenceInMinutes = 2
     )
 
     private val departureNetworkData = TimetableRowNetworkEntity(
@@ -61,5 +63,28 @@ class TimetableRowDataMapperTest {
         )
     }
 
+    @Test fun `actualTime is mapped correctly into domain model`() {
+        val result = arrivalNetworkData.toDomainObject()
+        assertThat(result.actualTime).isEqualTo(
+            ZonedDateTime.of(
+                LocalDateTime.of(2020, 9, 5, 10, 42),
+                ZoneOffset.UTC
+            )
+        )
+    }
 
+    @Test fun `actualTime is set to null when not in network DTO`() {
+        val result = departureNetworkData.toDomainObject()
+        assertThat(result.actualTime).isNull()
+    }
+
+    @Test fun `differenceInMinutes is mapped correctly into domain model`() {
+        val result = arrivalNetworkData.toDomainObject()
+        assertThat(result.differenceInMinutes).isEqualTo(2)
+    }
+
+    @Test fun `differenceInMinutes is set to null when not in network DTO`() {
+        val result = departureNetworkData.toDomainObject()
+        assertThat(result.differenceInMinutes).isNull()
+    }
 }

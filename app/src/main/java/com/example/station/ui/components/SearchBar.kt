@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.ui.tooling.preview.Preview
 
 /**
  * A search bar composable.
@@ -28,8 +29,8 @@ import androidx.compose.ui.unit.dp
  * @param onValueChanged A callback that is called whenever search text changes.
  * @param modifier Modifier.
  * @param placeholderText A text that is shown in search field when it is empty.
- * @param onClose a Callback that is called user clicks either Done button on keyboard
- * or the back button beside the search field..
+ * @param onClose A callback that is called when user clicks either the Done button on keyboard
+ * or the BackSpace button beside the search field.
  */
 @Composable
 fun SearchBar(
@@ -37,7 +38,7 @@ fun SearchBar(
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholderText: String = "",
-    onClose: (() -> Unit)?
+    onClose: (() -> Unit)? = {}
 ) {
     var active by remember { mutableStateOf(false) }
 
@@ -68,4 +69,10 @@ fun SearchBar(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchBar() {
+    SearchBar(text = "", onValueChanged = {}, placeholderText = "Search")
 }

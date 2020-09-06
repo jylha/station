@@ -2,7 +2,6 @@ package com.example.station.util
 
 import com.example.station.data.timetable.network.TimetableRowNetworkEntity
 import com.example.station.model.TimetableRow
-import java.lang.IllegalArgumentException
 import java.time.ZonedDateTime
 
 /** Maps timetable row network data transfer object into domain model. */
@@ -16,6 +15,8 @@ fun TimetableRowNetworkEntity.toDomainObject(): TimetableRow {
             else -> throw IllegalArgumentException("Unknown type: ${this.type}")
         },
         track = this.track,
-        scheduledTime = ZonedDateTime.parse(this.scheduledTime)
+        scheduledTime = ZonedDateTime.parse(this.scheduledTime),
+        actualTime = if (this.actualTime != null) ZonedDateTime.parse(this.actualTime) else null,
+        differenceInMinutes = this.differenceInMinutes
     )
 }
