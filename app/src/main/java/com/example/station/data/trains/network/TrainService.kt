@@ -12,6 +12,7 @@ interface TrainService {
         @Query("minutes_before_departure") minutesBeforeDeparture: Int = 120,
         @Query("minutes_after_departure") minutesAfterDeparture: Int = 30,
         @Query("minutes_before_arrival") minutesBeforeArrival: Int = 120,
-        @Query("minutes_after_arrival") minutesAfterArrival: Int = 30
+        @Query("minutes_after_arrival") minutesAfterArrival: Int = 30,
+        @Query("train_categories") trainCategories: String? = "Long-Distance,Commuter"
     ): List<TrainNetworkEntity>
 }
