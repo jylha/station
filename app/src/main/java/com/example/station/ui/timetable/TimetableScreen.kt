@@ -4,8 +4,10 @@ import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -63,6 +65,7 @@ private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier 
         modifier = modifier.fillMaxSize()
     ) {
         Column {
+            Spacer(Modifier.height(8.dp))
             LazyColumnFor(items = trains) { train ->
                 TimetableEntry(station, train)
             }
@@ -72,7 +75,7 @@ private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier 
 
 @Composable
 private fun TimetableEntry(station: Station, train: Train) {
-    TimetableEntryBubble {
+    TimetableEntryBubble(Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp)) {
         Column {
             Row {
                 Text(
@@ -108,11 +111,9 @@ private fun TimetableEntry(station: Station, train: Train) {
 }
 
 @Composable
-private fun TimetableEntryBubble(content: @Composable () -> Unit) {
+private fun TimetableEntryBubble(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Surface(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         elevation = 2.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
