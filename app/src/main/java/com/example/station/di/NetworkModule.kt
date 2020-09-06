@@ -1,7 +1,7 @@
 package com.example.station.di
 
 import com.example.station.data.stations.network.StationsService
-import com.example.station.data.timetable.network.TimetableService
+import com.example.station.data.trains.network.TrainService
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -45,7 +45,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideTimetableService(retrofit: Retrofit): TimetableService {
-        return retrofit.create(TimetableService::class.java)
+    fun provideTrainService(retrofit: Retrofit): TrainService {
+        return retrofit.create(TrainService::class.java)
     }
 }

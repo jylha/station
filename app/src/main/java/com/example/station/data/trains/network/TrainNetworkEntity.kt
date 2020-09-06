@@ -1,8 +1,9 @@
-package com.example.station.data.timetable.network
+package com.example.station.data.trains.network
 
 import com.google.gson.annotations.SerializedName
 
 data class TrainNetworkEntity(
+
     @SerializedName("trainNumber")
     val number: Int,
 

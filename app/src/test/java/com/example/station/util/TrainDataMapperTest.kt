@@ -1,6 +1,6 @@
 package com.example.station.util
 
-import com.example.station.data.timetable.network.TrainNetworkEntity
+import com.example.station.data.trains.network.TrainNetworkEntity
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

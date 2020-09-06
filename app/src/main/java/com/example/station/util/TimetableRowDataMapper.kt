@@ -1,6 +1,6 @@
 package com.example.station.util
 
-import com.example.station.data.timetable.network.TimetableRowNetworkEntity
+import com.example.station.data.trains.network.TimetableRowNetworkEntity
 import com.example.station.model.TimetableRow
 import java.time.ZonedDateTime
 

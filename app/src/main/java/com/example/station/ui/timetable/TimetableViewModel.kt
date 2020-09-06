@@ -3,19 +3,27 @@ package com.example.station.ui.timetable
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.station.data.timetable.TimetableRepository
+import com.example.station.data.trains.TrainRepository
 import com.example.station.model.Station
 import com.example.station.model.Train
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 class TimetableViewModel @ViewModelInject constructor(
-    private val timetableRepository: TimetableRepository
+    private val trainRepository: TrainRepository
 ) : ViewModel() {
     private val eventChannel = Channel<TimetableEvent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow(TimetableViewState())
@@ -52,7 +60,7 @@ class TimetableViewModel @ViewModelInject constructor(
     private fun loadTimetable(station: Station): Flow<TimetableResult> {
         return flow {
             emit(TimetableResult.Loading(station))
-            timetableRepository.fetchTimetable(station.code)
+            trainRepository.fetchTrains(station.code)
                 .catch { e -> emit(TimetableResult.Error(e.toString())) }
                 .collect { trains ->
                     emit(TimetableResult.Success(station, trains))
