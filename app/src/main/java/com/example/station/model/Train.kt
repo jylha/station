@@ -8,13 +8,25 @@ import java.time.LocalDateTime
  * Domain Model for train information.
  * @param number Train number.
  * @param type Train type: IC, P, S...
+ * @param category Train category.
+ * @param isRunning Indicates whether train is currently running.
+ * @param timetable Train's timetable.
  */
 @Immutable
 data class Train(
     val number: Int,
     val type: String,
+    val category: Category,
+    val isRunning: Boolean,
     val timetable: List<TimetableRow>
 ) {
+    /** Train category. */
+    sealed class Category {
+        object LongDistance : Category()
+        object Commuter: Category()
+        object Other: Category() // TODO: 7.9.2020 Filter trains with other categories and remove this.
+    }
+
     /** Returns the station short code for the train's origin. */
     fun origin(): String? {
         return timetable.firstOrNull()?.stationCode

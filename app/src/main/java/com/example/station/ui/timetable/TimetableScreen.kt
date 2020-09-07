@@ -164,7 +164,7 @@ private fun Timetable() {
     )
     val trains = listOf(
         Train(
-            1, "S", timetable = listOf(
+            1, "S", Train.Category.LongDistance, true, timetable = listOf(
                 TimetableRow(
                     "RS", 12345, TimetableRow.Type.Departure, "1",
                     ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
@@ -176,7 +176,7 @@ private fun Timetable() {
             )
         ),
         Train(
-            2, "IC", timetable = listOf(
+            2, "IC", Train.Category.LongDistance, true, timetable = listOf(
                 TimetableRow(
                     "ZZ", 54321, TimetableRow.Type.Departure, "3",
                     ZonedDateTime.parse("2020-01-01T09:30:00.000Z")

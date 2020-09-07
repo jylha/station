@@ -13,7 +13,7 @@ class TrainTest {
     private val dateTime4 = ZonedDateTime.parse("2020-09-05T11:10:00.000Z")
 
     private val train1 = Train(
-        1, "S", timetable = listOf(
+        1, "S", Train.Category.LongDistance, true, timetable = listOf(
             TimetableRow(
                 "A", 100, TimetableRow.Type.Departure, "5",
                 dateTime1, actualTime = dateTime1, differenceInMinutes = 0
@@ -27,7 +27,7 @@ class TrainTest {
         )
     )
 
-    private val train2 = Train(2, "IC", timetable = emptyList())
+    private val train2 = Train(2, "IC", Train.Category.Commuter, false, timetable = emptyList())
 
     @Test fun `origin() returns the station code of the first timetable row`() {
         val result = train1.origin()

@@ -10,6 +10,12 @@ data class TrainNetworkEntity(
     @SerializedName("trainType")
     val type: String,
 
+    @SerializedName("trainCategory")
+    val category: String,
+
+    @SerializedName("runningCurrently")
+    val runningCurrently: Boolean,
+
     @SerializedName("timeTableRows")
     val timetable: List<TimetableRowNetworkEntity>
 )
