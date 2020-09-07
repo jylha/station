@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -20,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
@@ -75,7 +77,10 @@ private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier 
 
 @Composable
 private fun TimetableEntry(station: Station, train: Train) {
-    TimetableEntryBubble(Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp)) {
+    TimetableEntryBubble(
+        Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp),
+        indicatorColor = statusColor(train, station)
+    ) {
         Column {
             Row {
                 Text(
@@ -110,15 +115,36 @@ private fun TimetableEntry(station: Station, train: Train) {
     }
 }
 
+private fun statusColor(train: Train, station: Station): Color? {
+    return when {
+        train.onRouteTo(station.uicCode) -> Color.Yellow
+        train.onStation(station.uicCode) -> Color.Green
+        train.hasLeft(station.uicCode) -> Color.LightGray
+        else -> null
+    }
+}
+
 @Composable
-private fun TimetableEntryBubble(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+private fun TimetableEntryBubble(
+    modifier: Modifier = Modifier,
+    indicatorColor: Color? = null,
+    content: @Composable () -> Unit
+) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         elevation = 2.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
-        Box(modifier = Modifier.padding(8.dp)) {
-            content()
+        Row() {
+            if (indicatorColor != null) {
+                Box(
+                    Modifier.width(10.dp).height(70.dp),// FIXME: 7.9.2020
+                    backgroundColor = indicatorColor
+                )
+            }
+            Box(modifier = Modifier.padding(8.dp)) {
+                content()
+            }
         }
     }
 }

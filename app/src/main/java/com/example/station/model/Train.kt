@@ -40,6 +40,25 @@ data class Train(
         return departureAt(stationUicCode)?.scheduledTime?.atLocalZone()
     }
 
+    /** Checks whether train is yet to arrive on the specified station. */
+    fun onRouteTo(stationUicCode: Int) : Boolean {
+        val arrival = arrivalAt(stationUicCode)
+        return (arrival != null && arrival.actualTime == null)
+    }
+
+    /** Checks whether train is currently on the specified station. */
+    fun onStation(stationUicCode: Int): Boolean {
+        val arrival = arrivalAt(stationUicCode)
+        val departure = departureAt(stationUicCode)
+        return (arrival?.actualTime != null && departure != null && departure.actualTime == null)
+    }
+
+    /** Checks whether train has left the specified station. */
+    fun hasLeft(stationUicCode: Int): Boolean {
+        val departure = departureAt(stationUicCode)
+        return (departure?.actualTime != null)
+    }
+
     private fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {
         it.stationUicCode == stationUicCode && it.type == TimetableRow.Type.Arrival
     }

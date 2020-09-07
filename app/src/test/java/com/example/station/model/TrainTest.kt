@@ -14,8 +14,14 @@ class TrainTest {
 
     private val train1 = Train(
         1, "S", timetable = listOf(
-            TimetableRow("A", 100, TimetableRow.Type.Departure, "5", dateTime1),
-            TimetableRow("B", 200, TimetableRow.Type.Arrival, "1", dateTime2),
+            TimetableRow(
+                "A", 100, TimetableRow.Type.Departure, "5",
+                dateTime1, actualTime = dateTime1, differenceInMinutes = 0
+            ),
+            TimetableRow(
+                "B", 200, TimetableRow.Type.Arrival, "1",
+                dateTime2, actualTime = dateTime2.plusMinutes(1), differenceInMinutes = 1
+            ),
             TimetableRow("B", 200, TimetableRow.Type.Departure, "1", dateTime3),
             TimetableRow("C", 300, TimetableRow.Type.Arrival, "3", dateTime4)
         )
@@ -78,5 +84,43 @@ class TrainTest {
         assertThat(result).isNull()
     }
 
+    @Test fun `onRoute() return false for the origin station`() {
+        val result = train1.onRouteTo(100)
+        assertThat(result).isFalse()
+    }
 
+    @Test fun `onRoute() return false for a station that has actualTime for arrival`() {
+        val result = train1.onRouteTo(200)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `onRoute() returns true for a station without actualTime for arrival`() {
+        val result = train1.onRouteTo(300)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `onStation() returns false for a station it has left`() {
+        val result = train1.onStation(100)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `onStation() returns false for a station it is yet to arrive`() {
+        val result = train1.onStation(300)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `onStation() returns true for a station it has arrived byt not left`() {
+        val result = train1.onStation(200)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `hasLeft() returns true for a station it has departed`() {
+        val result = train1.hasLeft(100)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `hasLeft() returns false for a station it has no yet departed`() {
+        val result = train1.hasLeft(200)
+        assertThat(result).isFalse()
+    }
 }
