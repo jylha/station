@@ -3,13 +3,14 @@ package com.example.station.ui.timetable
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ConstraintLayout
+import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -69,18 +70,18 @@ private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier 
         Column {
             Spacer(Modifier.height(8.dp))
             LazyColumnFor(items = trains) { train ->
-                TimetableEntry(station, train)
+                TimetableEntry(
+                    station, train,
+                    Modifier.padding(start = 8.dp, top = 0.dp, end = 8.dp, bottom = 8.dp)
+                )
             }
         }
     }
 }
 
 @Composable
-private fun TimetableEntry(station: Station, train: Train) {
-    TimetableEntryBubble(
-        Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp),
-        indicatorColor = statusColor(train, station)
-    ) {
+private fun TimetableEntry(station: Station, train: Train, modifier: Modifier = Modifier) {
+    TimetableEntryBubble(modifier, indicatorColor = statusColor(train, station)) {
         Column {
             Row {
                 Text(
@@ -124,29 +125,53 @@ private fun statusColor(train: Train, station: Station): Color? {
     }
 }
 
-@Composable
-private fun TimetableEntryBubble(
+@Composable private fun TimetableEntryBubble(
     modifier: Modifier = Modifier,
     indicatorColor: Color? = null,
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier.fillMaxWidth(),
         elevation = 2.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
-        Row() {
-            if (indicatorColor != null) {
-                Box(
-                    Modifier.width(10.dp).height(70.dp),// FIXME: 7.9.2020
-                    backgroundColor = indicatorColor
-                )
-            }
-            Box(modifier = Modifier.padding(8.dp)) {
+        ConstraintLayout {
+            val indicatorRef = createRef()
+            val contentRef = createRef()
+            val contentMargin = 8.dp
+
+            StatusIndicatorStripe(
+                Modifier.constrainAs(indicatorRef) {
+                    start.linkTo(parent.start)
+                    end.linkTo(contentRef.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    width = Dimension.value(10.dp)
+                    height = Dimension.fillToConstraints
+                },
+                color = indicatorColor
+            )
+            Box(
+                Modifier.constrainAs(contentRef) {
+                    start.linkTo(indicatorRef.end, contentMargin)
+                    top.linkTo(parent.top, contentMargin)
+                    bottom.linkTo(parent.bottom, contentMargin)
+                    end.linkTo(parent.end, contentMargin)
+                    width = Dimension.fillToConstraints
+                }
+            ) {
                 content()
             }
         }
     }
+}
+
+@Composable
+private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? = null) {
+    Box(
+        modifier.fillMaxSize(),
+        backgroundColor = color ?: Color.Transparent
+    )
 }
 
 @Preview(showBackground = true)
