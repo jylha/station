@@ -5,7 +5,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import com.example.station.ui.theme.StationTheme
 import com.example.station.ui.home.HomeScreen
-import com.example.station.ui.select.SelectStationScreen
+import com.example.station.ui.stations.StationScreen
 import com.example.station.ui.timetable.TimetableScreen
 
 @Composable
@@ -26,7 +26,7 @@ fun StationAppContent(
             is Screen.Home -> HomeScreen(
                 navigateTo = navigationViewModel::navigateTo,
             )
-            is Screen.SelectStation -> SelectStationScreen(
+            is Screen.SelectStation -> StationScreen(
                 navigateTo = navigationViewModel::navigateTo
             )
             is Screen.Timetable -> TimetableScreen(screen.station)

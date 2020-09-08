@@ -1,24 +1,22 @@
-package com.example.station.ui.select
+package com.example.station.ui.stations
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,21 +30,24 @@ import com.example.station.model.Station
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import com.example.station.ui.components.SearchBar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun SelectStationScreen(
+fun StationScreen(
     navigateTo: (Screen) -> Unit
 ) {
-    val viewModel = viewModel<SelectStationsViewModel>()
-    val stations by viewModel.stations.observeAsState()
+    val viewModel = viewModel<StationsViewModel>()
+    val viewState by viewModel.viewState.collectAsState()
+    val stations = viewState.stations
 
     var searchEnabled by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
 
     val filteredStations = remember(searchEnabled, searchText, stations) {
-        stations?.filterWhen(searchEnabled) { station ->
+        stations.filterWhen(searchEnabled) { station ->
             station.name.contains(searchText, ignoreCase = true)
-        } ?: emptyList()
+        }
     }
 
     Scaffold(
@@ -72,7 +73,7 @@ fun SelectStationScreen(
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
-            stations == null -> LoadingMessage("Loading stations...")
+            viewState.isLoading -> LoadingMessage("Loading stations...")
             filteredStations.isEmpty() -> EmptyState("No matching stations.", modifier)
             else -> StationList(
                 filteredStations,
