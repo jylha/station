@@ -73,7 +73,10 @@ fun StationScreen(
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
-            viewState.isLoading -> LoadingMessage("Loading stations...")
+            // FIXME: 9.9.2020 Show loading message only when initially loading stations.
+            // Add some indicator to display along with stations when refreshing.
+            //viewState.isLoading -> LoadingMessage("Loading stations...")
+            viewState.isLoading && viewState.stations.isEmpty() -> LoadingMessage("Loading stations...")
             filteredStations.isEmpty() -> EmptyState("No matching stations.", modifier)
             else -> StationList(
                 filteredStations,

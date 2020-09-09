@@ -54,19 +54,23 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
     implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
     implementation "androidx.ui:ui-tooling:${versions.compose}"
+    implementation "androidx.room:room-runtime:${versions.room}"
+    implementation "androidx.room:room-ktx:${versions.room}"
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
     implementation "com.google.dagger:hilt-android:${versions.hilt}"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:${versions.hilt_vm}"
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
 
     kapt "com.google.dagger:hilt-android-compiler:${versions.hilt}"
     kapt "androidx.hilt:hilt-compiler:${versions.hilt_vm}"
+    kapt "androidx.room:room-compiler:${versions.room}"
 
     testImplementation 'junit:junit:4.13'
     testImplementation "com.google.truth:truth:${versions.truth}"
+    testImplementation "androidx.room:room-testing:${versions.room}"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

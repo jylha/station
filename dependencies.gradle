@@ -1,11 +1,12 @@
 def versions = [:]
-versions.kotlin = '1.4.0'
-versions.coroutines = '1.3.9'
 versions.compose = '1.0.0-alpha02'
-versions.store = '4.0.0-alpha07'
-versions.lifecycle = '2.2.0'
-versions.retrofit = '2.9.0'
+versions.coroutines = '1.3.9'
 versions.hilt = '2.28-alpha'
 versions.hilt_vm = '1.0.0-alpha02'
+versions.kotlin = '1.4.0'
+versions.lifecycle = '2.2.0'
+versions.retrofit = '2.9.0'
+versions.room = '2.2.5'
+versions.store = '4.0.0-alpha07'
 versions.truth = '1.0.1'
 ext.versions = versions

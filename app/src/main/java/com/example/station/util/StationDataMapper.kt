@@ -1,5 +1,6 @@
 package com.example.station.util
 
+import com.example.station.data.stations.cache.StationCacheEntity
 import com.example.station.data.stations.network.StationNetworkEntity
 import com.example.station.model.Station
 
@@ -20,4 +21,30 @@ fun StationNetworkEntity.toDomainObject(): Station {
 
 private fun String.asStationType() = Station.Type.of(this)
 
+/** Maps station cache entity into domain model. */
+fun StationCacheEntity.toDomainObject(): Station {
+    return Station(
+        passengerTraffic = this.passengerTraffic,
+        type = Station.Type.Station,
+        name = this.name,
+        code = this.code,
+        uicCode = this.uicCode,
+        countryCode = this.countryCode,
+        longitude = this.longitude,
+        latitude = this.latitude
+    )
+}
 
+/** Maps station domain object into cache entity. */
+fun Station.toCacheEntity() : StationCacheEntity {
+    require(this.type == Station.Type.Station)
+    return StationCacheEntity(
+        passengerTraffic = this.passengerTraffic,
+        name = this.name,
+        code = this.code,
+        uicCode = this.uicCode,
+        countryCode = this.countryCode,
+        longitude = this.longitude,
+        latitude = this.latitude
+    )
+}
