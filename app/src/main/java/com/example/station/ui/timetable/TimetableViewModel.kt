@@ -17,9 +17,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 class TimetableViewModel @ViewModelInject constructor(
@@ -51,7 +49,6 @@ class TimetableViewModel @ViewModelInject constructor(
                     is TimetableEvent.LoadTimetable -> loadTimetable(event.station)
                 }
             }
-            .onEach { Timber.d("Result: $it") }
             .collect { result ->
                 _state.value = reduce(_state.value, result)
             }

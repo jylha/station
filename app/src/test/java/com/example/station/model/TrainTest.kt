@@ -114,13 +114,33 @@ class TrainTest {
         assertThat(result).isTrue()
     }
 
-    @Test fun `hasLeft() returns true for a station it has departed`() {
-        val result = train1.hasLeft(100)
+    @Test fun `hasArrived() returns true for a station it has arrived on`() {
+        val result = train1.hasArrived(200)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `hasArrived() returns false for a station it has not arrived on`() {
+        val result = train1.hasArrived(300)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `hasDeparted() returns true for a station it has departed`() {
+        val result = train1.hasDeparted(100)
         assertThat(result).isTrue()
     }
 
     @Test fun `hasLeft() returns false for a station it has no yet departed`() {
-        val result = train1.hasLeft(200)
+        val result = train1.hasDeparted(200)
         assertThat(result).isFalse()
+    }
+
+    @Test fun `isDestination() returns false for a midpoint station`() {
+        val result = train1.isDestination(200)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `isDestination() returns true for the last station`() {
+        val result = train1.isDestination(300)
+        assertThat(result).isTrue()
     }
 }

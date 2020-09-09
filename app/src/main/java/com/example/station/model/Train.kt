@@ -65,10 +65,19 @@ data class Train(
         return (arrival?.actualTime != null && departure != null && departure.actualTime == null)
     }
 
-    /** Checks whether train has left the specified station. */
-    fun hasLeft(stationUicCode: Int): Boolean {
-        val departure = departureAt(stationUicCode)
-        return (departure?.actualTime != null)
+    /** Checks whether train has arrived to the specified station. */
+    fun hasArrived(stationUicCode: Int): Boolean {
+        return arrivalAt(stationUicCode)?.actualTime != null
+    }
+
+    /** Checks whether train has departed the specified station. */
+    fun hasDeparted(stationUicCode: Int): Boolean {
+        return departureAt(stationUicCode)?.actualTime != null
+    }
+
+    /** Checks whether the specified station is train's destination. */
+    fun isDestination(stationUicCode: Int): Boolean {
+        return timetable.lastOrNull()?.stationUicCode == stationUicCode
     }
 
     private fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {

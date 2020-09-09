@@ -32,6 +32,7 @@ import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
+import com.example.station.ui.theme.StationTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.ZonedDateTime
 
@@ -116,11 +117,12 @@ private fun TimetableEntry(station: Station, train: Train, modifier: Modifier = 
     }
 }
 
+@Composable
 private fun statusColor(train: Train, station: Station): Color? {
     return when {
-        train.onRouteTo(station.uicCode) -> Color.Yellow
-        train.onStation(station.uicCode) -> Color.Green
-        train.hasLeft(station.uicCode) -> Color.LightGray
+        train.onRouteTo(station.uicCode) -> StationTheme.colors.trainOnRouteToStation
+        train.onStation(station.uicCode) -> StationTheme.colors.trainOnStation
+        train.hasDeparted(station.uicCode) -> StationTheme.colors.trainHasDepartedStation
         else -> null
     }
 }
