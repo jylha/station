@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -57,14 +60,29 @@ fun TimetableScreen(station: Station) {
 
 @Composable
 fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> Unit) {
+    var categorySelectionEnabled by remember { mutableStateOf(false) }
+
     Scaffold(topBar = {
-        TopAppBar(title = { Text(viewState.station?.name ?: "Timetable") })
+        TopAppBar(
+            title = { Text(viewState.station?.name ?: "Timetable") },
+            actions = {
+                IconButton(onClick = { categorySelectionEnabled = !categorySelectionEnabled }) {
+                    if (categorySelectionEnabled) Icon(Icons.Default.ExpandLess)
+                    else Icon(Icons.Default.FilterList)
+                }
+            }
+        )
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         if (viewState.loading) {
-            LoadingMessage("Loading timetable...")
+            LoadingMessage("Loading timetable...", modifier)
         } else if (viewState.station != null && viewState.timetable.isNotEmpty()) {
-            Timetable(station = viewState.station, trains = viewState.timetable)
+            Timetable(
+                station = viewState.station,
+                trains = viewState.timetable,
+                modifier,
+                categorySelectionEnabled
+            )
         } else {
             EmptyState("No trains scheduled to stop in the near future.", modifier)
         }
@@ -72,7 +90,10 @@ fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> 
 }
 
 @Composable
-private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier = Modifier) {
+private fun Timetable(
+    station: Station, trains: List<Train>, modifier: Modifier = Modifier,
+    showCategorySelection: Boolean = false
+) {
     var selectedCategories by remember {
         mutableStateOf(setOf(Category.Commuter, Category.LongDistance))
     }
@@ -85,24 +106,30 @@ private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier 
         modifier = modifier.fillMaxSize()
     ) {
         Column {
-            CategorySelection(selectedCategories) { category ->
-                selectedCategories = if (selectedCategories.contains(category)) {
-                    if (category == Category.LongDistance) {
-                        setOf(Category.Commuter)
+            if (showCategorySelection) {
+                CategorySelection(selectedCategories) { category ->
+                    selectedCategories = if (selectedCategories.contains(category)) {
+                        if (category == Category.LongDistance) {
+                            setOf(Category.Commuter)
+                        } else {
+                            setOf(Category.LongDistance)
+                        }
                     } else {
-                        setOf(Category.LongDistance)
+                        selectedCategories + category
                     }
-                } else {
-                    selectedCategories + category
                 }
             }
-            LazyColumnFor(
-                matchingTrains,
-                contentPadding = InnerPadding(8.dp, 8.dp, 8.dp, 0.dp)
-            ) { train ->
-                TimetableEntry(
-                    station, train, Modifier.padding(bottom = 8.dp)
-                )
+            if (matchingTrains.isEmpty()) {
+                EmptyState(text = "No trains of selected category scheduled in the near future.")
+            } else {
+                LazyColumnFor(
+                    matchingTrains,
+                    contentPadding = InnerPadding(8.dp, 8.dp, 8.dp, 0.dp)
+                ) { train ->
+                    TimetableEntry(
+                        station, train, Modifier.padding(bottom = 8.dp)
+                    )
+                }
             }
         }
     }
@@ -141,7 +168,7 @@ private fun CategoryButton(
         }
     }
     val image = remember { Icons.Outlined.Train }
-    val color = if (selected) Color.Green.copy(alpha = 0.5f) else Color.LightGray.copy(alpha = 0.7f)
+    val color = if (selected) Color.Green.copy(alpha = 0.5f) else Color.Gray.copy(alpha = 0.7f)
 
     OutlinedButton(
         onClick = { onClick(category) },
