@@ -120,6 +120,7 @@ private fun TimetableEntry(station: Station, train: Train, modifier: Modifier = 
 @Composable
 private fun statusColor(train: Train, station: Station): Color? {
     return when {
+        train.isOrigin(station.uicCode) && train.isNotReady() -> StationTheme.colors.trainOnOriginStation
         train.onRouteTo(station.uicCode) -> StationTheme.colors.trainOnRouteToStation
         train.onStation(station.uicCode) -> StationTheme.colors.trainOnStation
         train.hasDeparted(station.uicCode) -> StationTheme.colors.trainHasDepartedStation

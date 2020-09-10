@@ -17,6 +17,7 @@ fun TimetableRowNetworkEntity.toDomainObject(): TimetableRow {
         track = this.track,
         scheduledTime = ZonedDateTime.parse(this.scheduledTime),
         actualTime = if (this.actualTime != null) ZonedDateTime.parse(this.actualTime) else null,
-        differenceInMinutes = this.differenceInMinutes
+        differenceInMinutes = this.differenceInMinutes,
+        markedReady = this.trainReady != null
     )
 }

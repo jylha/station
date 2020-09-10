@@ -52,17 +52,26 @@ data class Train(
         return departureAt(stationUicCode)?.scheduledTime?.atLocalZone()
     }
 
+    /** Checks whether train is marked ready on origin station. */
+    fun isReady(): Boolean {
+        return timetable.firstOrNull()?.markedReady == true
+    }
+
+    /** Checks whether train is not yet marked ready on origin station. */
+    fun isNotReady(): Boolean = !isReady()
+
     /** Checks whether train is yet to arrive on the specified station. */
-    fun onRouteTo(stationUicCode: Int) : Boolean {
+    fun onRouteTo(stationUicCode: Int): Boolean {
         val arrival = arrivalAt(stationUicCode)
         return (arrival != null && arrival.actualTime == null)
     }
 
     /** Checks whether train is currently on the specified station. */
     fun onStation(stationUicCode: Int): Boolean {
-        val arrival = arrivalAt(stationUicCode)
-        val departure = departureAt(stationUicCode)
-        return (arrival?.actualTime != null && departure != null && departure.actualTime == null)
+        return !hasDeparted(stationUicCode) &&
+                (!isDestination(stationUicCode) || isRunning) &&
+                (hasArrived(stationUicCode) || (isOrigin(stationUicCode) && isReady()))
+
     }
 
     /** Checks whether train has arrived to the specified station. */
@@ -73,6 +82,11 @@ data class Train(
     /** Checks whether train has departed the specified station. */
     fun hasDeparted(stationUicCode: Int): Boolean {
         return departureAt(stationUicCode)?.actualTime != null
+    }
+
+    /** Checks whether the specified station is train's origin. */
+    fun isOrigin(stationUicCode: Int): Boolean {
+        return timetable.firstOrNull()?.stationUicCode == stationUicCode
     }
 
     /** Checks whether the specified station is train's destination. */

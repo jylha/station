@@ -12,6 +12,7 @@ import java.time.ZonedDateTime
  * @param scheduledTime The scheduled time for train's arrival or departure.
  * @param actualTime Actual time of of arrival or departure.
  * @param differenceInMinutes Difference between scheduled and actual time in minutes.
+ * @param markedReady Train is marked ready to depart (used only on origin station).
  */
 data class TimetableRow(
     val stationCode: String,
@@ -21,6 +22,7 @@ data class TimetableRow(
     val scheduledTime: ZonedDateTime,
     val actualTime: ZonedDateTime? = null,
     val differenceInMinutes: Int? = null,
+    val markedReady: Boolean = false
 ) {
     sealed class Type {
         object Arrival : Type()

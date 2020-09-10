@@ -27,4 +27,13 @@ data class TimetableRowNetworkEntity(
 
     @SerializedName("differenceInMinutes")
     val differenceInMinutes: Int? = null,
+
+    @SerializedName("trainReady")
+    val trainReady: TrainReadyNetworkEntry? = null
 )
+
+
+data class TrainReadyNetworkEntry(
+    val timestamp: String
+)
+
