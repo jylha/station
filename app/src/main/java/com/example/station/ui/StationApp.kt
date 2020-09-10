@@ -1,4 +1,4 @@
-package com.example.station
+package com.example.station.ui
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface

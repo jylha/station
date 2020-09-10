@@ -1,4 +1,4 @@
-package com.example.station
+package com.example.station.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

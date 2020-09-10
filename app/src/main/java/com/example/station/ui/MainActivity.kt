@@ -1,4 +1,4 @@
-package com.example.station
+package com.example.station.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels

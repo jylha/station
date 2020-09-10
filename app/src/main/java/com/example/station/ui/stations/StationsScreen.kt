@@ -25,7 +25,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
-import com.example.station.Screen
+import com.example.station.ui.Screen
 import com.example.station.model.Station
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage

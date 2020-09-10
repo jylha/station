@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import com.example.station.Screen
+import com.example.station.ui.Screen
 
 @Composable
 fun HomeScreen(
