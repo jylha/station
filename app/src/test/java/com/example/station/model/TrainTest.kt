@@ -36,6 +36,10 @@ class TrainTest {
             TimetableRow(
                 "1", 1, TimetableRow.Type.Departure,
                 "1", dateTime1, actualTime = null, markedReady = true
+            ),
+            TimetableRow(
+                "2", 2, TimetableRow.Type.Arrival,
+                "1", dateTime2, actualTime = null, markedReady = false
             )
         )
     )
@@ -45,6 +49,10 @@ class TrainTest {
             TimetableRow(
                 "1", 1, TimetableRow.Type.Departure,
                 "1", dateTime1, actualTime = null, markedReady = false
+            ),
+            TimetableRow(
+                "2", 2, TimetableRow.Type.Arrival,
+                "1", dateTime2, actualTime = null, markedReady = false
             )
         )
     )

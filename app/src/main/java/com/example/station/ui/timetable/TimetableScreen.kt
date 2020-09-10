@@ -1,26 +1,34 @@
 package com.example.station.ui.timetable
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
+import androidx.compose.foundation.layout.InnerPadding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +38,7 @@ import androidx.ui.tooling.preview.Preview
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import com.example.station.model.Train.Category
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import com.example.station.ui.theme.StationTheme
@@ -64,19 +73,87 @@ fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> 
 
 @Composable
 private fun Timetable(station: Station, trains: List<Train>, modifier: Modifier = Modifier) {
+    var selectedCategories by remember {
+        mutableStateOf(setOf(Category.Commuter, Category.LongDistance))
+    }
+    val matchingTrains by remember(trains, selectedCategories) {
+        mutableStateOf(trains.filter { selectedCategories.contains(it.category) })
+    }
+
     Surface(
         color = MaterialTheme.colors.background,
         modifier = modifier.fillMaxSize()
     ) {
         Column {
-            Spacer(Modifier.height(8.dp))
-            LazyColumnFor(items = trains) { train ->
+            CategorySelection(selectedCategories) { category ->
+                selectedCategories = if (selectedCategories.contains(category)) {
+                    if (category == Category.LongDistance) {
+                        setOf(Category.Commuter)
+                    } else {
+                        setOf(Category.LongDistance)
+                    }
+                } else {
+                    selectedCategories + category
+                }
+            }
+            LazyColumnFor(
+                matchingTrains,
+                contentPadding = InnerPadding(8.dp, 8.dp, 8.dp, 0.dp)
+            ) { train ->
                 TimetableEntry(
-                    station, train,
-                    Modifier.padding(start = 8.dp, top = 0.dp, end = 8.dp, bottom = 8.dp)
+                    station, train, Modifier.padding(bottom = 8.dp)
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CategorySelection(
+    categories: Set<Category>,
+    categorySelected: (Category) -> Unit,
+) {
+    Surface(Modifier.fillMaxWidth(), elevation = 4.dp) {
+        Row(Modifier.padding(8.dp)) {
+            CategoryButton(
+                categorySelected, Category.LongDistance, categories.contains(Category.LongDistance),
+                Modifier.weight(1f)
+            )
+            Spacer(Modifier.width(8.dp))
+            CategoryButton(
+                categorySelected, Category.Commuter, categories.contains(Category.Commuter),
+                Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryButton(
+    onClick: (Category) -> Unit, category: Category, selected: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val text = remember {
+        when (category) {
+            Category.LongDistance -> "Long-distance"
+            Category.Commuter -> "Commuter"
+            Category.Other -> "Other"
+        }
+    }
+    val image = remember { Icons.Outlined.Train }
+    val color = if (selected) Color.Green.copy(alpha = 0.5f) else Color.LightGray.copy(alpha = 0.7f)
+
+    OutlinedButton(
+        onClick = { onClick(category) },
+        modifier,
+        contentColor = color,
+        backgroundColor = Color.Transparent,
+        border = BorderStroke(2.dp, color),
+        contentPadding = InnerPadding(8.dp),
+    ) {
+        Icon(image)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text)
     }
 }
 
@@ -107,7 +184,8 @@ private fun TimetableEntry(station: Station, train: Train, modifier: Modifier = 
                     Modifier.weight(1f)
                 )
 
-                val scheduledDeparture = train.scheduledDepartureAt(station.uicCode)?.toLocalTime()
+                val scheduledDeparture =
+                    train.scheduledDepartureAt(station.uicCode)?.toLocalTime()
                 Text(
                     if (scheduledDeparture != null) "Leaves at $scheduledDeparture" else "",
                     Modifier.weight(1f)
@@ -149,7 +227,7 @@ private fun statusColor(train: Train, station: Station): Color? {
                     end.linkTo(contentRef.start)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                    width = Dimension.value(10.dp)
+                    width = Dimension.value(8.dp)
                     height = Dimension.fillToConstraints
                 },
                 color = indicatorColor
@@ -192,7 +270,7 @@ private fun Timetable() {
     )
     val trains = listOf(
         Train(
-            1, "S", Train.Category.LongDistance, true, timetable = listOf(
+            1, "S", Category.LongDistance, true, timetable = listOf(
                 TimetableRow(
                     "RS", 12345, TimetableRow.Type.Departure, "1",
                     ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
@@ -204,7 +282,7 @@ private fun Timetable() {
             )
         ),
         Train(
-            2, "IC", Train.Category.LongDistance, true, timetable = listOf(
+            2, "IC", Category.LongDistance, true, timetable = listOf(
                 TimetableRow(
                     "ZZ", 54321, TimetableRow.Type.Departure, "3",
                     ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
