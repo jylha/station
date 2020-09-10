@@ -61,10 +61,38 @@ fun TimetableScreen(station: Station) {
 @Composable
 fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> Unit) {
     var categorySelectionEnabled by remember { mutableStateOf(false) }
+    var selectedCategories by remember {
+        mutableStateOf(setOf(Category.Commuter, Category.LongDistance))
+    }
+    val categorySelected: (Category) -> Unit = { category ->
+        selectedCategories = if (selectedCategories.contains(category)) {
+            if (category == Category.LongDistance) {
+                setOf(Category.Commuter)
+            } else {
+                setOf(Category.LongDistance)
+            }
+        } else {
+            selectedCategories + category
+        }
+    }
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text(viewState.station?.name ?: "Timetable") },
+            title = {
+                Column {
+                    Text(viewState.station?.name ?: "Timetable")
+                    val subtitle = if (selectedCategories.size == 1) {
+                        if (selectedCategories.contains(Category.LongDistance)) {
+                            "Long-distance trains"
+                        } else {
+                            "Commuter trains"
+                        }
+                    } else {
+                        "All trains"
+                    }
+                    Text(subtitle, style = MaterialTheme.typography.caption)
+                }
+            },
             actions = {
                 IconButton(onClick = { categorySelectionEnabled = !categorySelectionEnabled }) {
                     if (categorySelectionEnabled) Icon(Icons.Default.ExpandLess)
@@ -81,6 +109,8 @@ fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> 
                 station = viewState.station,
                 trains = viewState.timetable,
                 modifier,
+                selectedCategories,
+                categorySelected,
                 categorySelectionEnabled
             )
         } else {
@@ -92,11 +122,10 @@ fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> 
 @Composable
 private fun Timetable(
     station: Station, trains: List<Train>, modifier: Modifier = Modifier,
+    selectedCategories: Set<Category>, categorySelected: (Category) -> Unit,
     showCategorySelection: Boolean = false
 ) {
-    var selectedCategories by remember {
-        mutableStateOf(setOf(Category.Commuter, Category.LongDistance))
-    }
+
     val matchingTrains by remember(trains, selectedCategories) {
         mutableStateOf(trains.filter { selectedCategories.contains(it.category) })
     }
@@ -107,17 +136,7 @@ private fun Timetable(
     ) {
         Column {
             if (showCategorySelection) {
-                CategorySelection(selectedCategories) { category ->
-                    selectedCategories = if (selectedCategories.contains(category)) {
-                        if (category == Category.LongDistance) {
-                            setOf(Category.Commuter)
-                        } else {
-                            setOf(Category.LongDistance)
-                        }
-                    } else {
-                        selectedCategories + category
-                    }
-                }
+                CategorySelection(selectedCategories, categorySelected)
             }
             if (matchingTrains.isEmpty()) {
                 EmptyState(text = "No trains of selected category scheduled in the near future.")
@@ -321,5 +340,8 @@ private fun Timetable() {
             )
         )
     )
-    Timetable(station, trains)
+    Timetable(
+        station, trains, selectedCategories = setOf(Category.LongDistance),
+        categorySelected = {}, showCategorySelection = true
+    )
 }
