@@ -110,11 +110,13 @@ data class Train(
         }
     }
 
-    private fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {
+    /** Returns a timetable row for the arrival to the specified station. */
+    fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {
         it.stationUicCode == stationUicCode && it.type == TimetableRow.Type.Arrival
     }
 
-    private fun departureAt(stationUicCode: Int) = timetable.firstOrNull {
+    /** Returns a timetable row for the departure from the specified station. */
+    fun departureAt(stationUicCode: Int) = timetable.firstOrNull {
         it.stationUicCode == stationUicCode && it.type == TimetableRow.Type.Departure
     }
 }

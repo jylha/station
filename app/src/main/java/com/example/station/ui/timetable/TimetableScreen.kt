@@ -45,6 +45,7 @@ import com.example.station.model.Train.Category
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import com.example.station.ui.theme.StationTheme
+import com.example.station.util.atLocalZone
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.ZonedDateTime
 
@@ -224,18 +225,25 @@ private fun TimetableEntry(station: Station, train: Train, modifier: Modifier = 
                 )
             }
             Row {
-                val scheduledArrival = train.scheduledArrivalAt(station.uicCode)?.toLocalTime()
-                Text(
-                    if (scheduledArrival != null) "Arrives at $scheduledArrival" else "",
-                    Modifier.weight(1f)
-                )
+                val arrival = train.arrivalAt(station.uicCode)
+                val arrivalText = when {
+                    arrival?.actualTime != null ->
+                        "Arrived at ${arrival.actualTime.atLocalZone().toLocalTime()}"
+                    arrival?.scheduledTime != null ->
+                        "Arrives at ${arrival.scheduledTime.atLocalZone().toLocalTime()}"
+                    else -> ""
+                }
+                Text(arrivalText, Modifier.weight(1f))
 
-                val scheduledDeparture =
-                    train.scheduledDepartureAt(station.uicCode)?.toLocalTime()
-                Text(
-                    if (scheduledDeparture != null) "Leaves at $scheduledDeparture" else "",
-                    Modifier.weight(1f)
-                )
+                val departure = train.departureAt(station.uicCode)
+                val departureText = when {
+                    departure?.actualTime != null ->
+                        "Departed at ${departure.actualTime.atLocalZone().toLocalTime()}"
+                    departure?.scheduledTime != null ->
+                        "Departs at ${departure.scheduledTime.atLocalZone().toLocalTime()}"
+                    else -> ""
+                }
+                Text(departureText, Modifier.weight(1f))
             }
         }
     }
