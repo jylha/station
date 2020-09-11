@@ -12,10 +12,11 @@ import javax.inject.Inject
 class TrainRepository @Inject constructor(
     private val trainService: TrainService
 ) {
-    fun fetchTrains(stationCode: String): Flow<List<Train>> {
+    fun fetchTrains(stationCode: String, stationUicCode: Int): Flow<List<Train>> {
         return flow {
             val trains = trainService.fetchTrains(stationCode)
                 .map { entity -> entity.toDomainObject() }
+                .sortedBy { train -> train.nextEvent(stationUicCode) }
             emit(trains)
         }.flowOn(Dispatchers.IO)
     }

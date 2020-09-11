@@ -7,23 +7,25 @@ import java.time.ZonedDateTime
 
 class TrainTest {
 
-    private val dateTime1 = ZonedDateTime.parse("2020-09-05T10:00:00.000Z")
-    private val dateTime2 = ZonedDateTime.parse("2020-09-05T10:30:00.000Z")
-    private val dateTime3 = ZonedDateTime.parse("2020-09-05T10:40:00.000Z")
-    private val dateTime4 = ZonedDateTime.parse("2020-09-05T11:10:00.000Z")
+    private val scheduledTime1 = ZonedDateTime.parse("2020-09-05T10:00:00.000Z")
+    private val actualTime1    = ZonedDateTime.parse("2020-09-05T10:02:00.000Z")
+    private val scheduledTime2 = ZonedDateTime.parse("2020-09-05T10:30:00.000Z")
+    private val actualTime2    = ZonedDateTime.parse("2020-09-05T10:31:00.000Z")
+    private val scheduledTime3 = ZonedDateTime.parse("2020-09-05T10:40:00.000Z")
+    private val scheduledTime4 = ZonedDateTime.parse("2020-09-05T11:10:00.000Z")
 
     private val train = Train(
         1, "S", Train.Category.LongDistance, true, timetable = listOf(
             TimetableRow(
                 "A", 100, TimetableRow.Type.Departure, "5",
-                dateTime1, actualTime = dateTime1, differenceInMinutes = 0, markedReady = true
+                scheduledTime1, actualTime = actualTime1, differenceInMinutes = 2, markedReady = true
             ),
             TimetableRow(
                 "B", 200, TimetableRow.Type.Arrival, "1",
-                dateTime2, actualTime = dateTime2.plusMinutes(1), differenceInMinutes = 1
+                scheduledTime2, actualTime = actualTime2, differenceInMinutes = 1
             ),
-            TimetableRow("B", 200, TimetableRow.Type.Departure, "1", dateTime3),
-            TimetableRow("C", 300, TimetableRow.Type.Arrival, "3", dateTime4)
+            TimetableRow("B", 200, TimetableRow.Type.Departure, "1", scheduledTime3),
+            TimetableRow("C", 300, TimetableRow.Type.Arrival, "3", scheduledTime4)
         )
     )
 
@@ -35,11 +37,11 @@ class TrainTest {
         timetable = listOf(
             TimetableRow(
                 "1", 1, TimetableRow.Type.Departure,
-                "1", dateTime1, actualTime = null, markedReady = true
+                "1", scheduledTime1, actualTime = null, markedReady = true
             ),
             TimetableRow(
                 "2", 2, TimetableRow.Type.Arrival,
-                "1", dateTime2, actualTime = null, markedReady = false
+                "1", scheduledTime2, actualTime = null, markedReady = false
             )
         )
     )
@@ -48,11 +50,11 @@ class TrainTest {
         timetable = listOf(
             TimetableRow(
                 "1", 1, TimetableRow.Type.Departure,
-                "1", dateTime1, actualTime = null, markedReady = false
+                "1", scheduledTime1, actualTime = null, markedReady = false
             ),
             TimetableRow(
                 "2", 2, TimetableRow.Type.Arrival,
-                "1", dateTime2, actualTime = null, markedReady = false
+                "1", scheduledTime2, actualTime = null, markedReady = false
             )
         )
     )
@@ -89,7 +91,7 @@ class TrainTest {
 
     @Test fun `scheduledArrivalAt() returns the time of arrival at given station`() {
         val result = train.scheduledArrivalAt(stationUicCode = 200)
-        assertThat(result).isEqualTo(dateTime2.atLocalZone())
+        assertThat(result).isEqualTo(scheduledTime2.atLocalZone())
     }
 
     @Test fun `scheduledArrivalAt() returns null for a station not in the timetable`() {
@@ -104,7 +106,7 @@ class TrainTest {
 
     @Test fun `scheduledDepartureAt() returns the time of departure at a station`() {
         val result = train.scheduledDepartureAt(100)
-        assertThat(result).isEqualTo(dateTime1.atLocalZone())
+        assertThat(result).isEqualTo(scheduledTime1.atLocalZone())
     }
 
     @Test fun `scheduledDepartureAt() returns null for the destination station`() {
@@ -113,7 +115,6 @@ class TrainTest {
     }
 
     @Test fun `isReady() returns true when train is marked ready on origin`() {
-
         val result = readyTrain.isReady()
         assertThat(result).isTrue()
     }
@@ -201,5 +202,15 @@ class TrainTest {
     @Test fun `isDestination() returns true for the last station`() {
         val result = train.isDestination(300)
         assertThat(result).isTrue()
+    }
+
+    @Test fun `nextEvent() returns actual time of departure for departed station`() {
+        val result = train.nextEvent(100)
+        assertThat(result).isEqualTo(actualTime1)
+    }
+
+    @Test fun `nextEvent() returns scheduled time of departure if train has not yet departed`() {
+        val result = train.nextEvent(200)
+        assertThat(result).isEqualTo(scheduledTime3)
     }
 }

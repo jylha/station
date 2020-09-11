@@ -3,6 +3,8 @@ package com.example.station.model
 import androidx.compose.runtime.Immutable
 import com.example.station.util.atLocalZone
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 /**
  * Domain Model for train information.
@@ -92,6 +94,20 @@ data class Train(
     /** Checks whether the specified station is train's destination. */
     fun isDestination(stationUicCode: Int): Boolean {
         return timetable.lastOrNull()?.stationUicCode == stationUicCode
+    }
+
+    /** Time of next scheduled event or most recent event on the specified station. */
+    fun nextEvent(stationUicCode: Int): ZonedDateTime {
+        val arrival = arrivalAt(stationUicCode)
+        val departure = departureAt(stationUicCode)
+
+        return when {
+            departure?.actualTime != null -> departure.actualTime
+            departure != null && (arrival == null || arrival.actualTime != null) -> departure.scheduledTime
+            arrival?.actualTime != null -> arrival.actualTime
+            arrival != null -> arrival.scheduledTime
+            else -> ZonedDateTime.of(LocalDateTime.MIN, ZoneId.systemDefault())
+        }
     }
 
     private fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {
