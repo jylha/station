@@ -34,7 +34,7 @@ class TrainDataMapperTest {
         assertThat(result?.category).isEqualTo(Train.Category.Commuter)
     }
 
-    @Test fun `mapping train with unsupported category return null`() {
+    @Test fun `mapping train with unsupported category returns null`() {
         val dto = entity.copy(category = "Locomotive")
         val result = dto.toDomainModel()
         assertThat(result).isNull()
@@ -46,7 +46,7 @@ class TrainDataMapperTest {
         assertThat(result?.isRunning).isFalse()
     }
 
-    @Test fun `currently running train mapped correctly into domain model`() {
+    @Test fun `currently running train is mapped correctly into domain model`() {
         val dto = entity.copy(runningCurrently = true)
         val result = dto.toDomainModel()
         assertThat(result?.isRunning).isTrue()
