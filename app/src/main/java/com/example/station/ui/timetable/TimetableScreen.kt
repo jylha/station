@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -126,7 +127,6 @@ private fun Timetable(
     selectedCategories: Set<Category>, categorySelected: (Category) -> Unit,
     showCategorySelection: Boolean = false
 ) {
-
     val matchingTrains by remember(trains, selectedCategories) {
         mutableStateOf(trains.filter { selectedCategories.contains(it.category) })
     }
@@ -208,44 +208,70 @@ private fun TimetableEntry(station: Station, train: Train, modifier: Modifier = 
     TimetableEntryBubble(modifier, indicatorColor = statusColor(train, station)) {
         Column {
             Row {
-                Text(
-                    text = "${train.type} ${train.number}",
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.h6
-                )
-                Text(
-                    text = "${train.origin()} -> ${train.destination()}",
-                    modifier = Modifier.weight(2f),
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "track: ${train.track(station.uicCode) ?: "-"}",
-                    modifier = Modifier.weight(1f)
-                )
+                TrainIdentification(train, Modifier.weight(1f))
+                TrainRoute(train.origin(), train.destination(), Modifier.weight(2f))
+                TrainTrack(train.track(station.uicCode), Modifier.weight(1f))
             }
             Row {
-                val arrival = train.arrivalAt(station.uicCode)
-                val arrivalText = when {
-                    arrival?.actualTime != null ->
-                        "Arrived at ${arrival.actualTime.atLocalZone().toLocalTime()}"
-                    arrival?.scheduledTime != null ->
-                        "Arrives at ${arrival.scheduledTime.atLocalZone().toLocalTime()}"
-                    else -> ""
-                }
-                Text(arrivalText, Modifier.weight(1f))
-
-                val departure = train.departureAt(station.uicCode)
-                val departureText = when {
-                    departure?.actualTime != null ->
-                        "Departed at ${departure.actualTime.atLocalZone().toLocalTime()}"
-                    departure?.scheduledTime != null ->
-                        "Departs at ${departure.scheduledTime.atLocalZone().toLocalTime()}"
-                    else -> ""
-                }
-                Text(departureText, Modifier.weight(1f))
+                Arrival(train.arrivalAt(station.uicCode), Modifier.weight(1f))
+                Departure(train.departureAt(station.uicCode), Modifier.weight(1f))
             }
         }
     }
+}
+
+@Composable
+private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
+    Text(
+        text = "${train.type} ${train.number}",
+        modifier = modifier,
+        style = MaterialTheme.typography.h6
+    )
+}
+
+@Composable
+private fun TrainRoute(origin: String?, destination: String?, modifier: Modifier = Modifier) {
+    Text(
+        text = "$origin -> $destination",
+        modifier = modifier,
+        fontWeight = FontWeight.Bold,
+    )
+}
+
+@Composable
+private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
+    Row(
+        modifier,
+        verticalGravity = Alignment.CenterVertically
+    ) {
+        Text("track:", style = MaterialTheme.typography.caption)
+        Spacer(Modifier.width(4.dp))
+        Text(text = if (track.isNullOrBlank()) "--" else track, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
+    val arrivalText = when {
+        arrival?.actualTime != null ->
+            "Arrived at ${arrival.actualTime.atLocalZone().toLocalTime()}"
+        arrival?.scheduledTime != null ->
+            "Arrives at ${arrival.scheduledTime.atLocalZone().toLocalTime()}"
+        else -> ""
+    }
+    Text(arrivalText, modifier)
+}
+
+@Composable
+private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
+    val departureText = when {
+        departure?.actualTime != null ->
+            "Departed at ${departure.actualTime.atLocalZone().toLocalTime()}"
+        departure?.scheduledTime != null ->
+            "Departs at ${departure.scheduledTime.atLocalZone().toLocalTime()}"
+        else -> ""
+    }
+    Text(departureText, modifier)
 }
 
 @Composable
