@@ -184,7 +184,6 @@ private fun CategoryButton(
         when (category) {
             Category.LongDistance -> "Long-distance"
             Category.Commuter -> "Commuter"
-            Category.Other -> "Other"
         }
     }
     val image = remember { Icons.Outlined.Train }

@@ -26,7 +26,6 @@ data class Train(
     sealed class Category {
         object LongDistance : Category()
         object Commuter: Category()
-        object Other: Category() // TODO: 7.9.2020 Filter trains with other categories and remove this.
     }
 
     /** Returns the station short code for the train's origin. */
