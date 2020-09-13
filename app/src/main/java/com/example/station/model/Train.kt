@@ -72,7 +72,7 @@ data class Train(
         return !hasDeparted(stationUicCode) &&
                 (!isDestination(stationUicCode) || isRunning) &&
                 (hasArrived(stationUicCode) || (isOrigin(stationUicCode) && isReady()))
-
+    // FIXME: 13.9.2020 This method incorrectly assumes that train can visit a station only once.
     }
 
     /** Checks whether train has arrived to the specified station. */

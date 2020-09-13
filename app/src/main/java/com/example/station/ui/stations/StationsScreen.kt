@@ -80,7 +80,10 @@ fun StationScreen(
             filteredStations.isEmpty() -> EmptyState("No matching stations.", modifier)
             else -> StationList(
                 filteredStations,
-                onSelect = { station -> navigateTo(Screen.Timetable(station)) },
+                onSelect = { station ->
+                    viewModel.stationSelected(station)
+                    navigateTo(Screen.Timetable(station))
+                },
                 modifier,
                 highlightedText = searchText
             )
