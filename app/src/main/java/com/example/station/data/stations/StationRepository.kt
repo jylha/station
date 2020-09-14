@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface StationRepository {
     fun fetchStations(): Flow<StoreResponse<List<Station>>>
+    suspend fun fetchStation(stationUicCode: Int): Station
 }

@@ -5,6 +5,7 @@ import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
+import com.dropbox.android.external.store4.get
 import com.example.station.data.stations.cache.StationDatabase
 import com.example.station.data.stations.network.StationService
 import com.example.station.model.Station
@@ -26,23 +27,28 @@ class StoreBackedStationRepository @Inject constructor(
     @ExperimentalCoroutinesApi
     @OptIn(FlowPreview::class)
     private val store = StoreBuilder
-        .from<Any, List<Station>, List<Station>>(
-            fetcher = Fetcher.of {
+        .from<Int, List<Station>, List<Station>>(
+            fetcher = Fetcher.of { key ->
                 stationService.fetchStations()
                     .filter { it.passengerTraffic && it.countryCode == "FI" }
                     .map { it.toDomainObject() }
                     .filter { it.type == Station.Type.Station }
             },
             sourceOfTruth = SourceOfTruth.of(
-                reader = {
-                    stationDatabase.stationDao().getAll().map { stations ->
-                        stations.map { it.toDomainObject() }
+                reader = { key ->
+                    if (key != 0) {
+                         stationDatabase.stationDao().getStation(key)
+                            .map { listOf(it.toDomainObject()) }
+                    } else {
+                        stationDatabase.stationDao().getAll().map { stations ->
+                            stations.map { it.toDomainObject() }
+                        }
                     }
                 },
                 writer = { _, stations ->
                     // FIXME: 9.9.2020 Delete all before insert?
                     stationDatabase.stationDao().insertAll(
-                        stations.map { it.toCacheEntity() }
+                        stations.map { entity -> entity.toCacheEntity() }
                     )
                 }
             )
@@ -51,8 +57,15 @@ class StoreBackedStationRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun fetchStations(): Flow<StoreResponse<List<Station>>> {
-        return store.stream(StoreRequest.cached(key = 1, refresh = true))
+        return store.stream(StoreRequest.cached(key = 0, refresh = true))
             .flowOn(Dispatchers.IO)
+    }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun fetchStation(stationUicCode: Int): Station {
+        require(stationUicCode > 0)
+        return store.get(key = stationUicCode)
+            .first { it.uicCode == stationUicCode }
     }
 }
 
