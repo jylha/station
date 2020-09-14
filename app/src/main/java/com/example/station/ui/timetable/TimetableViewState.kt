@@ -9,6 +9,8 @@ data class TimetableViewState(
     val loading: Boolean = true,
     val station: Station? = null,
     val timetable: List<Train> = emptyList(),
+    val selectedCategories: Set<Train.Category> =
+        setOf(Train.Category.LongDistance, Train.Category.Commuter),
     val error: String? = null
 )
 
@@ -19,7 +21,7 @@ fun reduce(currentState: TimetableViewState, result: TimetableResult): Timetable
             station = result.station,
             timetable = emptyList()
         )
-        is TimetableResult.Success -> currentState.copy(
+        is TimetableResult.Data -> currentState.copy(
             loading = false,
             station = result.station,
             timetable = result.trains
@@ -27,6 +29,9 @@ fun reduce(currentState: TimetableViewState, result: TimetableResult): Timetable
         is TimetableResult.Error -> currentState.copy(
             loading = false,
             error = result.msg
+        )
+        is TimetableResult.SettingsUpdated -> currentState.copy(
+            selectedCategories = result.categories
         )
     }
 }

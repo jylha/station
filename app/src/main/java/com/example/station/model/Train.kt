@@ -23,9 +23,9 @@ data class Train(
     val timetable: List<TimetableRow>
 ) {
     /** Train category. */
-    sealed class Category {
-        object LongDistance : Category()
-        object Commuter: Category()
+    sealed class Category(val name: String) {
+        object LongDistance : Category("Long-distance")
+        object Commuter: Category("Commuter")
     }
 
     /** Returns the station short code for the train's origin. */

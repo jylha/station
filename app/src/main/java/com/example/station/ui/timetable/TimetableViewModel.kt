@@ -3,6 +3,7 @@ package com.example.station.ui.timetable
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.trains.TrainRepository
 import com.example.station.model.Station
 import com.example.station.model.Train
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 class TimetableViewModel @ViewModelInject constructor(
-    private val trainRepository: TrainRepository
+    private val trainRepository: TrainRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private val eventChannel = Channel<TimetableEvent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow(TimetableViewState())
@@ -32,6 +34,13 @@ class TimetableViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch {
             handleEvents()
+        }
+
+        viewModelScope.launch {
+            settingsRepository.trainCategories().collect { selectedCategories ->
+                if (selectedCategories != null)
+                    _state.value = reduce(_state.value, TimetableResult.SettingsUpdated(selectedCategories))
+            }
         }
     }
 
@@ -47,6 +56,7 @@ class TimetableViewModel @ViewModelInject constructor(
             .flatMapMerge { event ->
                 when (event) {
                     is TimetableEvent.LoadTimetable -> loadTimetable(event.station)
+                    is TimetableEvent.SelectCategories -> setCategories(event.categories)
                 }
             }
             .collect { result ->
@@ -60,18 +70,27 @@ class TimetableViewModel @ViewModelInject constructor(
             trainRepository.fetchTrains(station.code, station.uicCode)
                 .catch { e -> emit(TimetableResult.Error(e.toString())) }
                 .collect { trains ->
-                    emit(TimetableResult.Success(station, trains))
+                    emit(TimetableResult.Data(station, trains))
                 }
+        }
+    }
+
+    private fun setCategories(categories: Set<Train.Category>): Flow<TimetableResult> {
+        return flow {
+            settingsRepository.setTrainCategories(categories)
         }
     }
 }
 
 sealed class TimetableEvent {
     data class LoadTimetable(val station: Station) : TimetableEvent()
+    data class SelectCategories(val categories: Set<Train.Category>): TimetableEvent()
 }
 
 sealed class TimetableResult {
     data class Loading(val station: Station) : TimetableResult()
-    data class Success(val station: Station, val trains: List<Train>) : TimetableResult()
+    data class Data(val station: Station, val trains: List<Train>) : TimetableResult()
     data class Error(val msg: String) : TimetableResult()
+    data class SettingsUpdated(val categories: Set<Train.Category>) : TimetableResult()
 }
+
