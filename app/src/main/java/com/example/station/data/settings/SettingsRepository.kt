@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface SettingsRepository {
 
     fun station() : Flow<Int?>
-    suspend fun setStation(code: Int)
+    suspend fun setStation(stationUicCode: Int)
 }

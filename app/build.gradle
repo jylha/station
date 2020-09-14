@@ -60,7 +60,7 @@ dependencies {
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.8.1'
     implementation "com.google.dagger:hilt-android:${versions.hilt}"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:${versions.hilt_vm}"
     implementation 'com.jakewharton.timber:timber:4.7.1'
