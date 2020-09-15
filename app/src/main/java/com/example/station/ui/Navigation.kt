@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.station.model.Station
+import com.example.station.model.Train
 
 sealed class Screen(val title: String) {
     object Home : Screen("Home")
     object SelectStation : Screen("Select Station")
     data class Timetable(val station: Station) : Screen("Timetable")
+    data class TrainDetails(val train: Train) : Screen("Train Info")
 }
 
 class NavigationViewModel : ViewModel() {

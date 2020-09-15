@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
@@ -43,6 +44,7 @@ import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
+import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
 import com.example.station.ui.theme.StationTheme
@@ -53,15 +55,21 @@ import java.time.ZonedDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun TimetableScreen(station: Station) {
+fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewModel = viewModel<TimetableViewModel>()
     remember(station) { viewModel.offer(TimetableEvent.LoadTimetable(station)) }
     val viewState by viewModel.state.collectAsState()
-    TimetableScreen(viewState, viewModel::offer)
+    TimetableScreen(viewState, viewModel::offer, trainSelected = { train ->
+        navigateTo(Screen.TrainDetails(train))
+    })
 }
 
 @Composable
-fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> Unit) {
+fun TimetableScreen(
+    viewState: TimetableViewState,
+    onEvent: (TimetableEvent) -> Unit,
+    trainSelected: (Train) -> Unit
+) {
     var categorySelectionEnabled by remember { mutableStateOf(false) }
     val selectedCategories = viewState.selectedCategories
     val categorySelected: (Category) -> Unit = { category ->
@@ -97,6 +105,7 @@ fun TimetableScreen(viewState: TimetableViewState, onEvent: (TimetableEvent) -> 
                     station = viewState.station,
                     trains = viewState.timetable,
                     modifier,
+                    trainSelected,
                     selectedCategories,
                     categorySelected,
                     categorySelectionEnabled
@@ -140,6 +149,7 @@ private fun Timetable(
     station: Station,
     trains: List<Train>,
     modifier: Modifier = Modifier,
+    trainSelected: (Train) -> Unit,
     selectedCategories: Set<Category>,
     categorySelected: (Category) -> Unit,
     showCategorySelection: Boolean = false
@@ -165,7 +175,10 @@ private fun Timetable(
                         contentPadding = InnerPadding(8.dp, 8.dp, 8.dp, 0.dp)
                     ) { train ->
                         TimetableEntry(
-                            station, train, Modifier.padding(bottom = 8.dp)
+                            station,
+                            train,
+                            onSelect = trainSelected,
+                            Modifier.padding(bottom = 8.dp)
                         )
                     }
                 }
@@ -223,8 +236,13 @@ private fun CategoryButton(
 }
 
 @Composable
-private fun TimetableEntry(station: Station, train: Train, modifier: Modifier = Modifier) {
-    TimetableEntryBubble(modifier, indicatorColor = statusColor(train, station)) {
+private fun TimetableEntry(
+    station: Station,
+    train: Train,
+    onSelect: (Train) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, station)) {
         Column {
             Row {
                 TrainIdentification(train, Modifier.weight(1f))
@@ -305,12 +323,15 @@ private fun statusColor(train: Train, station: Station): Color? {
 }
 
 @Composable private fun TimetableEntryBubble(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     indicatorColor: Color? = null,
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier.fillMaxWidth(),
+        modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         elevation = 2.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
@@ -393,7 +414,8 @@ private fun Timetable() {
         )
     )
     Timetable(
-        station, trains, selectedCategories = setOf(Category.LongDistance),
+        station, trains, trainSelected = {},
+        selectedCategories = setOf(Category.LongDistance),
         categorySelected = {}, showCategorySelection = true
     )
 }

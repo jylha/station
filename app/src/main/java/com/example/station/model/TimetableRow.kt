@@ -28,4 +28,49 @@ data class TimetableRow(
         object Arrival : Type()
         object Departure : Type()
     }
+
+    companion object {
+
+        /** Creates TimetableRow with type Arrival. */
+        fun arrival(
+            stationCode: String,
+            stationUicCode: Int,
+            track: String,
+            scheduledTime: ZonedDateTime,
+            actualTime: ZonedDateTime? = null,
+            differenceInMinutes: Int? = null,
+            markedReady: Boolean = false
+        ): TimetableRow =
+            TimetableRow(
+                stationCode,
+                stationUicCode,
+                Type.Arrival,
+                track,
+                scheduledTime,
+                actualTime,
+                differenceInMinutes,
+                markedReady
+            )
+
+        /** Creates TimetableRow with type Departure. */
+        fun departure(
+            stationCode: String,
+            stationUicCode: Int,
+            track: String,
+            scheduledTime: ZonedDateTime,
+            actualTime: ZonedDateTime? = null,
+            differenceInMinutes: Int? = null,
+            markedReady: Boolean = false
+        ): TimetableRow =
+            TimetableRow(
+                stationCode,
+                stationUicCode,
+                Type.Departure,
+                track,
+                scheduledTime,
+                actualTime,
+                differenceInMinutes,
+                markedReady
+            )
+    }
 }

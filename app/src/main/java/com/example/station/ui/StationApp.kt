@@ -7,6 +7,7 @@ import com.example.station.ui.theme.StationTheme
 import com.example.station.ui.home.HomeScreen
 import com.example.station.ui.stations.StationScreen
 import com.example.station.ui.timetable.TimetableScreen
+import com.example.station.ui.train.TrainDetailsScreen
 
 @Composable
 fun StationApp(
@@ -23,13 +24,10 @@ fun StationAppContent(
 ) {
     Surface(color = MaterialTheme.colors.background) {
         when (val screen = navigationViewModel.screen) {
-            is Screen.Home -> HomeScreen(
-                navigateTo = navigationViewModel::navigateTo,
-            )
-            is Screen.SelectStation -> StationScreen(
-                navigateTo = navigationViewModel::navigateTo
-            )
-            is Screen.Timetable -> TimetableScreen(screen.station)
+            is Screen.Home -> HomeScreen(navigationViewModel::navigateTo)
+            is Screen.SelectStation -> StationScreen(navigationViewModel::navigateTo)
+            is Screen.Timetable -> TimetableScreen(screen.station, navigationViewModel::navigateTo)
+            is Screen.TrainDetails -> TrainDetailsScreen(screen.train)
         }
     }
 }
