@@ -390,25 +390,21 @@ private fun Timetable() {
     val trains = listOf(
         Train(
             1, "S", Category.LongDistance, true, timetable = listOf(
-                TimetableRow(
-                    "RS", 12345, TimetableRow.Type.Departure, "1",
-                    ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
+                TimetableRow.departure(
+                    "RS", 12345, "1", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
                 ),
-                TimetableRow(
-                    "ZZ", 54321, TimetableRow.Type.Arrival, "2",
-                    ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
+                TimetableRow.arrival(
+                    "ZZ", 54321, "2", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
                 )
             )
         ),
         Train(
             2, "IC", Category.LongDistance, true, timetable = listOf(
-                TimetableRow(
-                    "ZZ", 54321, TimetableRow.Type.Departure, "3",
-                    ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
+                TimetableRow.departure(
+                    "ZZ", 54321, "3", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
                 ),
-                TimetableRow(
-                    "RS", 12345, TimetableRow.Type.Arrival, "4",
-                    ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
+                TimetableRow.arrival(
+                    "RS", 12345, "4", ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
                 )
             )
         )

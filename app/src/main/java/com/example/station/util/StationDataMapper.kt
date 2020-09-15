@@ -6,7 +6,7 @@ import com.example.station.model.Station
 
 
 /** Maps station network data transfer object into domain model. */
-fun StationNetworkEntity.toDomainObject(): Station {
+fun StationNetworkEntity.toDomainModel(): Station {
     return Station(
         passengerTraffic = this.passengerTraffic,
         type = this.type.asStationType(),
@@ -22,7 +22,7 @@ fun StationNetworkEntity.toDomainObject(): Station {
 private fun String.asStationType() = Station.Type.of(this)
 
 /** Maps station cache entity into domain model. */
-fun StationCacheEntity.toDomainObject(): Station {
+fun StationCacheEntity.toDomainModel(): Station {
     return Station(
         passengerTraffic = this.passengerTraffic,
         type = Station.Type.Station,

@@ -21,27 +21,27 @@ class StationDataMapperTest {
     @Test
     fun `map station network DTO of type 'STATION' into domain model`() {
         val dto = testEntity
-        val result = dto.toDomainObject()
+        val result = dto.toDomainModel()
         assertThat(result.type).isEqualTo(Station.Type.Station)
     }
 
     @Test
     fun `map station network DTO of type 'STOPPING_POINT' into domain model`() {
         val dto = testEntity.copy(type = "STOPPING_POINT")
-        val result = dto.toDomainObject()
+        val result = dto.toDomainModel()
         assertThat(result.type).isEqualTo(Station.Type.StoppingPoint)
     }
 
     @Test
     fun `map station network DTO of type 'TURNOUT_IN_THE_OPEN_LINE' into domain model`() {
         val dto = testEntity.copy(type = "TURNOUT_IN_THE_OPEN_LINE")
-        val result = dto.toDomainObject()
+        val result = dto.toDomainModel()
         assertThat(result.type).isEqualTo(Station.Type.TurnoutInTheOpenLine)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `map station network DTO of unknown type throws an exception`() {
         val dto  = testEntity.copy(type = "SOMETHING")
-        dto.toDomainObject()
+        dto.toDomainModel()
     }
 }

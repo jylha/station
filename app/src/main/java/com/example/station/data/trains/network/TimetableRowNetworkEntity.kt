@@ -4,17 +4,23 @@ import com.google.gson.annotations.SerializedName
 
 data class TimetableRowNetworkEntity(
 
+    @SerializedName("type")
+    val type: String,
+
     @SerializedName("stationShortCode")
     val stationCode: String,
 
     @SerializedName("stationUICCode")
     val stationUicCode: Int,
 
-    @SerializedName("type")
-    val type: String,
+    @SerializedName("trainStopping")
+    val trainStopping: Boolean,
+
+    @SerializedName("commercialStop")
+    val commercialStop: Boolean? = null,
 
     @SerializedName("commercialTrack")
-    val track: String,
+    val track: String? = null,
 
     @SerializedName("scheduledTime")
     val scheduledTime: String,

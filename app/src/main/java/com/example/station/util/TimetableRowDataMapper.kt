@@ -5,19 +5,23 @@ import com.example.station.model.TimetableRow
 import java.time.ZonedDateTime
 
 /** Maps timetable row network data transfer object into domain model. */
-fun TimetableRowNetworkEntity.toDomainObject(): TimetableRow {
+fun TimetableRowNetworkEntity.toDomainModel(): TimetableRow {
     return TimetableRow(
-        stationCode = this.stationCode,
-        stationUicCode = this.stationUicCode,
-        type = when (this.type) {
-            "ARRIVAL" -> TimetableRow.Type.Arrival
-            "DEPARTURE" -> TimetableRow.Type.Departure
-            else -> throw IllegalArgumentException("Unknown type: ${this.type}")
+        stationCode = stationCode,
+        stationUicCode = stationUicCode,
+        type = when {
+            type.equals("ARRIVAL", ignoreCase = true) -> TimetableRow.Type.Arrival
+            type.equals("DEPARTURE", ignoreCase = true) -> TimetableRow.Type.Departure
+            else -> throw IllegalArgumentException("Unknown type: $type")
         },
-        track = this.track,
-        scheduledTime = ZonedDateTime.parse(this.scheduledTime),
-        actualTime = if (this.actualTime != null) ZonedDateTime.parse(this.actualTime) else null,
-        differenceInMinutes = this.differenceInMinutes,
-        markedReady = this.trainReady != null
+        trainStopping = trainStopping,
+        commercialStop = commercialStop,
+        track = track,
+        scheduledTime = ZonedDateTime.parse(scheduledTime),
+        estimatedTime = if (liveEstimateTime != null) ZonedDateTime.parse(liveEstimateTime) else null,
+        actualTime = if (actualTime != null) ZonedDateTime.parse(actualTime) else null,
+        differenceInMinutes = differenceInMinutes,
+        markedReady = trainReady != null
     )
 }
+

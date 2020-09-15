@@ -7,7 +7,7 @@ import com.example.station.model.Train.Category.LongDistance
 
 
 /**
- * Maps a list of train network data transfer object into domain model at the same time
+ * Maps a list of train network data transfer objects into domain model at the same time
  * filtering any unnecessary entries.
  */
 fun List<TrainNetworkEntity>.toDomainModel(): List<Train> {
@@ -17,15 +17,15 @@ fun List<TrainNetworkEntity>.toDomainModel(): List<Train> {
 fun TrainNetworkEntity.toDomainModel(): Train? {
     return try {
         Train(
-            number = this.number,
-            type = this.type,
+            number = number,
+            type = type,
             category = when {
-                this.category.equals("Long-distance", ignoreCase = true) -> LongDistance
-                this.category.equals("Commuter", ignoreCase = true) -> Commuter
-                else -> throw IllegalArgumentException()
+                category.equals(LongDistance.name, ignoreCase = true) -> LongDistance
+                category.equals(Commuter.name, ignoreCase = true) -> Commuter
+                else -> throw IllegalArgumentException("Unknown category: $category")
             },
-            isRunning = this.runningCurrently,
-            timetable = this.timetable.map { row -> row.toDomainObject() }
+            isRunning = runningCurrently,
+            timetable = timetable.map { row -> row.toDomainModel() }
         )
     } catch (e: IllegalArgumentException) {
         null

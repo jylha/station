@@ -10,7 +10,7 @@ import com.example.station.data.stations.cache.StationDatabase
 import com.example.station.data.stations.network.StationService
 import com.example.station.model.Station
 import com.example.station.util.toCacheEntity
-import com.example.station.util.toDomainObject
+import com.example.station.util.toDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -31,17 +31,17 @@ class StoreBackedStationRepository @Inject constructor(
             fetcher = Fetcher.of { key ->
                 stationService.fetchStations()
                     .filter { it.passengerTraffic && it.countryCode == "FI" }
-                    .map { it.toDomainObject() }
+                    .map { it.toDomainModel() }
                     .filter { it.type == Station.Type.Station }
             },
             sourceOfTruth = SourceOfTruth.of(
                 reader = { key ->
                     if (key != 0) {
                          stationDatabase.stationDao().getStation(key)
-                            .map { listOf(it.toDomainObject()) }
+                            .map { listOf(it.toDomainModel()) }
                     } else {
                         stationDatabase.stationDao().getAll().map { stations ->
-                            stations.map { it.toDomainObject() }
+                            stations.map { it.toDomainModel() }
                         }
                     }
                 },

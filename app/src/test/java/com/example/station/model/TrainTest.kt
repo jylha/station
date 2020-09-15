@@ -8,24 +8,24 @@ import java.time.ZonedDateTime
 class TrainTest {
 
     private val scheduledTime1 = ZonedDateTime.parse("2020-09-05T10:00:00.000Z")
-    private val actualTime1    = ZonedDateTime.parse("2020-09-05T10:02:00.000Z")
+    private val actualTime1 = ZonedDateTime.parse("2020-09-05T10:02:00.000Z")
     private val scheduledTime2 = ZonedDateTime.parse("2020-09-05T10:30:00.000Z")
-    private val actualTime2    = ZonedDateTime.parse("2020-09-05T10:31:00.000Z")
+    private val actualTime2 = ZonedDateTime.parse("2020-09-05T10:31:00.000Z")
     private val scheduledTime3 = ZonedDateTime.parse("2020-09-05T10:40:00.000Z")
     private val scheduledTime4 = ZonedDateTime.parse("2020-09-05T11:10:00.000Z")
 
     private val train = Train(
         1, "S", Train.Category.LongDistance, true, timetable = listOf(
-            TimetableRow(
-                "A", 100, TimetableRow.Type.Departure, "5",
-                scheduledTime1, actualTime = actualTime1, differenceInMinutes = 2, markedReady = true
+            TimetableRow.departure(
+                "A", 100, "5", scheduledTime1, actualTime = actualTime1,
+                differenceInMinutes = 2, markedReady = true
             ),
-            TimetableRow(
-                "B", 200, TimetableRow.Type.Arrival, "1",
-                scheduledTime2, actualTime = actualTime2, differenceInMinutes = 1
+            TimetableRow.arrival(
+                "B", 200, "1", scheduledTime2, actualTime = actualTime2,
+                differenceInMinutes = 1
             ),
-            TimetableRow("B", 200, TimetableRow.Type.Departure, "1", scheduledTime3),
-            TimetableRow("C", 300, TimetableRow.Type.Arrival, "3", scheduledTime4)
+            TimetableRow.departure("B", 200, "1", scheduledTime3),
+            TimetableRow.arrival("C", 300, "3", scheduledTime4)
         )
     )
 
@@ -35,27 +35,17 @@ class TrainTest {
 
     private val readyTrain = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            TimetableRow(
-                "1", 1, TimetableRow.Type.Departure,
-                "1", scheduledTime1, actualTime = null, markedReady = true
+            TimetableRow.departure(
+                "1", 1, "1", scheduledTime1, markedReady = true
             ),
-            TimetableRow(
-                "2", 2, TimetableRow.Type.Arrival,
-                "1", scheduledTime2, actualTime = null, markedReady = false
-            )
+            TimetableRow.arrival("2", 2, "1", scheduledTime2)
         )
     )
 
     private val notReadyTrain = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            TimetableRow(
-                "1", 1, TimetableRow.Type.Departure,
-                "1", scheduledTime1, actualTime = null, markedReady = false
-            ),
-            TimetableRow(
-                "2", 2, TimetableRow.Type.Arrival,
-                "1", scheduledTime2, actualTime = null, markedReady = false
-            )
+            TimetableRow.departure("1", 1, "1", scheduledTime1),
+            TimetableRow.arrival("2", 2, "1", scheduledTime2)
         )
     )
 
