@@ -19,13 +19,16 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * StationRepository implementation that uses Store to manage fetching station data from
+ * the network with [stationService] and caching it locally on [stationDatabase].
+ */
 class StoreBackedStationRepository @Inject constructor(
     private val stationService: StationService,
     private val stationDatabase: StationDatabase
 ) : StationRepository {
 
-    @ExperimentalCoroutinesApi
-    @OptIn(FlowPreview::class)
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private val store = StoreBuilder
         .from<Int, List<Station>, List<Station>>(
             fetcher = Fetcher.of { key ->
@@ -55,17 +58,15 @@ class StoreBackedStationRepository @Inject constructor(
         )
         .build()
 
-    @ExperimentalCoroutinesApi
     override fun fetchStations(): Flow<StoreResponse<List<Station>>> {
         return store.stream(StoreRequest.cached(key = 0, refresh = true))
             .flowOn(Dispatchers.IO)
     }
 
-    @ExperimentalCoroutinesApi
-    override suspend fun fetchStation(stationUicCode: Int): Station {
-        require(stationUicCode > 0)
-        return store.get(key = stationUicCode)
-            .first { it.uicCode == stationUicCode }
+    override suspend fun fetchStation(stationUic: Int): Station {
+        require(stationUic > 0)
+        return store.get(key = stationUic)
+            .first { station -> station.uic == stationUic }
     }
 }
 

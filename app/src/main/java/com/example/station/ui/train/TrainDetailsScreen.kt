@@ -89,7 +89,7 @@ import java.time.ZonedDateTime
                 }
                 timetableRow.type == TimetableRow.Type.Arrival -> {
                     val departure = timetable[index + 1]
-                    require(departure.stationCode == timetableRow.stationCode && departure.type == TimetableRow.Type.Departure)
+                    require(departure.stationShortCode == timetableRow.stationShortCode && departure.type == TimetableRow.Type.Departure)
                     TrainWaypoint(timetableRow, departure)
                 }
             }
@@ -100,7 +100,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainOrigin(departure: TimetableRow) {
     Station(
-        name = departure.stationCode,
+        name = departure.stationShortCode,
         departs = departure.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.origin_open
     )
@@ -108,7 +108,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainDestination(arrival: TimetableRow) {
     Station(
-        arrival.stationCode,
+        arrival.stationShortCode,
         arrives = arrival.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.destination_open
     )
@@ -116,7 +116,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainWaypoint(arrival: TimetableRow, departure: TimetableRow) {
     Station(
-        arrival.stationCode,
+        arrival.stationShortCode,
         arrival.scheduledTime.atLocalZone().toLocalTime().toString(),
         departure.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.waypoint_open

@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 data class StationCacheEntity(
 
     @PrimaryKey(autoGenerate = false)
-    val uicCode: Int,
+    val uic: Int,
     val passengerTraffic: Boolean,
     val name: String,
-    val code: String,
+    val shortCode: String,
     val countryCode: String,
     val longitude: Double,
     val latitude: Double

@@ -36,7 +36,7 @@ class StationsViewModel @ViewModelInject constructor(
 
     fun stationSelected(station: Station) {
         viewModelScope.launch {
-            settingsRepository.setStation(station.uicCode)
+            settingsRepository.setStation(station.uic)
         }
     }
 }

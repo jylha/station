@@ -247,11 +247,11 @@ private fun TimetableEntry(
             Row {
                 TrainIdentification(train, Modifier.weight(1f))
                 TrainRoute(train.origin(), train.destination(), Modifier.weight(2f))
-                TrainTrack(train.track(station.uicCode), Modifier.weight(1f))
+                TrainTrack(train.track(station.uic), Modifier.weight(1f))
             }
             Row {
-                Arrival(train.arrivalAt(station.uicCode), Modifier.weight(1f))
-                Departure(train.departureAt(station.uicCode), Modifier.weight(1f))
+                Arrival(train.arrivalAt(station.uic), Modifier.weight(1f))
+                Departure(train.departureAt(station.uic), Modifier.weight(1f))
             }
         }
     }
@@ -314,10 +314,10 @@ private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
 @Composable
 private fun statusColor(train: Train, station: Station): Color? {
     return when {
-        train.isOrigin(station.uicCode) && train.isNotReady() -> StationTheme.colors.trainOnOriginStation
-        train.onRouteTo(station.uicCode) -> StationTheme.colors.trainOnRouteToStation
-        train.onStation(station.uicCode) -> StationTheme.colors.trainOnStation
-        train.hasDeparted(station.uicCode) -> StationTheme.colors.trainHasDepartedStation
+        train.isOrigin(station.uic) && train.isNotReady() -> StationTheme.colors.trainOnOriginStation
+        train.onRouteTo(station.uic) -> StationTheme.colors.trainOnRouteToStation
+        train.onStation(station.uic) -> StationTheme.colors.trainOnStation
+        train.hasDeparted(station.uic) -> StationTheme.colors.trainHasDepartedStation
         else -> null
     }
 }
@@ -381,8 +381,8 @@ private fun Timetable() {
         passengerTraffic = true,
         type = Station.Type.Station,
         name = "Railway Station",
-        code = "RS",
-        uicCode = 12345,
+        shortCode = "RS",
+        uic = 12345,
         countryCode = "FI",
         longitude = 1.0,
         latitude = 1.0

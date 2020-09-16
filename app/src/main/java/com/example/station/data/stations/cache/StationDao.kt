@@ -18,7 +18,7 @@ interface StationDao {
     @Query("SELECT * FROM stations ORDER BY name ASC")
     fun getAll(): Flow<List<StationCacheEntity>>
 
-    @Query("SELECT * FROM stations WHERE uicCode = :stationUicCode ")
-    fun getStation(stationUicCode: Int): Flow<StationCacheEntity>
+    @Query("SELECT * FROM stations WHERE uic = :stationUic ")
+    fun getStation(stationUic: Int): Flow<StationCacheEntity>
 
 }

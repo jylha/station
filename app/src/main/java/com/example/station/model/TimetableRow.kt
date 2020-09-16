@@ -6,20 +6,21 @@ import java.time.ZonedDateTime
  * Domain model for train's timetable row data.
  *
  * @param type Time table entry type (either Arrival or Departure).
- * @param stationCode The short code for the station.
- * @param stationUicCode The UIC code for the station.
+ * @param stationShortCode The short code for the station.
+ * @param stationUic The UIC code for the station.
  * @param trainStopping Whether train is stopping on the station.
- * @param commercialStop Whether the stop is commercial.
+ * @param commercialStop Whether the stop is commercial, or null if train is no stopping..
  * @param track Track number.
- * @param scheduledTime The scheduled time for train's arrival or departure.
+ * @param scheduledTime Scheduled time for train's arrival or departure.
+ * @param estimatedTime Estimated time for train's arrival or departure.
  * @param actualTime Actual time of of arrival or departure.
  * @param differenceInMinutes Difference between scheduled and actual time in minutes.
  * @param markedReady Train is marked ready to depart (used only on origin station).
  */
 data class TimetableRow(
     val type: Type,
-    val stationCode: String,
-    val stationUicCode: Int,
+    val stationShortCode: String,
+    val stationUic: Int,
     val trainStopping: Boolean = true,
     val commercialStop: Boolean? = null,
     val track: String? = null,
@@ -38,8 +39,8 @@ data class TimetableRow(
 
         /** Creates TimetableRow of commercial stop with type Arrival. */
         fun arrival(
-            stationCode: String,
-            stationUicCode: Int,
+            stationShortCode: String,
+            stationUic: Int,
             track: String,
             scheduledTime: ZonedDateTime,
             estimatedTime: ZonedDateTime? = null,
@@ -48,9 +49,9 @@ data class TimetableRow(
         ): TimetableRow =
             TimetableRow(
                 Type.Arrival,
-                stationCode,
-                stationUicCode,
-                trainStopping  = true,
+                stationShortCode,
+                stationUic,
+                trainStopping = true,
                 commercialStop = true,
                 track,
                 scheduledTime,
@@ -62,8 +63,8 @@ data class TimetableRow(
 
         /** Creates TimetableRow of commercial stop with type Departure. */
         fun departure(
-            stationCode: String,
-            stationUicCode: Int,
+            stationShortCode: String,
+            stationUic: Int,
             track: String,
             scheduledTime: ZonedDateTime,
             estimatedTime: ZonedDateTime? = null,
@@ -73,8 +74,8 @@ data class TimetableRow(
         ): TimetableRow =
             TimetableRow(
                 Type.Departure,
-                stationCode,
-                stationUicCode,
+                stationShortCode,
+                stationUic,
                 trainStopping = true,
                 commercialStop = true,
                 track,

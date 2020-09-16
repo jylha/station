@@ -14,10 +14,10 @@ data class StationNetworkEntity(
     val name: String,
 
     @SerializedName("stationShortCode")
-    val code: String,
+    val shortCode: String,
 
     @SerializedName("stationUICCode")
-    val uicCode: Int,
+    val uic: Int,
 
     @SerializedName("countryCode")
     val countryCode: String,

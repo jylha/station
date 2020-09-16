@@ -30,17 +30,17 @@ data class Train(
 
     /** Returns the station short code for the train's origin. */
     fun origin(): String? {
-        return timetable.firstOrNull()?.stationCode
+        return timetable.firstOrNull()?.stationShortCode
     }
 
     /** Returns the station short code for the train's destination. */
     fun destination(): String? {
-        return timetable.lastOrNull()?.stationCode
+        return timetable.lastOrNull()?.stationShortCode
     }
 
     /** Returns the track for the given [stationUicCode]. */
     fun track(stationUicCode: Int): String? {
-        return timetable.firstOrNull { it.stationUicCode == stationUicCode }?.track
+        return timetable.firstOrNull { it.stationUic == stationUicCode }?.track
     }
 
     /** Returns the scheduled time of arrival to the specified station. */
@@ -87,12 +87,12 @@ data class Train(
 
     /** Checks whether the specified station is train's origin. */
     fun isOrigin(stationUicCode: Int): Boolean {
-        return timetable.firstOrNull()?.stationUicCode == stationUicCode
+        return timetable.firstOrNull()?.stationUic == stationUicCode
     }
 
     /** Checks whether the specified station is train's destination. */
     fun isDestination(stationUicCode: Int): Boolean {
-        return timetable.lastOrNull()?.stationUicCode == stationUicCode
+        return timetable.lastOrNull()?.stationUic == stationUicCode
     }
 
     /** Time of next scheduled event or most recent event on the specified station. */
@@ -111,11 +111,11 @@ data class Train(
 
     /** Returns a timetable row for the arrival to the specified station. */
     fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {
-        it.stationUicCode == stationUicCode && it.type == TimetableRow.Type.Arrival
+        it.stationUic == stationUicCode && it.type == TimetableRow.Type.Arrival
     }
 
     /** Returns a timetable row for the departure from the specified station. */
     fun departureAt(stationUicCode: Int) = timetable.firstOrNull {
-        it.stationUicCode == stationUicCode && it.type == TimetableRow.Type.Departure
+        it.stationUic == stationUicCode && it.type == TimetableRow.Type.Departure
     }
 }
