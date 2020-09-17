@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <station_names>
-        <station uic="1" name="@string/station_name_helsinki" />
-        <station uic="18" name="@string/station_name_tikkurila" />
-        <station uic="160" name="@string/station_name_tampere" />
-    </station_names>
-</resources>

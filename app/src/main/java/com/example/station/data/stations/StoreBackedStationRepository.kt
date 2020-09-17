@@ -1,14 +1,12 @@
 package com.example.station.data.stations
 
 import android.content.Context
-import android.content.res.XmlResourceParser
 import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.get
-import com.example.station.R
 import com.example.station.data.stations.cache.StationDatabase
 import com.example.station.data.stations.network.StationService
 import com.example.station.model.Station
@@ -51,7 +49,7 @@ class StoreBackedStationRepository @Inject constructor(
             sourceOfTruth = SourceOfTruth.of(
                 reader = { key ->
                     if (key != 0) {
-                         stationDatabase.stationDao().getStation(key)
+                        stationDatabase.stationDao().getStation(key)
                             .map { listOf(it.toDomainModel()) }
                     } else {
                         stationDatabase.stationDao().getAll().map { stations ->
@@ -91,32 +89,4 @@ class StoreBackedStationRepository @Inject constructor(
         }
         return stationNameMapper
     }
-}
-
-/** Gets localized or commercial station names from resources. */
-private fun stationNamesFromResources(context: Context): Map<Int, String> {
-    val stationNames = mutableMapOf<Int, String>()
-    context.resources.getXml(R.xml.stations).use { parser ->
-        while (parser.next() != XmlResourceParser.END_DOCUMENT) {
-            if (parser.eventType == XmlResourceParser.START_TAG &&
-                parser.name == "station"
-            ) {
-                var uic = 0
-                var resId = 0
-                for (index in 0 until parser.attributeCount) {
-                    when (parser.getAttributeName(index)) {
-                        "uic" -> uic = parser.getAttributeValue(index).toInt()
-                        "name" -> resId = parser.getAttributeResourceValue(index, 0)
-                    }
-                }
-                if (uic != 0 && resId != 0) {
-                    val name = context.resources.getString(resId)
-                    if (name.isNotBlank()) {
-                        stationNames += uic to name
-                    }
-                }
-            }
-        }
-    }
-    return stationNames
 }
