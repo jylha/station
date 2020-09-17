@@ -51,7 +51,7 @@ class TrainTest {
 
     @Test fun `origin() returns the station code of the first timetable row`() {
         val result = train.origin()
-        assertThat(result).isEqualTo("A")
+        assertThat(result).isEqualTo(100)
     }
 
     @Test fun `origin() returns null for a train with empty timetable`() {
@@ -61,7 +61,7 @@ class TrainTest {
 
     @Test fun `destination() returns the station code of the last timetable row`() {
         val result = train.destination()
-        assertThat(result).isEqualTo("C")
+        assertThat(result).isEqualTo(300)
     }
 
     @Test fun `destination() returns null for a train with empty timetable`() {

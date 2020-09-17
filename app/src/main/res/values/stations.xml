@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="station_name_helsinki">Helsinki</string>
+    <string name="station_name_tikkurila">Tikkurila</string>
+    <string name="station_name_tampere">Tampere</string>
+</resources>

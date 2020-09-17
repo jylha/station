@@ -4,6 +4,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.station.data.settings.SettingsRepository
+import com.example.station.data.stations.StationNameMapper
+import com.example.station.data.stations.StationRepository
 import com.example.station.data.trains.TrainRepository
 import com.example.station.model.Station
 import com.example.station.model.Train
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class TimetableViewModel @ViewModelInject constructor(
     private val trainRepository: TrainRepository,
+    private val stationRepository: StationRepository,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private val eventChannel = Channel<TimetableEvent>(Channel.UNLIMITED)
@@ -34,6 +37,11 @@ class TimetableViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch {
             handleEvents()
+        }
+
+        viewModelScope.launch {
+            val mapper = stationRepository.getStationNameMapper()
+            _state.value = reduce(_state.value, TimetableResult.StationNames(mapper))
         }
 
         viewModelScope.launch {
@@ -92,5 +100,6 @@ sealed class TimetableResult {
     data class Data(val station: Station, val trains: List<Train>) : TimetableResult()
     data class Error(val msg: String) : TimetableResult()
     data class SettingsUpdated(val categories: Set<Train.Category>) : TimetableResult()
+    data class StationNames(val mapper: StationNameMapper): TimetableResult()
 }
 

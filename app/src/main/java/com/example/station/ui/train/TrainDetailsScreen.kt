@@ -66,14 +66,14 @@ import java.time.ZonedDateTime
     )
 }
 
-@Composable private fun TrainRoute(originShortCode: String?, destinationShortCode: String?) {
+@Composable private fun TrainRoute(originUic: Int?, destinationUic: Int?) {
     Row(
         verticalGravity = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(originShortCode ?: "")
+        Text(originUic.toString() ?: "")
         Icon(Icons.Default.ArrowRight)
-        Text(destinationShortCode ?: "")
+        Text(destinationUic.toString() ?: "")
     }
 }
 

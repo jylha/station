@@ -28,14 +28,14 @@ data class Train(
         object Commuter: Category("Commuter")
     }
 
-    /** Returns the station short code for the train's origin. */
-    fun origin(): String? {
-        return timetable.firstOrNull()?.stationShortCode
+    /** Returns the station uic code for the train's origin. */
+    fun origin(): Int? {
+        return timetable.firstOrNull()?.stationUic
     }
 
-    /** Returns the station short code for the train's destination. */
-    fun destination(): String? {
-        return timetable.lastOrNull()?.stationShortCode
+    /** Returns the station uic code for the train's destination. */
+    fun destination(): Int? {
+        return timetable.lastOrNull()?.stationUic
     }
 
     /** Returns the track for the given [stationUicCode]. */

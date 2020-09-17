@@ -5,6 +5,7 @@ import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
@@ -47,6 +48,8 @@ import com.example.station.model.Train.Category
 import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
+import com.example.station.ui.components.StationName
+import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.theme.StationTheme
 import com.example.station.util.atLocalZone
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -59,9 +62,12 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewModel = viewModel<TimetableViewModel>()
     remember(station) { viewModel.offer(TimetableEvent.LoadTimetable(station)) }
     val viewState by viewModel.state.collectAsState()
-    TimetableScreen(viewState, viewModel::offer, trainSelected = { train ->
-        navigateTo(Screen.TrainDetails(train))
-    })
+
+    StationNameProvider(viewState.mapper) {
+        TimetableScreen(viewState, viewModel::offer, trainSelected = { train ->
+            navigateTo(Screen.TrainDetails(train))
+        })
+    }
 }
 
 @Composable
@@ -187,8 +193,7 @@ private fun Timetable(
     }
 }
 
-@Composable
-private fun CategorySelection(
+@Composable private fun CategorySelection(
     categories: Set<Category>,
     categorySelected: (Category) -> Unit,
 ) {
@@ -207,8 +212,7 @@ private fun CategorySelection(
     }
 }
 
-@Composable
-private fun CategoryButton(
+@Composable private fun CategoryButton(
     onClick: (Category) -> Unit, category: Category, selected: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -235,8 +239,7 @@ private fun CategoryButton(
     }
 }
 
-@Composable
-private fun TimetableEntry(
+@Composable private fun TimetableEntry(
     station: Station,
     train: Train,
     onSelect: (Train) -> Unit,
@@ -257,8 +260,7 @@ private fun TimetableEntry(
     }
 }
 
-@Composable
-private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
+@Composable private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
     Text(
         text = "${train.type} ${train.number}",
         modifier = modifier,
@@ -266,13 +268,22 @@ private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
     )
 }
 
-@Composable
-private fun TrainRoute(origin: String?, destination: String?, modifier: Modifier = Modifier) {
-    Text(
-        text = "$origin -> $destination",
+@Composable private fun TrainRoute(
+    originUic: Int?,
+    destinationUic: Int?,
+    modifier: Modifier = Modifier
+) {
+    val origin = if (originUic != null) StationName.forUic(originUic) else null
+    val destination = if (destinationUic != null) StationName.forUic(destinationUic) else null
+    Row(
         modifier = modifier,
-        fontWeight = FontWeight.Bold,
-    )
+        verticalGravity = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(origin ?: "<missing>", fontWeight = FontWeight.Bold)
+        Text("->", fontWeight = FontWeight.Bold)
+        Text(destination ?: "<missing>", fontWeight = FontWeight.Bold)
+    }
 }
 
 @Composable

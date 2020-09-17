@@ -1,6 +1,7 @@
 package com.example.station.ui.timetable
 
 import androidx.compose.runtime.Immutable
+import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Station
 import com.example.station.model.Train
 
@@ -11,7 +12,8 @@ data class TimetableViewState(
     val timetable: List<Train> = emptyList(),
     val selectedCategories: Set<Train.Category> =
         setOf(Train.Category.LongDistance, Train.Category.Commuter),
-    val error: String? = null
+    val error: String? = null,
+    val mapper: StationNameMapper? = null
 )
 
 fun reduce(currentState: TimetableViewState, result: TimetableResult): TimetableViewState {
@@ -32,6 +34,9 @@ fun reduce(currentState: TimetableViewState, result: TimetableResult): Timetable
         )
         is TimetableResult.SettingsUpdated -> currentState.copy(
             selectedCategories = result.categories
+        )
+        is TimetableResult.StationNames -> currentState.copy(
+            mapper = result.mapper
         )
     }
 }

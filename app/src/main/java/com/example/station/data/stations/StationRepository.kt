@@ -13,4 +13,8 @@ interface StationRepository {
 
     /** Fetch a single station with given [stationUic]. */
     suspend fun fetchStation(stationUic: Int): Station
+
+    /** Station name mapper. */
+    suspend fun getStationNameMapper(): StationNameMapper
+
 }
