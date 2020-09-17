@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="station_name_helsinki">Helsinki</string>
-    <string name="station_name_tikkurila">Tikkurila</string>
-    <string name="station_name_tampere">Tampere</string>
+    <string name="station_name_0001_helsinki">Helsinki</string>
+    <string name="station_name_0009_ilmala">Ilmala</string>
+    <string name="station_name_0010_pasila">Pasila</string>
+    <string name="station_name_0018_tikkurila">Tikkurila</string>
+    <string name="station_name_0020_kerava">Kerava</string>
+    <string name="station_name_0025_jarvenpaa">Järvenpää</string>
+    <string name="station_name_0040_riihimaki">Riihimäki</string>
+    <string name="station_name_0048_turku">Turku Central Station</string> <!-- Turku päärautatieasema -->
+    <string name="station_name_0065_kauklahti">Kauklahti</string>
+    <string name="station_name_0073_hanko">Hanko</string>
+    <string name="station_name_0160_tampere">Tampere</string>
+    <string name="station_name_0280_seinajoki">Seinäjoki</string>
+    <string name="station_name_0351_tornio">Tornio</string>
+    <string name="station_name_0370_oulu">Oulu</string>
+    <string name="station_name_0400_pieksamaki">Pieksämäki</string>
+    <string name="station_name_0408_kuopio">Kuopio</string>
+    <string name="station_name_0413_siilinjarvi">Siilinjärvi</string>
+    <string name="station_name_0460_joensuu">Joensuu</string>
+    <string name="station_name_0480_kouvola">Kouvola</string>
+    <string name="station_name_0492_vainikkala">Vainikkala</string>
+    <string name="station_name_0521_savonlinna">Savonlinna</string>
+    <string name="station_name_0532_kotka">Kotka</string>
+    <string name="station_name_0603_imatra">Imatra</string>
+
+    <string name="station_name_3820_pietari_finljandski">St. Petersburg (Finljandski)</string>
+    <string name="station_name_3181_pietari_ladozhki">St. Petersburg (Ladozhki)</string>
+    <string name="station_name_6007_moskova_leningradski">Moscow (Leningradski)</string>
+
 </resources>

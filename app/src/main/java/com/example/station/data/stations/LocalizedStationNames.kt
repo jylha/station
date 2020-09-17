@@ -19,9 +19,8 @@ class LocalizedStationNames private constructor(
             localizedNames: Map<Int, String> = emptyMap()
         ): LocalizedStationNames {
             val mapping = stations
-                .map { station ->
-                    station.uic to (localizedNames[station.uic] ?: station.name)
-                }.toMap()
+                .map { station -> station.uic to (localizedNames[station.uic] ?: station.name) }
+                .toMap()
             return LocalizedStationNames(mapping)
         }
 
@@ -43,8 +42,32 @@ class LocalizedStationNames private constructor(
 }
 
 private val LOCALIZED_STATION_NAMES = mapOf(
-    1 to R.string.station_name_helsinki,
-    18 to R.string.station_name_tikkurila,
-    160 to R.string.station_name_tampere
+    1 to R.string.station_name_0001_helsinki,
+    9 to R.string.station_name_0009_ilmala,
+    10 to R.string.station_name_0010_pasila,
+    18 to R.string.station_name_0018_tikkurila,
+    20 to R.string.station_name_0020_kerava,
+    25 to R.string.station_name_0025_jarvenpaa,
+    40 to R.string.station_name_0040_riihimaki,
+    48 to R.string.station_name_0048_turku,
+    65 to R.string.station_name_0065_kauklahti,
+    73 to R.string.station_name_0073_hanko,
+    160 to R.string.station_name_0160_tampere,
+    280 to R.string.station_name_0280_seinajoki,
+    351 to R.string.station_name_0351_tornio,
+    370 to R.string.station_name_0370_oulu,
+    400 to R.string.station_name_0400_pieksamaki,
+    408 to R.string.station_name_0408_kuopio,
+    413 to R.string.station_name_0413_siilinjarvi,
+    460 to R.string.station_name_0460_joensuu,
+    480 to R.string.station_name_0480_kouvola,
+    492 to R.string.station_name_0492_vainikkala,
+    521 to R.string.station_name_0521_savonlinna,
+    532 to R.string.station_name_0532_kotka,
+    603 to R.string.station_name_0603_imatra,
+
+    3181 to R.string.station_name_3181_pietari_ladozhki,
+    3820 to R.string.station_name_3820_pietari_finljandski,
+    6007 to R.string.station_name_6007_moskova_leningradski,
 )
 

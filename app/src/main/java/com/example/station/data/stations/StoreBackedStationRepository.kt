@@ -42,7 +42,7 @@ class StoreBackedStationRepository @Inject constructor(
         .from<Int, List<Station>, List<Station>>(
             fetcher = Fetcher.of { key ->
                 stationService.fetchStations()
-                    .filter { it.passengerTraffic && it.countryCode == "FI" }
+                    .filter { it.passengerTraffic }
                     .map { it.toDomainModel() }
                     .filter { it.type == Station.Type.Station }
             },
