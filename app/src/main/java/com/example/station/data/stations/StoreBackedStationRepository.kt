@@ -44,7 +44,7 @@ class StoreBackedStationRepository @Inject constructor(
                 stationService.fetchStations()
                     .filter { it.passengerTraffic }
                     .map { it.toDomainModel() }
-                    .filter { it.type == Station.Type.Station }
+                    .filter { it.type == Station.Type.Station || it.type == Station.Type.StoppingPoint }
             },
             sourceOfTruth = SourceOfTruth.of(
                 reader = { key ->

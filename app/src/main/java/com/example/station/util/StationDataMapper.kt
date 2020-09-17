@@ -23,7 +23,7 @@ fun StationNetworkEntity.toDomainModel(): Station {
 fun StationCacheEntity.toDomainModel(): Station {
     return Station(
         passengerTraffic = passengerTraffic,
-        type = Station.Type.Station,
+        type = Station.Type.of(type),
         name = name,
         shortCode = shortCode,
         uic = uic,
@@ -35,9 +35,9 @@ fun StationCacheEntity.toDomainModel(): Station {
 
 /** Maps station domain object into cache entity. */
 fun Station.toCacheEntity() : StationCacheEntity {
-    require(type == Station.Type.Station)
     return StationCacheEntity(
         passengerTraffic = passengerTraffic,
+        type = type.value,
         name = name,
         shortCode = shortCode,
         uic = uic,

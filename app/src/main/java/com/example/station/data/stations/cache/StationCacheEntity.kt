@@ -9,6 +9,7 @@ data class StationCacheEntity(
 
     @PrimaryKey(autoGenerate = false)
     val uic: Int,
+    val type: String,
     val passengerTraffic: Boolean,
     val name: String,
     val shortCode: String,
