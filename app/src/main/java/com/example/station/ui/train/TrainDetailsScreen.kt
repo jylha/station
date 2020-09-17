@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -51,6 +52,10 @@ import java.time.ZonedDateTime
 }
 
 @Composable fun TrainDetailsScreen(viewState: TrainDetailsViewState, train: Train) {
+    val timetable = remember(train.timetable) {
+        train.timetable.filter { row -> row.trainStopping && row.commercialStop == true }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -62,7 +67,7 @@ import java.time.ZonedDateTime
             Spacer(Modifier.height(8.dp))
             TrainRoute(train.origin(), train.destination())
             Spacer(Modifier.height(16.dp))
-            TrainTimetable(timetable = train.timetable)
+            TrainTimetable(timetable = timetable)
         }
     }
 }
