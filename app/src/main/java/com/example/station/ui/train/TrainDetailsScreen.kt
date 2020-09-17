@@ -14,28 +14,43 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.outlined.Train
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
 import com.example.station.R
+import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import com.example.station.ui.components.StationName
+import com.example.station.ui.components.StationNameProvider
 import com.example.station.util.atLocalZone
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.ZonedDateTime
 
-@OptIn(ExperimentalLazyDsl::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(train: Train) {
+    val viewModel = viewModel<TrainDetailsViewModel>()
+    val viewState by viewModel.state.collectAsState()
+
+    StationNameProvider(nameMapper = viewState.nameMapper) {
+        TrainDetailsScreen(viewState, train)
+    }
+}
+
+@Composable fun TrainDetailsScreen(viewState: TrainDetailsViewState, train: Train) {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -67,13 +82,16 @@ import java.time.ZonedDateTime
 }
 
 @Composable private fun TrainRoute(originUic: Int?, destinationUic: Int?) {
+    val originName = if (originUic != null) StationName.forUic(originUic) else null
+    val destinationName = if (destinationUic != null) StationName.forUic(destinationUic) else null
+
     Row(
         verticalGravity = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(originUic.toString() ?: "")
+        Text(originName ?: "")
         Icon(Icons.Default.ArrowRight)
-        Text(destinationUic.toString() ?: "")
+        Text(destinationName ?: "")
     }
 }
 
@@ -97,10 +115,9 @@ import java.time.ZonedDateTime
     }
 }
 
-
 @Composable private fun TrainOrigin(departure: TimetableRow) {
     Station(
-        name = departure.stationShortCode,
+        name = StationName.forUic(departure.stationUic) ?: departure.stationShortCode,
         departs = departure.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.origin_open
     )
@@ -108,7 +125,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainDestination(arrival: TimetableRow) {
     Station(
-        arrival.stationShortCode,
+        name = StationName.forUic(arrival.stationUic) ?: arrival.stationShortCode,
         arrives = arrival.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.destination_open
     )
@@ -116,7 +133,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainWaypoint(arrival: TimetableRow, departure: TimetableRow) {
     Station(
-        arrival.stationShortCode,
+        name = StationName.forUic(arrival.stationUic) ?: arrival.stationShortCode,
         arrival.scheduledTime.atLocalZone().toLocalTime().toString(),
         departure.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.waypoint_open
@@ -164,5 +181,13 @@ import java.time.ZonedDateTime
             )
         )
     )
-    TrainDetailsScreen(train)
+
+    val viewState = TrainDetailsViewState.initial()
+    val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere")
+    StationNameProvider(nameMapper = object : StationNameMapper {
+        override fun stationName(stationUic: Int): String? = names[stationUic]
+        override fun stationName(stationShortCode: String): String? = null
+    }) {
+        TrainDetailsScreen(viewState, train)
+    }
 }
