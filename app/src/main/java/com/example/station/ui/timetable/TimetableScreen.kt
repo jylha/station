@@ -58,6 +58,8 @@ import com.example.station.ui.theme.StationTheme
 import com.example.station.util.atLocalZone
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -293,12 +295,13 @@ private fun Timetable(
         Column {
             Row {
                 TrainIdentification(train, Modifier.weight(1f))
-                TrainRoute(train.origin(), train.destination(), Modifier.weight(2f))
-                TrainTrack(train.track(station.uic), Modifier.weight(1f))
+                TrainRoute(train.origin(), train.destination(), Modifier.weight(3f))
+
             }
             Row {
-                Arrival(train.arrivalAt(station.uic), Modifier.weight(1f))
-                Departure(train.departureAt(station.uic), Modifier.weight(1f))
+                Arrival(train.arrivalAt(station.uic), Modifier.weight(2f))
+                TrainTrack(train.track(station.uic), Modifier.weight(1f))
+                Departure(train.departureAt(station.uic), Modifier.weight(2f))
             }
         }
     }
@@ -345,38 +348,49 @@ private fun Timetable(
 
 @Composable
 private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
-    Row(
+    Column(
         modifier,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("track:", style = MaterialTheme.typography.caption)
-        Spacer(Modifier.width(4.dp))
-        Text(text = if (track.isNullOrBlank()) "--" else track, fontWeight = FontWeight.Bold)
+        if (track?.isNotBlank() == true) {
+            Text(
+                "track".toUpperCase(),
+                style = MaterialTheme.typography.caption,
+                color = Color.Gray
+            )
+            Spacer(Modifier.width(4.dp))
+            Text(text = if (track.isNullOrBlank()) "--" else track, fontWeight = FontWeight.Bold)
+        }
     }
 }
 
 @Composable
 private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
-    val arrivalText = when {
-        arrival?.actualTime != null ->
-            "Arrived at ${arrival.actualTime.atLocalZone().toLocalTime()}"
-        arrival?.scheduledTime != null ->
-            "Arrives at ${arrival.scheduledTime.atLocalZone().toLocalTime()}"
-        else -> ""
+    when {
+        arrival?.actualTime != null -> Time("Arrived", arrival.actualTime, modifier)
+        arrival != null -> Time("Arrives", arrival.scheduledTime, modifier)
+        else -> Box(modifier)
     }
-    Text(arrivalText, modifier)
 }
 
 @Composable
 private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
-    val departureText = when {
-        departure?.actualTime != null ->
-            "Departed at ${departure.actualTime.atLocalZone().toLocalTime()}"
-        departure?.scheduledTime != null ->
-            "Departs at ${departure.scheduledTime.atLocalZone().toLocalTime()}"
-        else -> ""
+    when {
+        departure?.actualTime != null -> Time("Departed", departure.actualTime, modifier)
+        departure != null -> Time("Departs", departure.scheduledTime, modifier)
+        else -> Box(modifier)
     }
-    Text(departureText, modifier)
+}
+
+@Composable
+private fun Time(label: String, dateTime: ZonedDateTime, modifier: Modifier = Modifier) {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val time = dateTime.atLocalZone().format(formatter)
+
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(label.toUpperCase(), style = MaterialTheme.typography.caption, color = Color.Gray)
+        Text(time)
+    }
 }
 
 @Composable
