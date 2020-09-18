@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,10 +37,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
+import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
@@ -178,7 +180,7 @@ private fun Timetable(
                 else -> {
                     LazyColumnFor(
                         matchingTrains,
-                        contentPadding = InnerPadding(8.dp, 8.dp, 8.dp, 0.dp)
+                        contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
                     ) { train ->
                         TimetableEntry(
                             station,
@@ -191,6 +193,12 @@ private fun Timetable(
             }
         }
     }
+}
+
+
+@Preview(name="CategorySelection")
+@Composable private fun PreviewCategorySelection() {
+    CategorySelection(setOf(Category.LongDistance), {})
 }
 
 @Composable private fun CategorySelection(
@@ -231,12 +239,33 @@ private fun Timetable(
         contentColor = color,
         backgroundColor = Color.Transparent,
         border = BorderStroke(2.dp, color),
-        contentPadding = InnerPadding(8.dp),
+        contentPadding = PaddingValues(8.dp),
     ) {
         Icon(image)
         Spacer(modifier = Modifier.width(8.dp))
         Text(text)
     }
+}
+
+@Preview(name="TimetableEntry - Dark")
+@Composable fun PreviewDarkTimetableEntry() {
+    StationTheme(darkTheme = true) {
+        PreviewTimetableEntry()
+    }
+}
+
+@Preview(name="TimetableEntry - Light")
+@Composable fun PreviewLightTimetableEntry() {
+    StationTheme(darkTheme = false) {
+        PreviewTimetableEntry()
+    }
+}
+
+@Composable private fun PreviewTimetableEntry() {
+    val station = Station(true, Station.Type.Station, "Here", "H",
+    123, "FI", 100.0, 50.0)
+    val train = Train(1, "IC", Category.LongDistance, true, emptyList())
+    TimetableEntry(station, train, {})
 }
 
 @Composable private fun TimetableEntry(
@@ -277,7 +306,7 @@ private fun Timetable(
     val destination = if (destinationUic != null) StationName.forUic(destinationUic) else null
     Row(
         modifier = modifier,
-        verticalGravity = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(origin ?: "<missing>", fontWeight = FontWeight.Bold)
@@ -290,7 +319,7 @@ private fun Timetable(
 private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
     Row(
         modifier,
-        verticalGravity = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text("track:", style = MaterialTheme.typography.caption)
         Spacer(Modifier.width(4.dp))
@@ -385,15 +414,25 @@ private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? =
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name="Timetable")
 @Composable
-private fun Timetable() {
-    val station = Station(
+private fun PreviewTimetable() {
+    val helsinki = Station(
         passengerTraffic = true,
         type = Station.Type.Station,
-        name = "Railway Station",
-        shortCode = "RS",
-        uic = 12345,
+        name = "Helsinki",
+        shortCode = "HKI",
+        uic = 1,
+        countryCode = "FI",
+        longitude = 1.0,
+        latitude = 1.0
+    )
+    val turku = Station(
+        passengerTraffic = true,
+        type = Station.Type.Station,
+        name = "Turku Central Station",
+        shortCode = "TKU",
+        uic = 130,
         countryCode = "FI",
         longitude = 1.0,
         latitude = 1.0
@@ -402,27 +441,32 @@ private fun Timetable() {
         Train(
             1, "S", Category.LongDistance, true, timetable = listOf(
                 TimetableRow.departure(
-                    "RS", 12345, "1", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
+                    "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
                 ),
                 TimetableRow.arrival(
-                    "ZZ", 54321, "2", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
+                    "TKU", 130, "2", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
                 )
             )
         ),
         Train(
             2, "IC", Category.LongDistance, true, timetable = listOf(
                 TimetableRow.departure(
-                    "ZZ", 54321, "3", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
+                    "TKU", 130, "3", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
                 ),
                 TimetableRow.arrival(
-                    "RS", 12345, "4", ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
+                    "HKI", 1, "4", ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
                 )
             )
         )
     )
-    Timetable(
-        station, trains, trainSelected = {},
-        selectedCategories = setOf(Category.LongDistance),
-        categorySelected = {}, showCategorySelection = true
-    )
+
+    val mapper = LocalizedStationNames.create(
+        listOf(helsinki, turku), ContextAmbient.current)
+
+    StationTheme(darkTheme = true) {
+        StationNameProvider(mapper) {
+            Timetable(helsinki, trains, Modifier, {}, setOf(Category.LongDistance), {})
+        }
+    }
+
 }

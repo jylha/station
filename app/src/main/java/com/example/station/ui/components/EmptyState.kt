@@ -28,7 +28,7 @@ fun EmptyState(
     modifier: Modifier = Modifier
 ) {
     Box(modifier.fillMaxSize().padding(16.dp), gravity = Alignment.Center) {
-        Column(horizontalGravity = Alignment.CenterHorizontally) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Stack {
                 Box(
                     Modifier.preferredSize(150.dp).clip(RoundedCornerShape(75.dp)),
@@ -36,7 +36,7 @@ fun EmptyState(
                 )
                 Icon(
                     asset = vectorResource(id = R.drawable.magnifying_class),
-                    Modifier.preferredSize(100.dp).gravity(Alignment.Center),
+                    Modifier.preferredSize(100.dp).align(Alignment.Center),
                     tint = MaterialTheme.colors.primary.copy(alpha = 0.3f)
                 )
             }

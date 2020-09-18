@@ -57,7 +57,7 @@ private fun WelcomeCard(onSelect: () -> Unit) {
             .fillMaxSize()
     ) {
         Column(
-            horizontalGravity = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text("Welcome!", style = MaterialTheme.typography.h4)

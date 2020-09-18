@@ -45,7 +45,7 @@ fun SearchBar(
     Surface(modifier, color = MaterialTheme.colors.surface, elevation = 4.dp) {
         Row(
             Modifier.fillMaxWidth().padding(8.dp),
-            verticalGravity = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             if (onClose != null) {
                 IconButton(onClick = onClose) {

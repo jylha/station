@@ -59,7 +59,7 @@ import java.time.ZonedDateTime
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
-        ScrollableColumn(horizontalGravity = Alignment.CenterHorizontally) {
+        ScrollableColumn(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.height(32.dp))
             TrainIcon()
             Spacer(Modifier.height(8.dp))
@@ -91,7 +91,7 @@ import java.time.ZonedDateTime
     val destinationName = if (destinationUic != null) StationName.forUic(destinationUic) else null
 
     Row(
-        verticalGravity = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(originName ?: "")

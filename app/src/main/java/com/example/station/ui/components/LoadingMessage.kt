@@ -23,7 +23,7 @@ fun LoadingMessage(message: String, modifier: Modifier = Modifier) {
         modifier.fillMaxSize(),
         gravity = Alignment.Center
     ) {
-        Column(horizontalGravity = Alignment.CenterHorizontally) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CircularProgressIndicator()
             Spacer(modifier = Modifier.height(16.dp))
             Text(message)
