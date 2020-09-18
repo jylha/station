@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.Train
+import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
@@ -196,7 +198,7 @@ private fun Timetable(
 }
 
 
-@Preview(name="CategorySelection")
+@Preview(name = "CategorySelection")
 @Composable private fun PreviewCategorySelection() {
     CategorySelection(setOf(Category.LongDistance), {})
 }
@@ -247,14 +249,14 @@ private fun Timetable(
     }
 }
 
-@Preview(name="TimetableEntry - Dark")
+@Preview(name = "TimetableEntry - Dark", group = "TimetableEntry")
 @Composable fun PreviewDarkTimetableEntry() {
     StationTheme(darkTheme = true) {
         PreviewTimetableEntry()
     }
 }
 
-@Preview(name="TimetableEntry - Light")
+@Preview(name = "TimetableEntry - Light", group = "TimetableEntry")
 @Composable fun PreviewLightTimetableEntry() {
     StationTheme(darkTheme = false) {
         PreviewTimetableEntry()
@@ -262,10 +264,23 @@ private fun Timetable(
 }
 
 @Composable private fun PreviewTimetableEntry() {
-    val station = Station(true, Station.Type.Station, "Here", "H",
-    123, "FI", 100.0, 50.0)
-    val train = Train(1, "IC", Category.LongDistance, true, emptyList())
-    TimetableEntry(station, train, {})
+    val origin = Station(
+        true, Station.Type.Station, "Here", "H",
+        123, "FI", 100.0, 50.0
+    )
+    val destination = Station(
+        true, Station.Type.StoppingPoint, "There", "H",
+        456, "FI", 50.0, 100.0
+    )
+    val train = Train(
+        1, "IC", Category.LongDistance, true, timetable = listOf(
+            TimetableRow.departure("H", 123, "1", ZonedDateTime.now()),
+            TimetableRow.arrival("T", 456, "2", ZonedDateTime.now().plusHours(2))
+        )
+    )
+    StationNameProvider(nameMapper = LocalizedStationNames.create(listOf(origin, destination))) {
+        TimetableEntry(origin, train, {})
+    }
 }
 
 @Composable private fun TimetableEntry(
@@ -302,6 +317,7 @@ private fun Timetable(
     destinationUic: Int?,
     modifier: Modifier = Modifier
 ) {
+    val iconAsset = remember { Icons.Rounded.ArrowRightAlt }
     val origin = if (originUic != null) StationName.forUic(originUic) else null
     val destination = if (destinationUic != null) StationName.forUic(destinationUic) else null
     Row(
@@ -309,9 +325,21 @@ private fun Timetable(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(origin ?: "<missing>", fontWeight = FontWeight.Bold)
-        Text("->", fontWeight = FontWeight.Bold)
-        Text(destination ?: "<missing>", fontWeight = FontWeight.Bold)
+        if (origin != null) Text(
+            origin,
+            Modifier.weight(3f),
+            textAlign = TextAlign.End,
+            fontWeight = FontWeight.Bold
+        )
+        if (origin != null && destination != null) Icon(
+            iconAsset,
+            Modifier.padding(horizontal = 8.dp)
+        )
+        if (destination != null) Text(
+            destination,
+            Modifier.weight(3f),
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -414,7 +442,7 @@ private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? =
     )
 }
 
-@Preview(showBackground = true, name="Timetable")
+@Preview(showBackground = true, name = "Timetable")
 @Composable
 private fun PreviewTimetable() {
     val helsinki = Station(
@@ -461,7 +489,8 @@ private fun PreviewTimetable() {
     )
 
     val mapper = LocalizedStationNames.create(
-        listOf(helsinki, turku), ContextAmbient.current)
+        listOf(helsinki, turku), ContextAmbient.current
+    )
 
     StationTheme(darkTheme = true) {
         StationNameProvider(mapper) {
