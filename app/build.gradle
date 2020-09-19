@@ -57,10 +57,11 @@ dependencies {
     implementation "androidx.ui:ui-tooling:${versions.compose}"
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.room:room-ktx:${versions.room}"
+    implementation "com.airbnb.android:lottie:${versions.lottie}"
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.8.1'
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
     implementation "com.google.dagger:hilt-android:${versions.hilt}"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:${versions.hilt_vm}"
     implementation 'com.jakewharton.timber:timber:4.7.1'
