@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="station_name_0001_helsinki">Helsinki</string>
     <string name="station_name_0009_ilmala">Ilmala</string>
     <string name="station_name_0010_pasila">Pasila</string>
@@ -7,8 +7,10 @@
     <string name="station_name_0020_kerava">Kerava</string>
     <string name="station_name_0025_jarvenpaa">Järvenpää</string>
     <string name="station_name_0040_riihimaki">Riihimäki</string>
-    <string name="station_name_0130_turku">Turku Central Station</string> <!-- Turku päärautatieasema -->
+    <string name="station_name_0047_hameenlinna">Hämeenlinna</string>
     <string name="station_name_0065_kauklahti">Kauklahti</string>
+    <string name="station_name_0066_espoo">Espoo</string>
+    <string name="station_name_0130_turku">Turku Central Station</string>
     <string name="station_name_0073_hanko">Hanko</string>
     <string name="station_name_0160_tampere">Tampere</string>
     <string name="station_name_0280_seinajoki">Seinäjoki</string>
@@ -23,9 +25,9 @@
     <string name="station_name_0521_savonlinna">Savonlinna</string>
     <string name="station_name_0532_kotka">Kotka</string>
     <string name="station_name_0603_imatra">Imatra</string>
+    <string name="station_name_0623_zoo">Ähtäri Zoo</string>
 
-    <string name="station_name_3820_pietari_finljandski">St. Petersburg (Finljandski)</string>
-    <string name="station_name_3181_pietari_ladozhki">St. Petersburg (Ladozhki)</string>
-    <string name="station_name_6007_moskova_leningradski">Moscow (Leningradski)</string>
-
+    <string name="station_name_3820_st_petersburg_fin">St. Petersburg (Finljandski)</string>
+    <string name="station_name_3181_st_petersburg_lad">St. Petersburg (Ladozhki)</string>
+    <string name="station_name_6007_moscow">Moscow (Leningradski)</string>
 </resources>

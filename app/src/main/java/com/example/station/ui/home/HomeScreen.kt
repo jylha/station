@@ -21,11 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.viewModel
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import com.example.station.R
 import com.example.station.ui.Screen
 import com.example.station.ui.components.LoadingMessage
 import com.example.station.ui.theme.blue
@@ -63,13 +65,18 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Welcome!", style = MaterialTheme.typography.h4)
+            Greeting()
             WelcomeAnimation(Modifier.padding(20.dp))
             Button(onClick = onSelect) {
                 Text("Select station")
             }
         }
     }
+}
+
+@Composable private fun Greeting() {
+    val greeting = stringResource(id = R.string.label_welcome)
+    Text(greeting, style = MaterialTheme.typography.h4)
 }
 
 @Composable private fun WelcomeAnimation(modifier: Modifier = Modifier) {

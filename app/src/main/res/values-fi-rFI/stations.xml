@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="station_name_0130_turku">Turku päärautatieasema</string>
+    <string name="station_name_0623_zoo">Ähtäri eläintarha</string>
+
+    <string name="station_name_3820_st_petersburg_fin">Pietari (Finljandski)</string>
+    <string name="station_name_3181_st_petersburg_lad">Pietari (Ladozhki)</string>
+    <string name="station_name_6007_moscow">Moskova (Leningradski)</string>
+</resources>

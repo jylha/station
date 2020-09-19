@@ -43,8 +43,7 @@ fun SearchBar(
     onClose: (() -> Unit)? = {}
 ) {
     var active by remember { mutableStateOf(false) }
-
-    var textColor = if (MaterialTheme.colors.isLight) MaterialTheme.colors.onPrimary
+    val textColor = if (MaterialTheme.colors.isLight) MaterialTheme.colors.onPrimary
     else MaterialTheme.colors.onBackground
 
     Surface(

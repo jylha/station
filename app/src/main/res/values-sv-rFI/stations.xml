@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="station_name_0001_helsinki">Helsingfors</string>
+    <string name="station_name_0010_pasila">Böle</string>
+    <string name="station_name_0025_jarvenpaa">Träskända</string>
+    <string name="station_name_0047_hameenlinna">Tavastehus</string>
+    <string name="station_name_0066_espoo">Esbo</string>
+    <string name="station_name_0130_turku">Åbo centralstation</string>
+    <string name="station_name_0160_tampere">Tammerfors</string>
+    <string name="station_name_0370_oulu">Uleåborg</string>
+</resources>
