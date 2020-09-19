@@ -18,10 +18,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.example.station.ui.theme.StationTheme
 
 /**
  * A search bar composable.
@@ -42,9 +44,20 @@ fun SearchBar(
 ) {
     var active by remember { mutableStateOf(false) }
 
-    Surface(modifier, color = MaterialTheme.colors.surface, elevation = 4.dp) {
+    var textColor = if (MaterialTheme.colors.isLight) MaterialTheme.colors.onPrimary
+    else MaterialTheme.colors.onBackground
+
+    Surface(
+        modifier,
+        color = if (MaterialTheme.colors.isLight) {
+            MaterialTheme.colors.primary
+        } else {
+            MaterialTheme.colors.surface
+        },
+        elevation = 4.dp
+    ) {
         Row(
-            Modifier.fillMaxWidth().padding(8.dp),
+            Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (onClose != null) {
@@ -59,7 +72,9 @@ fun SearchBar(
                 placeholder = { Text(placeholderText) },
                 onTextInputStarted = { active = true },
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colors.surface,
+                backgroundColor = Color.Transparent,
+                activeColor = textColor,
+                inactiveColor = textColor,
                 keyboardType = KeyboardType.Ascii,
                 imeAction = ImeAction.Done,
                 onImeActionPerformed = { _, kb ->
@@ -71,8 +86,16 @@ fun SearchBar(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun SearchBar() {
-    SearchBar(text = "", onValueChanged = {}, placeholderText = "Search")
+@Preview(showBackground = true, name = "Light SearchBar with placeholder text")
+@Composable private fun PreviewLightSearchBar() {
+    StationTheme {
+        SearchBar(text = "", onValueChanged = {}, placeholderText = "Search")
+    }
+}
+
+@Preview(showBackground = true, name = "Dark SearchBar with search text")
+@Composable private fun PreviewDarkSearchBar() {
+    StationTheme(darkTheme = true) {
+        SearchBar(text = "Helsinki", onValueChanged = {})
+    }
 }
