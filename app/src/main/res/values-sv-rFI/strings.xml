@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="label_welcome">Välkommen!</string>
+    <string name="text_introduction">
+        Denna applikation låter dig bläddra bland information om tidtabeller för tåg i Finland.
+    </string>
+    <string name="label_select_station">Välj station</string>
+    <string name="label_nearest_station">Närmaste station</string>
 
     <string name="title_timetable">Tidtabell</string>
     <string name="subtitle_all_trains">Alla tåg</string>

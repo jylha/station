@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="label_welcome">Tervetuloa!</string>
+    <string name="text_introduction">
+        Tämän sovelluksen avulla voit selata tietoja Suomen rautieverkossa liikennöivien junien
+        aikatauluista.
+    </string>
+    <string name="label_select_station">Valitse asema</string>
+    <string name="label_nearest_station">Lähin asema</string>
 
     <string name="title_timetable">Aikataulu</string>
     <string name="subtitle_all_trains">Kaikki junat</string>

@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name" translatable="false">Station</string>
+
     <string name="label_welcome">Welcome!</string>
+    <string name="text_introduction">
+        This application allows you to browse the timetable information of trains operating
+        in Finland.
+    </string>
+    <string name="label_select_station">Select Station</string>
+    <string name="label_nearest_station">Nearest Station</string>
 
     <string name="title_timetable">Timetable</string>
     <string name="subtitle_all_trains">All trains</string>
