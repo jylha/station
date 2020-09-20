@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="label_welcome">Tervetuloa!</string>
+
+    <string name="title_timetable">Aikataulu</string>
+    <string name="subtitle_all_trains">Kaikki junat</string>
+    <string name="subtitle_long_distance_trains">Kaukojunat</string>
+    <string name="subtitle_commuter_trains">Lähijunat</string>
+
+    <string name="category_long_distance_trains">Kaukojunat</string>
+    <string name="category_commuter_trains">Lähijunat</string>
+
+    <string name="label_arrives">Saapuu</string>
+    <string name="label_arrived">Saapui</string>
+    <string name="label_departs">Lähtee</string>
+    <string name="label_departed">Lähti</string>
+    <string name="label_track">Raide</string>
 </resources>

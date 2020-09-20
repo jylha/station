@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="label_welcome">Välkommen!</string>
+
+    <string name="title_timetable">Tidtabell</string>
+    <string name="subtitle_all_trains">Alla tåg</string>
+    <string name="subtitle_long_distance_trains">Fjärrtåg</string>
+    <string name="subtitle_commuter_trains">Närtåg</string>
+
+    <string name="category_long_distance_trains">Fjärrtåg</string>
+    <string name="category_commuter_trains">Närtåg</string>
+
+    <string name="label_arrives">Anländer</string>
+    <string name="label_arrived">Anlände</string>
+    <string name="label_departs">Avgår</string>
+    <string name="label_departed">Avgick</string>
+    <string name="label_track">Spår</string>
 </resources>

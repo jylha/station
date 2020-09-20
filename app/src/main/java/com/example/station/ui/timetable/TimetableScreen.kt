@@ -39,11 +39,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
+import com.example.station.R
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
@@ -56,10 +58,10 @@ import com.example.station.ui.components.StationName
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.theme.StationTheme
 import com.example.station.util.atLocalZone
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import java.util.Locale
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -100,7 +102,7 @@ fun TimetableScreen(
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { TimetableTitle(viewState.station?.name, selectedCategories) },
+            title = { TimetableTitles(viewState.station?.name, selectedCategories) },
             actions = {
                 IconButton(onClick = { categorySelectionEnabled = !categorySelectionEnabled }) {
                     if (categorySelectionEnabled) Icon(Icons.Default.ExpandLess)
@@ -131,33 +133,39 @@ fun TimetableScreen(
     }
 }
 
-/** The title shown in TimetableScreen's TopAppBar. */
-@Composable
-private fun TimetableTitle(
+/** The title and subtitle shown in TimetableScreen's TopAppBar. */
+@Composable private fun TimetableTitles(
     stationName: String?,
     selectedCategories: Set<Category>,
     modifier: Modifier = Modifier
 ) {
-    val trainCategories = remember(selectedCategories) {
-        if (selectedCategories.size == 1) {
-            if (selectedCategories.contains(Category.LongDistance)) {
-                "Long-distance trains"
-            } else {
-                "Commuter trains"
-            }
-        } else {
-            "All trains"
-        }
-    }
-
     Column(modifier) {
-        Text(stationName ?: "Timetable")
-        Text(trainCategories, style = MaterialTheme.typography.caption)
+        Title(stationName)
+        Subtitle(selectedCategories)
     }
 }
 
-@Composable
-private fun Timetable(
+/** A title displaying the station name. */
+@Composable private fun Title(stationName: String?, modifier: Modifier = Modifier) {
+    val titleText = stationName ?: stringResource(id = R.string.title_timetable)
+    Text(titleText, modifier)
+}
+
+/** A subtitle displaying the selected categories. */
+@Composable private fun Subtitle(categories: Set<Category>, modifier: Modifier = Modifier) {
+    val subtitleText = if (categories.size == 1) {
+        if (categories.contains(Category.LongDistance)) {
+            stringResource(id = R.string.subtitle_long_distance_trains)
+        } else {
+            stringResource(id = R.string.subtitle_commuter_trains)
+        }
+    } else {
+        stringResource(id = R.string.subtitle_all_trains)
+    }
+    Text(subtitleText, modifier, style = MaterialTheme.typography.caption)
+}
+
+@Composable private fun Timetable(
     station: Station,
     trains: List<Train>,
     modifier: Modifier = Modifier,
@@ -200,16 +208,26 @@ private fun Timetable(
 }
 
 
-@Preview(name = "CategorySelection")
-@Composable private fun PreviewCategorySelection() {
-    CategorySelection(setOf(Category.LongDistance), {})
+@Preview(name = "CategorySelection - light - swedish", "Category selection", locale = "sv-rFI")
+@Composable private fun PreviewLightCategorySelection() {
+    StationTheme(darkTheme = false) {
+        CategorySelection(setOf(Category.LongDistance), {})
+    }
+}
+
+@Preview(name = "CategorySelection - dark - finnish", "Category selection", locale = "fi-rFI")
+@Composable private fun PreviewDarkCategorySelection() {
+    StationTheme(darkTheme = true) {
+        CategorySelection(setOf(Category.LongDistance), {})
+    }
 }
 
 @Composable private fun CategorySelection(
     categories: Set<Category>,
     categorySelected: (Category) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Surface(Modifier.fillMaxWidth(), elevation = 4.dp) {
+    Surface(modifier.fillMaxWidth(), elevation = 4.dp) {
         Row(Modifier.padding(8.dp)) {
             CategoryButton(
                 categorySelected, Category.LongDistance, categories.contains(Category.LongDistance),
@@ -228,12 +246,11 @@ private fun Timetable(
     onClick: (Category) -> Unit, category: Category, selected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val text = remember {
-        when (category) {
-            Category.LongDistance -> "Long-distance"
-            Category.Commuter -> "Commuter"
-        }
+    val text = when (category) {
+        Category.LongDistance -> stringResource(id = R.string.category_long_distance_trains)
+        Category.Commuter -> stringResource(id = R.string.category_commuter_trains)
     }
+
     val image = remember { Icons.Outlined.Train }
     val color = if (selected) Color.Green.copy(alpha = 0.5f) else Color.Gray.copy(alpha = 0.7f)
 
@@ -346,38 +363,54 @@ private fun Timetable(
     }
 }
 
-@Composable
-private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
+@Composable private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
     Column(
         modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (track?.isNotBlank() == true) {
-            Text(
-                "track".toUpperCase(),
-                style = MaterialTheme.typography.caption,
-                color = Color.Gray
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(text = if (track.isNullOrBlank()) "--" else track, fontWeight = FontWeight.Bold)
+            TrackLabel()
+            Text(track, fontWeight = FontWeight.Bold)
         }
     }
 }
 
-@Composable
-private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
+@Composable private fun TrackLabel() {
+    Text(
+        text = stringResource(R.string.label_track).toUpperCase(Locale.getDefault()),
+        style = MaterialTheme.typography.caption,
+        color = Color.Gray
+    )
+}
+
+@Composable private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
     when {
-        arrival?.actualTime != null -> Time("Arrived", arrival.actualTime, modifier)
-        arrival != null -> Time("Arrives", arrival.scheduledTime, modifier)
+        arrival?.actualTime != null -> Time(
+            stringResource(R.string.label_arrived),
+            arrival.actualTime,
+            modifier
+        )
+        arrival != null -> Time(
+            stringResource(R.string.label_arrives),
+            arrival.scheduledTime,
+            modifier
+        )
         else -> Box(modifier)
     }
 }
 
-@Composable
-private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
+@Composable private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
     when {
-        departure?.actualTime != null -> Time("Departed", departure.actualTime, modifier)
-        departure != null -> Time("Departs", departure.scheduledTime, modifier)
+        departure?.actualTime != null -> Time(
+            stringResource(R.string.label_departed),
+            departure.actualTime,
+            modifier
+        )
+        departure != null -> Time(
+            stringResource(R.string.label_departs),
+            departure.scheduledTime,
+            modifier
+        )
         else -> Box(modifier)
     }
 }
@@ -388,7 +421,11 @@ private fun Time(label: String, dateTime: ZonedDateTime, modifier: Modifier = Mo
     val time = dateTime.atLocalZone().format(formatter)
 
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label.toUpperCase(), style = MaterialTheme.typography.caption, color = Color.Gray)
+        Text(
+            label.toUpperCase(Locale.getDefault()),
+            style = MaterialTheme.typography.caption,
+            color = Color.Gray
+        )
         Text(time)
     }
 }
