@@ -35,11 +35,11 @@ import com.example.station.R
 import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
-import com.example.station.ui.components.StationName
 import com.example.station.ui.components.StationNameProvider
+import com.example.station.ui.components.stationName
 import com.example.station.util.atLocalZone
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.ZonedDateTime
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(train: Train) {
@@ -73,7 +73,7 @@ import java.time.ZonedDateTime
 }
 
 @Composable private fun TrainIdentification(type: String, number: Int) {
-    Row() {
+    Row {
         Text("$type $number", style = MaterialTheme.typography.h4)
     }
 }
@@ -87,8 +87,8 @@ import java.time.ZonedDateTime
 }
 
 @Composable private fun TrainRoute(originUic: Int?, destinationUic: Int?) {
-    val originName = if (originUic != null) StationName.forUic(originUic) else null
-    val destinationName = if (destinationUic != null) StationName.forUic(destinationUic) else null
+    val originName = if (originUic != null) stationName(originUic) else null
+    val destinationName = if (destinationUic != null) stationName(destinationUic) else null
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -122,7 +122,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainOrigin(departure: TimetableRow) {
     Station(
-        name = StationName.forUic(departure.stationUic) ?: departure.stationShortCode,
+        name = stationName(departure.stationUic) ?: departure.stationShortCode,
         departs = departure.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.origin_open
     )
@@ -130,7 +130,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainDestination(arrival: TimetableRow) {
     Station(
-        name = StationName.forUic(arrival.stationUic) ?: arrival.stationShortCode,
+        name = stationName(arrival.stationUic) ?: arrival.stationShortCode,
         arrives = arrival.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.destination_open
     )
@@ -138,7 +138,7 @@ import java.time.ZonedDateTime
 
 @Composable private fun TrainWaypoint(arrival: TimetableRow, departure: TimetableRow) {
     Station(
-        name = StationName.forUic(arrival.stationUic) ?: arrival.stationShortCode,
+        name = stationName(arrival.stationUic) ?: arrival.stationShortCode,
         arrival.scheduledTime.atLocalZone().toLocalTime().toString(),
         departure.scheduledTime.atLocalZone().toLocalTime().toString(),
         id = R.drawable.waypoint_open
@@ -191,7 +191,6 @@ import java.time.ZonedDateTime
     val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere")
     StationNameProvider(nameMapper = object : StationNameMapper {
         override fun stationName(stationUic: Int): String? = names[stationUic]
-        override fun stationName(stationShortCode: String): String? = null
     }) {
         TrainDetailsScreen(viewState, train)
     }

@@ -6,12 +6,18 @@ import androidx.compose.runtime.ambientOf
 import androidx.compose.runtime.remember
 import com.example.station.data.stations.StationNameMapper
 
+
+/**
+ * Provider component that provides the StationNameMapper for the StationNameAmbient.
+.*/
 @Composable
-fun StationNameProvider(nameMapper: StationNameMapper?, content: @Composable () -> Unit) {
+fun StationNameProvider(
+    nameMapper: StationNameMapper?,
+    content: @Composable () -> Unit
+) {
     val mapper = remember(nameMapper) {
         nameMapper ?: object : StationNameMapper {
             override fun stationName(stationUic: Int): String? = null
-            override fun stationName(stationShortCode: String): String? = null
         }
     }
     Providers(StationNameAmbient provides mapper) {
@@ -19,11 +25,15 @@ fun StationNameProvider(nameMapper: StationNameMapper?, content: @Composable () 
     }
 }
 
-object StationName {
-    @Composable
-    fun forUic(stationUic: Int) = StationNameAmbient.current.stationName(stationUic)
-}
+/**
+ * Returns the localised station name for the specified [stationUic] from the StationNameAmbient.
+ */
+@Composable
+fun stationName(stationUic: Int): String? = StationNameAmbient.current.stationName(stationUic)
 
+/**
+ * Ambient to provide [StationNameMapper] instance to allow accessing localised station names.
+ */
 private val StationNameAmbient = ambientOf<StationNameMapper> {
     error("StationNameMapper in not provided.")
 }

@@ -32,13 +32,7 @@ class LocalizedStationNames private constructor(
         }
     }
 
-    override fun stationName(stationUic: Int): String? {
-        return map[stationUic]
-    }
-
-    override fun stationName(stationShortCode: String): String? {
-        TODO("Not yet implemented")
-    }
+    override fun stationName(stationUic: Int): String? = map[stationUic]
 }
 
 private val LOCALIZED_STATION_NAMES = mapOf(

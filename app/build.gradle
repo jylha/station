@@ -75,7 +75,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:${versions.room}"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation("androidx.ui:ui-test:${versions.compose}")
+    androidTestImplementation "androidx.ui:ui-test:${versions.compose}"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {

@@ -54,8 +54,8 @@ import com.example.station.model.Train.Category
 import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.LoadingMessage
-import com.example.station.ui.components.StationName
 import com.example.station.ui.components.StationNameProvider
+import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
 import com.example.station.util.atLocalZone
 import java.time.ZonedDateTime
@@ -338,8 +338,8 @@ fun TimetableScreen(
     modifier: Modifier = Modifier
 ) {
     val iconAsset = remember { Icons.Rounded.ArrowRightAlt }
-    val origin = if (originUic != null) StationName.forUic(originUic) else null
-    val destination = if (destinationUic != null) StationName.forUic(destinationUic) else null
+    val origin = if (originUic != null) stationName(originUic) else null
+    val destination = if (destinationUic != null) stationName(destinationUic) else null
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,

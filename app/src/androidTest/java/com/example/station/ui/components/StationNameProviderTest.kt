@@ -17,22 +17,21 @@ class StationNameProviderTest {
 
     @Composable
     private fun Station(uic: Int) {
-        Text(StationName.forUic(uic) ?: "not found")
+        Text(stationName(uic) ?: "name not found")
     }
 
-    private fun launchWithoutStationNameProvider(content: @Composable () -> Unit) {
+    private fun composeWithoutStationNameProvider(content: @Composable () -> Unit) {
         composeTestRule.setContent {
             content()
         }
     }
 
-    private fun launchWithStationNameProvider(
+    private fun composeWithStationNameProvider(
         map: Map<Int, String>? = null,
         content: @Composable () -> Unit
     ) {
         val testMapper = if (map != null) object : StationNameMapper {
             override fun stationName(stationUic: Int): String? = map[stationUic]
-            override fun stationName(stationShortCode: String): String? = null
         } else null
 
         composeTestRule.setContent {
@@ -42,32 +41,25 @@ class StationNameProviderTest {
         }
     }
 
-    private fun testMapper(map: Map<Int, String>): StationNameMapper {
-        return object : StationNameMapper {
-            override fun stationName(stationUic: Int): String? = map[stationUic]
-            override fun stationName(stationShortCode: String): String? = null
-        }
-    }
-
     @Test(expected = IllegalStateException::class)
-    fun launch_without_station_name_provider_fails() {
-        launchWithoutStationNameProvider {
+    fun composeWithoutStationNameProvider_fails() {
+        composeWithoutStationNameProvider {
             Station(1)
         }
     }
 
-    @Test fun launch_with_station_name_provider_and_no_map() {
-        launchWithStationNameProvider {
+    @Test fun composeWithEmptyStationNameProvider_succeedsWithoutName() {
+        composeWithStationNameProvider {
             Station(1)
         }
-        onNodeWithText("not found").assertIsDisplayed()
+        composeTestRule.onNodeWithText("name not found").assertIsDisplayed()
     }
 
-    @Test fun launch_with_station_name_provider() {
-        launchWithStationNameProvider(mapOf(1 to "something")) {
+    @Test fun composeWithStationNameProvider_succeeds() {
+        composeWithStationNameProvider(mapOf(1 to "something")) {
             Station(1)
         }
-        onNodeWithText("something").assertIsDisplayed()
+        composeTestRule.onNodeWithText("something").assertIsDisplayed()
     }
 
 }
