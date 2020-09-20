@@ -18,11 +18,9 @@ class StationsViewModel @ViewModelInject constructor(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val state = MutableStateFlow(StationsViewState.initial())
 
     /** A flow of view states. */
-    @OptIn(ExperimentalCoroutinesApi::class)
     val viewState: StateFlow<StationsViewState>
         get() = state
 
@@ -31,6 +29,11 @@ class StationsViewModel @ViewModelInject constructor(
             stationRepository.fetchStations().collect { response ->
                 state.value = state.value.reduce(response)
             }
+        }
+
+        viewModelScope.launch {
+            val mapper = stationRepository.getStationNameMapper()
+            state.value = state.value.reduce(StationViewResult.NameMapper(mapper))
         }
     }
 
