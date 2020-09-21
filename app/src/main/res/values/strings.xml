@@ -6,17 +6,30 @@
         This application allows you to browse the timetable information of trains operating
         in Finland.
     </string>
-    <string name="label_select_station">Select Station</string>
-    <string name="label_nearest_station">Nearest Station</string>
+    <string name="label_select_station">Select station</string>
+    <string name="label_nearest_station">Nearest station</string>
+    <string name="label_search_station">Search station</string>
+
+    <!-- The message shown when loading application settings. -->
+    <string name="message_loading_settings">Loading application settings.</string>
+
+    <!-- The message shown when loading the list of stations. -->
+    <string name="message_loading_stations">Loading stations.</string>
+
+    <!-- The message shown when loading a timetable for a station. -->
+    <string name="message_loading_timetable">Loading timetable.</string>
+
+    <!-- The message shown when no station matching the search is found. -->
+    <string name="message_no_matching_stations">No matching stations.</string>
 
     <string name="title_timetable">Timetable</string>
     <string name="subtitle_all_trains">All trains</string>
     <string name="subtitle_long_distance_trains">Long distance trains</string>
     <string name="subtitle_commuter_trains">Commuter trains</string>
-    
+
     <string name="category_long_distance_trains">Long-distance</string>
     <string name="category_commuter_trains">Commuter</string>
-    
+
     <string name="label_arrives">Arrives</string>
     <string name="label_arrived">Arrived</string>
     <string name="label_departs">Departs</string>

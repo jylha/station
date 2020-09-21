@@ -21,14 +21,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
-import com.example.station.ui.Screen
+import com.example.station.R
 import com.example.station.model.Station
+import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
-import com.example.station.ui.components.LoadingMessage
+import com.example.station.ui.components.Loading
 import com.example.station.ui.components.SearchBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -55,13 +57,13 @@ fun StationScreen(
             if (searchEnabled) {
                 SearchBar(
                     text = searchText,
-                    placeholderText = "Search stations",
+                    placeholderText = stringResource(R.string.label_search_station),
                     onValueChanged = { value -> searchText = value },
                     onClose = { searchEnabled = false; searchText = "" }
                 )
             } else {
                 TopAppBar(
-                    title = { Text("Select station") },
+                    title = { Text(stringResource(R.string.label_select_station)) },
                     actions = {
                         IconButton(onClick = { searchEnabled = true }) {
                             Icon(Icons.Default.Search)
@@ -76,8 +78,8 @@ fun StationScreen(
             // FIXME: 9.9.2020 Show loading message only when initially loading stations.
             // Add some indicator to display along with stations when refreshing.
             //viewState.isLoading -> LoadingMessage("Loading stations...")
-            viewState.isLoading && viewState.stations.isEmpty() -> LoadingMessage("Loading stations...")
-            filteredStations.isEmpty() -> EmptyState("No matching stations.", modifier)
+            viewState.isLoading && viewState.stations.isEmpty() -> LoadingStations(modifier)
+            filteredStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationList(
                 filteredStations,
                 onSelect = { station ->
@@ -91,8 +93,17 @@ fun StationScreen(
     }
 }
 
-@Composable
-private fun StationList(
+@Composable private fun LoadingStations(modifier: Modifier = Modifier) {
+    val message = stringResource(R.string.message_loading_stations)
+    Loading(message, modifier)
+}
+
+@Composable private fun NoMatchingStations(modifier: Modifier = Modifier) {
+    val message = stringResource(R.string.message_no_matching_stations)
+    EmptyState(message, modifier)
+}
+
+@Composable private fun StationList(
     stations: List<Station>,
     onSelect: (Station) -> Any,
     modifier: Modifier = Modifier,
@@ -105,8 +116,7 @@ private fun StationList(
     }
 }
 
-@Composable
-private fun StationListEntry(
+@Composable private fun StationListEntry(
     station: Station,
     onSelect: (Station) -> Any,
     modifier: Modifier = Modifier,

@@ -36,7 +36,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.example.station.R
 import com.example.station.ui.Screen
-import com.example.station.ui.components.LoadingMessage
+import com.example.station.ui.components.Loading
 import com.example.station.ui.components.landscapeOrientation
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.theme.blue
@@ -54,7 +54,7 @@ fun HomeScreen(
         backgroundColor = if (MaterialTheme.colors.isLight) blue else Color.Black
     ) {
         if (viewState.loading) {
-            LoadingMessage(message = "Loading application settings...")
+            Loading(stringResource(R.string.message_loading_settings))
         } else if (false && viewState.station != null) {
             navigateTo(Screen.Timetable(viewState.station!!))
         } else {
@@ -80,7 +80,10 @@ fun HomeScreen(
             WelcomeAnimation(Modifier.width(400.dp).align(Alignment.Center))
             Column(
                 Modifier
-                    .padding(horizontal = 20.dp, vertical = if (portraitOrientation()) 40.dp else 20.dp)
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = if (portraitOrientation()) 40.dp else 20.dp
+                    )
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween

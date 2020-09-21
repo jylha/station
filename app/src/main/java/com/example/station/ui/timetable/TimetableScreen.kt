@@ -53,7 +53,7 @@ import com.example.station.model.Train
 import com.example.station.model.Train.Category
 import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
-import com.example.station.ui.components.LoadingMessage
+import com.example.station.ui.components.Loading
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
@@ -113,7 +113,7 @@ fun TimetableScreen(
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
-            viewState.loading -> LoadingMessage("Loading timetable...", modifier)
+            viewState.loading -> LoadingTimetable(modifier)
             viewState.station != null -> {
                 Timetable(
                     station = viewState.station,
@@ -131,6 +131,11 @@ fun TimetableScreen(
             }
         }
     }
+}
+
+@Composable private fun LoadingTimetable(modifier: Modifier = Modifier) {
+    val message = stringResource(R.string.message_loading_timetable)
+    Loading(message, modifier)
 }
 
 /** The title and subtitle shown in TimetableScreen's TopAppBar. */

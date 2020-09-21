@@ -6,6 +6,7 @@
     </string>
     <string name="label_select_station">Välj station</string>
     <string name="label_nearest_station">Närmaste station</string>
+    <string name="label_search_station">Sök station</string>
 
     <string name="title_timetable">Tidtabell</string>
     <string name="subtitle_all_trains">Alla tåg</string>
