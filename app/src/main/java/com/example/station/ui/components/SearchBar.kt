@@ -14,10 +14,14 @@ import androidx.compose.material.icons.filled.KeyboardBackspace
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,6 +38,7 @@ import com.example.station.ui.theme.StationTheme
  * @param onClose A callback that is called when user clicks either the Done button on keyboard
  * or the BackSpace button beside the search field.
  */
+@OptIn(ExperimentalFocus::class)
 @Composable
 fun SearchBar(
     text: String,
@@ -45,6 +50,8 @@ fun SearchBar(
     var active by remember { mutableStateOf(false) }
     val textColor = if (MaterialTheme.colors.isLight) MaterialTheme.colors.onPrimary
     else MaterialTheme.colors.onBackground
+
+    val focusRequester = FocusRequester()
 
     Surface(
         modifier,
@@ -70,7 +77,7 @@ fun SearchBar(
                 label = { if (!active) Text(placeholderText) },
                 placeholder = { Text(placeholderText) },
                 onTextInputStarted = { active = true },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                 backgroundColor = Color.Transparent,
                 activeColor = textColor,
                 inactiveColor = textColor,
@@ -82,6 +89,9 @@ fun SearchBar(
                 }
             )
         }
+    }
+    onActive {
+        focusRequester.requestFocus()
     }
 }
 
