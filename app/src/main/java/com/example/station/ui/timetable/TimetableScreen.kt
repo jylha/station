@@ -212,7 +212,6 @@ fun TimetableScreen(
     }
 }
 
-
 @Preview(name = "CategorySelection - light - swedish", "Category selection", locale = "sv-rFI")
 @Composable private fun PreviewLightCategorySelection() {
     StationTheme(darkTheme = false) {
@@ -292,6 +291,10 @@ fun TimetableScreen(
         true, Station.Type.Station, "Here", "H",
         123, "FI", 100.0, 50.0
     )
+    val somewhere = Station(
+        true, Station.Type.StoppingPoint, "Somewhere", "S",
+        555, "FI", 50.0, 100.0
+    )
     val destination = Station(
         true, Station.Type.StoppingPoint, "There", "H",
         456, "FI", 50.0, 100.0
@@ -299,11 +302,25 @@ fun TimetableScreen(
     val train = Train(
         1, "IC", Category.LongDistance, true, timetable = listOf(
             TimetableRow.departure("H", 123, "1", ZonedDateTime.now()),
+            TimetableRow.arrival(
+                "S", 555, "3", ZonedDateTime.now().plusMinutes(60),
+                actualTime = ZonedDateTime.now().plusMinutes(64),
+                differenceInMinutes = 4
+            ),
+            TimetableRow.departure("S", 555, "3", ZonedDateTime.now().plusHours(1)),
             TimetableRow.arrival("T", 456, "2", ZonedDateTime.now().plusHours(2))
         )
     )
-    StationNameProvider(nameMapper = LocalizedStationNames.create(listOf(origin, destination))) {
-        TimetableEntry(origin, train, {})
+    StationNameProvider(
+        nameMapper = LocalizedStationNames.create(
+            listOf(
+                origin,
+                somewhere,
+                destination
+            )
+        )
+    ) {
+        TimetableEntry(somewhere, train, {})
     }
 }
 
@@ -350,21 +367,20 @@ fun TimetableScreen(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        if (origin != null) Text(
-            origin,
-            Modifier.weight(3f),
-            textAlign = TextAlign.End,
-            fontWeight = FontWeight.Bold
-        )
-        if (origin != null && destination != null) Icon(
-            iconAsset,
-            Modifier.padding(horizontal = 8.dp)
-        )
-        if (destination != null) Text(
-            destination,
-            Modifier.weight(3f),
-            fontWeight = FontWeight.Bold
-        )
+        if (origin != null) {
+            Text(
+                origin,
+                Modifier.weight(3f),
+                textAlign = TextAlign.End,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        if (origin != null && destination != null) {
+            Icon(iconAsset, Modifier.padding(horizontal = 4.dp))
+        }
+        if (destination != null) {
+            Text(destination, Modifier.weight(3f), fontWeight = FontWeight.Bold)
+        }
     }
 }
 
@@ -393,7 +409,8 @@ fun TimetableScreen(
         arrival?.actualTime != null -> Time(
             stringResource(R.string.label_arrived),
             arrival.actualTime,
-            modifier
+            modifier,
+            arrival.differenceInMinutes
         )
         arrival != null -> Time(
             stringResource(R.string.label_arrives),
@@ -409,7 +426,8 @@ fun TimetableScreen(
         departure?.actualTime != null -> Time(
             stringResource(R.string.label_departed),
             departure.actualTime,
-            modifier
+            modifier,
+            departure.differenceInMinutes
         )
         departure != null -> Time(
             stringResource(R.string.label_departs),
@@ -421,7 +439,10 @@ fun TimetableScreen(
 }
 
 @Composable
-private fun Time(label: String, dateTime: ZonedDateTime, modifier: Modifier = Modifier) {
+private fun Time(
+    label: String, dateTime: ZonedDateTime, modifier: Modifier = Modifier,
+    delay: Int? = null
+) {
     val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     val time = dateTime.atLocalZone().format(formatter)
 
@@ -431,7 +452,36 @@ private fun Time(label: String, dateTime: ZonedDateTime, modifier: Modifier = Mo
             style = MaterialTheme.typography.caption,
             color = Color.Gray
         )
-        Text(time)
+        ConstraintLayout(Modifier.fillMaxWidth()) {
+            val timeRef = createRef()
+            val delayRef = createRef()
+
+            Text(time, Modifier.constrainAs(timeRef) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            })
+
+            if (delay != null && delay != 0) {
+                val delayModifier = Modifier.constrainAs(delayRef) {
+                    start.linkTo(timeRef.end, 4.dp)
+                    top.linkTo(timeRef.top)
+                    bottom.linkTo(timeRef.bottom)
+                }
+                if (delay > 0) {
+                    Text(
+                        text = "+$delay", delayModifier, color = Color.Red,
+                        style = MaterialTheme.typography.caption
+                    )
+                } else {
+                    Text(
+                        text = "-$delay", delayModifier, color = Color.Green,
+                        style = MaterialTheme.typography.caption
+                    )
+                }
+            }
+        }
     }
 }
 
