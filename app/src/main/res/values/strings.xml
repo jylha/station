@@ -9,6 +9,11 @@
     <string name="label_select_station">Select station</string>
     <string name="label_nearest_station">Nearest station</string>
     <string name="label_search_station">Search station</string>
+    
+    <string name="label_about">About the application</string>
+    <string name="text_about">
+        Source: Traffic Management Finland / digitraffic.fi, license CC 4.0 BY
+    </string>
 
     <!-- The message shown when loading application settings. -->
     <string name="message_loading_settings">Loading application settings.</string>

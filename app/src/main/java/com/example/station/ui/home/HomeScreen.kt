@@ -2,6 +2,7 @@ package com.example.station.ui.home
 
 import android.content.Context
 import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -60,7 +64,8 @@ fun HomeScreen(
         } else {
             WelcomeCard(
                 onSelectStation = { navigateTo(Screen.SelectStation) },
-                onShowNearestStation = {}
+                onShowNearestStation = {},
+                onAbout = { navigateTo(Screen.About) }
             )
         }
     }
@@ -68,7 +73,8 @@ fun HomeScreen(
 
 @Composable private fun WelcomeCard(
     onSelectStation: () -> Unit = {},
-    onShowNearestStation: () -> Unit = {}
+    onShowNearestStation: () -> Unit = {},
+    onAbout: () -> Unit = {},
 ) {
     Card(
         Modifier
@@ -78,6 +84,7 @@ fun HomeScreen(
     ) {
         Stack {
             WelcomeAnimation(Modifier.width(400.dp).align(Alignment.Center))
+            AboutButton(onClick = onAbout, Modifier.align(Alignment.TopEnd))
             Column(
                 Modifier
                     .padding(
@@ -107,6 +114,14 @@ fun HomeScreen(
             }
         }
     }
+}
+
+@Composable private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val buttonColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+    IconButton(
+        onClick = onClick,
+        modifier,
+    ) { Icon(Icons.Outlined.Info, tint = buttonColor) }
 }
 
 @Composable private fun Greeting(modifier: Modifier = Modifier) {

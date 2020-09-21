@@ -9,6 +9,7 @@ import com.example.station.model.Train
 
 sealed class Screen(val title: String) {
     object Home : Screen("Home")
+    object About: Screen("About")
     object SelectStation : Screen("Select Station")
     data class Timetable(val station: Station) : Screen("Timetable")
     data class TrainDetails(val train: Train) : Screen("Train Info")

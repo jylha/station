@@ -9,6 +9,11 @@
     <string name="label_nearest_station">Lähin asema</string>
     <string name="label_search_station">Etsi asema</string>
 
+    <string name="label_about">Tietoja sovelluksesta</string>
+    <string name="text_about">
+        Liikennetietojen lähde Traffic Management Finland / digitraffic.fi, lisenssi CC 4.0 BY
+    </string>
+
     <string name="title_timetable">Aikataulu</string>
     <string name="subtitle_all_trains">Kaikki junat</string>
     <string name="subtitle_long_distance_trains">Kaukojunat</string>
