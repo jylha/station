@@ -54,7 +54,9 @@ import com.example.station.model.Train.Category
 import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.Loading
+import com.example.station.ui.components.RefreshIndicator
 import com.example.station.ui.components.StationNameProvider
+import com.example.station.ui.components.SwipeRefreshLayout
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
 import com.example.station.util.atLocalZone
@@ -183,28 +185,34 @@ fun TimetableScreen(
         mutableStateOf(trains.filter { selectedCategories.contains(it.category) })
     }
 
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = modifier.fillMaxSize()
+    var refreshing by remember { mutableStateOf(false) }
+    SwipeRefreshLayout(
+        modifier, refreshing, onRefresh = { refreshing = false },
+        refreshIndicator = { RefreshIndicator() }
     ) {
-        Column {
-            if (showCategorySelection) {
-                CategorySelection(selectedCategories, categorySelected)
-            }
-            when {
-                trains.isEmpty() -> EmptyState("No trains scheduled to stop in the near future.")
-                matchingTrains.isEmpty() -> EmptyState("No trains of selected category scheduled in the near future.")
-                else -> {
-                    LazyColumnFor(
-                        matchingTrains,
-                        contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
-                    ) { train ->
-                        TimetableEntry(
-                            station,
-                            train,
-                            onSelect = trainSelected,
-                            Modifier.padding(bottom = 8.dp)
-                        )
+        Surface(
+            color = MaterialTheme.colors.background,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column {
+                if (showCategorySelection) {
+                    CategorySelection(selectedCategories, categorySelected)
+                }
+                when {
+                    trains.isEmpty() -> EmptyState("No trains scheduled to stop in the near future.")
+                    matchingTrains.isEmpty() -> EmptyState("No trains of selected category scheduled in the near future.")
+                    else -> {
+                        LazyColumnFor(
+                            matchingTrains,
+                            contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
+                        ) { train ->
+                            TimetableEntry(
+                                station,
+                                train,
+                                onSelect = trainSelected,
+                                Modifier.padding(bottom = 8.dp)
+                            )
+                        }
                     }
                 }
             }
