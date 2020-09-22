@@ -273,14 +273,14 @@ fun TimetableScreen(
 }
 
 @Preview(name = "TimetableEntry - Dark", group = "TimetableEntry")
-@Composable fun PreviewDarkTimetableEntry() {
+@Composable private fun PreviewDarkTimetableEntry() {
     StationTheme(darkTheme = true) {
         PreviewTimetableEntry()
     }
 }
 
 @Preview(name = "TimetableEntry - Light", group = "TimetableEntry")
-@Composable fun PreviewLightTimetableEntry() {
+@Composable private fun PreviewLightTimetableEntry() {
     StationTheme(darkTheme = false) {
         PreviewTimetableEntry()
     }
@@ -312,19 +312,13 @@ fun TimetableScreen(
         )
     )
     StationNameProvider(
-        nameMapper = LocalizedStationNames.create(
-            listOf(
-                origin,
-                somewhere,
-                destination
-            )
-        )
+        nameMapper = LocalizedStationNames.create(listOf(origin, somewhere, destination))
     ) {
         TimetableEntry(somewhere, train, {})
     }
 }
 
-@Composable private fun TimetableEntry(
+@Composable fun TimetableEntry(
     station: Station,
     train: Train,
     onSelect: (Train) -> Unit,
@@ -476,7 +470,7 @@ private fun Time(
                     )
                 } else {
                     Text(
-                        text = "-$delay", delayModifier, color = Color.Green,
+                        text = "$delay", delayModifier, color = Color.Green,
                         style = MaterialTheme.typography.caption
                     )
                 }
