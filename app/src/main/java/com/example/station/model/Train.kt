@@ -3,10 +3,6 @@ package com.example.station.model
 import androidx.compose.runtime.Immutable
 import com.example.station.model.TimetableRow.Type.Arrival
 import com.example.station.model.TimetableRow.Type.Departure
-import com.example.station.util.atLocalZone
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 /**
  * Domain Model for train information.
@@ -45,16 +41,6 @@ data class Train(
         return timetable.firstOrNull { it.stationUic == stationUic }?.track
     }
 
-    /** Returns the scheduled time of arrival to the specified station. */
-    fun scheduledArrivalAt(stationUic: Int): LocalDateTime? {
-        return arrivalAt(stationUic)?.scheduledTime?.atLocalZone()
-    }
-
-    /** Returns the scheduled time of departure from the specified station. */
-    fun scheduledDepartureAt(stationUic: Int): LocalDateTime? {
-        return departureAt(stationUic)?.scheduledTime?.atLocalZone()
-    }
-
     /** Checks whether train is marked ready on origin station. */
     fun isReady(): Boolean {
         return timetable.firstOrNull()?.markedReady == true
@@ -63,28 +49,9 @@ data class Train(
     /** Checks whether train is not yet marked ready on origin station. */
     fun isNotReady(): Boolean = !isReady()
 
-    /** Checks whether train is yet to arrive on the specified station. */
-    fun onRouteTo(stationUic: Int): Boolean {
-        val arrival = arrivalAt(stationUic)
-        return (arrival != null && arrival.actualTime == null)
-    }
-
-    /** Checks whether train is currently on the specified station. */
-    fun onStation(stationUic: Int): Boolean {
-        return !hasDeparted(stationUic) &&
-                (!isDestination(stationUic) || isRunning) &&
-                (hasArrived(stationUic) || (isOrigin(stationUic) && isReady()))
-        // FIXME: 13.9.2020 This method incorrectly assumes that train can visit a station only once.
-    }
-
-    /** Checks whether train has arrived to the specified station. */
-    fun hasArrived(stationUic: Int): Boolean {
-        return arrivalAt(stationUic)?.actualTime != null
-    }
-
-    /** Checks whether train has departed the specified station. */
-    fun hasDeparted(stationUic: Int): Boolean {
-        return departureAt(stationUic)?.actualTime != null
+    /** Checks whether train has reached its destination. */
+    fun hasReachedDestination(): Boolean {
+        return timetable.lastOrNull()?.actualTime != null
     }
 
     /** Checks whether the specified station is train's origin. */
@@ -95,16 +62,6 @@ data class Train(
     /** Checks whether the specified station is train's destination. */
     fun isDestination(stationUic: Int): Boolean {
         return timetable.lastOrNull()?.stationUic == stationUic
-    }
-
-    /** Returns a timetable row for the arrival to the specified station. */
-    fun arrivalAt(stationUic: Int) = timetable.firstOrNull {
-        it.stationUic == stationUic && it.type == Arrival
-    }
-
-    /** Returns a timetable row for the departure from the specified station. */
-    fun departureAt(stationUic: Int) = timetable.firstOrNull {
-        it.stationUic == stationUic && it.type == Departure
     }
 }
 

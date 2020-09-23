@@ -1,9 +1,8 @@
 package com.example.station.model
 
-import com.example.station.util.atLocalZone
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 import java.time.ZonedDateTime
+import org.junit.Test
 
 class TrainTest {
 
@@ -48,7 +47,7 @@ class TrainTest {
             TimetableRow.arrival("2", 2, "1", scheduledTime2)
         )
     )
-    
+
     private val trainWithSameEndpoints = trainWithEmptyTimetable.copy(
         timetable = listOf(
             TimetableRow.departure("A", 3, "4", scheduledTime1),
@@ -86,31 +85,6 @@ class TrainTest {
         assertThat(result).isNull()
     }
 
-    @Test fun `scheduledArrivalAt() returns the time of arrival at given station`() {
-        val result = train.scheduledArrivalAt(stationUic = 200)
-        assertThat(result).isEqualTo(scheduledTime2.atLocalZone())
-    }
-
-    @Test fun `scheduledArrivalAt() returns null for a station not in the timetable`() {
-        val result = train.scheduledArrivalAt(stationUic = 400)
-        assertThat(result).isNull()
-    }
-
-    @Test fun `scheduledArrivalAt() return null for the origin station`() {
-        val result = train.scheduledArrivalAt(stationUic = 100)
-        assertThat(result).isNull()
-    }
-
-    @Test fun `scheduledDepartureAt() returns the time of departure at a station`() {
-        val result = train.scheduledDepartureAt(100)
-        assertThat(result).isEqualTo(scheduledTime1.atLocalZone())
-    }
-
-    @Test fun `scheduledDepartureAt() returns null for the destination station`() {
-        val result = train.scheduledDepartureAt(300)
-        assertThat(result).isNull()
-    }
-
     @Test fun `isReady() returns true when train is marked ready on origin`() {
         val result = readyTrain.isReady()
         assertThat(result).isTrue()
@@ -118,66 +92,6 @@ class TrainTest {
 
     @Test fun `isReady() returns false when train is not marked ready on origin`() {
         val result = notReadyTrain.isReady()
-        assertThat(result).isFalse()
-    }
-
-    @Test fun `onRoute() return false for the origin station`() {
-        val result = train.onRouteTo(100)
-        assertThat(result).isFalse()
-    }
-
-    @Test fun `onRoute() return false for a station that has actualTime for arrival`() {
-        val result = train.onRouteTo(200)
-        assertThat(result).isFalse()
-    }
-
-    @Test fun `onRoute() returns true for a station without actualTime for arrival`() {
-        val result = train.onRouteTo(300)
-        assertThat(result).isTrue()
-    }
-
-    @Test fun `onStation() returns false for a station it has departed`() {
-        val result = train.onStation(100)
-        assertThat(result).isFalse()
-    }
-
-    @Test fun `onStation() returns false for a station it is yet to arrive`() {
-        val result = train.onStation(300)
-        assertThat(result).isFalse()
-    }
-
-    @Test fun `onStation() returns true for a station it has arrived byt not left`() {
-        val result = train.onStation(200)
-        assertThat(result).isTrue()
-    }
-
-    @Test fun `onStation() returns false for origin station when train is not ready`() {
-        val result = notReadyTrain.onStation(1)
-        assertThat(result).isFalse()
-    }
-
-    @Test fun `onStation() returns true for origin station when train is ready`() {
-        val result = readyTrain.onStation(1)
-        assertThat(result).isTrue()
-    }
-
-    @Test fun `hasArrived() returns true for a station it has arrived on`() {
-        val result = train.hasArrived(200)
-        assertThat(result).isTrue()
-    }
-
-    @Test fun `hasArrived() returns false for a station it has not arrived on`() {
-        val result = train.hasArrived(300)
-        assertThat(result).isFalse()
-    }
-
-    @Test fun `hasDeparted() returns true for a station it has departed`() {
-        val result = train.hasDeparted(100)
-        assertThat(result).isTrue()
-    }
-
-    @Test fun `hasDeparted() returns false for a station it has no yet departed`() {
-        val result = train.hasDeparted(200)
         assertThat(result).isFalse()
     }
 
@@ -213,7 +127,7 @@ class TrainTest {
         val result = trainWithEmptyTimetable.stops()
         assertThat(result).isEmpty()
     }
-    
+
     @Test fun `stops() returns separate stops when origin and destination are the same`() {
         val result = trainWithSameEndpoints.stops()
         assertThat(result).hasSize(2)
@@ -232,7 +146,7 @@ class TrainTest {
         assertThat(result).hasSize(1)
         assertThat(result.first().stationUic()).isEqualTo(300)
     }
-    
+
     @Test fun `stopsAt() for a origin and destination returns separate stops`() {
         val result = trainWithSameEndpoints.stopsAt(3)
         assertThat(result).hasSize(2)

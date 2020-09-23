@@ -52,6 +52,10 @@ import com.example.station.model.Stop
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
+import com.example.station.model.isDeparted
+import com.example.station.model.isNotDeparted
+import com.example.station.model.isNotReached
+import com.example.station.model.isReached
 import com.example.station.model.stopsAt
 import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
@@ -235,13 +239,9 @@ fun TimetableScreen(
         }.sortedBy { (_, stop) -> stop.timeOfNextEvent() }
 
     LazyColumnFor(
-        stops,
-        modifier,
-        contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
+        stops, modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
     ) { (train, stop) ->
-        TimetableEntry(
-            station, train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp)
-        )
+        TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
     }
 }
 
@@ -349,23 +349,21 @@ fun TimetableScreen(
     StationNameProvider(
         nameMapper = LocalizedStationNames.create(listOf(origin, somewhere, destination))
     ) {
-        TimetableEntry(somewhere, train, stop, {})
+        TimetableEntry(train, stop, {})
     }
 }
 
 @Composable fun TimetableEntry(
-    station: Station,
     train: Train,
     stop: Stop,
     onSelect: (Train) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, station)) {
+    TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, stop)) {
         Column {
             Row {
                 TrainIdentification(train, Modifier.weight(1f))
                 TrainRoute(train.origin(), train.destination(), Modifier.weight(3f))
-
             }
             Row {
                 Arrival(stop.arrival, Modifier.weight(2f))
@@ -516,12 +514,13 @@ private fun Time(
 }
 
 @Composable
-private fun statusColor(train: Train, station: Station): Color? {
+private fun statusColor(train: Train, stop: Stop): Color? {
     return when {
-        train.isOrigin(station.uic) && train.isNotReady() -> StationTheme.colors.trainOnOriginStation
-        train.onRouteTo(station.uic) -> StationTheme.colors.trainOnRouteToStation
-        train.onStation(station.uic) -> StationTheme.colors.trainOnStation
-        train.hasDeparted(station.uic) -> StationTheme.colors.trainHasDepartedStation
+        train.isNotReady() -> StationTheme.colors.trainIsNotReady
+        train.hasReachedDestination() -> StationTheme.colors.trainReachedDestination
+        train.isRunning && stop.isNotReached() -> StationTheme.colors.trainOnRouteToStation
+        stop.isReached() && stop.isNotDeparted() -> StationTheme.colors.trainOnStation
+        stop.isDeparted() -> StationTheme.colors.trainHasDepartedStation
         else -> null
     }
 }

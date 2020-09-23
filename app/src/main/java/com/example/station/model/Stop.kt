@@ -23,6 +23,11 @@ fun Stop.isWaypoint(): Boolean = arrival != null && departure != null
 fun Stop.stationUic(): Int = arrival?.stationUic ?: departure!!.stationUic
 fun Stop.track(): String? = arrival?.track ?: departure?.track
 
+fun Stop.isNotReached(): Boolean = arrival != null && arrival.actualTime == null
+fun Stop.isReached(): Boolean = arrival == null || arrival.actualTime != null
+fun Stop.isNotDeparted(): Boolean = departure != null && departure.actualTime == null
+fun Stop.isDeparted(): Boolean = departure?.actualTime != null
+
 /**
  * Returns the time of the next scheduled event on the stop, or the most recent event, if there
  * are no more scheduled events. */

@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.graphics.Color
 
-
 private val DarkColorPalette = darkColors(
     primary = purple200,
     primaryVariant = purple700,
@@ -23,10 +22,9 @@ private val LightColorPalette = lightColors(
     secondary = teal200
 )
 
-
 /** Custom color palette for the application. */
 class StationColorPalette(
-    val trainOnOriginStation: Color = Color.Blue,
+    val trainIsNotReady: Color = Color.Blue,
     val trainOnStation: Color = Color.Green,
     val trainHasDepartedStation: Color = Color.Red,
     val trainOnRouteToStation: Color = Color.Yellow,

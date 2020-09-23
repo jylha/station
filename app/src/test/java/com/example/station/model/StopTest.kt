@@ -179,4 +179,52 @@ class StopTest {
         val result = stop.timeOfNextEvent()
         assertThat(result).isEqualTo(time4)
     }
+
+    @Test fun `isReached() returns false when actualTime of arrival is not set `() {
+        val stop = Stop(arrival.copy(scheduledTime = time1, actualTime = null))
+        val result = stop.isReached()
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `isReached() returns true when actualTime of arrival is set`() {
+        val stop = Stop(arrival.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.isReached()
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `isReached() return true when arrival is not set()`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time3))
+        val result = stop.isReached()
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `isNotReached() returns true when actualTime of arrival is not set`() {
+        val stop = Stop(arrival.copy(scheduledTime = time1, actualTime = null))
+        val result = stop.isNotReached()
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `isDeparted() returns true when actualTime of departure is set`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.isDeparted()
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `isDeparted() returns true when actualTime of departure is not set`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = null))
+        val result = stop.isDeparted()
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `isNotDeparted() returns true when actualTime of departure is not set`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1))
+        val result = stop.isNotDeparted()
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `isNotDeparted() returns false when actualTime of departure is set`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.isNotDeparted()
+        assertThat(result).isFalse()
+    }
 }
