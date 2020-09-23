@@ -53,6 +53,7 @@ import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
 import com.example.station.model.stopsAt
+import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
 import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
@@ -231,7 +232,7 @@ fun TimetableScreen(
     val stops =
         trains.flatMap { train ->
             train.stopsAt(station.uic).map { stop -> Pair(train, stop) }
-        }
+        }.sortedBy { (_, stop) -> stop.timeOfNextEvent() }
 
     LazyColumnFor(
         stops,

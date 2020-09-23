@@ -16,7 +16,6 @@ class TrainRepository @Inject constructor(
         return flow {
             val trains = trainService.fetchTrains(stationCode)
                 .toDomainModel()
-                .sortedBy { train -> train.nextEvent(stationUicCode) }
             emit(trains)
         }.flowOn(Dispatchers.IO)
     }

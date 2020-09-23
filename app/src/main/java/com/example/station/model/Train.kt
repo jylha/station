@@ -97,20 +97,6 @@ data class Train(
         return timetable.lastOrNull()?.stationUic == stationUic
     }
 
-    /** Time of next scheduled event or most recent event on the specified station. */
-    fun nextEvent(stationUic: Int): ZonedDateTime {
-        val arrival = arrivalAt(stationUic)
-        val departure = departureAt(stationUic)
-
-        return when {
-            departure?.actualTime != null -> departure.actualTime
-            departure != null && (arrival == null || arrival.actualTime != null) -> departure.scheduledTime
-            arrival?.actualTime != null -> arrival.actualTime
-            arrival != null -> arrival.scheduledTime
-            else -> ZonedDateTime.of(LocalDateTime.MIN, ZoneId.systemDefault())
-        }
-    }
-
     /** Returns a timetable row for the arrival to the specified station. */
     fun arrivalAt(stationUic: Int) = timetable.firstOrNull {
         it.stationUic == stationUic && it.type == Arrival

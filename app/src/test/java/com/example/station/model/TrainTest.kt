@@ -201,16 +201,6 @@ class TrainTest {
         assertThat(result).isTrue()
     }
 
-    @Test fun `nextEvent() returns actual time of departure for departed station`() {
-        val result = train.nextEvent(100)
-        assertThat(result).isEqualTo(actualTime1)
-    }
-
-    @Test fun `nextEvent() returns scheduled time of departure if train has not yet departed`() {
-        val result = train.nextEvent(200)
-        assertThat(result).isEqualTo(scheduledTime3)
-    }
-
     @Test fun `stops() returns the trains timetable rows as a list of stops`() {
         val result = train.stops()
         assertThat(result.size).isEqualTo(3)

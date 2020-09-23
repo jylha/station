@@ -56,67 +56,67 @@ class StopTest {
         assertThat(stop.departure).isEqualTo(departure)
     }
 
-    @Test fun `isOrigin returns false for a stop with only arrival`() {
+    @Test fun `isOrigin() returns false for a stop with only arrival`() {
         val stop = Stop(arrival)
         val result = stop.isOrigin()
         assertThat(result).isFalse()
     }
 
-    @Test fun `isOrigin returns true for a stop with only departure`() {
+    @Test fun `isOrigin() returns true for a stop with only departure`() {
         val stop = Stop(departure = departure)
         val result = stop.isOrigin()
         assertThat(result).isTrue()
     }
 
-    @Test fun `isOrigin returns false for a stop with arrival and departure`() {
+    @Test fun `isOrigin() returns false for a stop with arrival and departure`() {
         val stop = Stop(arrival, departure)
         val result = stop.isOrigin()
         assertThat(result).isFalse()
     }
 
-    @Test fun `isDestination returns true for a stop with only arrival`() {
+    @Test fun `isDestination() returns true for a stop with only arrival`() {
         val stop = Stop(arrival)
         val result = stop.isDestination()
         assertThat(result).isTrue()
     }
 
-    @Test fun `isDestination returns false for a stop with only departure`() {
+    @Test fun `isDestination() returns false for a stop with only departure`() {
         val stop = Stop(departure = departure)
         val result = stop.isDestination()
         assertThat(result).isFalse()
     }
 
-    @Test fun `isDestination returns false for a stop with arrival and departure`() {
+    @Test fun `isDestination() returns false for a stop with arrival and departure`() {
         val stop = Stop(arrival, departure)
         val result = stop.isDestination()
         assertThat(result).isFalse()
     }
 
-    @Test fun `isWaypoint returns false for a stop with only arrival`() {
+    @Test fun `isWaypoint() returns false for a stop with only arrival`() {
         val stop = Stop(arrival)
         val result = stop.isWaypoint()
         assertThat(result).isFalse()
     }
 
-    @Test fun `isWaypoint returns false for a stop with only departure`() {
+    @Test fun `isWaypoint() returns false for a stop with only departure`() {
         val stop = Stop(departure = departure)
         val result = stop.isWaypoint()
         assertThat(result).isFalse()
     }
 
-    @Test fun `isWaypoint returns true for a stop with arrival and departure`() {
+    @Test fun `isWaypoint() returns true for a stop with arrival and departure`() {
         val stop = Stop(arrival, departure)
         val result = stop.isWaypoint()
         assertThat(result).isTrue()
     }
 
-    @Test fun `stationUic returns the station uic of stops arrival`() {
+    @Test fun `stationUic() returns the station uic of stops arrival`() {
         val stop = Stop(arrival, departure)
         val result = stop.stationUic()
         assertThat(result).isEqualTo(1)
     }
 
-    @Test fun `stationUic returns the station uic of stops departure if arrival is not set`() {
+    @Test fun `stationUic() returns the station uic of stops departure if arrival is not set`() {
         val stop = Stop(departure = departure.copy(stationUic = 5))
         val result = stop.stationUic()
         assertThat(result).isEqualTo(5)
@@ -132,5 +132,51 @@ class StopTest {
         val stop = Stop(departure = departure.copy(track = "bar"))
         val result = stop.track()
         assertThat(result).isEqualTo("bar")
+    }
+
+    private val time1 = ZonedDateTime.parse("2020-01-01T08:30:00.000Z")
+    private val time2 = ZonedDateTime.parse("2020-01-01T08:35:00.000Z")
+    private val time3 = ZonedDateTime.parse("2020-01-01T09:00:00.000Z")
+    private val time4 = ZonedDateTime.parse("2020-01-01T09:01:00.000Z")
+
+    @Test
+    fun `timeOfNextEvent() returns scheduled time of arrival when no actualTime or departure`() {
+        val stop = Stop(arrival.copy(scheduledTime = time1, actualTime = null))
+        val result = stop.timeOfNextEvent()
+        assertThat(result).isEqualTo(time1)
+    }
+
+    @Test fun `timeOfNextEvent() returns actualTime of arrival when no departure`() {
+        val stop = Stop(arrival.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.timeOfNextEvent()
+        assertThat(result).isEqualTo(time2)
+    }
+
+    @Test fun `timeOfNextEvent() returns scheduledTime of arrival when no actual time`() {
+        val stop = Stop(arrival.copy(scheduledTime = time1), departure.copy(scheduledTime = time3))
+        val result = stop.timeOfNextEvent()
+        assertThat(result).isEqualTo(time1)
+    }
+
+    @Test
+    fun `timeOfNextEvent() returns scheduledTime of departure when no actualTime or arrival`() {
+        val stop = Stop(arrival = null, departure.copy(scheduledTime = time1))
+        val result = stop.timeOfNextEvent()
+        assertThat(result).isEqualTo(time1)
+    }
+
+    @Test fun `timeOfNextEvent() returns actualTime of departure when no arrival`() {
+        val stop = Stop(arrival = null, departure.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.timeOfNextEvent()
+        assertThat(result).isEqualTo(time2)
+    }
+
+    @Test fun `timeOfNextEvent() returns actualTime of departure when it is set`() {
+        val stop = Stop(
+            arrival.copy(scheduledTime = time1, actualTime = time2),
+            departure.copy(scheduledTime = time3, actualTime = time4)
+        )
+        val result = stop.timeOfNextEvent()
+        assertThat(result).isEqualTo(time4)
     }
 }
