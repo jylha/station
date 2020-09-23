@@ -14,7 +14,7 @@ class TrainTest {
     private val scheduledTime4 = ZonedDateTime.parse("2020-09-05T11:10:00.000Z")
 
     private val train = Train(
-        1, "S", Train.Category.LongDistance, true, timetable = listOf(
+        1, "S", Train.Category.LongDistance, timetable = listOf(
             TimetableRow.departure(
                 "A", 100, "5", scheduledTime1, actualTime = actualTime1,
                 differenceInMinutes = 2, markedReady = true
@@ -29,7 +29,7 @@ class TrainTest {
     )
 
     private val trainWithEmptyTimetable = Train(
-        2, "IC", Train.Category.Commuter, false, timetable = emptyList()
+        2, "IC", Train.Category.Commuter, "A", false, timetable = emptyList()
     )
 
     private val readyTrain = trainWithEmptyTimetable.copy(

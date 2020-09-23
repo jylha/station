@@ -13,6 +13,9 @@ data class TrainNetworkEntity(
     @SerializedName("trainCategory")
     val category: String,
 
+    @SerializedName("commuterLineID")
+    val commuterLineId: String? = null,
+
     @SerializedName("runningCurrently")
     val runningCurrently: Boolean,
 

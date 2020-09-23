@@ -333,7 +333,7 @@ fun TimetableScreen(
         456, "FI", 50.0, 100.0
     )
     val train = Train(
-        1, "IC", Category.LongDistance, true, timetable = listOf(
+        1, "IC", Category.LongDistance, timetable = listOf(
             TimetableRow.departure("H", 123, "1", ZonedDateTime.now()),
             TimetableRow.arrival(
                 "S", 555, "3", ZonedDateTime.now().plusMinutes(60),
@@ -363,7 +363,7 @@ fun TimetableScreen(
         Column {
             Row {
                 TrainIdentification(train, Modifier.weight(1f))
-                TrainRoute(train.origin(), train.destination(), Modifier.weight(3f))
+                TrainRoute(train.origin(), train.destination(), Modifier.weight(4f))
             }
             Row {
                 Arrival(stop.arrival, Modifier.weight(2f))
@@ -375,8 +375,15 @@ fun TimetableScreen(
 }
 
 @Composable private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
+    val identification = remember(train) {
+        if (train.category == Category.Commuter && train.commuterLineId?.isNotBlank() == true) {
+            train.commuterLineId
+        } else {
+            "${train.type} ${train.number}"
+        }
+    }
     Text(
-        text = "${train.type} ${train.number}",
+        text = identification,
         modifier = modifier,
         style = MaterialTheme.typography.h6
     )
@@ -602,7 +609,7 @@ private fun PreviewTimetable() {
     )
     val trains = listOf(
         Train(
-            1, "S", Category.LongDistance, true, timetable = listOf(
+            1, "S", Category.LongDistance, timetable = listOf(
                 TimetableRow.departure(
                     "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
                 ),
@@ -612,7 +619,7 @@ private fun PreviewTimetable() {
             )
         ),
         Train(
-            2, "IC", Category.LongDistance, true, timetable = listOf(
+            2, "IC", Category.LongDistance, timetable = listOf(
                 TimetableRow.departure(
                     "TKU", 130, "3", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
                 ),

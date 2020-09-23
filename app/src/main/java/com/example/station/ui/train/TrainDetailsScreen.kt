@@ -171,7 +171,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Preview(showBackground = true)
 @Composable fun TrainDetails() {
     val train = Train(
-        5, "IC", Train.Category.LongDistance, true, timetable = listOf(
+        5, "IC", Train.Category.LongDistance, timetable = listOf(
             TimetableRow.departure(
                 "HKI", 1, "2", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
             ),

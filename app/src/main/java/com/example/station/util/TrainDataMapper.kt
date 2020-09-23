@@ -24,6 +24,7 @@ fun TrainNetworkEntity.toDomainModel(): Train? {
                 category.equals(Commuter.name, ignoreCase = true) -> Commuter
                 else -> throw IllegalArgumentException("Unknown category: $category")
             },
+            commuterLineId = commuterLineId,
             isRunning = runningCurrently,
             timetable = timetable.map { row -> row.toDomainModel() }
         )

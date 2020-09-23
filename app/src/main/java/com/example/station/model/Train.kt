@@ -9,6 +9,7 @@ import com.example.station.model.TimetableRow.Type.Departure
  * @param number Train number.
  * @param type Train type: IC, P, S...
  * @param category Train category.
+ * @param commuterLineId Commuter line identifier.
  * @param isRunning Indicates whether train is currently running.
  * @param timetable Train's timetable.
  */
@@ -17,7 +18,8 @@ data class Train(
     val number: Int,
     val type: String,
     val category: Category,
-    val isRunning: Boolean,
+    val commuterLineId: String? = null,
+    val isRunning: Boolean = true,
     val timetable: List<TimetableRow>
 ) {
     /** Train category. */
