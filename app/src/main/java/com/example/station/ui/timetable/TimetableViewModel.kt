@@ -4,7 +4,6 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.station.data.settings.SettingsRepository
-import com.example.station.data.stations.StationNameMapper
 import com.example.station.data.stations.StationRepository
 import com.example.station.data.trains.TrainRepository
 import com.example.station.model.Station
@@ -12,6 +11,7 @@ import com.example.station.model.Train
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class TimetableViewModel @ViewModelInject constructor(
     private val trainRepository: TrainRepository,
     private val stationRepository: StationRepository,
@@ -41,13 +41,14 @@ class TimetableViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             val mapper = stationRepository.getStationNameMapper()
-            _state.value = reduce(_state.value, TimetableResult.StationNames(mapper))
+            _state.value = _state.value.reduce(TimetableResult.StationNames(mapper))
         }
 
         viewModelScope.launch {
             settingsRepository.trainCategories().collect { selectedCategories ->
                 if (selectedCategories != null)
-                    _state.value = reduce(_state.value, TimetableResult.SettingsUpdated(selectedCategories))
+                    _state.value =
+                        _state.value.reduce(TimetableResult.SettingsUpdated(selectedCategories))
             }
         }
     }
@@ -58,17 +59,17 @@ class TimetableViewModel @ViewModelInject constructor(
         }
     }
 
-    @OptIn(FlowPreview::class)
     private suspend fun handleEvents() {
         eventChannel.consumeAsFlow()
             .flatMapMerge { event ->
                 when (event) {
                     is TimetableEvent.LoadTimetable -> loadTimetable(event.station)
                     is TimetableEvent.SelectCategories -> setCategories(event.categories)
+                    is TimetableEvent.ReloadTimetable -> reloadTimetable(event.station)
                 }
             }
             .collect { result ->
-                _state.value = reduce(_state.value, result)
+                _state.value = _state.value.reduce(result)
             }
     }
 
@@ -83,6 +84,15 @@ class TimetableViewModel @ViewModelInject constructor(
         }
     }
 
+    private fun reloadTimetable(station: Station): Flow<TimetableResult> {
+        return flow {
+            // TODO: 24.9.2020 Implement reloading.
+            emit(TimetableResult.Reloading)
+            delay(3000)
+            emit(TimetableResult.ReloadedData(emptyList()))
+        }
+    }
+
     private fun setCategories(categories: Set<Train.Category>): Flow<TimetableResult> {
         return flow {
             settingsRepository.setTrainCategories(categories)
@@ -90,16 +100,5 @@ class TimetableViewModel @ViewModelInject constructor(
     }
 }
 
-sealed class TimetableEvent {
-    data class LoadTimetable(val station: Station) : TimetableEvent()
-    data class SelectCategories(val categories: Set<Train.Category>): TimetableEvent()
-}
 
-sealed class TimetableResult {
-    data class Loading(val station: Station) : TimetableResult()
-    data class Data(val station: Station, val trains: List<Train>) : TimetableResult()
-    data class Error(val msg: String) : TimetableResult()
-    data class SettingsUpdated(val categories: Set<Train.Category>) : TimetableResult()
-    data class StationNames(val mapper: StationNameMapper): TimetableResult()
-}
 

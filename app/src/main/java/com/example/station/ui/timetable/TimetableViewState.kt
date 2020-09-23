@@ -7,7 +7,8 @@ import com.example.station.model.Train
 
 @Immutable
 data class TimetableViewState(
-    val loading: Boolean = true,
+    val loading: Boolean = false,
+    val reloading: Boolean = false,
     val station: Station? = null,
     val timetable: List<Train> = emptyList(),
     val selectedCategories: Set<Train.Category> =
@@ -16,27 +17,29 @@ data class TimetableViewState(
     val mapper: StationNameMapper? = null
 )
 
-fun reduce(currentState: TimetableViewState, result: TimetableResult): TimetableViewState {
+fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
     return when (result) {
-        is TimetableResult.Loading -> currentState.copy(
+        is TimetableResult.Loading -> copy(
             loading = true,
             station = result.station,
             timetable = emptyList()
         )
-        is TimetableResult.Data -> currentState.copy(
+        is TimetableResult.Data -> copy(
             loading = false,
             station = result.station,
             timetable = result.trains
         )
-        is TimetableResult.Error -> currentState.copy(
+        is TimetableResult.Error -> copy(
             loading = false,
             error = result.msg
         )
-        is TimetableResult.SettingsUpdated -> currentState.copy(
+        is TimetableResult.SettingsUpdated -> copy(
             selectedCategories = result.categories
         )
-        is TimetableResult.StationNames -> currentState.copy(
+        is TimetableResult.StationNames -> copy(
             mapper = result.mapper
         )
+        TimetableResult.Reloading -> copy(reloading = true)
+        is TimetableResult.ReloadedData -> copy(reloading = false)
     }
 }

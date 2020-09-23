@@ -130,7 +130,9 @@ fun TimetableScreen(
                     trainSelected,
                     selectedCategories,
                     categorySelected,
-                    categorySelectionEnabled
+                    categorySelectionEnabled,
+                    refreshing = viewState.reloading,
+                    onRefresh = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) }
                 )
             }
             else -> {
@@ -198,16 +200,16 @@ fun TimetableScreen(
     onTrainSelected: (Train) -> Unit,
     selectedCategories: Set<Category>,
     categorySelected: (Category) -> Unit,
-    showCategorySelection: Boolean = false
+    showCategorySelection: Boolean = false,
+    refreshing: Boolean = false,
+    onRefresh: () -> Unit = {}
 ) {
     val matchingTrains by remember(trains, selectedCategories) {
         mutableStateOf(trains.filter { selectedCategories.contains(it.category) })
     }
 
-    var refreshing by remember { mutableStateOf(false) }
     SwipeRefreshLayout(
-        modifier, refreshing, onRefresh = { refreshing = false },
-        refreshIndicator = { RefreshIndicator() }
+        modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
     ) {
         Surface(
             color = MaterialTheme.colors.background,

@@ -20,7 +20,7 @@ data class Train(
     val category: Category,
     val commuterLineId: String? = null,
     val isRunning: Boolean = true,
-    val timetable: List<TimetableRow>
+    val timetable: List<TimetableRow> = emptyList()
 ) {
     /** Train category. */
     sealed class Category(val name: String) {
