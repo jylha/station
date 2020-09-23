@@ -1,6 +1,8 @@
 package com.example.station.model
 
 import androidx.compose.runtime.Immutable
+import com.example.station.model.TimetableRow.Type.Arrival
+import com.example.station.model.TimetableRow.Type.Departure
 import com.example.station.util.atLocalZone
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -25,7 +27,7 @@ data class Train(
     /** Train category. */
     sealed class Category(val name: String) {
         object LongDistance : Category("Long-distance")
-        object Commuter: Category("Commuter")
+        object Commuter : Category("Commuter")
     }
 
     /** Returns the station uic code for the train's origin. */
@@ -38,19 +40,19 @@ data class Train(
         return timetable.lastOrNull()?.stationUic
     }
 
-    /** Returns the track for the given [stationUicCode]. */
-    fun track(stationUicCode: Int): String? {
-        return timetable.firstOrNull { it.stationUic == stationUicCode }?.track
+    /** Returns the track for the given [stationUic]. */
+    fun track(stationUic: Int): String? {
+        return timetable.firstOrNull { it.stationUic == stationUic }?.track
     }
 
     /** Returns the scheduled time of arrival to the specified station. */
-    fun scheduledArrivalAt(stationUicCode: Int): LocalDateTime? {
-        return arrivalAt(stationUicCode)?.scheduledTime?.atLocalZone()
+    fun scheduledArrivalAt(stationUic: Int): LocalDateTime? {
+        return arrivalAt(stationUic)?.scheduledTime?.atLocalZone()
     }
 
     /** Returns the scheduled time of departure from the specified station. */
-    fun scheduledDepartureAt(stationUicCode: Int): LocalDateTime? {
-        return departureAt(stationUicCode)?.scheduledTime?.atLocalZone()
+    fun scheduledDepartureAt(stationUic: Int): LocalDateTime? {
+        return departureAt(stationUic)?.scheduledTime?.atLocalZone()
     }
 
     /** Checks whether train is marked ready on origin station. */
@@ -62,43 +64,43 @@ data class Train(
     fun isNotReady(): Boolean = !isReady()
 
     /** Checks whether train is yet to arrive on the specified station. */
-    fun onRouteTo(stationUicCode: Int): Boolean {
-        val arrival = arrivalAt(stationUicCode)
+    fun onRouteTo(stationUic: Int): Boolean {
+        val arrival = arrivalAt(stationUic)
         return (arrival != null && arrival.actualTime == null)
     }
 
     /** Checks whether train is currently on the specified station. */
-    fun onStation(stationUicCode: Int): Boolean {
-        return !hasDeparted(stationUicCode) &&
-                (!isDestination(stationUicCode) || isRunning) &&
-                (hasArrived(stationUicCode) || (isOrigin(stationUicCode) && isReady()))
-    // FIXME: 13.9.2020 This method incorrectly assumes that train can visit a station only once.
+    fun onStation(stationUic: Int): Boolean {
+        return !hasDeparted(stationUic) &&
+                (!isDestination(stationUic) || isRunning) &&
+                (hasArrived(stationUic) || (isOrigin(stationUic) && isReady()))
+        // FIXME: 13.9.2020 This method incorrectly assumes that train can visit a station only once.
     }
 
     /** Checks whether train has arrived to the specified station. */
-    fun hasArrived(stationUicCode: Int): Boolean {
-        return arrivalAt(stationUicCode)?.actualTime != null
+    fun hasArrived(stationUic: Int): Boolean {
+        return arrivalAt(stationUic)?.actualTime != null
     }
 
     /** Checks whether train has departed the specified station. */
-    fun hasDeparted(stationUicCode: Int): Boolean {
-        return departureAt(stationUicCode)?.actualTime != null
+    fun hasDeparted(stationUic: Int): Boolean {
+        return departureAt(stationUic)?.actualTime != null
     }
 
     /** Checks whether the specified station is train's origin. */
-    fun isOrigin(stationUicCode: Int): Boolean {
-        return timetable.firstOrNull()?.stationUic == stationUicCode
+    fun isOrigin(stationUic: Int): Boolean {
+        return timetable.firstOrNull()?.stationUic == stationUic
     }
 
     /** Checks whether the specified station is train's destination. */
-    fun isDestination(stationUicCode: Int): Boolean {
-        return timetable.lastOrNull()?.stationUic == stationUicCode
+    fun isDestination(stationUic: Int): Boolean {
+        return timetable.lastOrNull()?.stationUic == stationUic
     }
 
     /** Time of next scheduled event or most recent event on the specified station. */
-    fun nextEvent(stationUicCode: Int): ZonedDateTime {
-        val arrival = arrivalAt(stationUicCode)
-        val departure = departureAt(stationUicCode)
+    fun nextEvent(stationUic: Int): ZonedDateTime {
+        val arrival = arrivalAt(stationUic)
+        val departure = departureAt(stationUic)
 
         return when {
             departure?.actualTime != null -> departure.actualTime
@@ -110,12 +112,41 @@ data class Train(
     }
 
     /** Returns a timetable row for the arrival to the specified station. */
-    fun arrivalAt(stationUicCode: Int) = timetable.firstOrNull {
-        it.stationUic == stationUicCode && it.type == TimetableRow.Type.Arrival
+    fun arrivalAt(stationUic: Int) = timetable.firstOrNull {
+        it.stationUic == stationUic && it.type == Arrival
     }
 
     /** Returns a timetable row for the departure from the specified station. */
-    fun departureAt(stationUicCode: Int) = timetable.firstOrNull {
-        it.stationUic == stationUicCode && it.type == TimetableRow.Type.Departure
+    fun departureAt(stationUic: Int) = timetable.firstOrNull {
+        it.stationUic == stationUic && it.type == Departure
     }
+}
+
+/** Returns all train's stops. */
+fun Train.stops(): List<Stop> {
+    val stops = mutableListOf<Stop>()
+
+    if (timetable.firstOrNull()?.type == Departure) {
+        stops += Stop(departure = timetable.first())
+    }
+
+    if (timetable.size > 2) {
+        timetable
+            .subList(1, timetable.lastIndex)
+            .windowed(2, 2, false) { (first, last) ->
+                if (first.type == Arrival && last.type == Departure && first.stationUic == last.stationUic) {
+                    stops += Stop(first, last)
+                }
+            }
+    }
+
+    if (timetable.lastOrNull()?.type == Arrival) {
+        stops += Stop(timetable.last())
+    }
+    return stops
+}
+
+/** Returns train's stops at the specified station. */
+fun Train.stopsAt(stationUic: Int): List<Stop> {
+    return stops().filter { stop -> stop.stationUic() == stationUic }
 }

@@ -48,6 +48,13 @@ class TrainTest {
             TimetableRow.arrival("2", 2, "1", scheduledTime2)
         )
     )
+    
+    private val trainWithSameEndpoints = trainWithEmptyTimetable.copy(
+        timetable = listOf(
+            TimetableRow.departure("A", 3, "4", scheduledTime1),
+            TimetableRow.arrival("A", 3, "2", scheduledTime2)
+        )
+    )
 
     @Test fun `origin() returns the station code of the first timetable row`() {
         val result = train.origin()
@@ -80,17 +87,17 @@ class TrainTest {
     }
 
     @Test fun `scheduledArrivalAt() returns the time of arrival at given station`() {
-        val result = train.scheduledArrivalAt(stationUicCode = 200)
+        val result = train.scheduledArrivalAt(stationUic = 200)
         assertThat(result).isEqualTo(scheduledTime2.atLocalZone())
     }
 
     @Test fun `scheduledArrivalAt() returns null for a station not in the timetable`() {
-        val result = train.scheduledArrivalAt(stationUicCode = 400)
+        val result = train.scheduledArrivalAt(stationUic = 400)
         assertThat(result).isNull()
     }
 
     @Test fun `scheduledArrivalAt() return null for the origin station`() {
-        val result = train.scheduledArrivalAt(stationUicCode = 100)
+        val result = train.scheduledArrivalAt(stationUic = 100)
         assertThat(result).isNull()
     }
 
@@ -202,5 +209,49 @@ class TrainTest {
     @Test fun `nextEvent() returns scheduled time of departure if train has not yet departed`() {
         val result = train.nextEvent(200)
         assertThat(result).isEqualTo(scheduledTime3)
+    }
+
+    @Test fun `stops() returns the trains timetable rows as a list of stops`() {
+        val result = train.stops()
+        assertThat(result.size).isEqualTo(3)
+        assertThat(result[0].stationUic()).isEqualTo(100)
+        assertThat(result[1].stationUic()).isEqualTo(200)
+        assertThat(result[2].stationUic()).isEqualTo(300)
+    }
+
+    @Test fun `stops() returns empty list for a train with empty timetable`() {
+        val result = trainWithEmptyTimetable.stops()
+        assertThat(result).isEmpty()
+    }
+    
+    @Test fun `stops() returns separate stops when origin and destination are the same`() {
+        val result = trainWithSameEndpoints.stops()
+        assertThat(result).hasSize(2)
+        assertThat(result.first().isOrigin()).isTrue()
+        assertThat(result.last().isDestination()).isTrue()
+    }
+
+    @Test fun `stopsAt() for origin returns list of single stop`() {
+        val result = train.stopsAt(100)
+        assertThat(result).hasSize(1)
+        assertThat(result.first().stationUic()).isEqualTo(100)
+    }
+
+    @Test fun `stopsAt() for destination return list of single stop`() {
+        val result = train.stopsAt(300)
+        assertThat(result).hasSize(1)
+        assertThat(result.first().stationUic()).isEqualTo(300)
+    }
+    
+    @Test fun `stopsAt() for a origin and destination returns separate stops`() {
+        val result = trainWithSameEndpoints.stopsAt(3)
+        assertThat(result).hasSize(2)
+        assertThat(result.first().isOrigin()).isTrue()
+        assertThat(result.last().isDestination()).isTrue()
+    }
+
+    @Test fun `stopsAt() for a station not in timetable returns empty list`() {
+        val result = train.stopsAt(400)
+        assertThat(result).isEmpty()
     }
 }
