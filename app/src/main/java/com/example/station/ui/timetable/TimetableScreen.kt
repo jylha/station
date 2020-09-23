@@ -385,7 +385,8 @@ fun TimetableScreen(
     Text(
         text = identification,
         modifier = modifier,
-        style = MaterialTheme.typography.h6
+        style = MaterialTheme.typography.body1,
+        fontWeight = FontWeight.Bold
     )
 }
 
@@ -404,9 +405,9 @@ fun TimetableScreen(
     ) {
         if (origin != null) {
             Text(
-                origin,
-                Modifier.weight(3f),
+                origin, Modifier.weight(3f),
                 textAlign = TextAlign.End,
+                style = MaterialTheme.typography.body2,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -414,7 +415,12 @@ fun TimetableScreen(
             Icon(iconAsset, Modifier.padding(horizontal = 4.dp))
         }
         if (destination != null) {
-            Text(destination, Modifier.weight(3f), fontWeight = FontWeight.Bold)
+            Text(
+                destination,
+                Modifier.weight(3f),
+                style = MaterialTheme.typography.body2,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
