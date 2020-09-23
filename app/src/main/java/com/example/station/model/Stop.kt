@@ -19,3 +19,4 @@ fun Stop.isOrigin(): Boolean = arrival == null
 fun Stop.isDestination(): Boolean = departure == null
 fun Stop.isWaypoint(): Boolean = arrival != null && departure != null
 fun Stop.stationUic(): Int = arrival?.stationUic ?: departure!!.stationUic
+fun Stop.track(): String? = arrival?.track ?: departure?.track

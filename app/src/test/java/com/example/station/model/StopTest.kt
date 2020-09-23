@@ -4,15 +4,14 @@ import com.google.common.truth.Truth.assertThat
 import java.time.ZonedDateTime
 import org.junit.Test
 
-
 class StopTest {
 
-    val arrival = TimetableRow.arrival(
+    private val arrival = TimetableRow.arrival(
         "A", 1, "1",
         ZonedDateTime.parse("2020-10-10T10:10:00.000Z")
     )
-    val departure = arrival.copy(type = TimetableRow.Type.Departure)
 
+    private val departure = arrival.copy(type = TimetableRow.Type.Departure)
 
     @Test(expected = IllegalArgumentException::class)
     fun `Creating Stop with two arrival timetable rows throws an exception`() {
@@ -121,5 +120,17 @@ class StopTest {
         val stop = Stop(departure = departure.copy(stationUic = 5))
         val result = stop.stationUic()
         assertThat(result).isEqualTo(5)
+    }
+
+    @Test fun `track() returns the arrival track`() {
+        val stop = Stop(arrival.copy(track = "foo"), departure)
+        val result = stop.track()
+        assertThat(result).isEqualTo("foo")
+    }
+
+    @Test fun `track() returns the departure track when arrival is not set`() {
+        val stop = Stop(departure = departure.copy(track = "bar"))
+        val result = stop.track()
+        assertThat(result).isEqualTo("bar")
     }
 }

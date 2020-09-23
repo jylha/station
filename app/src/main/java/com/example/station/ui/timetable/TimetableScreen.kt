@@ -48,9 +48,12 @@ import androidx.ui.tooling.preview.Preview
 import com.example.station.R
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
+import com.example.station.model.Stop
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
+import com.example.station.model.stopsAt
+import com.example.station.model.track
 import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.Loading
@@ -103,21 +106,19 @@ fun TimetableScreen(
     }
 
     Scaffold(topBar = {
-        TopAppBar(
-            title = { TimetableTitles(viewState.station?.name, selectedCategories) },
-            actions = {
-                IconButton(onClick = { categorySelectionEnabled = !categorySelectionEnabled }) {
-                    if (categorySelectionEnabled) Icon(Icons.Default.ExpandLess)
-                    else Icon(Icons.Default.FilterList)
-                }
-            }
+        TimetableTopAppBar(
+            viewState.station?.name,
+            selectedCategories,
+            categorySelectionEnabled,
+            onShowCategories = { categorySelectionEnabled = true },
+            onHideCategories = { categorySelectionEnabled = false }
         )
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
             viewState.loading -> LoadingTimetable(modifier)
             viewState.station != null -> {
-                Timetable(
+                TimetableScreenContent(
                     station = viewState.station,
                     trains = viewState.timetable,
                     modifier,
@@ -135,21 +136,34 @@ fun TimetableScreen(
     }
 }
 
+@Composable private fun TimetableTopAppBar(
+    stationName: String?,
+    selectedCategories: Set<Category>,
+    categorySelectionEnabled: Boolean,
+    onShowCategories: () -> Unit,
+    onHideCategories: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        title = {
+            Column(modifier) {
+                Title(stationName)
+                Subtitle(selectedCategories)
+            }
+        },
+        actions = {
+            if (categorySelectionEnabled) {
+                IconButton(onClick = onHideCategories) { Icon(Icons.Default.ExpandLess) }
+            } else {
+                IconButton(onClick = onShowCategories) { Icon(Icons.Default.FilterList) }
+            }
+        }
+    )
+}
+
 @Composable private fun LoadingTimetable(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_loading_timetable)
     Loading(message, modifier)
-}
-
-/** The title and subtitle shown in TimetableScreen's TopAppBar. */
-@Composable private fun TimetableTitles(
-    stationName: String?,
-    selectedCategories: Set<Category>,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        Title(stationName)
-        Subtitle(selectedCategories)
-    }
 }
 
 /** A title displaying the station name. */
@@ -172,11 +186,11 @@ fun TimetableScreen(
     Text(subtitleText, modifier, style = MaterialTheme.typography.caption)
 }
 
-@Composable private fun Timetable(
+@Composable private fun TimetableScreenContent(
     station: Station,
     trains: List<Train>,
     modifier: Modifier = Modifier,
-    trainSelected: (Train) -> Unit,
+    onTrainSelected: (Train) -> Unit,
     selectedCategories: Set<Category>,
     categorySelected: (Category) -> Unit,
     showCategorySelection: Boolean = false
@@ -201,22 +215,32 @@ fun TimetableScreen(
                 when {
                     trains.isEmpty() -> EmptyState("No trains scheduled to stop in the near future.")
                     matchingTrains.isEmpty() -> EmptyState("No trains of selected category scheduled in the near future.")
-                    else -> {
-                        LazyColumnFor(
-                            matchingTrains,
-                            contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
-                        ) { train ->
-                            TimetableEntry(
-                                station,
-                                train,
-                                onSelect = trainSelected,
-                                Modifier.padding(bottom = 8.dp)
-                            )
-                        }
-                    }
+                    else -> Timetable(station, matchingTrains, onTrainSelected)
                 }
             }
         }
+    }
+}
+
+@Composable private fun Timetable(
+    station: Station,
+    trains: List<Train>,
+    onSelect: (Train) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val stops =
+        trains.flatMap { train ->
+            train.stopsAt(station.uic).map { stop -> Pair(train, stop) }
+        }
+
+    LazyColumnFor(
+        stops,
+        modifier,
+        contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
+    ) { (train, stop) ->
+        TimetableEntry(
+            station, train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp)
+        )
     }
 }
 
@@ -319,16 +343,19 @@ fun TimetableScreen(
             TimetableRow.arrival("T", 456, "2", ZonedDateTime.now().plusHours(2))
         )
     )
+    val stop = train.stopsAt(555).first()
+
     StationNameProvider(
         nameMapper = LocalizedStationNames.create(listOf(origin, somewhere, destination))
     ) {
-        TimetableEntry(somewhere, train, {})
+        TimetableEntry(somewhere, train, stop, {})
     }
 }
 
 @Composable fun TimetableEntry(
     station: Station,
     train: Train,
+    stop: Stop,
     onSelect: (Train) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -340,9 +367,9 @@ fun TimetableScreen(
 
             }
             Row {
-                Arrival(train.arrivalAt(station.uic), Modifier.weight(2f))
-                TrainTrack(train.track(station.uic), Modifier.weight(1f))
-                Departure(train.departureAt(station.uic), Modifier.weight(2f))
+                Arrival(stop.arrival, Modifier.weight(2f))
+                TrainTrack(stop.track(), Modifier.weight(1f))
+                Departure(stop.departure, Modifier.weight(2f))
             }
         }
     }
@@ -602,7 +629,7 @@ private fun PreviewTimetable() {
 
     StationTheme(darkTheme = true) {
         StationNameProvider(mapper) {
-            Timetable(helsinki, trains, Modifier, {}, setOf(Category.LongDistance), {})
+            TimetableScreenContent(helsinki, trains, Modifier, {}, setOf(Category.LongDistance), {})
         }
     }
 
