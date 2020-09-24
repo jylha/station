@@ -1,7 +1,6 @@
 package com.example.station.ui.stations
 
 import androidx.compose.runtime.Immutable
-import com.dropbox.android.external.store4.StoreResponse
 import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Station
 
@@ -20,27 +19,16 @@ data class StationsViewState(
     }
 }
 
-fun StationsViewState.reduce(result: StoreResponse<List<Station>>): StationsViewState {
+fun StationsViewState.reduce(result: StationsViewResult): StationsViewState {
     return when (result) {
-        is StoreResponse.Loading -> copy(isLoading = true)
-        is StoreResponse.Data ->
-            copy(stations = result.value.updateNames(nameMapper), isLoading = false)
-        is StoreResponse.NoNewData -> copy(isLoading = false)
-        is StoreResponse.Error.Exception -> copy(errorMessage = result.errorMessageOrNull())
-        is StoreResponse.Error.Message -> copy(errorMessage = result.message)
-    }
-}
-
-fun StationsViewState.reduce(result: StationViewResult): StationsViewState {
-    return when (result) {
-        is StationViewResult.NameMapper -> {
-            val mapper = result.mapper
-            copy(nameMapper = mapper, stations = stations.updateNames(mapper))
-        }
-
-        is StationViewResult.RecentStations -> {
-            copy(recentStations = result.stations)
-        }
+        StationsViewResult.LoadingStations -> copy(isLoading = true)
+        StationsViewResult.NoNewData -> copy(isLoading = false)
+        is StationsViewResult.StationsData ->
+            copy(stations = result.stations.updateNames(nameMapper), isLoading = false)
+        is StationsViewResult.NameMapper ->
+            copy(nameMapper = result.mapper, stations = stations.updateNames(result.mapper))
+        is StationsViewResult.RecentStations -> copy(recentStations = result.stations)
+        is StationsViewResult.Error -> copy(errorMessage = result.message)
     }
 }
 

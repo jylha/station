@@ -37,7 +37,6 @@ import com.example.station.ui.components.Loading
 import com.example.station.ui.components.SearchBar
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -48,11 +47,9 @@ fun StationScreen(
     val viewState by viewModel.viewState.collectAsState()
     val stations = viewState.stations
     val recentStations = remember(stations, viewState.recentStations) {
-        val a = viewState.recentStations.mapNotNull { uic ->
+        viewState.recentStations.mapNotNull { uic ->
             stations.firstOrNull { station -> station.uic == uic }
         }
-        Timber.d("recent: $a")
-        a
     }
 
     var searchEnabled by remember { mutableStateOf(false) }
