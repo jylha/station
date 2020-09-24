@@ -2,12 +2,14 @@ package com.example.station.ui.stations
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -21,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -32,7 +35,9 @@ import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.Loading
 import com.example.station.ui.components.SearchBar
+import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -42,6 +47,13 @@ fun StationScreen(
     val viewModel = viewModel<StationsViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     val stations = viewState.stations
+    val recentStations = remember(stations, viewState.recentStations) {
+        val a = viewState.recentStations.mapNotNull { uic ->
+            stations.firstOrNull { station -> station.uic == uic }
+        }
+        Timber.d("recent: $a")
+        a
+    }
 
     var searchEnabled by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
@@ -80,14 +92,15 @@ fun StationScreen(
             //viewState.isLoading -> LoadingMessage("Loading stations...")
             viewState.isLoading && viewState.stations.isEmpty() -> LoadingStations(modifier)
             filteredStations.isEmpty() -> NoMatchingStations(modifier)
-            else -> StationList(
+            else -> StationSelection(
                 filteredStations,
+                recentStations,
                 onSelect = { station ->
                     viewModel.stationSelected(station)
                     navigateTo(Screen.Timetable(station))
                 },
                 modifier,
-                highlightedText = searchText
+                searchText
             )
         }
     }
@@ -103,15 +116,45 @@ fun StationScreen(
     EmptyState(message, modifier)
 }
 
+@Composable private fun StationSelection(
+    stations: List<Station>,
+    recentStations: List<Station>,
+    onSelect: (Station) -> Any,
+    modifier: Modifier,
+    searchText: String?
+) {
+    ScrollableColumn(modifier) {
+        if (searchText.isNullOrBlank()) {
+            StationList(recentStations, onSelect, stringResource(R.string.label_recent))
+            Divider()
+        }
+        val labelResId = if (searchText.isNullOrBlank()) R.string.label_all_stations
+        else R.string.label_matching_stations
+        StationList(stations, onSelect, stringResource(labelResId), searchText)
+    }
+}
+
 @Composable private fun StationList(
     stations: List<Station>,
     onSelect: (Station) -> Any,
-    modifier: Modifier = Modifier,
+    label: String? = null,
     highlightedText: String? = null
 ) {
-    Column(modifier) {
-        LazyColumnFor(stations) { station ->
-            StationListEntry(station = station, onSelect = onSelect, searchText = highlightedText)
+    Column {
+        if (!label.isNullOrBlank()) {
+            Text(
+                label.toUpperCase(Locale.getDefault()),
+                modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+                style = MaterialTheme.typography.caption,
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+            )
+        }
+        for (station in stations) {
+            StationListEntry(
+                station = station,
+                onSelect = onSelect,
+                searchText = highlightedText
+            )
         }
     }
 }
@@ -136,10 +179,12 @@ fun StationScreen(
     Box(
         modifier
             .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+            .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = { onSelect(station) })
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 10.dp)
     ) {
-        Text(name)
+        Text(name, style = MaterialTheme.typography.body1)
     }
 }
 

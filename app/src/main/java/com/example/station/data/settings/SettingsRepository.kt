@@ -11,9 +11,16 @@ interface SettingsRepository {
     /** Set selected station. */
     suspend fun setStation(stationUicCode: Int)
 
+    /**
+     * Returns a list of recently selected station UIC codes. The list is updated
+     * on setStation calls to include the set station.
+     */
+    fun recentStations(): Flow<List<Int>>
+
     /** Returns train categories currently selected to be shown in the timetable. */
     fun trainCategories(): Flow<Set<Train.Category>?>
 
     /** Set selected train categories. */
     suspend fun setTrainCategories(categories: Set<Train.Category>)
+
 }

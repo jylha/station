@@ -32,6 +32,12 @@ class StationsViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
+            settingsRepository.recentStations().collect { stations ->
+                state.value = state.value.reduce(StationViewResult.RecentStations(stations))
+            }
+        }
+
+        viewModelScope.launch {
             val mapper = stationRepository.getStationNameMapper()
             state.value = state.value.reduce(StationViewResult.NameMapper(mapper))
         }

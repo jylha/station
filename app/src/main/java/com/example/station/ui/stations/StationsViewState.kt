@@ -8,6 +8,7 @@ import com.example.station.model.Station
 @Immutable
 data class StationsViewState(
     val stations: List<Station>,
+    val recentStations: List<Int>,
     val nameMapper: StationNameMapper? = null,
     val isLoading: Boolean,
     val errorMessage: String?,
@@ -15,6 +16,7 @@ data class StationsViewState(
     companion object {
         fun initial() = StationsViewState(
             stations = emptyList(),
+            recentStations = emptyList(),
             isLoading = false,
             errorMessage = null
         )
@@ -38,11 +40,11 @@ fun StationsViewState.reduce(result: StationViewResult): StationsViewState {
             val mapper = result.mapper
             copy(nameMapper = mapper, stations = stations.updateNames(mapper))
         }
-    }
-}
 
-sealed class StationViewResult {
-    data class NameMapper(val mapper: StationNameMapper) : StationViewResult()
+        is StationViewResult.RecentStations -> {
+            copy(recentStations = result.stations)
+        }
+    }
 }
 
 fun List<Station>.updateNames(mapper: StationNameMapper?): List<Station> {

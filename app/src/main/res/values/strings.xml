@@ -40,4 +40,7 @@
     <string name="label_departs">Departs</string>
     <string name="label_departed">Departed</string>
     <string name="label_track">Track</string>
+    <string name="label_recent">Recent</string>
+    <string name="label_all_stations">All stations</string>
+    <string name="label_matching_stations">Matching stations</string>
 </resources>
