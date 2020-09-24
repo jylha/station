@@ -8,17 +8,14 @@ import com.example.station.model.Station
 @Immutable
 data class StationsViewState(
     val stations: List<Station>,
-    val recentStations: List<Int>,
+    val recentStations: List<Int> = emptyList(),
     val nameMapper: StationNameMapper? = null,
-    val isLoading: Boolean,
-    val errorMessage: String?,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
 ) {
     companion object {
-        fun initial() = StationsViewState(
-            stations = emptyList(),
-            recentStations = emptyList(),
-            isLoading = false,
-            errorMessage = null
+        fun initial(): StationsViewState = StationsViewState(
+            stations = emptyList()
         )
     }
 }
@@ -47,7 +44,7 @@ fun StationsViewState.reduce(result: StationViewResult): StationsViewState {
     }
 }
 
-fun List<Station>.updateNames(mapper: StationNameMapper?): List<Station> {
+private fun List<Station>.updateNames(mapper: StationNameMapper?): List<Station> {
     return map { station ->
         val updatedName = mapper?.stationName(station.uic)
         if (updatedName != null) station.copy(name = updatedName) else station

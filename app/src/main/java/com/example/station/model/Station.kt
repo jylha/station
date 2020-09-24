@@ -22,6 +22,8 @@ data class Station(
     val longitude: Double,
     val latitude: Double
 ) {
+    companion object;
+
     sealed class Type(val value: String) {
         object Station : Type("STATION")
         object StoppingPoint : Type("STOPPING_POINT")
