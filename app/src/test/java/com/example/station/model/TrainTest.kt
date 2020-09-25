@@ -135,6 +135,38 @@ class TrainTest {
         assertThat(result.last().isDestination()).isTrue()
     }
 
+    private val trainWithNonCommercialStop = trainWithEmptyTimetable.copy(
+        timetable = listOf(
+            TimetableRow.departure("A", 1, "4", scheduledTime1),
+            TimetableRow.arrival("B", 2, "2", scheduledTime2, trainStopping = true, commercialStop = false),
+            TimetableRow.departure("B", 2, "2", scheduledTime3, trainStopping = true, commercialStop = false),
+            TimetableRow.arrival("C", 3, "2", scheduledTime4)
+        )
+    )
+
+    @Test fun `commercialStops() returns only the timetable rows marked as commercial stops`() {
+        val result = trainWithNonCommercialStop.commercialStops()
+        assertThat(result).hasSize(2)
+        assertThat(result.first().stationUic()).isEqualTo(1)
+        assertThat(result.last().stationUic()).isEqualTo(3)
+    }
+
+    private val trainWithNonStopTimetableRows = trainWithEmptyTimetable.copy(
+        timetable = listOf(
+            TimetableRow.departure("A", 1, "4", scheduledTime1),
+            TimetableRow.arrival("B", 2, "2", scheduledTime2, trainStopping = false, commercialStop = null),
+            TimetableRow.departure("B", 2, "2", scheduledTime3, trainStopping = false, commercialStop = null),
+            TimetableRow.arrival("C", 3, "2", scheduledTime4)
+        )
+    )
+
+    @Test fun `commercialStops() returns only timetable rows marked as stops `() {
+        val result = trainWithNonStopTimetableRows.commercialStops()
+        assertThat(result).hasSize(2)
+        assertThat(result.first().stationUic()).isEqualTo(1)
+        assertThat(result.last().stationUic()).isEqualTo(3)
+    }
+
     @Test fun `stopsAt() for origin returns list of single stop`() {
         val result = train.stopsAt(100)
         assertThat(result).hasSize(1)

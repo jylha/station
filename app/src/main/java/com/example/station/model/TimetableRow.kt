@@ -45,14 +45,16 @@ data class TimetableRow(
             scheduledTime: ZonedDateTime,
             estimatedTime: ZonedDateTime? = null,
             actualTime: ZonedDateTime? = null,
-            differenceInMinutes: Int? = null
+            differenceInMinutes: Int? = null,
+            trainStopping: Boolean = true,
+            commercialStop: Boolean? = true
         ): TimetableRow =
             TimetableRow(
                 Type.Arrival,
                 stationShortCode,
                 stationUic,
-                trainStopping = true,
-                commercialStop = true,
+                trainStopping,
+                commercialStop,
                 track,
                 scheduledTime,
                 estimatedTime,
@@ -70,14 +72,16 @@ data class TimetableRow(
             estimatedTime: ZonedDateTime? = null,
             actualTime: ZonedDateTime? = null,
             differenceInMinutes: Int? = null,
-            markedReady: Boolean = false
+            markedReady: Boolean = false,
+            trainStopping: Boolean = true,
+            commercialStop: Boolean? = true
         ): TimetableRow =
             TimetableRow(
                 Type.Departure,
                 stationShortCode,
                 stationUic,
-                trainStopping = true,
-                commercialStop = true,
+                trainStopping,
+                commercialStop ,
                 track,
                 scheduledTime,
                 estimatedTime,

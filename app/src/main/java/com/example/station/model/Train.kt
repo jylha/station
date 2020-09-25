@@ -91,6 +91,14 @@ fun Train.stops(): List<Stop> {
     return stops
 }
 
+/** Returns train's commercial stops. */
+fun Train.commercialStops(): List<Stop> {
+    return stops().filter { (arrival, departure) ->
+        (arrival != null && arrival.trainStopping && arrival.commercialStop == true) ||
+                (departure != null && departure.trainStopping && departure.commercialStop == true)
+    }
+}
+
 /** Returns train's stops at the specified station. */
 fun Train.stopsAt(stationUic: Int): List<Stop> {
     return stops().filter { stop -> stop.stationUic() == stationUic }
