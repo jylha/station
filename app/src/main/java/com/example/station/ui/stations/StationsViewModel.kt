@@ -27,6 +27,11 @@ class StationsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
+            val mapper = stationRepository.getStationNameMapper()
+            handle(StationsViewResult.NameMapper(mapper))
+        }
+
+        viewModelScope.launch {
             handle(StationsViewResult.LoadingStations)
             stationRepository.fetchStations().collect { response ->
                 val result = when (response) {
@@ -43,11 +48,6 @@ class StationsViewModel @ViewModelInject constructor(
             settingsRepository.recentStations().collect { stations ->
                 handle(StationsViewResult.RecentStations(stations))
             }
-        }
-
-        viewModelScope.launch {
-            val mapper = stationRepository.getStationNameMapper()
-            handle(StationsViewResult.NameMapper(mapper))
         }
     }
 
