@@ -243,8 +243,10 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
     val time = scheduledTime.atLocalZone().format(formatter)
     Text(
         time,
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
         style = MaterialTheme.typography.body1,
-        fontStyle = FontStyle.Italic
+        fontStyle = FontStyle.Italic,
+        fontWeight = FontWeight.Light   
     )
 }
 
@@ -256,7 +258,6 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
     ) {
         Text(
             time,
-            textAlign = TextAlign.Left,
             style = MaterialTheme.typography.body1,
             fontStyle = FontStyle.Normal
         )
@@ -350,7 +351,7 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
     }
 }
 
-@Preview(name="TrainDetailsScreen", showBackground = true)
+@Preview(name = "TrainDetailsScreen", showBackground = true)
 @Composable private fun PreviewTrainDetails() {
     val train = Train(
         5, "IC", Train.Category.LongDistance, timetable = listOf(
