@@ -10,9 +10,12 @@
     <string name="label_search_station">Etsi asema</string>
 
     <string name="label_about">Tietoja sovelluksesta</string>
-    <string name="text_about">
-        Liikennetietojen lähde Traffic Management Finland / digitraffic.fi, lisenssi CC 4.0 BY
-    </string>
+    <string name="label_source">Liikennetietojen lähde:</string>
+
+    <string name="message_loading_settings">Haetaan asetuksia.</string>
+    <string name="message_loading_stations">Haetaan asemia.</string>
+    <string name="message_loading_timetable">Haetaan aikataulua.</string>
+    <string name="message_no_matching_stations">Hakua vastaavia asemia ei löytynyt.</string>
 
     <string name="title_timetable">Aikataulu</string>
     <string name="subtitle_all_trains">Kaikki junat</string>
@@ -27,4 +30,8 @@
     <string name="label_departs">Lähtee</string>
     <string name="label_departed">Lähti</string>
     <string name="label_track">Raide</string>
+    <string name="label_recent">Äskeiset</string>
+    <string name="label_all_stations">Kaikki asemat</string>
+    <string name="label_matching_stations">Vastaavat asemat</string>
+
 </resources>

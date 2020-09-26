@@ -8,6 +8,14 @@
     <string name="label_nearest_station">Närmaste station</string>
     <string name="label_search_station">Sök station</string>
 
+    <string name="label_about">Om den här applikation</string>
+    <string name="label_source">Trafikinformationskälla:</string>
+
+    <string name="message_loading_settings">Hämtar inställningar.</string>>
+    <string name="message_loading_stations">Hämtar stationer.</string>
+    <string name="message_loading_timetable">Hämtar tidtabell.</string>
+    <string name="message_no_matching_stations">Inga stationer matchar sökningen.</string>
+
     <string name="title_timetable">Tidtabell</string>
     <string name="subtitle_all_trains">Alla tåg</string>
     <string name="subtitle_long_distance_trains">Fjärrtåg</string>
@@ -21,4 +29,8 @@
     <string name="label_departs">Avgår</string>
     <string name="label_departed">Avgick</string>
     <string name="label_track">Spår</string>
+    <string name="label_recent">Senaste</string>
+    <string name="label_all_stations">Alla stationer</string>
+    <string name="label_matching_stations">Matchande stationer</string>
+
 </resources>

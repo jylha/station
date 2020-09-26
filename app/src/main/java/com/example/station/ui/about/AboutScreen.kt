@@ -27,8 +27,10 @@ fun AboutScreen() {
 }
 
 @Composable private fun AboutCard() {
-    val labelText = stringResource(R.string.label_about)
-    val contentText = stringResource(R.string.text_about)
+    val aboutLabel = stringResource(R.string.label_about)
+    val sourceLabel = stringResource(R.string.label_source)
+    val sourceText = stringResource(R.string.text_source)
+
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
     Card(
         Modifier
@@ -43,9 +45,9 @@ fun AboutScreen() {
             ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(labelText, style = MaterialTheme.typography.h5)
+            Text(aboutLabel, style = MaterialTheme.typography.h5)
             Spacer(Modifier.height(16.dp))
-            Text(contentText, color = contentColor, textAlign = TextAlign.Center,
+            Text("$sourceLabel $sourceText", color = contentColor, textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.body1)
         }
     }
