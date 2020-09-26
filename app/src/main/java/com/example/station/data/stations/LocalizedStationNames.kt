@@ -48,6 +48,7 @@ private val LOCALIZED_STATION_NAMES = mapOf(
     66 to R.string.station_name_0066_espoo,
     73 to R.string.station_name_0073_hanko,
     130 to R.string.station_name_0130_turku,
+    135 to R.string.station_name_0135_turku_harbor,
     160 to R.string.station_name_0160_tampere,
     280 to R.string.station_name_0280_seinajoki,
     351 to R.string.station_name_0351_tornio,
@@ -62,6 +63,8 @@ private val LOCALIZED_STATION_NAMES = mapOf(
     532 to R.string.station_name_0532_kotka,
     603 to R.string.station_name_0603_imatra,
     623 to R.string.station_name_0623_zoo,
+    644 to R.string.station_name_0644_kotka_harbor,
+    1328 to R.string.station_name_1328_pasila_car_carrier,
 
     3181 to R.string.station_name_3181_st_petersburg_lad,
     3820 to R.string.station_name_3820_st_petersburg_fin,

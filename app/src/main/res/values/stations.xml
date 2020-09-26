@@ -11,6 +11,7 @@
     <string name="station_name_0065_kauklahti">Kauklahti</string>
     <string name="station_name_0066_espoo">Espoo</string>
     <string name="station_name_0130_turku">Turku Central Station</string>
+    <string name="station_name_0135_turku_harbor">Turku Harbor</string>
     <string name="station_name_0073_hanko">Hanko</string>
     <string name="station_name_0160_tampere">Tampere</string>
     <string name="station_name_0280_seinajoki">Seinäjoki</string>
@@ -26,6 +27,8 @@
     <string name="station_name_0532_kotka">Kotka</string>
     <string name="station_name_0603_imatra">Imatra</string>
     <string name="station_name_0623_zoo">Ähtäri Zoo</string>
+    <string name="station_name_0644_kotka_harbor">Kotka Harbor</string>
+    <string name="station_name_1328_pasila_car_carrier">Pasila Car-carrier Station</string>
 
     <string name="station_name_3820_st_petersburg_fin">St. Petersburg (Finljandski)</string>
     <string name="station_name_3181_st_petersburg_lad">St. Petersburg (Ladozhki)</string>
