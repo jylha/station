@@ -42,7 +42,7 @@ class StoreBackedStationRepository @Inject constructor(
         .from<Int, List<Station>, List<Station>>(
             fetcher = Fetcher.of { key ->
                 stationService.fetchStations()
-                    .filter { it.passengerTraffic }
+                    .filter { it.passengerTraffic || it.uic == 769 /* Kempele (incorrectly marked in the data). */}
                     .map { it.toDomainModel() }
                     .filter { it.type == Station.Type.Station || it.type == Station.Type.StoppingPoint }
             },
