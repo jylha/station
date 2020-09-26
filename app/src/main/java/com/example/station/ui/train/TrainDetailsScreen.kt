@@ -224,7 +224,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 }
 
 @Composable private fun StopName(name: String?) {
-    Text(name ?: "<missing>", style = MaterialTheme.typography.subtitle1)
+    if (!name.isNullOrBlank()) {
+        Text(name, style = MaterialTheme.typography.subtitle1)
+    }
 }
 
 @Composable private fun StopTime(timetableRow: TimetableRow?) {
