@@ -52,6 +52,7 @@ import com.example.station.model.isReached
 import com.example.station.model.isWaypoint
 import com.example.station.model.stationUic
 import com.example.station.ui.components.StationNameProvider
+import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.components.stationName
 import com.example.station.util.atLocalZone
 import java.time.ZonedDateTime
@@ -286,17 +287,22 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
         val arrivalIconRef = createRef()
         val departureIconRef = createRef()
         val timeRef = createRef()
+        val arrivalTimeRef = createRef()
+        val departureTimeRef = createRef()
+
+        val horizontalGuideCenter = createGuidelineFromTop(0.5f)
+        val verticalGuideCenter = createGuidelineFromStart(0.5f)
+        val verticalGuideEnd = createGuidelineFromStart(0.7f)
 
         Box(Modifier.constrainAs(stationIconRef) {
-            centerHorizontallyTo(parent)
-            top.linkTo(parent.top)
-            bottom.linkTo(parent.bottom)
+            centerAround(verticalGuideCenter)
+            centerAround(horizontalGuideCenter)
             width = Dimension.value(20.dp)
             height = Dimension.value(20.dp)
         }) { stationIcon() }
 
         Box(Modifier.constrainAs(arrivalIconRef) {
-            centerHorizontallyTo(parent)
+            centerAround(verticalGuideCenter)
             top.linkTo(parent.top)
             bottom.linkTo(stationIconRef.top)
             width = Dimension.value(20.dp)
@@ -304,7 +310,7 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
         }) { arrivalIcon?.invoke() }
 
         Box(Modifier.constrainAs(departureIconRef) {
-            centerHorizontallyTo(parent)
+            centerAround(verticalGuideCenter)
             top.linkTo(stationIconRef.bottom)
             bottom.linkTo(parent.bottom)
             width = Dimension.value(20.dp)
@@ -312,28 +318,40 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
         }) { departureIcon?.invoke() }
 
         Box(Modifier.constrainAs(nameRef) {
-            top.linkTo(stationIconRef.top)
-            bottom.linkTo(stationIconRef.bottom)
+            centerAround(horizontalGuideCenter)
             end.linkTo(stationIconRef.start, margin = 16.dp)
         }) { name() }
 
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.constrainAs(timeRef) {
-                centerVerticallyTo(stationIconRef)
+        if (portraitOrientation()) {
+            Box(Modifier.constrainAs(arrivalTimeRef) {
                 start.linkTo(stationIconRef.end, margin = 16.dp)
                 top.linkTo(parent.top, margin = 4.dp)
+                bottom.linkTo(horizontalGuideCenter)
+            }) { arrivalTime?.invoke() }
+
+            Box(Modifier.constrainAs(departureTimeRef) {
+                start.linkTo(stationIconRef.end, margin = 16.dp)
+                top.linkTo(horizontalGuideCenter)
                 bottom.linkTo(parent.bottom, margin = 4.dp)
-            }) {
-            arrivalTime?.invoke()
-            departureTime?.invoke()
+            }) { departureTime?.invoke() }
+        } else {
+            Box(Modifier.constrainAs(arrivalTimeRef) {
+                start.linkTo(stationIconRef.end, margin = 16.dp)
+                centerAround(horizontalGuideCenter)
+                top.linkTo(parent.top, margin = 4.dp)
+                bottom.linkTo(parent.bottom, margin = 4.dp)
+            }) { arrivalTime?.invoke() }
+
+            Box(Modifier.constrainAs(departureTimeRef) {
+                start.linkTo(verticalGuideEnd)
+                centerAround(horizontalGuideCenter)
+            }) { departureTime?.invoke() }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable fun TrainDetails() {
+@Preview(name="TrainDetailsScreen", showBackground = true)
+@Composable private fun PreviewTrainDetails() {
     val train = Train(
         5, "IC", Train.Category.LongDistance, timetable = listOf(
             TimetableRow.departure(
