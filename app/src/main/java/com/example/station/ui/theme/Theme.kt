@@ -11,15 +11,19 @@ import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = purple200,
-    primaryVariant = purple700,
-    secondary = teal200
+    primary = blue,
+    primaryVariant = blue_light,
+    secondary = red,
+    onPrimary = Color.White,
+    onSecondary = Color.White
 )
 
 private val LightColorPalette = lightColors(
-    primary = purple500,
-    primaryVariant = purple700,
-    secondary = teal200
+    primary = blue,
+    primaryVariant = blue_light,
+    secondary = red,
+    onPrimary = Color.White,
+    onSecondary = Color.White
 )
 
 /** Custom color palette for the application. */

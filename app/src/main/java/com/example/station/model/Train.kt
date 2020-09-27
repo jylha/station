@@ -99,6 +99,13 @@ fun Train.commercialStops(): List<Stop> {
     }
 }
 
+/** Returns the trains current commercial stop. */
+fun Train.currentCommercialStop() : Stop? {
+    return commercialStops().findLast { (arrival, departure) ->
+        arrival?.actualTime != null ||departure?.actualTime != null || departure?.markedReady == true
+    }
+}
+
 /** Returns train's stops at the specified station. */
 fun Train.stopsAt(stationUic: Int): List<Stop> {
     return stops().filter { stop -> stop.stationUic() == stationUic }

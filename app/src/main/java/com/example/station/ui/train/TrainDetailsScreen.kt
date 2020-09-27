@@ -5,6 +5,7 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
@@ -17,11 +18,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Train
 import androidx.compose.material.icons.rounded.ArrowRightAlt
+import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,9 +47,10 @@ import com.example.station.model.Stop
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.commercialStops
+import com.example.station.model.currentCommercialStop
 import com.example.station.model.isDeparted
 import com.example.station.model.isDestination
-import com.example.station.model.isNotReached
+import com.example.station.model.isNotDeparted
 import com.example.station.model.isOrigin
 import com.example.station.model.isReached
 import com.example.station.model.isWaypoint
@@ -70,37 +74,57 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 }
 
 @Composable fun TrainDetailsScreen(viewState: TrainDetailsViewState, train: Train) {
-    val stops = remember(train) { train.commercialStops() }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         ScrollableColumn(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(32.dp))
-            TrainIcon()
-            Spacer(Modifier.height(8.dp))
-            TrainIdentification(type = train.type, number = train.number)
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(20.dp))
+            TrainIdentification(train)
+            Spacer(Modifier.height(20.dp))
             TrainRoute(train.origin(), train.destination())
-            Spacer(Modifier.height(16.dp))
-            TrainStops(train, stops)
+            Spacer(Modifier.height(20.dp))
+            Timetable(train)
+            Spacer(Modifier.height(20.dp))
         }
     }
 }
 
-@Composable private fun TrainIdentification(type: String, number: Int) {
-    Row {
-        Text("$type $number", style = MaterialTheme.typography.h4)
+@Composable private fun TrainIdentification(train: Train) {
+    if (train.category == Train.Category.Commuter && train.commuterLineId != null) {
+        CommuterTrainIdentification(train.commuterLineId)
+    } else {
+        LongDistanceTrainIdentification(train.type, train.number)
     }
 }
 
-@Composable private fun TrainIcon() {
-    Image(
-        Icons.Outlined.Train, Modifier.size(80.dp),
-        contentScale = ContentScale.Fit,
-        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
-    )
+@Composable private fun LongDistanceTrainIdentification(type: String, number: Int) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            Icons.Outlined.Train, Modifier.size(60.dp),
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+        )
+        Row {
+            Text("$type $number", style = MaterialTheme.typography.h4)
+        }
+    }
+}
+
+@Composable private fun CommuterTrainIdentification(commuterLineId: String) {
+    Column(
+        Modifier.size(60.dp).background(color = MaterialTheme.colors.primary, CircleShape),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            commuterLineId, Modifier.fillMaxWidth(), textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h4, color = MaterialTheme.colors.onPrimary,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 @Composable private fun TrainRoute(originUic: Int?, destinationUic: Int?) {
@@ -108,43 +132,53 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val destinationName = if (destinationUic != null) stationName(destinationUic) else null
 
     Row(
+        Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            originName ?: "",
+            originName ?: "", Modifier.weight(1f), textAlign = TextAlign.Right,
             style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
         )
-        Icon(Icons.Rounded.ArrowRightAlt)
+        Icon(Icons.Rounded.ArrowRightAlt, Modifier.padding(2.dp))
         Text(
-            destinationName ?: "",
+            destinationName ?: "", Modifier.weight(1f),
             style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
         )
     }
 }
 
-@Composable private fun TrainStops(train: Train, stops: List<Stop>) {
+@Composable private fun Timetable(train: Train) {
+    val stops = remember(train) { train.commercialStops() }
+    val currentStop = remember(train) { train.currentCommercialStop() }
+    val currentStopIndex = remember(stops, currentStop) { stops.indexOf(currentStop) }
+    val nextStopIndex = remember(currentStop) {
+        if (currentStop?.isDeparted() == true) currentStopIndex + 1 else -1
+    }
+
     Column {
-        stops.forEach { stop ->
+        stops.forEachIndexed() { index, stop ->
+            val isCurrent = index == currentStopIndex && stop.isNotDeparted()
+            val isNext = index == nextStopIndex
             when {
-                stop.isOrigin() -> TrainOrigin(train, stop)
-                stop.isWaypoint() -> TrainWaypoint(stop)
-                stop.isDestination() -> TrainDestination(stop)
+                stop.isOrigin() -> TrainOrigin(train, stop, isCurrent)
+                stop.isWaypoint() -> TrainWaypoint(stop, isCurrent, isNext)
+                stop.isDestination() -> TrainDestination(stop, isCurrent, isNext)
             }
         }
     }
 }
 
-@Composable private fun TrainOrigin(train: Train, origin: Stop) {
+@Composable private fun TrainOrigin(train: Train, origin: Stop, isCurrent: Boolean) {
 
-    val (stationIconResId, stationIconColor) = if (train.isNotReady()) {
-        Pair(R.drawable.origin_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
+    val (stationIconResId, stationIconColor) = if (train.isReady() || origin.isDeparted()) {
+        Pair(R.drawable.origin_closed, MaterialTheme.colors.primaryVariant)
     } else {
-        Pair(R.drawable.origin_closed, MaterialTheme.colors.primary)
+        Pair(R.drawable.origin_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
     }
 
     val lineColor = if (origin.isDeparted()) {
-        MaterialTheme.colors.primary
+        MaterialTheme.colors.primaryVariant
     } else {
         MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
     }
@@ -153,7 +187,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         name = { StopName(stationName(origin.stationUic())) },
         stationIcon = {
             Image(
-                vectorResource(stationIconResId), colorFilter = ColorFilter.tint(stationIconColor)
+                vectorResource(stationIconResId),
+                colorFilter = ColorFilter.tint(stationIconColor)
             )
         },
         departureTime = { StopTime(origin.departure) },
@@ -162,19 +197,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(lineColor)
             )
-        }
+        },
+        isCurrent = isCurrent
     )
 }
 
-@Composable private fun TrainWaypoint(waypoint: Stop) {
-    val (stationIconResId, arrivedIconColor) = if (waypoint.isNotReached()) {
-        Pair(R.drawable.waypoint_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
+@Composable private fun TrainWaypoint(waypoint: Stop, isCurrent: Boolean, isNext: Boolean) {
+    val (stationIconResId, arrivedIconColor) = if (waypoint.isReached()) {
+        Pair(R.drawable.waypoint_closed, MaterialTheme.colors.primaryVariant)
     } else {
-        Pair(R.drawable.waypoint_closed, MaterialTheme.colors.primary)
+        Pair(R.drawable.waypoint_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
     }
 
     val departedIconColor = if (waypoint.isDeparted()) {
-        MaterialTheme.colors.primary
+        MaterialTheme.colors.primaryVariant
     } else {
         MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
     }
@@ -183,7 +219,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
     CommercialStop(
         name = { StopName(stationName(waypoint.stationUic())) },
-        stationIcon = { Image(vectorResource(stationIconResId), colorFilter = arrivedColorFilter) },
+        stationIcon = {
+            Image(
+                vectorResource(stationIconResId),
+                colorFilter = arrivedColorFilter
+            )
+        },
         arrivalTime = { StopTime(waypoint.arrival) },
         arrivalIcon = {
             Image(
@@ -197,13 +238,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(departedIconColor)
             )
-        }
+        },
+        isCurrent = isCurrent,
+        isNext = isNext
     )
 }
 
-@Composable private fun TrainDestination(destination: Stop) {
+@Composable private fun TrainDestination(destination: Stop, isCurrent: Boolean, isNext: Boolean) {
     val (stationResId, iconColor) = if (destination.isReached()) {
-        Pair(R.drawable.destination_closed, MaterialTheme.colors.primary)
+        Pair(R.drawable.destination_closed, MaterialTheme.colors.primaryVariant)
     } else {
         Pair(R.drawable.destination_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
     }
@@ -219,7 +262,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 colorFilter = iconColorFilter
             )
         },
-        arrivalTime = { StopTime(destination.arrival) }
+        arrivalTime = { StopTime(destination.arrival) },
+        isCurrent = isCurrent,
+        isNext = isNext
     )
 }
 
@@ -248,7 +293,7 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
         style = MaterialTheme.typography.body1,
         fontStyle = FontStyle.Italic,
-        fontWeight = FontWeight.Light   
+        fontWeight = FontWeight.Light
     )
 }
 
@@ -283,17 +328,20 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
     arrivalTime: (@Composable () -> Unit)? = null,
     departureIcon: (@Composable () -> Unit)? = null,
     departureTime: (@Composable () -> Unit)? = null,
+    isCurrent: Boolean = false,
+    isNext: Boolean = false
 ) {
     ConstraintLayout(modifier.fillMaxWidth()) {
         val nameRef = createRef()
         val stationIconRef = createRef()
         val arrivalIconRef = createRef()
         val departureIconRef = createRef()
-        val timeRef = createRef()
         val arrivalTimeRef = createRef()
         val departureTimeRef = createRef()
+        val trainIndicatorRef = createRef()
 
         val horizontalGuideCenter = createGuidelineFromTop(0.5f)
+        val horizontalGuideStart = createGuidelineFromTop(0f)
         val verticalGuideCenter = createGuidelineFromStart(0.5f)
         val verticalGuideEnd = createGuidelineFromStart(0.7f)
 
@@ -350,6 +398,24 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
                 centerAround(horizontalGuideCenter)
             }) { departureTime?.invoke() }
         }
+
+        if (isCurrent || isNext) {
+            Icon(
+                Icons.Rounded.Train,
+                Modifier
+                    .background(MaterialTheme.colors.secondary, CircleShape)
+                    .size(24.dp)
+                    .constrainAs(trainIndicatorRef) {
+                        centerAround(verticalGuideCenter)
+                        if (isCurrent) {
+                            centerAround(horizontalGuideCenter)
+                        } else {
+                            centerAround(horizontalGuideStart)
+                        }
+                    },
+                tint = MaterialTheme.colors.onSecondary
+            )
+        }
     }
 }
 
@@ -358,7 +424,19 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
     val train = Train(
         5, "IC", Train.Category.LongDistance, timetable = listOf(
             TimetableRow.departure(
-                "HKI", 1, "2", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
+                "HKI", 1, "2",
+                ZonedDateTime.parse("2020-01-01T09:30:00.000Z"),
+                actualTime = ZonedDateTime.parse("2020-01-01T09:31:00.000Z"),
+                differenceInMinutes = 1, markedReady = true
+            ),
+            TimetableRow.arrival(
+                "RI", 4, "4",
+                ZonedDateTime.parse("2020-01-01T10:11:00.000Z"),
+                actualTime = ZonedDateTime.parse("2020-01-01T10:10:00.000Z"),
+                differenceInMinutes = -1
+            ),
+            TimetableRow.departure(
+                "RI", 4, "4", ZonedDateTime.parse("2020-01-01T10:12:00.000Z")
             ),
             TimetableRow.arrival(
                 "HML", 3, "1", ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
@@ -373,7 +451,7 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
     )
 
     val viewState = TrainDetailsViewState.initial()
-    val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere")
+    val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere", 4 to "Riihimäki")
     StationNameProvider(nameMapper = object : StationNameMapper {
         override fun stationName(stationUic: Int): String? = names[stationUic]
     }) {
