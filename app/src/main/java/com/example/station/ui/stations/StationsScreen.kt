@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,13 +42,33 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun StationScreen(
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    selectNearestStation: Boolean = false
 ) {
     val viewModel = viewModel<StationsViewModel>()
-    val viewState by viewModel.viewState.collectAsState()
-    val stations = viewState.stations
-    val recentStations = remember(stations, viewState.recentStations) {
-        viewState.recentStations.mapNotNull { uic ->
+    val state by viewModel.state.collectAsState()
+
+    onActive { viewModel.setSelectionMode(selectNearestStation) }
+
+    if (selectNearestStation && state.selectNearest) {
+        val station = state.nearestStation
+        if (station != null) navigateTo(Screen.Timetable(station))
+    }
+
+    when {
+        state.isLoading && state.stations.isEmpty() -> LoadingStations()
+        state.isFetchingLocation || state.selectNearest -> FetchingLocation()
+        else -> StationsScreen(state, onSelect = { station ->
+            viewModel.stationSelected(station)
+            navigateTo(Screen.Timetable(station))
+        })
+    }
+}
+
+@Composable fun StationsScreen(state: StationsViewState, onSelect: (Station) -> Any) {
+    val stations = state.stations
+    val recentStations = remember(stations, state.recentStations) {
+        state.recentStations.mapNotNull { uic ->
             stations.firstOrNull { station -> station.uic == uic }
         }
     }
@@ -84,18 +105,15 @@ fun StationScreen(
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
-            // FIXME: 9.9.2020 Show loading message only when initially loading stations.
-            // Add some indicator to display along with stations when refreshing.
-            //viewState.isLoading -> LoadingMessage("Loading stations...")
-            viewState.isLoading && viewState.stations.isEmpty() -> LoadingStations(modifier)
+
+            state.isLoading && state.stations.isEmpty() -> LoadingStations(modifier)
+
+
             filteredStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationSelection(
                 filteredStations,
                 recentStations,
-                onSelect = { station ->
-                    viewModel.stationSelected(station)
-                    navigateTo(Screen.Timetable(station))
-                },
+                onSelect = onSelect,
                 modifier,
                 searchText
             )
@@ -105,6 +123,11 @@ fun StationScreen(
 
 @Composable private fun LoadingStations(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_loading_stations)
+    Loading(message, modifier)
+}
+
+@Composable private fun FetchingLocation(modifier: Modifier = Modifier) {
+    val message = "Fetching location" // TODO: 28.9.2020 Add string resource.
     Loading(message, modifier)
 }
 

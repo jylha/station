@@ -41,6 +41,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.example.station.R
 import com.example.station.ui.Screen
 import com.example.station.ui.components.Loading
+import com.example.station.ui.components.LocationPermissionAmbient
 import com.example.station.ui.components.landscapeOrientation
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.theme.blue
@@ -62,9 +63,17 @@ fun HomeScreen(
         } else if (false && viewState.station != null) {
             navigateTo(Screen.Timetable(viewState.station!!))
         } else {
+            val locationPermission = LocationPermissionAmbient.current
             WelcomeCard(
                 onSelectStation = { navigateTo(Screen.SelectStation) },
-                onShowNearestStation = {},
+                onShowNearestStation = {
+                    if (locationPermission.isGranted()) {
+                        navigateTo(Screen.SelectNearest)
+                    } else {
+                        // FIXME: 28.9.2020 Handle navigation after permission is granted.
+                        locationPermission.request()
+                    }
+                },
                 onAbout = { navigateTo(Screen.About) }
             )
         }
@@ -107,7 +116,7 @@ fun HomeScreen(
                         Text(stringResource(R.string.label_select_station))
                     }
                     Spacer(Modifier.size(16.dp))
-                    Button(onShowNearestStation, Modifier.width(180.dp), enabled = false) {
+                    Button(onShowNearestStation, Modifier.width(180.dp)) {
                         Text(stringResource(R.string.label_nearest_station))
                     }
                 }
@@ -155,16 +164,16 @@ fun HomeScreen(
 
 @Composable private fun WelcomeAnimation(modifier: Modifier = Modifier) {
     var animationView by remember { mutableStateOf<LottieAnimationView?>(null) }
-
-    AndroidView({ context: Context ->
-        val view = LottieAnimationView(context)
-        view.setAnimation("train-animation.json")
-        view.repeatCount = 0
-        view.repeatMode = LottieDrawable.RESTART
-        view.playAnimation()
-        animationView = view
-        view
-    },
+    AndroidView(
+        { context: Context ->
+            val view = LottieAnimationView(context)
+            view.setAnimation("train-animation.json")
+            view.repeatCount = 0
+            view.repeatMode = LottieDrawable.RESTART
+            view.playAnimation()
+            animationView = view
+            view
+        },
         modifier,
-        {})
+    )
 }
