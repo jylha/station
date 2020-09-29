@@ -1,5 +1,6 @@
 package com.example.station.model
 
+import androidx.compose.runtime.Immutable
 import java.time.ZonedDateTime
 
 /**
@@ -17,6 +18,7 @@ import java.time.ZonedDateTime
  * @param differenceInMinutes Difference between scheduled and actual time in minutes.
  * @param markedReady Train is marked ready to depart (used only on origin station).
  */
+@Immutable
 data class TimetableRow(
     val type: Type,
     val stationShortCode: String,

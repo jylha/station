@@ -127,7 +127,7 @@ fun StationScreen(
 }
 
 @Composable private fun FetchingLocation(modifier: Modifier = Modifier) {
-    val message = "Fetching location" // TODO: 28.9.2020 Add string resource.
+    val message = stringResource(R.string.message_retrieving_location)
     Loading(message, modifier)
 }
 
