@@ -23,6 +23,6 @@ class EmptyStateTest {
     }
 
     @Test fun emptyStateDisplaysMessage() {
-        onNodeWithText("Hello!").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Hello!").assertIsDisplayed()
     }
 }

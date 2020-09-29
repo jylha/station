@@ -18,3 +18,14 @@ data class TrainDetailsViewState constructor(
         }
     }
 }
+
+fun TrainDetailsViewState.reduce(result: TrainDetailsViewResult): TrainDetailsViewState {
+    return when (result) {
+        is TrainDetailsViewResult.NameMapper -> {
+            copy(nameMapper = result.mapper)
+        }
+        is TrainDetailsViewResult.TrainDetails -> {
+            copy(train = result.train)
+        }
+    }
+}

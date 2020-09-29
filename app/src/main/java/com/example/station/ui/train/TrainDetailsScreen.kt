@@ -27,6 +27,7 @@ import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,15 +67,24 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(train: Train) {
     val viewModel = viewModel<TrainDetailsViewModel>()
+    onCommit(train) { viewModel.setTrain(train) }
+
     val viewState by viewModel.state.collectAsState()
 
+    val currentTrain = viewState.train.let {
+        when {
+            it == null -> train
+            it.number != train.number -> train
+            else -> it
+        }
+    }
+
     StationNameProvider(nameMapper = viewState.nameMapper) {
-        TrainDetailsScreen(viewState, train)
+        TrainDetails(currentTrain)
     }
 }
 
-@Composable fun TrainDetailsScreen(viewState: TrainDetailsViewState, train: Train) {
-
+@Composable fun TrainDetails(train: Train) {
     Surface(modifier = Modifier.fillMaxSize()) {
         ScrollableColumn(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -455,13 +465,12 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
         )
     )
 
-    val viewState = TrainDetailsViewState.initial()
     val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere", 4 to "Riihimäki")
     StationTheme {
         StationNameProvider(nameMapper = object : StationNameMapper {
             override fun stationName(stationUic: Int): String? = names[stationUic]
         }) {
-            TrainDetailsScreen(viewState, train)
+            TrainDetails(train)
         }
     }
 }
