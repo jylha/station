@@ -44,6 +44,7 @@ import com.example.station.ui.components.Loading
 import com.example.station.ui.components.LocationPermissionAmbient
 import com.example.station.ui.components.landscapeOrientation
 import com.example.station.ui.components.portraitOrientation
+import com.example.station.ui.components.withPermission
 import com.example.station.ui.theme.blue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -67,11 +68,9 @@ fun HomeScreen(
             WelcomeCard(
                 onSelectStation = { navigateTo(Screen.SelectStation) },
                 onShowNearestStation = {
-                    if (locationPermission.isGranted()) {
-                        navigateTo(Screen.SelectNearest)
-                    } else {
-                        // FIXME: 28.9.2020 Handle navigation after permission is granted.
-                        locationPermission.request()
+                    withPermission(locationPermission) { granted ->
+                        if (granted) navigateTo(Screen.SelectNearest)
+                        else navigateTo(Screen.SelectStation)
                     }
                 },
                 onAbout = { navigateTo(Screen.About) }
