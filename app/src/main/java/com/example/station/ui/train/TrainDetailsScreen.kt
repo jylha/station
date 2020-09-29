@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Train
 import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
@@ -58,6 +57,7 @@ import com.example.station.model.stationUic
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.components.stationName
+import com.example.station.ui.theme.StationTheme
 import com.example.station.util.atLocalZone
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -82,7 +82,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         ) {
             Spacer(Modifier.height(20.dp))
             TrainIdentification(train)
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(16.dp))
             TrainRoute(train.origin(), train.destination())
             Spacer(Modifier.height(20.dp))
             Timetable(train)
@@ -104,12 +104,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            Icons.Outlined.Train, Modifier.size(60.dp),
+            Icons.Rounded.Train,
+            Modifier.size(60.dp)
+                .background(MaterialTheme.colors.secondary, CircleShape)
+                .padding(4.dp),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary)
         )
+        Spacer(Modifier.height(8.dp))
         Row {
-            Text("$type $number", style = MaterialTheme.typography.h4)
+            Text("$type $number", style = MaterialTheme.typography.h5)
         }
     }
 }
@@ -405,6 +409,7 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
                 Modifier
                     .background(MaterialTheme.colors.secondary, CircleShape)
                     .size(24.dp)
+                    .padding(2.dp)
                     .constrainAs(trainIndicatorRef) {
                         centerAround(verticalGuideCenter)
                         if (isCurrent) {
@@ -452,9 +457,11 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
 
     val viewState = TrainDetailsViewState.initial()
     val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere", 4 to "Riihimäki")
-    StationNameProvider(nameMapper = object : StationNameMapper {
-        override fun stationName(stationUic: Int): String? = names[stationUic]
-    }) {
-        TrainDetailsScreen(viewState, train)
+    StationTheme {
+        StationNameProvider(nameMapper = object : StationNameMapper {
+            override fun stationName(stationUic: Int): String? = names[stationUic]
+        }) {
+            TrainDetailsScreen(viewState, train)
+        }
     }
 }
