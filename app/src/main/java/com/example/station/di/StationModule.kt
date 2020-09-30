@@ -5,12 +5,14 @@ import com.example.station.data.stations.StoreBackedStationRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityRetainedComponent::class)
+@InstallIn(ApplicationComponent::class)
 abstract class StationModule {
 
+    @Singleton
     @Binds
     abstract fun bindStationRepository(repository: StoreBackedStationRepository): StationRepository
 }

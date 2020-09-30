@@ -56,7 +56,7 @@ fun StationScreen(
     }
 
     when {
-        state.isLoading && state.stations.isEmpty() -> LoadingStations()
+        state.isLoading -> LoadingStations()
         state.isFetchingLocation || state.selectNearest -> FetchingLocation()
         else -> StationsScreen(state, onSelect = { station ->
             viewModel.stationSelected(station)

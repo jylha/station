@@ -42,7 +42,7 @@ class StoreBackedStationRepository @Inject constructor(
         .from<Int, List<Station>, List<Station>>(
             fetcher = Fetcher.of { key ->
                 stationService.fetchStations()
-                    .filter { it.passengerTraffic || it.uic == 769 /* Kempele (incorrectly marked in the data). */}
+                    .filter { it.passengerTraffic || it.uic == 769 /* Kempele (incorrectly marked in the data). */ }
                     .map { it.toDomainModel() }
                     .filter { it.type == Station.Type.Station || it.type == Station.Type.StoppingPoint }
             },
@@ -52,9 +52,11 @@ class StoreBackedStationRepository @Inject constructor(
                         stationDatabase.stationDao().getStation(key)
                             .map { listOf(it.toDomainModel()) }
                     } else {
-                        stationDatabase.stationDao().getAll().map { stations ->
-                            stations.map { it.toDomainModel() }
-                        }
+                        stationDatabase.stationDao().getAll()
+                            .map { stations ->
+                                stations.map { it.toDomainModel() }
+                                    .ifEmpty { null }
+                            }
                     }
                 },
                 writer = { _, stations ->

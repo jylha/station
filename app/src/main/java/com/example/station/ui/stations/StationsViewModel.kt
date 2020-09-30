@@ -31,26 +31,27 @@ class StationsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
+            reduceState(StationsViewResult.LoadingNameMapper)
             val mapper = stationRepository.getStationNameMapper()
-            handle(StationsViewResult.NameMapper(mapper))
+            reduceState(StationsViewResult.NameMapper(mapper))
         }
 
         viewModelScope.launch {
-            handle(StationsViewResult.LoadingStations)
+            reduceState(StationsViewResult.LoadingStations)
             stationRepository.fetchStations().collect { response ->
                 val result = when (response) {
-                    is StoreResponse.Loading -> StationsViewResult.LoadingStations
+                    is StoreResponse.Loading -> StationsViewResult.ReloadingStations
                     is StoreResponse.Data -> StationsViewResult.StationsData(response.value)
                     is StoreResponse.NoNewData -> StationsViewResult.NoNewData
                     is StoreResponse.Error -> StationsViewResult.Error(response.errorMessageOrNull())
                 }
-                handle(result)
+                reduceState(result)
             }
         }
 
         viewModelScope.launch {
             settingsRepository.recentStations().collect { stations ->
-                handle(StationsViewResult.RecentStations(stations))
+                reduceState(StationsViewResult.RecentStations(stations))
             }
         }
     }
@@ -72,12 +73,12 @@ class StationsViewModel @ViewModelInject constructor(
     }
 
     private fun selectStation() {
-        handle(StationsViewResult.SelectStation)
+        reduceState(StationsViewResult.SelectStation)
     }
 
     private fun selectNearestStation() {
         viewModelScope.launch {
-            handle(StationsViewResult.SelectNearest)
+            reduceState(StationsViewResult.SelectNearest)
             try {
                 val fusedLocationClient =
                     LocationServices.getFusedLocationProviderClient(context)
@@ -85,27 +86,27 @@ class StationsViewModel @ViewModelInject constructor(
                     if (task.isComplete && task.isSuccessful) {
                         val location = task.result
                         if (location != null) {
-                            handle(
+                            reduceState(
                                 StationsViewResult.Location(
                                     location.latitude,
                                     location.longitude
                                 )
                             )
                         } else {
-                            handle(StationsViewResult.LocationError("Location not received."))
+                            reduceState(StationsViewResult.LocationError("Location not received."))
                         }
                     } else {
-                        handle(StationsViewResult.LocationError(null))
+                        reduceState(StationsViewResult.LocationError(null))
                     }
 
                 }
             } catch (e: SecurityException) {
-                handle(StationsViewResult.LocationError("Security exception."))
+                reduceState(StationsViewResult.LocationError("Security exception."))
             }
         }
     }
 
-    private fun handle(result: StationsViewResult) {
+    private fun reduceState(result: StationsViewResult) {
         _state.value = _state.value.reduce(result)
     }
 }
