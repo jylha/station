@@ -144,7 +144,7 @@ fun StationScreen(
     searchText: String?
 ) {
     ScrollableColumn(modifier) {
-        if (searchText.isNullOrBlank()) {
+        if (searchText.isNullOrBlank() && recentStations.isNotEmpty()) {
             StationList(recentStations, onSelect, stringResource(R.string.label_recent))
             Divider()
         }
