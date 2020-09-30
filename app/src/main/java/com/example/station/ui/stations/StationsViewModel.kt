@@ -5,21 +5,23 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
+import com.example.station.data.location.LocationService
 import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.stations.StationRepository
 import com.example.station.model.Station
-import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class StationsViewModel @ViewModelInject constructor(
     private val stationRepository: StationRepository,
     private val settingsRepository: SettingsRepository,
+    private val locationService: LocationService,
     @ApplicationContext val context: Context
 ) : ViewModel() {
 
@@ -79,30 +81,8 @@ class StationsViewModel @ViewModelInject constructor(
     private fun selectNearestStation() {
         viewModelScope.launch {
             reduceState(StationsViewResult.SelectNearest)
-            try {
-                val fusedLocationClient =
-                    LocationServices.getFusedLocationProviderClient(context)
-                fusedLocationClient.lastLocation.addOnCompleteListener { task ->
-                    if (task.isComplete && task.isSuccessful) {
-                        val location = task.result
-                        if (location != null) {
-                            reduceState(
-                                StationsViewResult.Location(
-                                    location.latitude,
-                                    location.longitude
-                                )
-                            )
-                        } else {
-                            reduceState(StationsViewResult.LocationError("Location not received."))
-                        }
-                    } else {
-                        reduceState(StationsViewResult.LocationError(null))
-                    }
-
-                }
-            } catch (e: SecurityException) {
-                reduceState(StationsViewResult.LocationError("Security exception."))
-            }
+            val location = locationService.currentLocation().first()
+            reduceState(StationsViewResult.Location(location.latitude, location.longitude))
         }
     }
 
@@ -110,3 +90,4 @@ class StationsViewModel @ViewModelInject constructor(
         _state.value = _state.value.reduce(result)
     }
 }
+
