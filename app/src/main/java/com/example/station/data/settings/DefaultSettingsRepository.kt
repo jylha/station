@@ -5,6 +5,7 @@ import androidx.datastore.preferences.createDataStore
 import androidx.datastore.preferences.edit
 import androidx.datastore.preferences.preferencesKey
 import androidx.datastore.preferences.preferencesSetKey
+import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -21,6 +22,7 @@ class DefaultSettingsRepository @Inject constructor(
     private val currentStationKey = preferencesKey<Int>("stationUicCode")
     private val recentStationsKey = preferencesSetKey<String>("recentStations")
     private val trainCategoriesKey = preferencesSetKey<String>("trainCategories")
+    private val timetableTypesKey = preferencesSetKey<String>("timetableTypes")
 
     private val dataStore = context.createDataStore("preferences")
 
@@ -53,19 +55,37 @@ class DefaultSettingsRepository @Inject constructor(
 
     override fun trainCategories(): Flow<Set<Train.Category>?> {
         return dataStore.data.map { preferences ->
-            preferences[trainCategoriesKey]?.map { category ->
+            preferences[trainCategoriesKey]?.mapNotNull { category ->
                 when (category) {
                     Train.Category.Commuter.name -> Train.Category.Commuter
                     Train.Category.LongDistance.name -> Train.Category.LongDistance
                     else -> null
                 }
-            }?.mapNotNull { it }?.toSet()
+            }?.toSet()
         }
     }
 
     override suspend fun setTrainCategories(categories: Set<Train.Category>) {
         dataStore.edit { preferences ->
             preferences[trainCategoriesKey] = categories.map { it.name }.toSet()
+        }
+    }
+
+    override fun timetableTypes(): Flow<Set<TimetableRow.Type>?> {
+        return dataStore.data.map { preferences ->
+            preferences[timetableTypesKey]?.mapNotNull { type ->
+                when (type) {
+                    TimetableRow.Type.Arrival.name -> TimetableRow.Type.Arrival
+                    TimetableRow.Type.Departure.name -> TimetableRow.Type.Departure
+                    else -> null
+                }
+            }?.toSet()
+        }
+    }
+
+    override suspend fun setTimetableTypes(types: Set<TimetableRow.Type>) {
+        dataStore.edit { preferences ->
+            preferences[timetableTypesKey] = types.map { it.name }.toSet()
         }
     }
 }

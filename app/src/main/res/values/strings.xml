@@ -33,9 +33,18 @@
     <string name="subtitle_all_trains">All trains</string>
     <string name="subtitle_long_distance_trains">Long distance trains</string>
     <string name="subtitle_commuter_trains">Commuter trains</string>
+    <string name="subtitle_arriving_trains">Arriving trains</string>
+    <string name="subtitle_arriving_long_distance_trains">Arriving long distance trains</string>
+    <string name="subtitle_arriving_commuter_trains">Arriving commuter trains</string>
+    <string name="subtitle_departing_trains">Departing trains</string>
+    <string name="subtitle_departing_long_distance_trains">Departing long distance trains</string>
+    <string name="subtitle_departing_commuter_trains">Departing commuter trains</string>
 
     <string name="category_long_distance_trains">Long-distance</string>
     <string name="category_commuter_trains">Commuter</string>
+
+    <string name="timetable_type_arriving">Arriving</string>
+    <string name="timetable_type_departing">Departing</string>
 
     <string name="label_arrives">Arrives</string>
     <string name="label_arrived">Arrived</string>

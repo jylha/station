@@ -32,9 +32,9 @@ data class TimetableRow(
     val differenceInMinutes: Int? = null,
     val markedReady: Boolean = false
 ) {
-    sealed class Type {
-        object Arrival : Type()
-        object Departure : Type()
+    sealed class Type(val name: String) {
+        object Arrival : Type("Arrival")
+        object Departure : Type("Departure")
     }
 
     companion object {

@@ -25,6 +25,9 @@
     <string name="category_long_distance_trains">Fjärrtåg</string>
     <string name="category_commuter_trains">Närtåg</string>
 
+    <string name="timetable_type_arriving">Ankommande</string>
+    <string name="timetable_type_departing">Avgående</string>
+
     <string name="label_arrives">Anländer</string>
     <string name="label_arrived">Anlände</string>
     <string name="label_departs">Avgår</string>

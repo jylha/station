@@ -7,6 +7,7 @@ import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.stations.StationRepository
 import com.example.station.data.trains.TrainRepository
 import com.example.station.model.Station
+import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
@@ -41,15 +43,16 @@ class TimetableViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             val mapper = stationRepository.getStationNameMapper()
-            _state.value = _state.value.reduce(TimetableResult.StationNames(mapper))
+            reduceState(TimetableResult.StationNames(mapper))
         }
 
         viewModelScope.launch {
-            settingsRepository.trainCategories().collect { selectedCategories ->
-                if (selectedCategories != null)
-                    _state.value =
-                        _state.value.reduce(TimetableResult.SettingsUpdated(selectedCategories))
-            }
+            combine(
+                settingsRepository.trainCategories(),
+                settingsRepository.timetableTypes()
+            ) { trainCategories, timetableTypes ->
+                TimetableResult.SettingsUpdated(trainCategories, timetableTypes)
+            }.collect { result -> reduceState(result) }
         }
     }
 
@@ -64,13 +67,12 @@ class TimetableViewModel @ViewModelInject constructor(
             .flatMapMerge { event ->
                 when (event) {
                     is TimetableEvent.LoadTimetable -> loadTimetable(event.station)
-                    is TimetableEvent.SelectCategories -> setCategories(event.categories)
+                    is TimetableEvent.SelectCategories -> setTrainCategories(event.categories)
+                    is TimetableEvent.SelectTimetableTypes -> setTimetableTypes(event.types)
                     is TimetableEvent.ReloadTimetable -> reloadTimetable(event.station)
                 }
             }
-            .collect { result ->
-                _state.value = _state.value.reduce(result)
-            }
+            .collect { result -> reduceState(result) }
     }
 
     private fun loadTimetable(station: Station): Flow<TimetableResult> {
@@ -78,9 +80,7 @@ class TimetableViewModel @ViewModelInject constructor(
             emit(TimetableResult.Loading(station))
             trainRepository.fetchTrains(station.shortCode, station.uic)
                 .catch { e -> emit(TimetableResult.Error(e.toString())) }
-                .collect { trains ->
-                    emit(TimetableResult.Data(station, trains))
-                }
+                .collect { trains -> emit(TimetableResult.Data(station, trains)) }
         }
     }
 
@@ -93,12 +93,19 @@ class TimetableViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun setCategories(categories: Set<Train.Category>): Flow<TimetableResult> {
+    private fun setTrainCategories(trainCategories: Set<Train.Category>): Flow<TimetableResult> {
         return flow {
-            settingsRepository.setTrainCategories(categories)
+            settingsRepository.setTrainCategories(trainCategories)
         }
     }
+
+    private fun setTimetableTypes(types: Set<TimetableRow.Type>): Flow<TimetableResult> {
+        return flow {
+            settingsRepository.setTimetableTypes(types)
+        }
+    }
+
+    private fun reduceState(result: TimetableResult) {
+        _state.value = _state.value.reduce(result)
+    }
 }
-
-
-

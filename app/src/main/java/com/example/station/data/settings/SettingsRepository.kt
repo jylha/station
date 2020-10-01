@@ -1,5 +1,6 @@
 package com.example.station.data.settings
 
+import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import kotlinx.coroutines.flow.Flow
 
@@ -22,5 +23,11 @@ interface SettingsRepository {
 
     /** Set selected train categories. */
     suspend fun setTrainCategories(categories: Set<Train.Category>)
+
+    /** Returns timetable types (arrival/departure) selected to be shown in the timetable. */
+    fun timetableTypes(): Flow<Set<TimetableRow.Type>?>
+
+    /** Set selected timetable types. */
+    suspend fun setTimetableTypes(types: Set<TimetableRow.Type>)
 
 }

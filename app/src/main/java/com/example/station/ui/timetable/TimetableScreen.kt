@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -40,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,9 +57,12 @@ import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
 import com.example.station.model.isDeparted
+import com.example.station.model.isDestination
 import com.example.station.model.isNotDeparted
 import com.example.station.model.isNotReached
+import com.example.station.model.isOrigin
 import com.example.station.model.isReached
+import com.example.station.model.isWaypoint
 import com.example.station.model.stopsAt
 import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
@@ -82,9 +89,11 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewState by viewModel.state.collectAsState()
 
     StationNameProvider(viewState.mapper) {
-        TimetableScreen(viewState, viewModel::offer, trainSelected = { train ->
-            navigateTo(Screen.TrainDetails(train))
-        })
+        TimetableScreen(
+            viewState,
+            viewModel::offer,
+            trainSelected = { train -> navigateTo(Screen.TrainDetails(train)) }
+        )
     }
 }
 
@@ -94,18 +103,35 @@ fun TimetableScreen(
     onEvent: (TimetableEvent) -> Unit,
     trainSelected: (Train) -> Unit
 ) {
-    var categorySelectionEnabled by remember { mutableStateOf(false) }
-    val selectedCategories = viewState.selectedCategories
-    val categorySelected: (Category) -> Unit = { category ->
+    var filterSelectionEnabled by remember { mutableStateOf(false) }
+
+    val selectedTimetableTypes = viewState.selectedTimetableTypes
+    val selectedTrainCategories = viewState.selectedTrainCategories
+
+    val timetableTypeSelected: (TimetableRow.Type) -> Unit = { type ->
+        val updatedTypes =
+            if (selectedTimetableTypes.contains(type)) {
+                if (type == TimetableRow.Type.Arrival) {
+                    setOf(TimetableRow.Type.Departure)
+                } else {
+                    setOf(TimetableRow.Type.Arrival)
+                }
+            } else {
+                selectedTimetableTypes + type
+            }
+        onEvent(TimetableEvent.SelectTimetableTypes(updatedTypes))
+    }
+
+    val trainCategorySelected: (Category) -> Unit = { category ->
         val updatedCategories =
-            if (selectedCategories.contains(category)) {
+            if (selectedTrainCategories.contains(category)) {
                 if (category == Category.LongDistance) {
                     setOf(Category.Commuter)
                 } else {
                     setOf(Category.LongDistance)
                 }
             } else {
-                selectedCategories + category
+                selectedTrainCategories + category
             }
         onEvent(TimetableEvent.SelectCategories(updatedCategories))
     }
@@ -113,10 +139,11 @@ fun TimetableScreen(
     Scaffold(topBar = {
         TimetableTopAppBar(
             viewState.station?.name,
-            selectedCategories,
-            categorySelectionEnabled,
-            onShowCategories = { categorySelectionEnabled = true },
-            onHideCategories = { categorySelectionEnabled = false }
+            selectedTimetableTypes,
+            selectedTrainCategories,
+            filterSelectionEnabled,
+            onShowFilters = { filterSelectionEnabled = true },
+            onHideFilters = { filterSelectionEnabled = false }
         )
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
@@ -128,9 +155,11 @@ fun TimetableScreen(
                     trains = viewState.timetable,
                     modifier,
                     trainSelected,
-                    selectedCategories,
-                    categorySelected,
-                    categorySelectionEnabled,
+                    selectedTimetableTypes,
+                    timetableTypeSelected,
+                    selectedTrainCategories,
+                    trainCategorySelected,
+                    filterSelectionEnabled,
                     refreshing = viewState.reloading,
                     onRefresh = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) }
                 )
@@ -145,24 +174,25 @@ fun TimetableScreen(
 
 @Composable private fun TimetableTopAppBar(
     stationName: String?,
-    selectedCategories: Set<Category>,
-    categorySelectionEnabled: Boolean,
-    onShowCategories: () -> Unit,
-    onHideCategories: () -> Unit,
+    selectedTimetableTypes: Set<TimetableRow.Type>,
+    selectedTrainCategories: Set<Category>,
+    filterSelectionEnabled: Boolean,
+    onShowFilters: () -> Unit,
+    onHideFilters: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
         title = {
             Column(modifier) {
                 Title(stationName)
-                Subtitle(selectedCategories)
+                Subtitle(selectedTimetableTypes, selectedTrainCategories)
             }
         },
         actions = {
-            if (categorySelectionEnabled) {
-                IconButton(onClick = onHideCategories) { Icon(Icons.Default.ExpandLess) }
+            if (filterSelectionEnabled) {
+                IconButton(onClick = onHideFilters) { Icon(Icons.Default.ExpandLess) }
             } else {
-                IconButton(onClick = onShowCategories) { Icon(Icons.Default.FilterList) }
+                IconButton(onClick = onShowFilters) { Icon(Icons.Default.FilterList) }
             }
         }
     )
@@ -180,15 +210,43 @@ fun TimetableScreen(
 }
 
 /** A subtitle displaying the selected categories. */
-@Composable private fun Subtitle(categories: Set<Category>, modifier: Modifier = Modifier) {
-    val subtitleText = if (categories.size == 1) {
-        if (categories.contains(Category.LongDistance)) {
-            stringResource(id = R.string.subtitle_long_distance_trains)
+@Composable private fun Subtitle(
+    timetableTypes: Set<TimetableRow.Type>,
+    trainCategories: Set<Category>,
+    modifier: Modifier = Modifier
+) {
+    val subtitleText = if (trainCategories.size == 1) {
+        if (trainCategories.contains(Category.LongDistance)) {
+            if (timetableTypes.size == 1) {
+                if (timetableTypes.contains(TimetableRow.Type.Arrival)) {
+                    stringResource(id = R.string.subtitle_arriving_long_distance_trains)
+                } else {
+                    stringResource(id = R.string.subtitle_departing_long_distance_trains)
+                }
+            } else {
+                stringResource(id = R.string.subtitle_long_distance_trains)
+            }
         } else {
-            stringResource(id = R.string.subtitle_commuter_trains)
+            if (timetableTypes.size == 1) {
+                if (timetableTypes.contains(TimetableRow.Type.Arrival)) {
+                    stringResource(id = R.string.subtitle_arriving_commuter_trains)
+                } else {
+                    stringResource(id = R.string.subtitle_departing_commuter_trains)
+                }
+            } else {
+                stringResource(id = R.string.subtitle_commuter_trains)
+            }
         }
     } else {
-        stringResource(id = R.string.subtitle_all_trains)
+        if (timetableTypes.size == 1) {
+            if (timetableTypes.contains(TimetableRow.Type.Arrival)) {
+                stringResource(id = R.string.subtitle_arriving_trains)
+            } else {
+                stringResource(id = R.string.subtitle_departing_trains)
+            }
+        } else {
+            stringResource(id = R.string.subtitle_all_trains)
+        }
     }
     Text(subtitleText, modifier, style = MaterialTheme.typography.caption)
 }
@@ -198,14 +256,18 @@ fun TimetableScreen(
     trains: List<Train>,
     modifier: Modifier = Modifier,
     onTrainSelected: (Train) -> Unit,
-    selectedCategories: Set<Category>,
-    categorySelected: (Category) -> Unit,
-    showCategorySelection: Boolean = false,
+    selectedTimetableTypes: Set<TimetableRow.Type>,
+    timetableTypeSelected: (TimetableRow.Type) -> Unit,
+    selectedTrainCategories: Set<Category>,
+    trainCategorySelected: (Category) -> Unit,
+    showFilterSelection: Boolean = false,
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {}
 ) {
-    val matchingTrains by remember(trains, selectedCategories) {
-        mutableStateOf(trains.filter { selectedCategories.contains(it.category) })
+    val matchingTrains by remember(trains, selectedTrainCategories, selectedTimetableTypes) {
+        mutableStateOf(trains
+            .filter { selectedTrainCategories.contains(it.category) }
+        )
     }
 
     SwipeRefreshLayout(
@@ -216,13 +278,22 @@ fun TimetableScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Column {
-                if (showCategorySelection) {
-                    CategorySelection(selectedCategories, categorySelected)
+                if (showFilterSelection) {
+                    FilterSelection(
+                        selectedTimetableTypes, timetableTypeSelected,
+                        selectedTrainCategories, trainCategorySelected
+                    )
                 }
                 when {
+                    // TODO: 1.10.2020 Localize these.
                     trains.isEmpty() -> EmptyState("No trains scheduled to stop in the near future.")
                     matchingTrains.isEmpty() -> EmptyState("No trains of selected category scheduled in the near future.")
-                    else -> Timetable(station, matchingTrains, onTrainSelected)
+                    else -> Timetable(
+                        station,
+                        matchingTrains,
+                        onTrainSelected,
+                        selectedTimetableTypes
+                    )
                 }
             }
         }
@@ -233,12 +304,21 @@ fun TimetableScreen(
     station: Station,
     trains: List<Train>,
     onSelect: (Train) -> Unit,
+    selectedTimetableTypes: Set<TimetableRow.Type>,
     modifier: Modifier = Modifier
 ) {
-    val stops =
-        trains.flatMap { train ->
+    val stops = trains
+        .flatMap { train ->
             train.stopsAt(station.uic).map { stop -> Pair(train, stop) }
-        }.sortedBy { (_, stop) -> stop.timeOfNextEvent() }
+        }
+        .filter { (_, stop) ->
+            stop.isWaypoint() ||
+                    stop.isDestination() && selectedTimetableTypes.contains(TimetableRow.Type.Arrival) ||
+                    stop.isOrigin() && selectedTimetableTypes.contains(TimetableRow.Type.Departure)
+        }
+        .sortedBy { (_, stop) -> stop.timeOfNextEvent() }
+
+    // TODO: 1.10.2020 Sort by the time of selected timetable type.
 
     LazyColumnFor(
         stops, modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
@@ -247,17 +327,61 @@ fun TimetableScreen(
     }
 }
 
-@Preview(name = "CategorySelection - light - swedish", "Category selection", locale = "sv-rFI")
-@Composable private fun PreviewLightCategorySelection() {
+@Preview(name = "FilterSelection - light", "Filter selection")
+@Composable private fun PreviewLightFilterSelection() {
     StationTheme(darkTheme = false) {
-        CategorySelection(setOf(Category.LongDistance), {})
+        FilterSelection(setOf(TimetableRow.Type.Arrival), {}, setOf(Category.LongDistance), {})
     }
 }
 
-@Preview(name = "CategorySelection - dark - finnish", "Category selection", locale = "fi-rFI")
-@Composable private fun PreviewDarkCategorySelection() {
+@Preview(name = "FilterSelection - dark", "Filter selection")
+@Composable private fun PreviewDarkFilterSelection() {
     StationTheme(darkTheme = true) {
-        CategorySelection(setOf(Category.LongDistance), {})
+        FilterSelection(setOf(TimetableRow.Type.Arrival), {}, setOf(Category.LongDistance), {})
+    }
+}
+
+@Composable private fun FilterSelection(
+    timetableTypes: Set<TimetableRow.Type>,
+    timetableTypeSelected: (TimetableRow.Type) -> Unit,
+    categories: Set<Category>,
+    categorySelected: (Category) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(modifier.fillMaxWidth(), elevation = 4.dp) {
+        Column(Modifier.padding(8.dp)) {
+            TimetableTypeSelection(timetableTypes, timetableTypeSelected)
+            Spacer(modifier = Modifier.height(8.dp))
+            CategorySelection(categories, categorySelected)
+        }
+    }
+}
+
+@Composable private fun TimetableTypeSelection(
+    timetableTypes: Set<TimetableRow.Type>,
+    timetableTypeSelected: (TimetableRow.Type) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier.fillMaxWidth()) {
+        SelectionButton(
+            onClick = { timetableTypeSelected(TimetableRow.Type.Arrival) },
+            selected = timetableTypes.contains(TimetableRow.Type.Arrival),
+            Modifier.weight(1f)
+        ) {
+            Icon(vectorResource(R.drawable.ic_arrival), Modifier.size(24.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.timetable_type_arriving))
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        SelectionButton(
+            onClick = { timetableTypeSelected(TimetableRow.Type.Departure) },
+            selected = timetableTypes.contains(TimetableRow.Type.Departure),
+            Modifier.weight(1f)
+        ) {
+            Text(stringResource(R.string.timetable_type_departing))
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(vectorResource(R.drawable.ic_departure), Modifier.size(24.dp))
+        }
     }
 }
 
@@ -266,45 +390,72 @@ fun TimetableScreen(
     categorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(modifier.fillMaxWidth(), elevation = 4.dp) {
-        Row(Modifier.padding(8.dp)) {
-            CategoryButton(
-                categorySelected, Category.LongDistance, categories.contains(Category.LongDistance),
-                Modifier.weight(1f)
-            )
-            Spacer(Modifier.width(8.dp))
-            CategoryButton(
-                categorySelected, Category.Commuter, categories.contains(Category.Commuter),
-                Modifier.weight(1f)
-            )
+    val image = remember { Icons.Outlined.Train }
+    Row(modifier.fillMaxWidth()) {
+        SelectionButton(
+            onClick = { categorySelected(Category.LongDistance) },
+            selected = categories.contains(Category.LongDistance),
+            Modifier.weight(1f)
+        ) {
+            Icon(image)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.category_long_distance_trains))
+        }
+        Spacer(Modifier.width(8.dp))
+        SelectionButton(
+            onClick = { categorySelected(Category.Commuter) },
+            selected = categories.contains(Category.Commuter),
+            Modifier.weight(1f)
+        ) {
+            Icon(image)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.category_commuter_trains))
         }
     }
 }
 
-@Composable private fun CategoryButton(
-    onClick: (Category) -> Unit, category: Category, selected: Boolean,
-    modifier: Modifier = Modifier
+@Composable private fun SelectionButton(
+    onClick: () -> Unit,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
-    val text = when (category) {
-        Category.LongDistance -> stringResource(id = R.string.category_long_distance_trains)
-        Category.Commuter -> stringResource(id = R.string.category_commuter_trains)
+    if (MaterialTheme.colors.isLight) {
+        LightSelectionButton(onClick, selected, modifier, content)
+    } else {
+        DarkSelectionButton(onClick, selected, modifier, content)
     }
+}
 
-    val image = remember { Icons.Outlined.Train }
+@Composable private fun LightSelectionButton(
+    onClick: () -> Unit,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Button(
+        onClick,
+        modifier,
+        backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.Gray,
+        contentColor = MaterialTheme.colors.onPrimary
+    ) { content() }
+}
+
+@Composable private fun DarkSelectionButton(
+    onClick: () -> Unit,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
     val color = if (selected) Color.Green.copy(alpha = 0.5f) else Color.Gray.copy(alpha = 0.7f)
 
     OutlinedButton(
-        onClick = { onClick(category) },
+        onClick,
         modifier,
         contentColor = color,
         backgroundColor = Color.Transparent,
         border = BorderStroke(2.dp, color),
-        contentPadding = PaddingValues(8.dp),
-    ) {
-        Icon(image)
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text)
-    }
+    ) { content() }
 }
 
 @Preview(name = "TimetableEntry - Dark", group = "TimetableEntry")
@@ -644,7 +795,8 @@ private fun PreviewTimetable() {
 
     StationTheme(darkTheme = true) {
         StationNameProvider(mapper) {
-            TimetableScreenContent(helsinki, trains, Modifier, {}, setOf(Category.LongDistance), {})
+            TimetableScreenContent(helsinki, trains, Modifier, {},
+                setOf(TimetableRow.Type.Arrival), {}, setOf(Category.LongDistance), {})
         }
     }
 

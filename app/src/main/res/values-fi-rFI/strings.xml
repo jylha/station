@@ -26,6 +26,9 @@
     <string name="category_long_distance_trains">Kaukojunat</string>
     <string name="category_commuter_trains">Lähijunat</string>
 
+    <string name="timetable_type_arriving">Saapuvat</string>
+    <string name="timetable_type_departing">Lähtevät</string>
+
     <string name="label_arrives">Saapuu</string>
     <string name="label_arrived">Saapui</string>
     <string name="label_departs">Lähtee</string>
