@@ -21,6 +21,12 @@
     <string name="subtitle_all_trains">Alla tåg</string>
     <string name="subtitle_long_distance_trains">Fjärrtåg</string>
     <string name="subtitle_commuter_trains">Närtåg</string>
+    <string name="subtitle_arriving_trains">Ankommande tåg</string>
+    <string name="subtitle_arriving_long_distance_trains">Ankommande fjärrtåg</string>
+    <string name="subtitle_arriving_commuter_trains">Ankommande närtåg</string>
+    <string name="subtitle_departing_trains">Avgående tåg</string>
+    <string name="subtitle_departing_long_distance_trains">Avgående fjärrtåg</string>
+    <string name="subtitle_departing_commuter_trains">Avgående närtåg</string>
 
     <string name="category_long_distance_trains">Fjärrtåg</string>
     <string name="category_commuter_trains">Närtåg</string>

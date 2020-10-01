@@ -22,6 +22,12 @@
     <string name="subtitle_all_trains">Kaikki junat</string>
     <string name="subtitle_long_distance_trains">Kaukojunat</string>
     <string name="subtitle_commuter_trains">Lähijunat</string>
+    <string name="subtitle_arriving_trains">Saapuvat junat</string>
+    <string name="subtitle_arriving_long_distance_trains">Saapuvat kaukojunat</string>
+    <string name="subtitle_arriving_commuter_trains">Saapuvat lähijunat</string>
+    <string name="subtitle_departing_trains">Lähtevät junat</string>
+    <string name="subtitle_departing_long_distance_trains">Lähtevät kaukojunat</string>
+    <string name="subtitle_departing_commuter_trains">Lähtevät lähijunat</string>
 
     <string name="category_long_distance_trains">Kaukojunat</string>
     <string name="category_commuter_trains">Lähijunat</string>
