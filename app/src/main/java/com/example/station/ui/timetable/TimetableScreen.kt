@@ -30,8 +30,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.outlined.Train
 import androidx.compose.material.icons.rounded.ArrowRightAlt
+import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -390,7 +390,7 @@ fun TimetableScreen(
     categorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val image = remember { Icons.Outlined.Train }
+    val image = remember { Icons.Rounded.Train }
     Row(modifier.fillMaxWidth()) {
         SelectionButton(
             onClick = { categorySelected(Category.LongDistance) },
