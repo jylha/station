@@ -307,6 +307,18 @@ fun TimetableScreen(
     selectedTimetableTypes: Set<TimetableRow.Type>,
     modifier: Modifier = Modifier
 ) {
+    val timeOfSelectedStopType = remember(selectedTimetableTypes) {
+        when {
+            selectedTimetableTypes.size == 2 ->
+                { stop: Stop -> stop.timeOfNextEvent() }
+            selectedTimetableTypes.contains(TimetableRow.Type.Arrival) ->
+                { stop: Stop -> stop.arrival?.run { actualTime ?: scheduledTime } }
+            selectedTimetableTypes.contains(TimetableRow.Type.Departure) ->
+                { stop: Stop -> stop.departure?.run { actualTime ?: scheduledTime } }
+            else -> { _ -> null }
+        }
+    }
+
     val stops = trains
         .flatMap { train ->
             train.stopsAt(station.uic).map { stop -> Pair(train, stop) }
@@ -316,9 +328,7 @@ fun TimetableScreen(
                     stop.isDestination() && selectedTimetableTypes.contains(TimetableRow.Type.Arrival) ||
                     stop.isOrigin() && selectedTimetableTypes.contains(TimetableRow.Type.Departure)
         }
-        .sortedBy { (_, stop) -> stop.timeOfNextEvent() }
-
-    // TODO: 1.10.2020 Sort by the time of selected timetable type.
+        .sortedBy { (_, stop) -> timeOfSelectedStopType(stop) }
 
     LazyColumnFor(
         stops, modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
