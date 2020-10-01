@@ -27,7 +27,8 @@ class DefaultLocationService @Inject constructor(
     override fun currentLocation(): Flow<Location> {
         return channelFlow<Location> {
             val locationRequest = LocationRequest.create()
-            locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.maxWaitTime = 1000
 
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(result: LocationResult?) {

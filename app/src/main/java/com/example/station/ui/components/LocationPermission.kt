@@ -40,23 +40,23 @@ data class LocationPermission(val activity: AppCompatActivity) {
     fun isGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(
             activity,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    /** Requests permission to access coarse location. */
+    /** Requests permission to access fine location. */
     fun request(onResult: (Boolean) -> Unit) {
         val startForResult = activity.registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { result -> onResult(result) }
-        startForResult.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+        startForResult.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     /** Checks whether rationale for granting access to location should be shown. */
     private fun shouldShowRationale(): Boolean {
         return ActivityCompat.shouldShowRequestPermissionRationale(
             activity,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION
         )
     }
 }
