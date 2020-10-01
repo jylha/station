@@ -31,7 +31,6 @@ import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
@@ -326,8 +325,8 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
         if (differenceInMinutes != 0) {
             Spacer(Modifier.width(4.dp))
             val (text, color) = when {
-                differenceInMinutes > 0 -> Pair("+$differenceInMinutes", Color.Red)
-                else -> Pair("$differenceInMinutes", Color.Green)
+                differenceInMinutes > 0 -> Pair("+$differenceInMinutes", StationTheme.colors.late)
+                else -> Pair("$differenceInMinutes", StationTheme.colors.early)
             }
             Text(text, color = color, style = MaterialTheme.typography.caption)
         }

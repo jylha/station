@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = blue,
-    primaryVariant = blue_light,
+    primaryVariant = lightBlue,
     secondary = red,
     onPrimary = Color.White,
     onSecondary = Color.White
@@ -20,7 +20,7 @@ private val DarkColorPalette = darkColors(
 
 private val LightColorPalette = lightColors(
     primary = blue,
-    primaryVariant = blue_light,
+    primaryVariant = lightBlue,
     secondary = red,
     onPrimary = Color.White,
     onSecondary = Color.White
@@ -33,6 +33,8 @@ class StationColorPalette(
     val trainHasDepartedStation: Color = Color.Red,
     val trainOnRouteToStation: Color = Color.Yellow,
     val trainReachedDestination: Color = Color.DarkGray,
+    val early: Color = darkGreen,
+    val late: Color = darkRed,
     val isDark: Boolean
 )
 

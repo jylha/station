@@ -665,12 +665,12 @@ private fun Time(
                 }
                 if (delay > 0) {
                     Text(
-                        text = "+$delay", delayModifier, color = Color.Red,
+                        text = "+$delay", delayModifier, color = StationTheme.colors.late,
                         style = MaterialTheme.typography.caption
                     )
                 } else {
                     Text(
-                        text = "$delay", delayModifier, color = Color.Green,
+                        text = "$delay", delayModifier, color = StationTheme.colors.early,
                         style = MaterialTheme.typography.caption
                     )
                 }
