@@ -44,6 +44,6 @@ fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
             mapper = result.mapper
         )
         TimetableResult.Reloading -> copy(reloading = true)
-        is TimetableResult.ReloadedData -> copy(reloading = false)
+        is TimetableResult.ReloadedData -> copy(reloading = false, timetable = result.trains)
     }
 }
