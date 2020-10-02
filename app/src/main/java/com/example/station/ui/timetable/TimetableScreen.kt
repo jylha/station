@@ -1,8 +1,10 @@
 package com.example.station.ui.timetable
 
+import androidx.compose.animation.asDisposableClock
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.animation.defaultFlingConfig
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.IconButton
@@ -38,10 +41,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -265,10 +270,8 @@ fun TimetableScreen(
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {}
 ) {
-    val matchingTrains by remember(trains, selectedTrainCategories, selectedTimetableTypes) {
-        mutableStateOf(trains
-            .filter { selectedTrainCategories.contains(it.category) }
-        )
+    val matchingTrains by remember(trains, selectedTrainCategories) {
+        mutableStateOf(trains.filter { selectedTrainCategories.contains(it.category) })
     }
 
     SwipeRefreshLayout(
@@ -320,19 +323,34 @@ fun TimetableScreen(
         }
     }
 
-    val stops = trains
-        .flatMap { train ->
+    val stops = remember(trains, selectedTimetableTypes) {
+        trains.flatMap { train ->
             train.stopsAt(station.uic).map { stop -> Pair(train, stop) }
         }
-        .filter { (_, stop) ->
-            stop.isWaypoint() ||
-                    stop.isDestination() && selectedTimetableTypes.contains(TimetableRow.Type.Arrival) ||
-                    stop.isOrigin() && selectedTimetableTypes.contains(TimetableRow.Type.Departure)
+            .filter { (_, stop) ->
+                stop.isWaypoint() ||
+                        stop.isDestination() && selectedTimetableTypes.contains(TimetableRow.Type.Arrival) ||
+                        stop.isOrigin() && selectedTimetableTypes.contains(TimetableRow.Type.Departure)
+            }
+            .sortedBy { (_, stop) -> timeOfSelectedStopType(stop) }
+    }
+
+    // FIXME: 2.10.2020 This is a temporary workaround to reset scroll position after filtering.
+    val clock = AnimationClockAmbient.current.asDisposableClock()
+    val config = defaultFlingConfig()
+    val saver = remember(config, clock) {
+        LazyListState.Saver(config, clock)
+    }
+    val listState =
+        rememberSavedInstanceState(stops, config, clock, saver = saver) {
+            LazyListState(
+                flingConfig = config,
+                animationClock = clock
+            )
         }
-        .sortedBy { (_, stop) -> timeOfSelectedStopType(stop) }
 
     LazyColumnFor(
-        stops, modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
+        stops, modifier, listState, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
     ) { (train, stop) ->
         TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
     }
