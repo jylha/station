@@ -40,7 +40,7 @@ class StoreBackedStationRepository @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private val store = StoreBuilder
         .from<Int, List<Station>, List<Station>>(
-            fetcher = Fetcher.of { key ->
+            fetcher = Fetcher.of { _ ->
                 stationService.fetchStations()
                     .filter { it.passengerTraffic || it.uic == 769 /* Kempele (incorrectly marked in the data). */ }
                     .map { it.toDomainModel() }

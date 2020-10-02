@@ -1,7 +1,6 @@
 package com.example.station.ui.components
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
@@ -31,7 +30,7 @@ fun SwipeRefreshLayout(
         if (newValue && !refreshing) onRefresh()
         true
     }
-    Stack(
+    Box(
         modifier = modifier.swipeable(
             state = swipeableState,
             anchors = mapOf(-refreshDistance to false, refreshDistance to true),

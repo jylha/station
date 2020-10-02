@@ -78,7 +78,7 @@ class TimetableViewModel @ViewModelInject constructor(
     private fun loadTimetable(station: Station): Flow<TimetableResult> {
         return flow {
             emit(TimetableResult.Loading(station))
-            trainRepository.fetchTrains(station.shortCode, station.uic)
+            trainRepository.trainsAtStation(station)
                 .catch { e -> emit(TimetableResult.Error(e.toString())) }
                 .collect { trains -> emit(TimetableResult.Data(station, trains)) }
         }

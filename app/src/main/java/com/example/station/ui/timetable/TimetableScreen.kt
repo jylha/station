@@ -1,11 +1,12 @@
 package com.example.station.ui.timetable
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
@@ -748,8 +749,7 @@ private fun statusColor(train: Train, stop: Stop): Color? {
 @Composable
 private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? = null) {
     Box(
-        modifier.fillMaxSize(),
-        backgroundColor = color ?: Color.Transparent
+        modifier.fillMaxSize().background(color ?: Color.Transparent)
     )
 }
 

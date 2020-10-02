@@ -1,14 +1,14 @@
 package com.example.station.ui.home
 
 import android.content.Context
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,7 +44,6 @@ import com.example.station.ui.components.LocationPermissionAmbient
 import com.example.station.ui.components.landscapeOrientation
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.components.withPermission
-import com.example.station.ui.theme.blue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -57,7 +55,10 @@ fun HomeScreen(
     val viewState by viewModel.state.collectAsState()
 
     Box(
-        backgroundColor = if (MaterialTheme.colors.isLight) blue else Color.Black
+        Modifier.background(
+            if (MaterialTheme.colors.isLight) MaterialTheme.colors.primary
+            else MaterialTheme.colors.background
+        )
     ) {
         if (viewState.loading) {
             Loading(stringResource(R.string.message_loading_settings))
@@ -90,7 +91,7 @@ fun HomeScreen(
             .clip(RoundedCornerShape(16.dp))
             .fillMaxSize()
     ) {
-        Stack {
+        Box {
             WelcomeAnimation(Modifier.width(400.dp).align(Alignment.Center))
             AboutButton(onClick = onAbout, Modifier.align(Alignment.TopEnd))
             Column(

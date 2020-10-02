@@ -32,7 +32,6 @@ class HomeViewModel @ViewModelInject constructor(
                 } else {
                     val station = stationRepository.fetchStation(stationUicCode)
                     _state.value = _state.value.copy(loading = false, station = station)
-                    Timber.d("station: $station")
                 }
             }
         }
