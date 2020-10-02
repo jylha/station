@@ -42,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -109,7 +110,7 @@ fun TimetableScreen(
     onEvent: (TimetableEvent) -> Unit,
     trainSelected: (Train) -> Unit
 ) {
-    var filterSelectionEnabled by remember { mutableStateOf(false) }
+    var filterSelectionEnabled by savedInstanceState { false }
 
     val selectedTimetableTypes = viewState.selectedTimetableTypes
     val selectedTrainCategories = viewState.selectedTrainCategories
