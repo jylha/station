@@ -38,6 +38,7 @@ import androidx.compose.ui.viewinterop.viewModel
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.example.station.R
+import com.example.station.model.Station
 import com.example.station.ui.Screen
 import com.example.station.ui.components.Loading
 import com.example.station.ui.components.LocationPermissionAmbient
@@ -54,6 +55,22 @@ fun HomeScreen(
     val viewModel = viewModel<HomeViewModel>()
     val viewState by viewModel.state.collectAsState()
 
+    HomeScreen(
+        viewState,
+        onSelectStation = { navigateTo(Screen.SelectStation) },
+        onSelectNearestStation = { navigateTo(Screen.SelectNearest) },
+        onShowTimetable = { station: Station -> navigateTo(Screen.Timetable(station)) },
+        onAbout = { navigateTo(Screen.About) }
+    )
+}
+
+@Composable fun HomeScreen(
+    viewState: HomeViewState,
+    onSelectStation: () -> Unit = {},
+    onSelectNearestStation: () -> Unit = {},
+    onShowTimetable: (Station) -> Unit = {},
+    onAbout: () -> Unit = {},
+) {
     Box(
         Modifier.background(
             if (MaterialTheme.colors.isLight) MaterialTheme.colors.primary
@@ -63,18 +80,18 @@ fun HomeScreen(
         if (viewState.loading) {
             Loading(stringResource(R.string.message_loading_settings))
         } else if (false && viewState.station != null) {
-            navigateTo(Screen.Timetable(viewState.station!!))
+            onShowTimetable(viewState.station)
         } else {
             val locationPermission = LocationPermissionAmbient.current
             WelcomeCard(
-                onSelectStation = { navigateTo(Screen.SelectStation) },
+                onSelectStation = onSelectStation,
                 onShowNearestStation = {
                     withPermission(locationPermission) { granted ->
-                        if (granted) navigateTo(Screen.SelectNearest)
-                        else navigateTo(Screen.SelectStation)
+                        if (granted) onSelectNearestStation()
+                        else onSelectStation()
                     }
                 },
-                onAbout = { navigateTo(Screen.About) }
+                onAbout = onAbout
             )
         }
     }
