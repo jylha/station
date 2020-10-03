@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
@@ -82,12 +84,14 @@ fun StationScreen(
         }
     }
 
+    val searchLabel = stringResource(R.string.label_search_station)
+
     Scaffold(
         topBar = {
             if (searchEnabled) {
                 SearchBar(
                     text = searchText,
-                    placeholderText = stringResource(R.string.label_search_station),
+                    placeholderText = searchLabel,
                     onValueChanged = { value -> searchText = value },
                     onClose = { searchEnabled = false; searchText = "" }
                 )
@@ -95,7 +99,10 @@ fun StationScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.label_select_station)) },
                     actions = {
-                        IconButton(onClick = { searchEnabled = true }) {
+                        IconButton(
+                            onClick = { searchEnabled = true },
+                            modifier = Modifier.semantics { accessibilityLabel = searchLabel }
+                        ) {
                             Icon(Icons.Default.Search)
                         }
                     }
@@ -105,10 +112,6 @@ fun StationScreen(
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
-
-            state.isLoading && state.stations.isEmpty() -> LoadingStations(modifier)
-
-
             filteredStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationSelection(
                 filteredStations,

@@ -21,7 +21,7 @@
     <string name="message_loading_stations">Retrieving stations.</string>
 
     <!-- The message shown when loading a timetable for a station. -->
-    <string name="message_loading_timetable">Retrieving the timetable.</string>
+    <string name="message_loading_timetable">Retrieving timetable.</string>
 
     <!-- The message shown when no station matching the search is found. -->
     <string name="message_no_matching_stations">No stations match the search.</string>
