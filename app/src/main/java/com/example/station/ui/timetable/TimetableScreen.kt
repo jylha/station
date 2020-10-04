@@ -88,12 +88,14 @@ import java.time.ZonedDateTime
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewModel = viewModel<TimetableViewModel>()
-    remember(station) { viewModel.offer(TimetableEvent.LoadTimetable(station)) }
+    savedInstanceState(station.uic) {
+        viewModel.offer(TimetableEvent.LoadTimetable(station))
+        station.uic
+    }
     val viewState by viewModel.state.collectAsState()
 
     StationNameProvider(viewState.mapper) {
