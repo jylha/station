@@ -74,16 +74,17 @@ import com.example.station.model.stopsAt
 import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
 import com.example.station.ui.Screen
+import com.example.station.ui.components.ActualTime
 import com.example.station.ui.components.EmptyState
+import com.example.station.ui.components.EstimatedTime
 import com.example.station.ui.components.Loading
 import com.example.station.ui.components.RefreshIndicator
+import com.example.station.ui.components.ScheduledTime
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.SwipeRefreshLayout
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
-import com.example.station.util.atLocalZone
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -634,88 +635,73 @@ fun TimetableScreen(
 }
 
 @Composable private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
-    when {
-        arrival?.actualTime != null -> Time(
-            stringResource(R.string.label_arrived),
-            arrival.actualTime,
-            modifier,
-            arrival.differenceInMinutes
-        )
-        arrival != null -> Time(
-            stringResource(R.string.label_arrives),
-            arrival.scheduledTime,
-            modifier
-        )
-        else -> Box(modifier)
-    }
+    arrival?.run {
+        when {
+            actualTime != null -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_arrived)) },
+                time = { ActualTime(actualTime, differenceInMinutes ?: 0) },
+                modifier
+            )
+            estimatedTime != null -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_arrives)) },
+                time = { EstimatedTime(scheduledTime, estimatedTime) },
+                modifier
+            )
+            else -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_arrives)) },
+                time = { ScheduledTime(scheduledTime) },
+                modifier
+            )
+        }
+    } ?: Box(modifier)
 }
 
 @Composable private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
-    when {
-        departure?.actualTime != null -> Time(
-            stringResource(R.string.label_departed),
-            departure.actualTime,
-            modifier,
-            departure.differenceInMinutes
-        )
-        departure != null -> Time(
-            stringResource(R.string.label_departs),
-            departure.scheduledTime,
-            modifier
-        )
-        else -> Box(modifier)
-    }
-}
-
-@Composable
-private fun Time(
-    label: String, dateTime: ZonedDateTime, modifier: Modifier = Modifier,
-    delay: Int? = null
-) {
-    val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    val time = dateTime.atLocalZone().format(formatter)
-
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            label.toUpperCase(Locale.getDefault()),
-            style = MaterialTheme.typography.caption,
-            color = Color.Gray
-        )
-        ConstraintLayout(Modifier.fillMaxWidth()) {
-            val timeRef = createRef()
-            val delayRef = createRef()
-
-            Text(time, Modifier.constrainAs(timeRef) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            })
-
-            if (delay != null && delay != 0) {
-                val delayModifier = Modifier.constrainAs(delayRef) {
-                    start.linkTo(timeRef.end, 4.dp)
-                    top.linkTo(timeRef.top)
-                    bottom.linkTo(timeRef.bottom)
-                }
-                if (delay > 0) {
-                    Text(
-                        text = "+$delay", delayModifier, color = StationTheme.colors.late,
-                        style = MaterialTheme.typography.caption
-                    )
-                } else {
-                    Text(
-                        text = "$delay", delayModifier, color = StationTheme.colors.early,
-                        style = MaterialTheme.typography.caption
-                    )
-                }
-            }
+    departure?.run {
+        when {
+            actualTime != null -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_departed)) },
+                time = { ActualTime(actualTime, differenceInMinutes ?: 0) },
+                modifier
+            )
+            estimatedTime != null -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_departs)) },
+                time = { EstimatedTime(scheduledTime, estimatedTime) },
+                modifier
+            )
+            else -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_departs)) },
+                time = { ScheduledTime(scheduledTime) },
+                modifier
+            )
         }
+    } ?: Box(modifier)
+}
+
+@Composable private fun TimeLabel(label: String, modifier: Modifier = Modifier) {
+    Text(
+        text = label.toUpperCase(Locale.getDefault()),
+        modifier = modifier,
+        style = MaterialTheme.typography.caption,
+        color = Color.Gray
+    )
+}
+
+@Composable private fun TimeField(
+    label: @Composable () -> Unit,
+    time: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        label()
+        time()
     }
 }
 
-@Composable
-private fun statusColor(train: Train, stop: Stop): Color? {
+@Composable private fun statusColor(train: Train, stop: Stop): Color? {
     return when {
         train.isNotReady() -> StationTheme.colors.trainIsNotReady
         train.hasReachedDestination() -> StationTheme.colors.trainReachedDestination
@@ -781,24 +767,12 @@ private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? =
 @Composable
 private fun PreviewTimetable() {
     val helsinki = Station(
-        passengerTraffic = true,
-        type = Station.Type.Station,
-        name = "Helsinki",
-        shortCode = "HKI",
-        uic = 1,
-        countryCode = "FI",
-        longitude = 1.0,
-        latitude = 1.0
+        name = "Helsinki", shortCode = "HKI", uic = 1,
+        longitude = 1.0, latitude = 1.0
     )
     val turku = Station(
-        passengerTraffic = true,
-        type = Station.Type.Station,
-        name = "Turku Central Station",
-        shortCode = "TKU",
-        uic = 130,
-        countryCode = "FI",
-        longitude = 1.0,
-        latitude = 1.0
+        name = "Turku Central Station", shortCode = "TKU", uic = 130,
+        longitude = 1.0, latitude = 1.0
     )
     val trains = listOf(
         Train(
@@ -833,5 +807,4 @@ private fun PreviewTimetable() {
                 setOf(TimetableRow.Type.Arrival), {}, setOf(Category.LongDistance), {})
         }
     }
-
 }

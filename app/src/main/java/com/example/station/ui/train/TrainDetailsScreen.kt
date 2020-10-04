@@ -16,9 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -35,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -55,13 +52,14 @@ import com.example.station.model.isOrigin
 import com.example.station.model.isReached
 import com.example.station.model.isWaypoint
 import com.example.station.model.stationUic
+import com.example.station.ui.components.ActualTime
+import com.example.station.ui.components.EstimatedTime
+import com.example.station.ui.components.ScheduledTime
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
-import com.example.station.util.atLocalZone
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -290,76 +288,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Composable private fun StopTime(timetableRow: TimetableRow?) {
     timetableRow?.apply {
-        if (actualTime != null) {
-            ActualTime(actualTime, differenceInMinutes ?: 0)
-        } else if (estimatedTime != null) {
-            EstimatedTime(scheduledTime, estimatedTime)
-        } else {
-            ScheduledTime(scheduledTime)
-        }
-    }
-}
-
-private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
-@Composable private fun ScheduledTime(scheduledTime: ZonedDateTime) {
-    val time = scheduledTime.atLocalZone().format(formatter)
-    Text(
-        time,
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
-        style = MaterialTheme.typography.body1,
-        fontStyle = FontStyle.Italic,
-        fontWeight = FontWeight.Light
-    )
-}
-
-@Composable private fun EstimatedTime(scheduledTime: ZonedDateTime, estimatedTime: ZonedDateTime) {
-    val scheduledTimeText = scheduledTime.atLocalZone().format(formatter)
-    val estimatedTimeText = estimatedTime.atLocalZone().format(formatter)
-    val textStyle = MaterialTheme.typography.body1
-    val fontStyle = FontStyle.Italic
-    val fontWeight = FontWeight.Light
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
-            style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
-        )
-        if (scheduledTimeText != estimatedTimeText) {
-            Icon(
-                Icons.Rounded.ArrowRightAlt,
-                Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
-                tint = StationTheme.colors.delayed
-            )
-            Text(
-                estimatedTimeText, color = StationTheme.colors.delayed,
-                style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
-            )
-        }
-    }
-}
-
-@Composable private fun ActualTime(actualTime: ZonedDateTime, differenceInMinutes: Int) {
-    val time = actualTime.atLocalZone().format(formatter)
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            time,
-            style = MaterialTheme.typography.body1,
-            fontStyle = FontStyle.Normal
-        )
-
-        if (differenceInMinutes != 0) {
-            Spacer(Modifier.width(4.dp))
-            val (text, color) = when {
-                differenceInMinutes > 0 -> Pair("+$differenceInMinutes", StationTheme.colors.late)
-                else -> Pair("$differenceInMinutes", StationTheme.colors.early)
-            }
-            Text(text, color = color, style = MaterialTheme.typography.caption)
+        when {
+            actualTime != null -> ActualTime(actualTime, differenceInMinutes ?: 0)
+            estimatedTime != null -> EstimatedTime(scheduledTime, estimatedTime)
+            else -> ScheduledTime(scheduledTime)
         }
     }
 }
