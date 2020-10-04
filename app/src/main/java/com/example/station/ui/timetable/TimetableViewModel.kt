@@ -12,7 +12,6 @@ import com.example.station.model.Train
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -86,10 +86,11 @@ class TimetableViewModel @ViewModelInject constructor(
 
     private fun reloadTimetable(station: Station): Flow<TimetableResult> {
         return flow {
-            // TODO: 24.9.2020 Implement reloading.
             emit(TimetableResult.Reloading)
-            delay(3000)
-            emit(TimetableResult.ReloadedData(emptyList()))
+            val trains = trainRepository.trainsAtStation(station)
+                .catch { e -> emit(TimetableResult.Error(e.toString())) }
+                .first()
+            emit(TimetableResult.ReloadedData(trains))
         }
     }
 
