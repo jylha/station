@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -291,13 +292,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     timetableRow?.apply {
         if (actualTime != null) {
             ActualTime(actualTime, differenceInMinutes ?: 0)
+        } else if (estimatedTime != null) {
+            EstimatedTime(scheduledTime, estimatedTime)
         } else {
             ScheduledTime(scheduledTime)
         }
     }
 }
 
-private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 @Composable private fun ScheduledTime(scheduledTime: ZonedDateTime) {
     val time = scheduledTime.atLocalZone().format(formatter)
@@ -308,6 +311,34 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
         fontStyle = FontStyle.Italic,
         fontWeight = FontWeight.Light
     )
+}
+
+@Composable private fun EstimatedTime(scheduledTime: ZonedDateTime, estimatedTime: ZonedDateTime) {
+    val scheduledTimeText = scheduledTime.atLocalZone().format(formatter)
+    val estimatedTimeText = estimatedTime.atLocalZone().format(formatter)
+    val textStyle = MaterialTheme.typography.body1
+    val fontStyle = FontStyle.Italic
+    val fontWeight = FontWeight.Light
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
+            style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
+        )
+        if (scheduledTimeText != estimatedTimeText) {
+            Icon(
+                Icons.Rounded.ArrowRightAlt,
+                Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
+                tint = StationTheme.colors.delayed
+            )
+            Text(
+                estimatedTimeText, color = StationTheme.colors.delayed,
+                style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
+            )
+        }
+    }
 }
 
 @Composable private fun ActualTime(actualTime: ZonedDateTime, differenceInMinutes: Int) {
@@ -453,7 +484,8 @@ private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss
                 "RI", 4, "4", ZonedDateTime.parse("2020-01-01T10:12:00.000Z")
             ),
             TimetableRow.arrival(
-                "HML", 3, "1", ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
+                "HML", 3, "1", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
+                estimatedTime = ZonedDateTime.parse("2020-01-01T10:31:00.000Z")
             ),
             TimetableRow.departure(
                 "HML", 3, "1", ZonedDateTime.parse("2020-01-01T10:34:00.000Z")

@@ -672,7 +672,7 @@ private fun Time(
     label: String, dateTime: ZonedDateTime, modifier: Modifier = Modifier,
     delay: Int? = null
 ) {
-    val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
     val time = dateTime.atLocalZone().format(formatter)
 
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {

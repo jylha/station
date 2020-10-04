@@ -35,10 +35,12 @@ class StationColorPalette(
     val trainReachedDestination: Color = Color.DarkGray,
     val early: Color = darkGreen,
     val late: Color = darkRed,
+    val delayed: Color = lightYellow,
     val isDark: Boolean
 )
 
 private val LightStationColorPalette = StationColorPalette(
+    delayed = darkYellow,
     isDark = false
 )
 
