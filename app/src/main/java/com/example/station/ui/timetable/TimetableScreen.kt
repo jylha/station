@@ -107,8 +107,8 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
 @Composable
 fun TimetableScreen(
     viewState: TimetableViewState,
-    onEvent: (TimetableEvent) -> Unit,
-    trainSelected: (Train) -> Unit
+    onEvent: (TimetableEvent) -> Unit = {},
+    trainSelected: (Train) -> Unit = {},
 ) {
     var filterSelectionEnabled by savedInstanceState { false }
 
@@ -291,7 +291,7 @@ fun TimetableScreen(
                 }
                 when {
                     // TODO: 1.10.2020 Localize these.
-                    trains.isEmpty() -> EmptyState("No trains scheduled to stop in the near future.")
+                    trains.isEmpty() -> EmptyTimetable()
                     matchingTrains.isEmpty() -> EmptyState("No trains of selected category scheduled in the near future.")
                     else -> Timetable(
                         station,
@@ -303,6 +303,11 @@ fun TimetableScreen(
             }
         }
     }
+}
+
+@Composable private fun EmptyTimetable() {
+    val message = stringResource(R.string.message_empty_timetable)
+    EmptyState(text = message)
 }
 
 @Composable private fun Timetable(

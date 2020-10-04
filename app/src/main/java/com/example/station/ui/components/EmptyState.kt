@@ -45,11 +45,11 @@ fun EmptyState(
                     tint = MaterialTheme.colors.primary.copy(alpha = 0.3f)
                 )
             }
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Text(
                 text,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f)
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
             )
         }
     }

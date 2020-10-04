@@ -24,6 +24,19 @@ data class Station(
 ) {
     companion object;
 
+    /** Secondary constructor for creating stations in Finland that have passenger traffic. */
+    constructor(name: String, shortCode: String, uic: Int, longitude: Double, latitude: Double) :
+            this(
+                passengerTraffic = true,
+                type = Type.Station,
+                name,
+                shortCode,
+                uic,
+                countryCode = "FI",
+                longitude,
+                latitude
+            )
+
     sealed class Type(val value: String) {
         object Station : Type("STATION")
         object StoppingPoint : Type("STOPPING_POINT")

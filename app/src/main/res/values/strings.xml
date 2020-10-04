@@ -29,6 +29,11 @@
     <!-- The message shown when waiting for user's current location. -->
     <string name="message_retrieving_location">Retrieving current location.</string>
 
+    <!-- The message shown when the timetable of the selected station is empty. -->
+    <string name="message_empty_timetable">
+        No trains are scheduled to stop at this station in the near future.
+    </string>
+
     <string name="title_timetable">Timetable</string>
     <string name="subtitle_all_trains">All trains</string>
     <string name="subtitle_long_distance_trains">Long distance trains</string>
