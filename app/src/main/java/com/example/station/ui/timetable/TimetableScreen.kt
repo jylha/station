@@ -293,9 +293,8 @@ fun TimetableScreen(
                     )
                 }
                 when {
-                    // TODO: 1.10.2020 Localize these.
                     trains.isEmpty() -> EmptyTimetable()
-                    matchingTrains.isEmpty() -> EmptyState("No trains of selected category scheduled in the near future.")
+                    matchingTrains.isEmpty() -> NoMatchingTrains()
                     else -> Timetable(
                         station,
                         matchingTrains,
@@ -310,6 +309,11 @@ fun TimetableScreen(
 
 @Composable private fun EmptyTimetable() {
     val message = stringResource(R.string.message_empty_timetable)
+    EmptyState(text = message)
+}
+
+@Composable private fun NoMatchingTrains() {
+    val message = stringResource(R.string.message_no_matching_trains)
     EmptyState(text = message)
 }
 

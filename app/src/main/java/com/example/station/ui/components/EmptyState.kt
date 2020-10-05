@@ -27,7 +27,8 @@ fun EmptyState(
     text: String,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier.fillMaxSize().padding(20.dp),
+    Box(
+        modifier.fillMaxSize().padding(20.dp),
         alignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -49,7 +50,10 @@ fun EmptyState(
             Text(
                 text,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
+                style = MaterialTheme.typography.body1.copy(
+                    lineHeight = MaterialTheme.typography.body1.fontSize * 1.5
+                )
             )
         }
     }
@@ -65,7 +69,8 @@ private fun Empty() {
 @Preview(name = "Long text", showBackground = true)
 @Composable
 private fun PreviewEmptyWithLongText() {
-    EmptyState("We are terribly sorry, but none of those thing you were looking for, " +
+    EmptyState(
+        "We are terribly sorry, but none of those thing you were looking for, " +
                 "could not be found. Maybe you should reconsider everything."
     )
 }

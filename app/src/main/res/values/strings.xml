@@ -34,6 +34,11 @@
         No trains are scheduled to stop at this station in the near future.
     </string>
 
+    <!-- The message shown when no trains in the selected category are in the station's timetable. -->
+    <string name="message_no_matching_trains">
+        No trains in the selected category are scheduled to stop at this station in the near future.
+    </string>
+
     <string name="title_timetable">Timetable</string>
     <string name="subtitle_all_trains">All trains</string>
     <string name="subtitle_long_distance_trains">Long distance trains</string>
