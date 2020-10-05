@@ -32,7 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,6 +57,7 @@ import com.example.station.model.isWaypoint
 import com.example.station.model.stationUic
 import com.example.station.ui.components.ActualTime
 import com.example.station.ui.components.EstimatedTime
+import com.example.station.ui.components.Loading
 import com.example.station.ui.components.ScheduledTime
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.portraitOrientation
@@ -65,24 +69,29 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(train: Train) {
     val viewModel = viewModel<TrainDetailsViewModel>()
+    val viewState by viewModel.state.collectAsState()
     onCommit(train) { viewModel.setTrain(train) }
 
-    val viewState by viewModel.state.collectAsState()
-
-    val currentTrain = viewState.train.let {
-        when {
-            it == null -> train
-            it.number != train.number -> train
-            else -> it
-        }
-    }
-
-    StationNameProvider(nameMapper = viewState.nameMapper) {
-        TrainDetails(currentTrain)
+    if (train.number == viewState.train?.number) {
+        TrainDetailsScreen(viewState)
     }
 }
 
-@Composable fun TrainDetails(train: Train) {
+@Composable fun TrainDetailsScreen(state: TrainDetailsViewState) {
+    StationNameProvider(nameMapper = state.nameMapper) {
+        when {
+            state.isLoading -> LoadingTrainDetails()
+            state.train != null -> TrainDetails(state.train)
+        }
+    }
+}
+
+@Composable private fun LoadingTrainDetails() {
+    val message = stringResource(R.string.message_loading_train_details)
+    Loading(message)
+}
+
+@Composable private fun TrainDetails(train: Train) {
     Surface(modifier = Modifier.fillMaxSize()) {
         ScrollableColumn(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -149,12 +158,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            originName ?: "", Modifier.weight(1f), textAlign = TextAlign.Right,
+            originName ?: "",
+            Modifier.weight(1f).semantics { accessibilityLabel = "Train origin" },
+            textAlign = TextAlign.Right,
             style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
         )
         Icon(Icons.Rounded.ArrowRightAlt, Modifier.padding(2.dp))
         Text(
-            destinationName ?: "", Modifier.weight(1f),
+            destinationName ?: "",
+            Modifier.weight(1f).semantics { accessibilityLabel = "Train destination" },
             style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
         )
     }

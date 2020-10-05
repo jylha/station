@@ -23,6 +23,7 @@ class TrainDetailsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
+            reduceState(TrainDetailsViewResult.LoadingNameMapper)
             val mapper = stationRepository.getStationNameMapper()
             reduceState(TrainDetailsViewResult.NameMapper(mapper))
         }
