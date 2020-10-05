@@ -52,18 +52,21 @@ fun StationScreen(
 
     onActive { viewModel.setSelectionMode(selectNearestStation) }
 
-    if (selectNearestStation && state.selectNearest) {
-        val station = state.nearestStation
-        if (station != null) navigateTo(Screen.Timetable(station))
-    }
-
     when {
+        selectNearestStation -> SelectNearestStation(state, navigateTo)
         state.isLoading -> LoadingStations()
-        state.isFetchingLocation || state.selectNearest -> FetchingLocation()
         else -> StationsScreen(state, onSelect = { station ->
             viewModel.stationSelected(station)
             navigateTo(Screen.Timetable(station))
         })
+    }
+}
+
+@Composable fun SelectNearestStation(state: StationsViewState, navigateTo: (Screen) -> Unit) {
+    when {
+        state.nearestStation != null -> navigateTo(Screen.Timetable(state.nearestStation))
+        state.isFetchingLocation -> FetchingLocation()
+        state.isLoading -> LoadingStations()
     }
 }
 
