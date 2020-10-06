@@ -58,6 +58,14 @@
     <string name="timetable_type_arriving">Arriving</string>
     <string name="timetable_type_departing">Departing</string>
 
+    <string name="identification_long_distance_train">Long-distance train %1$s %2$d</string>
+    <string name="identification_intercity_train">Intercity train %1$d</string>
+    <string name="identification_pendolino_train">Pendolino train %1$d</string>
+    <string name="identification_commuter_train">Commuter train %1$s %2$d</string>
+    <string name="identification_commuter_line">%1$s commuter train</string>
+
+    <string name="label_from_station">From %1$s</string>
+    <string name="label_to_station">To %1$s</string>
     <string name="label_arrives">Arrives</string>
     <string name="label_arrived">Arrived</string>
     <string name="label_departs">Departs</string>

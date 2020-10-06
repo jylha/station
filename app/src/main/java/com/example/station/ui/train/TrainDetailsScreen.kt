@@ -109,14 +109,26 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 }
 
 @Composable private fun TrainIdentification(train: Train) {
-    if (train.category == Train.Category.Commuter && train.commuterLineId != null) {
-        CommuterTrainIdentification(train.commuterLineId)
-    } else {
-        LongDistanceTrainIdentification(train.type, train.number)
+    train.run {
+        if (category == Train.Category.Commuter) {
+            if (commuterLineId != null) {
+                CommuterTrainIdentification(commuterLineId)
+            } else {
+                CommuterTrainIdentification(type, number)
+            }
+        } else {
+            LongDistanceTrainIdentification(type, number)
+        }
     }
 }
 
 @Composable private fun LongDistanceTrainIdentification(type: String, number: Int) {
+    val label = when (type) {
+        "IC" -> stringResource(R.string.identification_intercity_train, number)
+        "S" -> stringResource(R.string.identification_pendolino_train, number)
+        else -> stringResource(R.string.identification_long_distance_train, type, number)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -130,14 +142,45 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         )
         Spacer(Modifier.height(8.dp))
         Row {
-            Text("$type $number", style = MaterialTheme.typography.h5)
+            Text(
+                "$type $number",
+                modifier = Modifier.semantics { accessibilityLabel = label },
+                style = MaterialTheme.typography.h5
+            )
+        }
+    }
+}
+
+@Composable private fun CommuterTrainIdentification(type: String, number: Int) {
+    val label = stringResource(R.string.identification_commuter_train, type, number)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            Icons.Rounded.Train,
+            Modifier.size(60.dp)
+                .background(color = MaterialTheme.colors.primary, CircleShape)
+                .padding(4.dp),
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary)
+        )
+        Spacer(Modifier.height(8.dp))
+        Row {
+            Text(
+                "$type $number",
+                modifier = Modifier.semantics { accessibilityLabel = label },
+                style = MaterialTheme.typography.h5
+            )
         }
     }
 }
 
 @Composable private fun CommuterTrainIdentification(commuterLineId: String) {
+    val label = stringResource(R.string.identification_commuter_line, commuterLineId)
     Column(
-        Modifier.size(60.dp).background(color = MaterialTheme.colors.primary, CircleShape),
+        Modifier.size(60.dp)
+            .background(color = MaterialTheme.colors.primary, CircleShape)
+            .semantics { accessibilityLabel = label },
         verticalArrangement = Arrangement.Center
     ) {
         Text(
@@ -151,6 +194,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable private fun TrainRoute(originUic: Int?, destinationUic: Int?) {
     val originName = if (originUic != null) stationName(originUic) else null
     val destinationName = if (destinationUic != null) stationName(destinationUic) else null
+    val fromStation = stringResource(R.string.label_from_station, originName ?: "")
+    val toStation = stringResource(R.string.label_to_station, destinationName ?: "")
 
     Row(
         Modifier.fillMaxWidth(),
@@ -159,14 +204,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     ) {
         Text(
             originName ?: "",
-            Modifier.weight(1f).semantics { accessibilityLabel = "Train origin" },
+            Modifier.weight(1f).semantics { accessibilityLabel = fromStation },
             textAlign = TextAlign.Right,
             style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
         )
         Icon(Icons.Rounded.ArrowRightAlt, Modifier.padding(2.dp))
         Text(
             destinationName ?: "",
-            Modifier.weight(1f).semantics { accessibilityLabel = "Train destination" },
+            Modifier.weight(1f).semantics { accessibilityLabel = toStation },
             style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
         )
     }
