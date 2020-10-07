@@ -63,6 +63,7 @@ import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
+import com.example.station.util.differsFrom
 import java.time.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -124,9 +125,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Composable private fun LongDistanceTrainIdentification(type: String, number: Int) {
     val label = when (type) {
-        "IC" -> stringResource(R.string.identification_intercity_train, number)
-        "S" -> stringResource(R.string.identification_pendolino_train, number)
-        else -> stringResource(R.string.identification_long_distance_train, type, number)
+        "IC" -> stringResource(R.string.accessibility_label_intercity_train, number)
+        "S" -> stringResource(R.string.accessibility_label_pendolino_train, number)
+        else -> stringResource(R.string.accessibility_label_long_distance_train, type, number)
     }
 
     Column(
@@ -152,7 +153,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 }
 
 @Composable private fun CommuterTrainIdentification(type: String, number: Int) {
-    val label = stringResource(R.string.identification_commuter_train, type, number)
+    val label = stringResource(R.string.accessibility_label_commuter_train, type, number)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -176,7 +177,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 }
 
 @Composable private fun CommuterTrainIdentification(commuterLineId: String) {
-    val label = stringResource(R.string.identification_commuter_line, commuterLineId)
+    val label = stringResource(R.string.accessibility_label_commuter_line, commuterLineId)
     Column(
         Modifier.size(60.dp)
             .background(color = MaterialTheme.colors.primary, CircleShape)
@@ -194,11 +195,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable private fun TrainRoute(originUic: Int?, destinationUic: Int?) {
     val originName = if (originUic != null) stationName(originUic) else null
     val destinationName = if (destinationUic != null) stationName(destinationUic) else null
-    val fromStation = stringResource(R.string.label_from_station, originName ?: "")
-    val toStation = stringResource(R.string.label_to_station, destinationName ?: "")
+    val fromStation = stringResource(R.string.accessibility_label_from_station, originName ?: "")
+    val toStation = stringResource(R.string.accessibility_label_to_station, destinationName ?: "")
 
     Row(
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxWidth().semantics(mergeAllDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -337,18 +338,25 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     )
 }
 
-@Composable private fun StopName(name: String?) {
+@Composable private fun StopName(name: String?, modifier: Modifier = Modifier) {
     if (!name.isNullOrBlank()) {
-        Text(name, style = MaterialTheme.typography.subtitle1)
+        Text(name,
+            modifier.semantics { accessibilityLabel = name },
+            style = MaterialTheme.typography.subtitle1)
     }
 }
 
 @Composable private fun StopTime(timetableRow: TimetableRow?) {
     timetableRow?.apply {
         when {
-            actualTime != null -> ActualTime(actualTime, differenceInMinutes ?: 0)
-            estimatedTime != null -> EstimatedTime(scheduledTime, estimatedTime)
-            else -> ScheduledTime(scheduledTime)
+            actualTime != null -> ActualTime(
+                actualTime, differenceInMinutes ?: 0,
+                timetableRow.type
+            )
+            estimatedTime != null && estimatedTime.differsFrom(scheduledTime) -> {
+                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type)
+            }
+            else -> ScheduledTime(scheduledTime, timetableRow.type)
         }
     }
 }
@@ -364,7 +372,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     isCurrent: Boolean = false,
     isNext: Boolean = false
 ) {
-    ConstraintLayout(modifier.fillMaxWidth()) {
+    ConstraintLayout(modifier.fillMaxWidth().semantics(mergeAllDescendants = true) {}) {
         val nameRef = createRef()
         val stationIconRef = createRef()
         val arrivalIconRef = createRef()

@@ -18,10 +18,13 @@ class TrainDetailsScreenTest {
     @get:Rule
     val rule = createComposeRule(disableTransitions = true)
 
-    private val stationNames = mapOf(1 to "Helsinki", 30 to "Pasila")
-
-    private val mapper = object : StationNameMapper {
+    private val stationNameMapper = object : StationNameMapper {
         override fun stationName(stationUic: Int): String? = stationNames[stationUic]
+        private val stationNames = mapOf(
+            1 to "Helsinki",
+            18 to "Tikkurila",
+            30 to "Pasila"
+        )
     }
 
     @Test fun loadingTrainDetails() {
@@ -44,14 +47,14 @@ class TrainDetailsScreenTest {
     )
 
     @Test fun longDistanceTrainDetails() {
-        val state = TrainDetailsViewState(train = longDistanceTrain, nameMapper = mapper)
+        val state = TrainDetailsViewState(train = longDistanceTrain, nameMapper = stationNameMapper)
         rule.setContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Long-distance train ABC 123")
             .assertTextEquals("ABC 123").assertIsDisplayed()
-        rule.onNodeWithLabel("From Helsinki")
+        rule.onNodeWithLabel("From Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithLabel("To Pasila")
+        rule.onNodeWithLabel("To Pasila", useUnmergedTree = true)
             .assertTextEquals("Pasila").assertIsDisplayed()
     }
 
@@ -68,14 +71,14 @@ class TrainDetailsScreenTest {
     )
 
     @Test fun intercityTrainDetails() {
-        val state = TrainDetailsViewState(train = intercityTrain, nameMapper = mapper)
+        val state = TrainDetailsViewState(train = intercityTrain, nameMapper = stationNameMapper)
         rule.setContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Intercity train 10")
             .assertTextEquals("IC 10").assertIsDisplayed()
-        rule.onNodeWithLabel("From Helsinki")
+        rule.onNodeWithLabel("From Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithLabel("To Pasila")
+        rule.onNodeWithLabel("To Pasila", useUnmergedTree = true)
             .assertTextEquals("Pasila").assertIsDisplayed()
     }
 
@@ -92,14 +95,45 @@ class TrainDetailsScreenTest {
     )
 
     @Test fun pendolinoTrainDetails() {
-        val state = TrainDetailsViewState(train = pendolinoTrain, nameMapper = mapper)
+        val state = TrainDetailsViewState(train = pendolinoTrain, nameMapper = stationNameMapper)
         rule.setContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Pendolino train 55")
             .assertTextEquals("S 55").assertIsDisplayed()
-        rule.onNodeWithLabel("From Helsinki")
+        rule.onNodeWithLabel("From Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithLabel("To Pasila")
+        rule.onNodeWithLabel("To Pasila", useUnmergedTree = true)
             .assertTextEquals("Pasila").assertIsDisplayed()
     }
+
+    private val commuterTrain = Train(
+        123, "ABC", Train.Category.Commuter,
+        timetable = listOf(
+            TimetableRow.departure(
+                "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")
+            ),
+            TimetableRow.arrival(
+                "PSL", 30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z")
+            ),
+            TimetableRow.departure(
+                "PSL", 30, "2", ZonedDateTime.parse("2020-01-01T10:11:00.000Z")
+            ),
+            TimetableRow.arrival(
+                "TKL", 18, "1", ZonedDateTime.parse("2020-01-01T10:20:00.000Z")
+            )
+        )
+    )
+
+    @Test fun commuterTrainDetails() {
+        val state = TrainDetailsViewState(train = commuterTrain, nameMapper = stationNameMapper)
+        rule.setContent { TrainDetailsScreen(state) }
+
+        rule.onNodeWithLabel("Commuter train ABC 123")
+            .assertTextEquals("ABC 123").assertIsDisplayed()
+        rule.onNodeWithLabel("From Helsinki", useUnmergedTree = true)
+            .assertTextEquals("Helsinki").assertIsDisplayed()
+        rule.onNodeWithLabel("To Tikkurila", useUnmergedTree = true)
+            .assertTextEquals("Tikkurila").assertIsDisplayed()
+    }
+
 }

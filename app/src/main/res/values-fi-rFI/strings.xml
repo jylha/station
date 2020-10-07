@@ -35,14 +35,6 @@
     <string name="timetable_type_arriving">Saapuvat</string>
     <string name="timetable_type_departing">Lähtevät</string>
 
-    <string name="identification_long_distance_train">Kaukojuna %1$s %2$d</string>
-    <string name="identification_intercity_train">Intercity juna %1$d</string>
-    <string name="identification_pendolino_train">Pendolino juna %1$d</string>
-    <string name="identification_commuter_train">Lähijuna %1$s %2$d</string>
-    <string name="identification_commuter_line">%1$s-lähijuna</string>
-
-    <string name="label_from_station">Asemalta %1$s</string>
-    <string name="label_to_station">Asemalle %1$s</string>
     <string name="label_arrives">Saapuu</string>
     <string name="label_arrived">Saapui</string>
     <string name="label_departs">Lähtee</string>
@@ -51,5 +43,23 @@
     <string name="label_recent">Äskeiset</string>
     <string name="label_all_stations">Kaikki asemat</string>
     <string name="label_matching_stations">Vastaavat asemat</string>
+
+    <string name="accessibility_label_long_distance_train">Kaukojuna %1$s %2$d</string>
+    <string name="accessibility_label_intercity_train">Intercity juna %1$d</string>
+    <string name="accessibility_label_pendolino_train">Pendolino juna %1$d</string>
+    <string name="accessibility_label_commuter_train">Lähijuna %1$s %2$d</string>
+    <string name="accessibility_label_commuter_line">%1$s lähijuna</string>
+
+    <string name="accessibility_label_actual_arrival">Saapui kello %1$s</string>
+    <string name="accessibility_label_scheduled_arrival">Saapuu kello %1$s</string>
+    <string name="accessibility_label_estimated_arrival">Arvioitu saapumisaika kello %1$s</string>
+
+    <string name="accessibility_label_actual_departure">Lähti kello %1$s</string>
+    <string name="accessibility_label_scheduled_departure">Lähtee kello %1$s</string>
+    <string name="accessibility_label_estimated_departure">Arvioitu lähtöaika kello %1$s</string>
+
+    <string name="accessibility_label_from_station">Asemalta %1$s</string>
+    <string name="accessibility_label_to_station">Asemalle %1$s</string>
+    <string name="accessibility_label_to_track">Raiteelle %1$s</string>
 
 </resources>

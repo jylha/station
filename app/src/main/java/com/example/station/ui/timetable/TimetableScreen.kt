@@ -51,6 +51,8 @@ import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,6 +86,7 @@ import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.SwipeRefreshLayout
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
+import com.example.station.util.differsFrom
 import java.time.ZonedDateTime
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -577,12 +580,35 @@ fun TimetableScreen(
             "${train.type} ${train.number}"
         }
     }
+    val label = trainIdentificationAccessibilityLabel(train)
     Text(
         text = identification,
-        modifier = modifier,
+        modifier = modifier.semantics { accessibilityLabel = label },
         style = MaterialTheme.typography.body1,
         fontWeight = FontWeight.Bold
     )
+}
+
+@Composable fun trainIdentificationAccessibilityLabel(train: Train): String {
+    return train.run {
+        if (category == Category.LongDistance) {
+            when (type) {
+                "IC" -> stringResource(R.string.accessibility_label_intercity_train, number)
+                "S" -> stringResource(R.string.accessibility_label_pendolino_train, number)
+                else -> stringResource(
+                    R.string.accessibility_label_long_distance_train,
+                    type,
+                    number
+                )
+            }
+        } else {
+            if (commuterLineId.isNullOrBlank()) {
+                stringResource(R.string.accessibility_label_commuter_train, type, number)
+            } else {
+                stringResource(R.string.accessibility_label_commuter_line, commuterLineId)
+            }
+        }
+    }
 }
 
 @Composable private fun TrainRoute(
@@ -599,8 +625,10 @@ fun TimetableScreen(
         horizontalArrangement = Arrangement.Center
     ) {
         if (origin != null) {
+            val label = stringResource(R.string.accessibility_label_from_station, origin)
             Text(
-                origin, Modifier.weight(3f),
+                origin,
+                Modifier.weight(3f).semantics { accessibilityLabel = label },
                 textAlign = TextAlign.End,
                 style = MaterialTheme.typography.body2,
                 fontWeight = FontWeight.Bold
@@ -610,9 +638,10 @@ fun TimetableScreen(
             Icon(iconAsset, Modifier.padding(horizontal = 4.dp))
         }
         if (destination != null) {
+            val label = stringResource(R.string.accessibility_label_to_station, destination)
             Text(
                 destination,
-                Modifier.weight(3f),
+                Modifier.weight(3f).semantics { accessibilityLabel = label },
                 style = MaterialTheme.typography.body2,
                 fontWeight = FontWeight.Bold
             )
@@ -626,8 +655,13 @@ fun TimetableScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (track?.isNotBlank() == true) {
+            val label = stringResource(R.string.accessibility_label_to_track, track)
             TrackLabel()
-            Text(track, fontWeight = FontWeight.Bold)
+            Text(
+                track,
+                Modifier.semantics { accessibilityLabel = label },
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -645,17 +679,22 @@ fun TimetableScreen(
         when {
             actualTime != null -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
-                time = { ActualTime(actualTime, differenceInMinutes ?: 0) },
+                time = {
+                    ActualTime(
+                        actualTime, differenceInMinutes ?: 0,
+                        TimetableRow.Type.Arrival
+                    )
+                },
                 modifier
             )
-            estimatedTime != null -> TimeField(
+            estimatedTime != null && estimatedTime.differsFrom(scheduledTime) -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
-                time = { EstimatedTime(scheduledTime, estimatedTime) },
+                time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Arrival) },
                 modifier
             )
             else -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
-                time = { ScheduledTime(scheduledTime) },
+                time = { ScheduledTime(scheduledTime, TimetableRow.Type.Arrival) },
                 modifier
             )
         }
@@ -667,17 +706,22 @@ fun TimetableScreen(
         when {
             actualTime != null -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
-                time = { ActualTime(actualTime, differenceInMinutes ?: 0) },
+                time = {
+                    ActualTime(
+                        actualTime, differenceInMinutes ?: 0,
+                        TimetableRow.Type.Departure
+                    )
+                },
                 modifier
             )
-            estimatedTime != null -> TimeField(
+            estimatedTime != null && estimatedTime.differsFrom(scheduledTime) -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
-                time = { EstimatedTime(scheduledTime, estimatedTime) },
+                time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Departure) },
                 modifier
             )
             else -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
-                time = { ScheduledTime(scheduledTime) },
+                time = { ScheduledTime(scheduledTime, TimetableRow.Type.Departure) },
                 modifier
             )
         }

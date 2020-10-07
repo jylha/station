@@ -58,14 +58,6 @@
     <string name="timetable_type_arriving">Arriving</string>
     <string name="timetable_type_departing">Departing</string>
 
-    <string name="identification_long_distance_train">Long-distance train %1$s %2$d</string>
-    <string name="identification_intercity_train">Intercity train %1$d</string>
-    <string name="identification_pendolino_train">Pendolino train %1$d</string>
-    <string name="identification_commuter_train">Commuter train %1$s %2$d</string>
-    <string name="identification_commuter_line">%1$s commuter train</string>
-
-    <string name="label_from_station">From %1$s</string>
-    <string name="label_to_station">To %1$s</string>
     <string name="label_arrives">Arrives</string>
     <string name="label_arrived">Arrived</string>
     <string name="label_departs">Departs</string>
@@ -74,5 +66,23 @@
     <string name="label_recent">Recent</string>
     <string name="label_all_stations">All stations</string>
     <string name="label_matching_stations">Matching stations</string>
+
+    <string name="accessibility_label_long_distance_train">Long-distance train %1$s %2$d</string>
+    <string name="accessibility_label_intercity_train">Intercity train %1$d</string>
+    <string name="accessibility_label_pendolino_train">Pendolino train %1$d</string>
+    <string name="accessibility_label_commuter_train">Commuter train %1$s %2$d</string>
+    <string name="accessibility_label_commuter_line">%1$s commuter train</string>
+
+    <string name="accessibility_label_actual_arrival">Arrived at %1$s</string>
+    <string name="accessibility_label_scheduled_arrival">Arrives at %1$s</string>
+    <string name="accessibility_label_estimated_arrival">Estimated time of arrival %1$s</string>
+
+    <string name="accessibility_label_actual_departure">Departed at %1$s</string>
+    <string name="accessibility_label_scheduled_departure">Departs at %1$s</string>
+    <string name="accessibility_label_estimated_departure">Estimated time of departure %1$s</string>
+
+    <string name="accessibility_label_from_station">From %1$s</string>
+    <string name="accessibility_label_to_station">To %1$s</string>
+    <string name="accessibility_label_to_track">To track %1$s</string>
 
 </resources>
