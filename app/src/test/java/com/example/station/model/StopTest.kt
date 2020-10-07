@@ -6,9 +6,8 @@ import org.junit.Test
 
 class StopTest {
 
-    private val arrival = TimetableRow.arrival(
-        "A", 1, "1",
-        ZonedDateTime.parse("2020-10-10T10:10:00.000Z")
+    private val arrival = arrival(
+        1, "1", ZonedDateTime.parse("2020-10-10T10:10:00.000Z")
     )
 
     private val departure = arrival.copy(type = TimetableRow.Type.Departure)

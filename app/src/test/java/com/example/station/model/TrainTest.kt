@@ -15,16 +15,16 @@ class TrainTest {
 
     private val train = Train(
         1, "S", Train.Category.LongDistance, timetable = listOf(
-            TimetableRow.departure(
-                "A", 100, "5", scheduledTime1, actualTime = actualTime1,
+            departure(
+                100, "5", scheduledTime1, actualTime = actualTime1,
                 differenceInMinutes = 2, markedReady = true
             ),
-            TimetableRow.arrival(
-                "B", 200, "1", scheduledTime2, actualTime = actualTime2,
+            arrival(
+                200, "1", scheduledTime2, actualTime = actualTime2,
                 differenceInMinutes = 1
             ),
-            TimetableRow.departure("B", 200, "1", scheduledTime3),
-            TimetableRow.arrival("C", 300, "3", scheduledTime4)
+            departure(200, "1", scheduledTime3),
+            arrival(300, "3", scheduledTime4)
         )
     )
 
@@ -34,24 +34,22 @@ class TrainTest {
 
     private val readyTrain = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            TimetableRow.departure(
-                "1", 1, "1", scheduledTime1, markedReady = true
-            ),
-            TimetableRow.arrival("2", 2, "1", scheduledTime2)
+            departure(1, "1", scheduledTime1, markedReady = true),
+            arrival(2, "1", scheduledTime2)
         )
     )
 
     private val notReadyTrain = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            TimetableRow.departure("1", 1, "1", scheduledTime1),
-            TimetableRow.arrival("2", 2, "1", scheduledTime2)
+            departure(1, "1", scheduledTime1),
+            arrival(2, "1", scheduledTime2)
         )
     )
 
     private val trainWithSameEndpoints = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            TimetableRow.departure("A", 3, "4", scheduledTime1),
-            TimetableRow.arrival("A", 3, "2", scheduledTime2)
+            departure(3, "4", scheduledTime1),
+            arrival(3, "2", scheduledTime2)
         )
     )
 
@@ -137,10 +135,10 @@ class TrainTest {
 
     private val trainWithNonCommercialStop = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            TimetableRow.departure("A", 1, "4", scheduledTime1),
-            TimetableRow.arrival("B", 2, "2", scheduledTime2, trainStopping = true, commercialStop = false),
-            TimetableRow.departure("B", 2, "2", scheduledTime3, trainStopping = true, commercialStop = false),
-            TimetableRow.arrival("C", 3, "2", scheduledTime4)
+            departure(1, "4", scheduledTime1),
+            arrival(2, "2", scheduledTime2, trainStopping = true, commercialStop = false),
+            departure(2, "2", scheduledTime3, trainStopping = true, commercialStop = false),
+            arrival(3, "2", scheduledTime4)
         )
     )
 
@@ -153,10 +151,10 @@ class TrainTest {
 
     private val trainWithNonStopTimetableRows = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            TimetableRow.departure("A", 1, "4", scheduledTime1),
-            TimetableRow.arrival("B", 2, "2", scheduledTime2, trainStopping = false, commercialStop = null),
-            TimetableRow.departure("B", 2, "2", scheduledTime3, trainStopping = false, commercialStop = null),
-            TimetableRow.arrival("C", 3, "2", scheduledTime4)
+            departure( 1, "4", scheduledTime1),
+            arrival(2, "2", scheduledTime2, trainStopping = false, commercialStop = null),
+            departure( 2, "2", scheduledTime3, trainStopping = false, commercialStop = null),
+            arrival( 3, "2", scheduledTime4)
         )
     )
 

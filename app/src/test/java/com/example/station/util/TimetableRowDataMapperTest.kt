@@ -3,9 +3,9 @@ package com.example.station.util
 import com.example.station.data.trains.network.TimetableRowNetworkEntity
 import com.example.station.model.TimetableRow
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import org.junit.Test
 
 class TimetableRowDataMapperTest {
 
@@ -13,11 +13,6 @@ class TimetableRowDataMapperTest {
         "ARRIVAL", "", 1, false,
         scheduledTime = "2020-01-01T00:00:00.000Z"
     )
-
-    @Test fun `stationCode is mapped correctly into domain model`() {
-        val result = networkEntity.copy(stationCode = "AAA").toDomainModel()
-        assertThat(result.stationShortCode).isEqualTo("AAA")
-    }
 
     @Test fun `stationUicCode is mapped correctly into domain model`() {
         val result = networkEntity.copy(stationUicCode = 123).toDomainModel()

@@ -7,7 +7,6 @@ import java.time.ZonedDateTime
  * Domain model for train's timetable row data.
  *
  * @param type Time table entry type (either Arrival or Departure).
- * @param stationShortCode The short code for the station.
  * @param stationUic The UIC code for the station.
  * @param trainStopping Whether train is stopping on the station.
  * @param commercialStop Whether the stop is commercial, or null if train is no stopping..
@@ -21,7 +20,6 @@ import java.time.ZonedDateTime
 @Immutable
 data class TimetableRow(
     val type: Type,
-    val stationShortCode: String,
     val stationUic: Int,
     val trainStopping: Boolean = true,
     val commercialStop: Boolean? = null,
@@ -36,60 +34,53 @@ data class TimetableRow(
         object Arrival : Type("Arrival")
         object Departure : Type("Departure")
     }
-
-    companion object {
-
-        /** Creates TimetableRow of commercial stop with type Arrival. */
-        fun arrival(
-            stationShortCode: String,
-            stationUic: Int,
-            track: String,
-            scheduledTime: ZonedDateTime,
-            estimatedTime: ZonedDateTime? = null,
-            actualTime: ZonedDateTime? = null,
-            differenceInMinutes: Int? = null,
-            trainStopping: Boolean = true,
-            commercialStop: Boolean? = true
-        ): TimetableRow =
-            TimetableRow(
-                Type.Arrival,
-                stationShortCode,
-                stationUic,
-                trainStopping,
-                commercialStop,
-                track,
-                scheduledTime,
-                estimatedTime,
-                actualTime,
-                differenceInMinutes,
-                markedReady = false
-            )
-
-        /** Creates TimetableRow of commercial stop with type Departure. */
-        fun departure(
-            stationShortCode: String,
-            stationUic: Int,
-            track: String,
-            scheduledTime: ZonedDateTime,
-            estimatedTime: ZonedDateTime? = null,
-            actualTime: ZonedDateTime? = null,
-            differenceInMinutes: Int? = null,
-            markedReady: Boolean = false,
-            trainStopping: Boolean = true,
-            commercialStop: Boolean? = true
-        ): TimetableRow =
-            TimetableRow(
-                Type.Departure,
-                stationShortCode,
-                stationUic,
-                trainStopping,
-                commercialStop ,
-                track,
-                scheduledTime,
-                estimatedTime,
-                actualTime,
-                differenceInMinutes,
-                markedReady
-            )
-    }
 }
+
+/** Creates TimetableRow of commercial stop with type Arrival. */
+internal fun arrival(
+    stationUic: Int,
+    track: String,
+    scheduledTime: ZonedDateTime,
+    estimatedTime: ZonedDateTime? = null,
+    actualTime: ZonedDateTime? = null,
+    differenceInMinutes: Int? = null,
+    trainStopping: Boolean = true,
+    commercialStop: Boolean? = true
+): TimetableRow =
+    TimetableRow(
+        TimetableRow.Type.Arrival,
+        stationUic,
+        trainStopping,
+        commercialStop,
+        track,
+        scheduledTime,
+        estimatedTime,
+        actualTime,
+        differenceInMinutes,
+        markedReady = false
+    )
+
+/** Creates TimetableRow of commercial stop with type Departure. */
+internal fun departure(
+    stationUic: Int,
+    track: String,
+    scheduledTime: ZonedDateTime,
+    estimatedTime: ZonedDateTime? = null,
+    actualTime: ZonedDateTime? = null,
+    differenceInMinutes: Int? = null,
+    markedReady: Boolean = false,
+    trainStopping: Boolean = true,
+    commercialStop: Boolean? = true
+): TimetableRow =
+    TimetableRow(
+        TimetableRow.Type.Departure,
+        stationUic,
+        trainStopping,
+        commercialStop,
+        track,
+        scheduledTime,
+        estimatedTime,
+        actualTime,
+        differenceInMinutes,
+        markedReady
+    )

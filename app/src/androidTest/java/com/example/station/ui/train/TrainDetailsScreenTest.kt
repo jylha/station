@@ -6,8 +6,9 @@ import androidx.ui.test.createComposeRule
 import androidx.ui.test.onNodeWithLabel
 import androidx.ui.test.onNodeWithText
 import com.example.station.data.stations.StationNameMapper
-import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import com.example.station.model.arrival
+import com.example.station.model.departure
 import java.time.ZonedDateTime
 import org.junit.Rule
 import org.junit.Test
@@ -37,12 +38,8 @@ class TrainDetailsScreenTest {
     private val longDistanceTrain = Train(
         123, "ABC", Train.Category.LongDistance,
         timetable = listOf(
-            TimetableRow.departure(
-                "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")
-            ),
-            TimetableRow.arrival(
-                "PSL", 30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z")
-            )
+            departure(1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")),
+            arrival(30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z"))
         )
     )
 
@@ -61,12 +58,8 @@ class TrainDetailsScreenTest {
     private val intercityTrain = Train(
         10, "IC", Train.Category.LongDistance,
         timetable = listOf(
-            TimetableRow.departure(
-                "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")
-            ),
-            TimetableRow.arrival(
-                "PSL", 30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z")
-            )
+            departure(1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")),
+            arrival(30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z"))
         )
     )
 
@@ -85,12 +78,8 @@ class TrainDetailsScreenTest {
     private val pendolinoTrain = Train(
         55, "S", Train.Category.LongDistance,
         timetable = listOf(
-            TimetableRow.departure(
-                "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")
-            ),
-            TimetableRow.arrival(
-                "PSL", 30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z")
-            )
+            departure(1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")),
+            arrival(30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z"))
         )
     )
 
@@ -109,18 +98,10 @@ class TrainDetailsScreenTest {
     private val commuterTrain = Train(
         123, "ABC", Train.Category.Commuter,
         timetable = listOf(
-            TimetableRow.departure(
-                "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")
-            ),
-            TimetableRow.arrival(
-                "PSL", 30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z")
-            ),
-            TimetableRow.departure(
-                "PSL", 30, "2", ZonedDateTime.parse("2020-01-01T10:11:00.000Z")
-            ),
-            TimetableRow.arrival(
-                "TKL", 18, "1", ZonedDateTime.parse("2020-01-01T10:20:00.000Z")
-            )
+            departure(1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")),
+            arrival(30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z")),
+            departure(30, "2", ZonedDateTime.parse("2020-01-01T10:11:00.000Z")),
+            arrival(18, "1", ZonedDateTime.parse("2020-01-01T10:20:00.000Z"))
         )
     )
 

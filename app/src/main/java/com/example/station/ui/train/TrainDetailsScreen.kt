@@ -46,8 +46,10 @@ import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Stop
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import com.example.station.model.arrival
 import com.example.station.model.commercialStops
 import com.example.station.model.currentCommercialStop
+import com.example.station.model.departure
 import com.example.station.model.isDeparted
 import com.example.station.model.isDestination
 import com.example.station.model.isNotDeparted
@@ -340,9 +342,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Composable private fun StopName(name: String?, modifier: Modifier = Modifier) {
     if (!name.isNullOrBlank()) {
-        Text(name,
+        Text(
+            name,
             modifier.semantics { accessibilityLabel = name },
-            style = MaterialTheme.typography.subtitle1)
+            style = MaterialTheme.typography.subtitle1
+        )
     }
 }
 
@@ -465,31 +469,23 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable private fun PreviewTrainDetails() {
     val train = Train(
         5, "IC", Train.Category.LongDistance, timetable = listOf(
-            TimetableRow.departure(
-                "HKI", 1, "2",
-                ZonedDateTime.parse("2020-01-01T09:30:00.000Z"),
+            departure(
+                1, "2", ZonedDateTime.parse("2020-01-01T09:30:00.000Z"),
                 actualTime = ZonedDateTime.parse("2020-01-01T09:31:00.000Z"),
                 differenceInMinutes = 1, markedReady = true
             ),
-            TimetableRow.arrival(
-                "RI", 4, "4",
-                ZonedDateTime.parse("2020-01-01T10:11:00.000Z"),
+            arrival(
+                4, "4", ZonedDateTime.parse("2020-01-01T10:11:00.000Z"),
                 actualTime = ZonedDateTime.parse("2020-01-01T10:10:00.000Z"),
                 differenceInMinutes = -1
             ),
-            TimetableRow.departure(
-                "RI", 4, "4", ZonedDateTime.parse("2020-01-01T10:12:00.000Z")
-            ),
-            TimetableRow.arrival(
-                "HML", 3, "1", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
+            departure(4, "4", ZonedDateTime.parse("2020-01-01T10:12:00.000Z")),
+            arrival(
+                3, "1", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
                 estimatedTime = ZonedDateTime.parse("2020-01-01T10:31:00.000Z")
             ),
-            TimetableRow.departure(
-                "HML", 3, "1", ZonedDateTime.parse("2020-01-01T10:34:00.000Z")
-            ),
-            TimetableRow.arrival(
-                "TPE", 2, "3", ZonedDateTime.parse("2020-01-01T11:30:00.000Z")
-            )
+            departure(3, "1", ZonedDateTime.parse("2020-01-01T10:34:00.000Z")),
+            arrival(2, "3", ZonedDateTime.parse("2020-01-01T11:30:00.000Z"))
         )
     )
 

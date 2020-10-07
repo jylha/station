@@ -65,6 +65,8 @@ import com.example.station.model.Stop
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
+import com.example.station.model.arrival
+import com.example.station.model.departure
 import com.example.station.model.isDeparted
 import com.example.station.model.isDestination
 import com.example.station.model.isNotDeparted
@@ -532,14 +534,14 @@ fun TimetableScreen(
     )
     val train = Train(
         1, "IC", Category.LongDistance, timetable = listOf(
-            TimetableRow.departure("H", 123, "1", ZonedDateTime.now()),
-            TimetableRow.arrival(
-                "S", 555, "3", ZonedDateTime.now().plusMinutes(60),
+            departure(123, "1", ZonedDateTime.now()),
+            arrival(
+                555, "3", ZonedDateTime.now().plusMinutes(60),
                 actualTime = ZonedDateTime.now().plusMinutes(64),
                 differenceInMinutes = 4
             ),
-            TimetableRow.departure("S", 555, "3", ZonedDateTime.now().plusHours(1)),
-            TimetableRow.arrival("T", 456, "2", ZonedDateTime.now().plusHours(2))
+            departure(555, "3", ZonedDateTime.now().plusHours(1)),
+            arrival(456, "2", ZonedDateTime.now().plusHours(2))
         )
     )
     val stop = train.stopsAt(555).first()
@@ -827,22 +829,14 @@ private fun PreviewTimetable() {
     val trains = listOf(
         Train(
             1, "S", Category.LongDistance, timetable = listOf(
-                TimetableRow.departure(
-                    "HKI", 1, "1", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
-                ),
-                TimetableRow.arrival(
-                    "TKU", 130, "2", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
-                )
+                departure(1, "1", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")),
+                arrival(130, "2", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"))
             )
         ),
         Train(
             2, "IC", Category.LongDistance, timetable = listOf(
-                TimetableRow.departure(
-                    "TKU", 130, "3", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")
-                ),
-                TimetableRow.arrival(
-                    "HKI", 1, "4", ZonedDateTime.parse("2020-01-01T10:30:00.000Z")
-                )
+                departure(130, "3", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")),
+                arrival(1, "4", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"))
             )
         )
     )

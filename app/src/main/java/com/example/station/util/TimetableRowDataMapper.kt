@@ -7,7 +7,6 @@ import java.time.ZonedDateTime
 /** Maps timetable row network data transfer object into domain model. */
 fun TimetableRowNetworkEntity.toDomainModel(): TimetableRow {
     return TimetableRow(
-        stationShortCode = stationCode,
         stationUic = stationUicCode,
         type = when {
             type.equals("ARRIVAL", ignoreCase = true) -> TimetableRow.Type.Arrival
