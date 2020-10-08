@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class TimetableViewModel @ViewModelInject constructor(
@@ -53,6 +54,10 @@ class TimetableViewModel @ViewModelInject constructor(
             ) { trainCategories, timetableTypes ->
                 TimetableResult.SettingsUpdated(trainCategories, timetableTypes)
             }.collect { result -> reduceState(result) }
+        }
+
+        viewModelScope.launch {
+            val causeCategories = trainRepository.causeCategories()
         }
     }
 

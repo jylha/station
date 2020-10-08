@@ -15,4 +15,8 @@ interface TrainService {
         @Query("minutes_after_arrival") minutesAfterArrival: Int = 30,
         @Query("train_categories") trainCategories: String? = "Long-Distance,Commuter"
     ): List<TrainNetworkEntity>
+
+    @GET("metadata/cause-category-codes")
+    suspend fun fetchCauseCategoryCodes(): List<CauseCategoryNetworkEntity>
+
 }

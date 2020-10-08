@@ -1,5 +1,6 @@
 package com.example.station.util
 
+import com.example.station.data.trains.network.CauseNetworkEntity
 import com.example.station.data.trains.network.TimetableRowNetworkEntity
 import com.example.station.model.TimetableRow
 import java.time.ZonedDateTime
@@ -20,7 +21,16 @@ fun TimetableRowNetworkEntity.toDomainModel(): TimetableRow {
         estimatedTime = if (liveEstimateTime != null) ZonedDateTime.parse(liveEstimateTime) else null,
         actualTime = if (actualTime != null) ZonedDateTime.parse(actualTime) else null,
         differenceInMinutes = differenceInMinutes,
-        markedReady = trainReady != null
+        markedReady = trainReady != null,
+        cause = cause?.toDomainModel()
+    )
+}
+
+fun CauseNetworkEntity.toDomainModel(): TimetableRow.DelayCause {
+    return TimetableRow.DelayCause(
+        categoryCodeId = categoryCodeId,
+        detailedCategoryCodeId = detailedCategoryCodeId,
+        thirdCategoryCodeId = thirdCategoryCodeId,
     )
 }
 

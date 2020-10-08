@@ -1,6 +1,7 @@
 package com.example.station.data.trains
 
 import com.example.station.data.trains.network.TrainService
+import com.example.station.model.CauseCategory
 import com.example.station.model.Station
 import com.example.station.model.Train
 import com.example.station.util.toDomainModel
@@ -18,5 +19,9 @@ class DefaultTrainRepository @Inject constructor(
             val trains = trainService.fetchTrains(station.shortCode).toDomainModel()
             emit(trains)
         }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun causeCategories(): List<CauseCategory> {
+        return trainService.fetchCauseCategoryCodes().map { it.toDomainModel() }
     }
 }

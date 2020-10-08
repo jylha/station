@@ -1,5 +1,6 @@
 package com.example.station.util
 
+import com.example.station.data.trains.network.CauseNetworkEntity
 import com.example.station.data.trains.network.TimetableRowNetworkEntity
 import com.example.station.model.TimetableRow
 import com.google.common.truth.Truth.assertThat
@@ -101,5 +102,20 @@ class TimetableRowDataMapperTest {
     @Test fun `differenceInMinutes is set to null when not in network DTO`() {
         val result = networkEntity.copy(differenceInMinutes = null).toDomainModel()
         assertThat(result.differenceInMinutes).isNull()
+    }
+
+    @Test fun `cause is mapped correctly into domain model`() {
+        val result = networkEntity.copy(
+            cause = CauseNetworkEntity(
+                111, "AAA",
+                222, "BBB",
+                333, "CCC"
+            )
+        ).toDomainModel()
+
+        assertThat(result.cause).isNotNull()
+        assertThat(result.cause?.categoryCodeId).isEqualTo(111)
+        assertThat(result.cause?.detailedCategoryCodeId).isEqualTo(222)
+        assertThat(result.cause?.thirdCategoryCodeId).isEqualTo(333)
     }
 }

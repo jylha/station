@@ -35,11 +35,22 @@ data class TimetableRowNetworkEntity(
     val differenceInMinutes: Int? = null,
 
     @SerializedName("trainReady")
-    val trainReady: TrainReadyNetworkEntry? = null
+    val trainReady: TrainReadyNetworkEntity? = null,
+
+    @SerializedName("cause")
+    val cause: CauseNetworkEntity? = null,
 )
 
-
-data class TrainReadyNetworkEntry(
+data class TrainReadyNetworkEntity(
     val timestamp: String
+)
+
+data class CauseNetworkEntity(
+    val categoryCodeId: Int,
+    val categoryCode: String,
+    val detailedCategoryCodeId: Int? = null,
+    val detailedCategoryCode: String? = null,
+    val thirdCategoryCodeId: Int? = null,
+    val thirdCategoryCode: String? = null
 )
 

@@ -28,12 +28,19 @@ data class TimetableRow(
     val estimatedTime: ZonedDateTime? = null,
     val actualTime: ZonedDateTime? = null,
     val differenceInMinutes: Int? = null,
-    val markedReady: Boolean = false
+    val markedReady: Boolean = false,
+    val cause: DelayCause? = null,
 ) {
     sealed class Type(val name: String) {
         object Arrival : Type("Arrival")
         object Departure : Type("Departure")
     }
+
+    data class DelayCause(
+        val categoryCodeId: Int,
+        val detailedCategoryCodeId: Int? = null,
+        val thirdCategoryCodeId: Int? = null,
+    )
 }
 
 /** Creates TimetableRow of commercial stop with type Arrival. */
