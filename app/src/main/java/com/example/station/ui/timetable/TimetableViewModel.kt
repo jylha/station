@@ -43,6 +43,7 @@ class TimetableViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
+            reduceState(TimetableResult.LoadingStationNames)
             val mapper = stationRepository.getStationNameMapper()
             reduceState(TimetableResult.StationNames(mapper))
         }
@@ -57,7 +58,9 @@ class TimetableViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
+            reduceState(TimetableResult.LoadingCauseCategories)
             val causeCategories = trainRepository.causeCategories()
+            reduceState(TimetableResult.CauseCategories(causeCategories))
         }
     }
 

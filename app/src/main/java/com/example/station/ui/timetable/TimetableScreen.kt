@@ -103,7 +103,7 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     }
     val viewState by viewModel.state.collectAsState()
 
-    StationNameProvider(viewState.mapper) {
+    StationNameProvider(viewState.stationNameMapper) {
         TimetableScreen(
             viewState,
             viewModel::offer,
@@ -163,7 +163,7 @@ fun TimetableScreen(
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
-            viewState.loading -> LoadingTimetable(modifier)
+            viewState.isLoadingTimetable -> LoadingTimetable(modifier)
             viewState.station != null -> {
                 TimetableScreenContent(
                     station = viewState.station,
@@ -175,7 +175,7 @@ fun TimetableScreen(
                     selectedTrainCategories,
                     trainCategorySelected,
                     filterSelectionEnabled,
-                    refreshing = viewState.reloading,
+                    refreshing = viewState.isReloadingTimetable,
                     onRefresh = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) }
                 )
             }

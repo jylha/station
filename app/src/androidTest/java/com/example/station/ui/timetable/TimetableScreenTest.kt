@@ -14,14 +14,14 @@ class TimetableScreenTest {
     val rule = createComposeRule(disableTransitions = true)
 
     @Test fun loadingTimetable() {
-        val state = TimetableViewState(loading = true)
+        val state = TimetableViewState(isLoadingTimetable = true)
         rule.setContent { TimetableScreen(viewState = state) }
 
         rule.onNodeWithText("Retrieving timetable.").assertIsDisplayed()
     }
 
     @Test fun emptyTimetable() {
-        val state = TimetableViewState(loading = false, station = pasila)
+        val state = TimetableViewState(isLoadingTimetable = false, station = pasila)
         rule.setContent { TimetableScreen(viewState = state) }
 
         rule.onNodeWithText("Pasila").assertIsDisplayed()
