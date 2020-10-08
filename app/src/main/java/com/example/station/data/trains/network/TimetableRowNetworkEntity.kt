@@ -37,8 +37,8 @@ data class TimetableRowNetworkEntity(
     @SerializedName("trainReady")
     val trainReady: TrainReadyNetworkEntity? = null,
 
-    @SerializedName("cause")
-    val cause: CauseNetworkEntity? = null,
+    @SerializedName("causes")
+    val causes: List<CauseNetworkEntity> = emptyList()
 )
 
 data class TrainReadyNetworkEntity(

@@ -1,6 +1,10 @@
 package com.example.station.ui.timetable
 
 import androidx.compose.animation.asDisposableClock
+import androidx.compose.animation.core.FloatPropKey
+import androidx.compose.animation.core.transitionDefinition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.transition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
@@ -19,12 +23,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -34,7 +40,9 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.ArrowRightAlt
+import androidx.compose.material.icons.rounded.ExpandLess
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,6 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout
 import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
@@ -60,12 +69,14 @@ import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
 import com.example.station.R
 import com.example.station.data.stations.LocalizedStationNames
+import com.example.station.model.DelayCause
 import com.example.station.model.Station
 import com.example.station.model.Stop
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
 import com.example.station.model.arrival
+import com.example.station.model.delayCauses
 import com.example.station.model.departure
 import com.example.station.model.isDeparted
 import com.example.station.model.isDestination
@@ -538,7 +549,7 @@ fun TimetableScreen(
             arrival(
                 555, "3", ZonedDateTime.now().plusMinutes(60),
                 actualTime = ZonedDateTime.now().plusMinutes(64),
-                differenceInMinutes = 4
+                differenceInMinutes = 4, causes = listOf(DelayCause(1))
             ),
             departure(555, "3", ZonedDateTime.now().plusHours(1)),
             arrival(456, "2", ZonedDateTime.now().plusHours(2))
@@ -553,12 +564,50 @@ fun TimetableScreen(
     }
 }
 
+enum class ExpandableState { Expanded, Collapsed }
+
+private val expandButtonAlpha = FloatPropKey()
+private val expandedContentAlpha = FloatPropKey()
+private val expandedContentHeightFraction = FloatPropKey()
+
+private fun expandableStateTransition() = transitionDefinition<ExpandableState> {
+    state(ExpandableState.Expanded) {
+        this[expandButtonAlpha] = 0f
+        this[expandedContentAlpha] = 0.8f
+        this[expandedContentHeightFraction] = 1f
+    }
+    state(ExpandableState.Collapsed) {
+        this[expandButtonAlpha] = 1f
+        this[expandedContentAlpha] = 0f
+        this[expandedContentHeightFraction] = 0f
+    }
+    transition(fromState = ExpandableState.Expanded, toState = ExpandableState.Collapsed) {
+        expandButtonAlpha using tween(300)
+        expandedContentAlpha using tween(300)
+        expandedContentHeightFraction using tween(300)
+    }
+    transition(fromState = ExpandableState.Collapsed, toState = ExpandableState.Expanded) {
+        expandButtonAlpha using tween(300)
+        expandedContentAlpha using tween(300)
+        expandedContentHeightFraction using tween(300)
+    }
+}
+
 @Composable fun TimetableEntry(
     train: Train,
     stop: Stop,
     onSelect: (Train) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var expanded by savedInstanceState { false }
+
+    val expandableState = transition(
+        definition = expandableStateTransition(),
+        toState = if (expanded) ExpandableState.Expanded else ExpandableState.Collapsed,
+    )
+
+    val delayCauses = remember(train) { train.delayCauses() }
+
     TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, stop)) {
         Column {
             Row {
@@ -566,10 +615,33 @@ fun TimetableScreen(
                 TrainRoute(train.origin(), train.destination(), Modifier.weight(4f))
             }
             Row {
-                Arrival(stop.arrival, Modifier.weight(2f))
-                TrainTrack(stop.track(), Modifier.weight(1f))
-                Departure(stop.departure, Modifier.weight(2f))
+                Arrival(stop.arrival, Modifier.weight(5f))
+                TrainTrack(stop.track(), Modifier.weight(2f))
+                Departure(stop.departure, Modifier.weight(5f))
+                ShowDelayCauseAction(
+                    onClick = { expanded = true },
+                    enabled = !expanded && delayCauses.isNotEmpty(),
+                    Modifier.weight(1f),
+                    color = StationTheme.colors.late.copy(alpha = expandableState[expandButtonAlpha])
+                )
             }
+            Row(Modifier.heightFraction(expandableState[expandedContentHeightFraction])) {
+                DelayCauses(
+                    train.delayCauses(),
+                    onClose = { expanded = false },
+                    alpha = expandableState[expandedContentAlpha]
+                )
+            }
+        }
+    }
+}
+
+fun Modifier.heightFraction(fraction: Float): Modifier {
+    return this.layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        val constrainedHeight = (placeable.height * fraction).toInt()
+        layout(placeable.width, constrainedHeight) {
+            placeable.placeRelative(0, 0)
         }
     }
 }
@@ -650,8 +722,6 @@ fun TimetableScreen(
         }
     }
 }
-
-
 
 @Composable private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
     Column(
@@ -752,6 +822,84 @@ fun TimetableScreen(
     ) {
         label()
         time()
+    }
+}
+
+@Composable private fun ShowDelayCauseAction(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+    color: Color
+) {
+    Box(
+        modifier,
+        alignment = Alignment.CenterEnd
+    ) {
+        if (enabled) {
+            IconButton(onClick, Modifier.preferredSize(30.dp), enabled = enabled) {
+                Icon(Icons.Outlined.Info, tint = color)
+            }
+        }
+    }
+}
+
+@Composable private fun DelayCauses(
+    delayCauses: List<DelayCause>,
+    onClose: () -> Unit,
+    alpha: Float,
+    modifier: Modifier = Modifier
+) {
+    val contentColor = MaterialTheme.colors.onSurface.copy(alpha = alpha)
+    Column(modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f * alpha))
+        Row(
+            Modifier.padding(top = 8.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Column(Modifier.weight(12f)) {
+                Text(
+                    "Cause of delay".toUpperCase(Locale.getDefault()),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
+                    style = MaterialTheme.typography.caption
+                )
+                delayCauses.forEach { cause -> DelayCause(cause, contentColor) }
+            }
+            HideDelayCauseAction(
+                onClick = onClose,
+                color = contentColor,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable private fun DelayCause(
+    cause: DelayCause,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    val category = "${cause.categoryCodeId}"
+    val detailedCategory = cause.detailedCategoryCodeId?.run { " - $this" } ?: ""
+    val thirdCategory = cause.thirdCategoryCodeId?.run { " - $this" } ?: ""
+    Text(
+        category + detailedCategory + thirdCategory,
+        modifier.padding(8.dp),
+        color = color
+    )
+}
+
+@Composable private fun HideDelayCauseAction(
+    onClick: () -> Unit,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier,
+        alignment = Alignment.Center
+    ) {
+        IconButton(onClick, Modifier.preferredSize(30.dp)) {
+            Icon(Icons.Rounded.ExpandLess, tint = color)
+        }
     }
 }
 

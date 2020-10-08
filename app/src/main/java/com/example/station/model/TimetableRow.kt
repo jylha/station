@@ -16,6 +16,7 @@ import java.time.ZonedDateTime
  * @param actualTime Actual time of of arrival or departure.
  * @param differenceInMinutes Difference between scheduled and actual time in minutes.
  * @param markedReady Train is marked ready to depart (used only on origin station).
+ * @param causes List of causes for train being behind or ahead of schedule.
  */
 @Immutable
 data class TimetableRow(
@@ -29,7 +30,7 @@ data class TimetableRow(
     val actualTime: ZonedDateTime? = null,
     val differenceInMinutes: Int? = null,
     val markedReady: Boolean = false,
-    val cause: DelayCause? = null,
+    val causes: List<DelayCause> = emptyList(),
 ) {
     sealed class Type(val name: String) {
         object Arrival : Type("Arrival")
@@ -54,7 +55,7 @@ internal fun arrival(
     differenceInMinutes: Int? = null,
     trainStopping: Boolean = true,
     commercialStop: Boolean? = true,
-    cause: DelayCause? = null,
+    causes: List<DelayCause> = emptyList(),
 ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Arrival,
@@ -67,7 +68,7 @@ internal fun arrival(
         actualTime,
         differenceInMinutes,
         markedReady = false,
-        cause,
+        causes,
     )
 
 /** Creates TimetableRow of commercial stop with type Departure. */
@@ -81,7 +82,7 @@ internal fun departure(
     markedReady: Boolean = false,
     trainStopping: Boolean = true,
     commercialStop: Boolean? = true,
-    cause: DelayCause? = null,
+    causes: List<DelayCause> = emptyList(),
     ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Departure,
@@ -94,5 +95,5 @@ internal fun departure(
         actualTime,
         differenceInMinutes,
         markedReady,
-        cause,
+        causes,
     )

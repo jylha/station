@@ -106,16 +106,18 @@ class TimetableRowDataMapperTest {
 
     @Test fun `cause is mapped correctly into domain model`() {
         val result = networkEntity.copy(
-            cause = CauseNetworkEntity(
-                111, "AAA",
-                222, "BBB",
-                333, "CCC"
+            causes = listOf(
+                CauseNetworkEntity(
+                    111, "AAA",
+                    222, "BBB",
+                    333, "CCC"
+                )
             )
         ).toDomainModel()
 
-        assertThat(result.cause).isNotNull()
-        assertThat(result.cause?.categoryCodeId).isEqualTo(111)
-        assertThat(result.cause?.detailedCategoryCodeId).isEqualTo(222)
-        assertThat(result.cause?.thirdCategoryCodeId).isEqualTo(333)
+        assertThat(result.causes).isNotNull()
+        assertThat(result.causes.first().categoryCodeId).isEqualTo(111)
+        assertThat(result.causes.first().detailedCategoryCodeId).isEqualTo(222)
+        assertThat(result.causes.first().thirdCategoryCodeId).isEqualTo(333)
     }
 }

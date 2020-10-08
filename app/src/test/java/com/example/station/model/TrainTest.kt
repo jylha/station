@@ -199,11 +199,11 @@ class TrainTest {
             departure(1, "1", ZonedDateTime.parse("2020-10-10T08:30:00.000Z")),
             arrival(
                 2, "2", ZonedDateTime.parse("2020-10-10T09:30:00.000Z"),
-                cause = DelayCause(1)
+                causes = listOf(DelayCause(1))
             ),
             departure(
                 2, "2", ZonedDateTime.parse("2020-10-10T09:35:00.000Z"),
-                cause = DelayCause(2)
+                causes = listOf(DelayCause(2))
             ),
             arrival(3, "3", ZonedDateTime.parse("2020-10-10T10:30:00.000Z"))
         )

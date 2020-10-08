@@ -23,7 +23,7 @@ fun TimetableRowNetworkEntity.toDomainModel(): TimetableRow {
         actualTime = if (actualTime != null) ZonedDateTime.parse(actualTime) else null,
         differenceInMinutes = differenceInMinutes,
         markedReady = trainReady != null,
-        cause = cause?.toDomainModel()
+        causes = causes.map { it.toDomainModel() }
     )
 }
 
