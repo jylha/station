@@ -151,10 +151,10 @@ class TrainTest {
 
     private val trainWithNonStopTimetableRows = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            departure( 1, "4", scheduledTime1),
+            departure(1, "4", scheduledTime1),
             arrival(2, "2", scheduledTime2, trainStopping = false, commercialStop = null),
-            departure( 2, "2", scheduledTime3, trainStopping = false, commercialStop = null),
-            arrival( 3, "2", scheduledTime4)
+            departure(2, "2", scheduledTime3, trainStopping = false, commercialStop = null),
+            arrival(3, "2", scheduledTime4)
         )
     )
 
@@ -187,5 +187,32 @@ class TrainTest {
     @Test fun `stopsAt() for a station not in timetable returns empty list`() {
         val result = train.stopsAt(400)
         assertThat(result).isEmpty()
+    }
+
+    @Test fun `delayCauses() returns an empty list when timetable does not contain any delays`() {
+        val result = train.delayCauses()
+        assertThat(result).isEmpty()
+    }
+
+    private val delayedTrain = trainWithEmptyTimetable.copy(
+        timetable = listOf(
+            departure(1, "1", ZonedDateTime.parse("2020-10-10T08:30:00.000Z")),
+            arrival(
+                2, "2", ZonedDateTime.parse("2020-10-10T09:30:00.000Z"),
+                cause = DelayCause(1)
+            ),
+            departure(
+                2, "2", ZonedDateTime.parse("2020-10-10T09:35:00.000Z"),
+                cause = DelayCause(2)
+            ),
+            arrival(3, "3", ZonedDateTime.parse("2020-10-10T10:30:00.000Z"))
+        )
+    )
+
+    @Test fun `delayCauses() returns a list of delay causes for a delayed train`() {
+        val result = delayedTrain.delayCauses()
+        assertThat(result).hasSize(2)
+        assertThat(result[0]).isEqualTo(DelayCause(1))
+        assertThat(result[1]).isEqualTo(DelayCause(2))
     }
 }

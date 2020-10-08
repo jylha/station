@@ -35,13 +35,14 @@ data class TimetableRow(
         object Arrival : Type("Arrival")
         object Departure : Type("Departure")
     }
-
-    data class DelayCause(
-        val categoryCodeId: Int,
-        val detailedCategoryCodeId: Int? = null,
-        val thirdCategoryCodeId: Int? = null,
-    )
 }
+
+/** Cause of delay. */
+data class DelayCause(
+    val categoryCodeId: Int,
+    val detailedCategoryCodeId: Int? = null,
+    val thirdCategoryCodeId: Int? = null,
+)
 
 /** Creates TimetableRow of commercial stop with type Arrival. */
 internal fun arrival(
@@ -52,7 +53,8 @@ internal fun arrival(
     actualTime: ZonedDateTime? = null,
     differenceInMinutes: Int? = null,
     trainStopping: Boolean = true,
-    commercialStop: Boolean? = true
+    commercialStop: Boolean? = true,
+    cause: DelayCause? = null,
 ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Arrival,
@@ -64,7 +66,8 @@ internal fun arrival(
         estimatedTime,
         actualTime,
         differenceInMinutes,
-        markedReady = false
+        markedReady = false,
+        cause,
     )
 
 /** Creates TimetableRow of commercial stop with type Departure. */
@@ -77,8 +80,9 @@ internal fun departure(
     differenceInMinutes: Int? = null,
     markedReady: Boolean = false,
     trainStopping: Boolean = true,
-    commercialStop: Boolean? = true
-): TimetableRow =
+    commercialStop: Boolean? = true,
+    cause: DelayCause? = null,
+    ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Departure,
         stationUic,
@@ -89,5 +93,6 @@ internal fun departure(
         estimatedTime,
         actualTime,
         differenceInMinutes,
-        markedReady
+        markedReady,
+        cause,
     )
