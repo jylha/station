@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel @ViewModelInject constructor(
@@ -25,16 +23,21 @@ class HomeViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
+            reduceState(HomeViewResult.LoadingSettings)
             settingsRepository.station().collect { stationUicCode ->
-                if (stationUicCode == null) {
-                    Timber.d("uicCode: $stationUicCode")
-                    _state.value = _state.value.copy(loading = false)
+                if (true || stationUicCode == null) {
+                    reduceState(HomeViewResult.SettingsLoaded)
                 } else {
+                    reduceState(HomeViewResult.LoadingStation)
                     val station = stationRepository.fetchStation(stationUicCode)
-                    _state.value = _state.value.copy(loading = false, station = station)
+                    reduceState(HomeViewResult.StationLoaded(station))
                 }
             }
         }
+    }
+
+    private fun reduceState(result: HomeViewResult) {
+        _state.value = _state.value.reduce(result)
     }
 }
 

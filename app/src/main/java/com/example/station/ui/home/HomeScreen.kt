@@ -77,13 +77,12 @@ fun HomeScreen(
             else MaterialTheme.colors.background
         )
     ) {
-        if (viewState.loading) {
-            Loading(stringResource(R.string.message_loading_settings))
-        } else if (false && viewState.station != null) {
-            onShowTimetable(viewState.station)
-        } else {
-            val locationPermission = LocationPermissionAmbient.current
-            WelcomeCard(
+        val locationPermission = LocationPermissionAmbient.current
+        when {
+            viewState.isLoadingSettings -> LoadingSettings()
+            viewState.isLoadingStation -> LoadingStation()
+            viewState.station != null -> onShowTimetable(viewState.station)
+            else -> WelcomeCard(
                 onSelectStation = onSelectStation,
                 onShowNearestStation = {
                     withPermission(locationPermission) { granted ->
@@ -95,6 +94,22 @@ fun HomeScreen(
             )
         }
     }
+}
+
+@Composable private fun LoadingSettings() {
+    Loading(
+        message = stringResource(R.string.message_loading_settings),
+        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f),
+        indicatorColor = MaterialTheme.colors.onPrimary
+    )
+}
+
+@Composable private fun LoadingStation() {
+    Loading(
+        message = stringResource(R.string.message_loading_timetable),
+        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f),
+        indicatorColor = MaterialTheme.colors.onPrimary
+    )
 }
 
 @Composable private fun WelcomeCard(

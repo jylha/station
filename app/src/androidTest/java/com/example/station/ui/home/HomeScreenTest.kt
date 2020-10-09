@@ -17,15 +17,19 @@ class HomeScreenTest {
     val rule = createComposeRule(disableTransitions = true)
 
     @Test fun loadingApplicationSettings() {
-        val state = HomeViewState(loading = true)
-        rule.setContent { HomeScreen(viewState = state) }
+        val state = HomeViewState(isLoadingSettings = true)
+        rule.setContent {
+            MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
+                HomeScreen(viewState = state)
+            }
+        }
 
         rule.onNodeWithText("Loading application settings.")
         rule.onNodeWithSubstring("Welcome").assertDoesNotExist()
     }
 
     @Test fun displayWelcomeText() {
-        val state = HomeViewState(loading = false)
+        val state = HomeViewState(isLoadingSettings = false)
         rule.setContent {
             MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
                 HomeScreen(viewState = state)
