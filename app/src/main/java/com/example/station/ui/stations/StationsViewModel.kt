@@ -33,19 +33,19 @@ class StationsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            reduceState(StationsViewResult.LoadingNameMapper)
+            reduceState(StationsResult.LoadingNameMapper)
             val mapper = stationRepository.getStationNameMapper()
-            reduceState(StationsViewResult.NameMapper(mapper))
+            reduceState(StationsResult.NameMapper(mapper))
         }
 
         viewModelScope.launch {
-            reduceState(StationsViewResult.LoadingStations)
+            reduceState(StationsResult.LoadingStations)
             stationRepository.fetchStations().collect { response ->
                 val result = when (response) {
-                    is StoreResponse.Loading -> StationsViewResult.ReloadingStations
-                    is StoreResponse.Data -> StationsViewResult.StationsData(response.value)
-                    is StoreResponse.NoNewData -> StationsViewResult.NoNewData
-                    is StoreResponse.Error -> StationsViewResult.Error(response.errorMessageOrNull())
+                    is StoreResponse.Loading -> StationsResult.ReloadingStations
+                    is StoreResponse.Data -> StationsResult.StationsData(response.value)
+                    is StoreResponse.NoNewData -> StationsResult.NoNewData
+                    is StoreResponse.Error -> StationsResult.Error(response.errorMessageOrNull())
                 }
                 reduceState(result)
             }
@@ -53,7 +53,7 @@ class StationsViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             settingsRepository.recentStations().collect { stations ->
-                reduceState(StationsViewResult.RecentStations(stations))
+                reduceState(StationsResult.RecentStations(stations))
             }
         }
     }
@@ -75,18 +75,18 @@ class StationsViewModel @ViewModelInject constructor(
     }
 
     private fun selectStation() {
-        reduceState(StationsViewResult.SelectStation)
+        reduceState(StationsResult.SelectStation)
     }
 
     private fun selectNearestStation() {
         viewModelScope.launch {
-            reduceState(StationsViewResult.SelectNearest)
+            reduceState(StationsResult.SelectNearest)
             val location = locationService.currentLocation().first()
-            reduceState(StationsViewResult.Location(location.latitude, location.longitude))
+            reduceState(StationsResult.Location(location.latitude, location.longitude))
         }
     }
 
-    private fun reduceState(result: StationsViewResult) {
+    private fun reduceState(result: StationsResult) {
         _state.value = _state.value.reduce(result)
     }
 }

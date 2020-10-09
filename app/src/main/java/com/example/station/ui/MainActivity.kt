@@ -4,17 +4,22 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.setContent
+import com.example.station.ui.components.LocationPermission
+import com.example.station.ui.components.LocationPermissionProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private val locationPermission = LocationPermission(this)
     private val navigationViewModel: NavigationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            StationApp(navigationViewModel)
+            LocationPermissionProvider(locationPermission) {
+                StationApp(navigationViewModel)
+            }
         }
     }
 

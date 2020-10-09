@@ -2,7 +2,7 @@ package com.example.station.ui.stations
 
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
-import com.example.station.ui.stations.StationsViewResult as Result
+import com.example.station.ui.stations.StationsResult as Result
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

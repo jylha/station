@@ -16,6 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,7 +38,9 @@ import com.example.station.model.Station
 import com.example.station.ui.Screen
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.Loading
+import com.example.station.ui.components.LocationPermissionAmbient
 import com.example.station.ui.components.SearchBar
+import com.example.station.ui.components.withPermission
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -55,10 +58,21 @@ fun StationScreen(
     when {
         selectNearestStation -> SelectNearestStation(state, navigateTo)
         state.isLoading -> LoadingStations()
-        else -> StationsScreen(state, onSelect = { station ->
-            viewModel.stationSelected(station)
-            navigateTo(Screen.Timetable(station))
-        })
+        else -> {
+            val locationPermission = LocationPermissionAmbient.current
+            StationsScreen(
+                state,
+                onSelect = { station ->
+                    viewModel.stationSelected(station)
+                    navigateTo(Screen.Timetable(station))
+                },
+                onSelectNearest = {
+                    withPermission(locationPermission) { granted ->
+                        if (granted) navigateTo(Screen.SelectNearest)
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -70,7 +84,11 @@ fun StationScreen(
     }
 }
 
-@Composable fun StationsScreen(state: StationsViewState, onSelect: (Station) -> Any) {
+@Composable fun StationsScreen(
+    state: StationsViewState,
+    onSelect: (Station) -> Unit,
+    onSelectNearest: () -> Unit = {},
+) {
     val stations = state.stations
     val recentStations = remember(stations, state.recentStations) {
         state.recentStations.mapNotNull { uic ->
@@ -102,6 +120,9 @@ fun StationScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.label_select_station)) },
                     actions = {
+                        IconButton(onClick = onSelectNearest) {
+                            Icon(Icons.Rounded.MyLocation)
+                        }
                         IconButton(
                             onClick = { searchEnabled = true },
                             modifier = Modifier.semantics { accessibilityLabel = searchLabel }
@@ -197,7 +218,11 @@ fun StationScreen(
         with(AnnotatedString.Builder(station.name)) {
             if (searchText?.isNotBlank() == true) {
                 val index = station.name.indexOf(searchText, 0, ignoreCase = true)
-                addStyle(SpanStyle(color = fg, background = bg), index, index + searchText.length)
+                addStyle(
+                    SpanStyle(color = fg, background = bg),
+                    index,
+                    index + searchText.length
+                )
             }
             toAnnotatedString()
         }
@@ -215,6 +240,9 @@ fun StationScreen(
 }
 
 /** Filter a list with [predicate] only when given [condition] is true. */
-private inline fun <T> List<T>.filterWhen(condition: Boolean, predicate: (T) -> Boolean): List<T> {
+private inline fun <T> List<T>.filterWhen(
+    condition: Boolean,
+    predicate: (T) -> Boolean
+): List<T> {
     return if (condition) filterTo(ArrayList(), predicate) else this
 }

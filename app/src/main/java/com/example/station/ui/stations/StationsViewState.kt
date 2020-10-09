@@ -29,10 +29,10 @@ data class StationsViewState(
         get() = isLoadingStations || isLoadingNameMapper
 }
 
-fun StationsViewState.reduce(result: StationsViewResult): StationsViewState {
+fun StationsViewState.reduce(result: StationsResult): StationsViewState {
     return when (result) {
 
-        StationsViewResult.SelectStation -> {
+        StationsResult.SelectStation -> {
             copy(
                 selectNearest = false,
                 isFetchingLocation = false,
@@ -40,11 +40,11 @@ fun StationsViewState.reduce(result: StationsViewResult): StationsViewState {
             )
         }
 
-        StationsViewResult.LoadingStations -> copy(isLoadingStations = true)
-        StationsViewResult.ReloadingStations -> this
-        StationsViewResult.NoNewData -> this
+        StationsResult.LoadingStations -> copy(isLoadingStations = true)
+        StationsResult.ReloadingStations -> this
+        StationsResult.NoNewData -> this
 
-        is StationsViewResult.StationsData -> {
+        is StationsResult.StationsData -> {
             val updatedStations = result.stations.updateNames(nameMapper)
             if (selectNearest && !isFetchingLocation) {
                 val nearest = if (latitude != null && longitude != null)
@@ -59,17 +59,17 @@ fun StationsViewState.reduce(result: StationsViewResult): StationsViewState {
             }
         }
 
-        is StationsViewResult.RecentStations -> copy(recentStations = result.stations)
-        is StationsViewResult.Error -> copy(errorMessage = result.message)
+        is StationsResult.RecentStations -> copy(recentStations = result.stations)
+        is StationsResult.Error -> copy(errorMessage = result.message)
 
-        is StationsViewResult.NameMapper -> copy(
+        is StationsResult.NameMapper -> copy(
             nameMapper = result.mapper, isLoadingNameMapper = false,
             stations = stations.updateNames(result.mapper)
         )
 
-        is StationsViewResult.LoadingNameMapper -> copy(isLoadingNameMapper = true)
+        is StationsResult.LoadingNameMapper -> copy(isLoadingNameMapper = true)
 
-        StationsViewResult.SelectNearest -> {
+        StationsResult.SelectNearest -> {
             copy(
                 selectNearest = true,
                 nearestStation = null,
@@ -77,7 +77,7 @@ fun StationsViewState.reduce(result: StationsViewResult): StationsViewState {
             )
         }
 
-        is StationsViewResult.Location -> {
+        is StationsResult.Location -> {
             copy(
                 isFetchingLocation = false,
                 latitude = result.latitude,
@@ -87,7 +87,7 @@ fun StationsViewState.reduce(result: StationsViewResult): StationsViewState {
             )
         }
 
-        is StationsViewResult.LocationError -> {
+        is StationsResult.LocationError -> {
             copy(
                 isFetchingLocation = false,
                 selectNearest = false

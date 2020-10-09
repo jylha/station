@@ -220,12 +220,12 @@ fun TimetableScreen(
             }
         },
         actions = {
+            IconButton(onClick = onSelectStations) { Icon(Icons.Rounded.LocationCity) }
             if (filterSelectionEnabled) {
                 IconButton(onClick = onHideFilters) { Icon(Icons.Default.ExpandLess) }
             } else {
                 IconButton(onClick = onShowFilters) { Icon(Icons.Default.FilterList) }
             }
-            IconButton(onClick = onSelectStations) { Icon(Icons.Rounded.LocationCity) }
         }
     )
 }

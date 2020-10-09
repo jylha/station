@@ -6,21 +6,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.compose.runtime.ambientOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticAmbientOf
 import androidx.core.app.ActivityCompat
 
 @Composable fun LocationPermissionProvider(
-    activity: ComponentActivity,
+    locationPermission: LocationPermission,
     content: @Composable () -> Unit
 ) {
-    val locationPermission = remember { LocationPermission(activity) }
-    Providers(LocationPermissionAmbient provides locationPermission) {
+    val permission = remember(locationPermission) { locationPermission }
+    Providers(LocationPermissionAmbient provides permission) {
         content()
     }
 }
 
-val LocationPermissionAmbient = ambientOf<Permission> {
+val LocationPermissionAmbient = staticAmbientOf<Permission> {
     error("LocationPermission is not set.")
 }
 
@@ -41,6 +41,10 @@ fun withPermission(permission: Permission, onResult: (Boolean) -> Unit) {
 
 /** A helper class for checking and requesting location permission. */
 data class LocationPermission(val activity: ComponentActivity) : Permission {
+    private var callback: ((Boolean) -> Unit)? = null
+    private val resultLauncher = activity.registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted -> callback?.invoke(granted); callback = null }
 
     /** Checks whether access to coarse locations is granted. */
     override fun isGranted(): Boolean {
@@ -52,10 +56,8 @@ data class LocationPermission(val activity: ComponentActivity) : Permission {
 
     /** Requests permission to access fine location. */
     override fun request(onResult: (Boolean) -> Unit) {
-        val startForResult = activity.registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { result -> onResult(result) }
-        startForResult.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        callback = onResult
+        resultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     /** Checks whether rationale for granting access to location should be shown. */

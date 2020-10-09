@@ -1,15 +1,12 @@
 package com.example.station.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.ContextAmbient
 import com.example.station.ui.about.AboutScreen
-import com.example.station.ui.components.LocationPermissionProvider
-import com.example.station.ui.theme.StationTheme
 import com.example.station.ui.home.HomeScreen
 import com.example.station.ui.stations.StationScreen
+import com.example.station.ui.theme.StationTheme
 import com.example.station.ui.timetable.TimetableScreen
 import com.example.station.ui.train.TrainDetailsScreen
 
@@ -18,9 +15,7 @@ fun StationApp(
     navigationViewModel: NavigationViewModel
 ) {
     StationTheme {
-        LocationPermissionProvider(ContextAmbient.current as AppCompatActivity) {
-            StationAppContent(navigationViewModel)
-        }
+        StationAppContent(navigationViewModel)
     }
 }
 
