@@ -570,7 +570,7 @@ private val expandButtonAlpha = FloatPropKey()
 private val expandedContentAlpha = FloatPropKey()
 private val expandedContentHeightFraction = FloatPropKey()
 
-private fun expandableStateTransition() = transitionDefinition<ExpandableState> {
+private val expandableStateTransition = transitionDefinition<ExpandableState> {
     state(ExpandableState.Expanded) {
         this[expandButtonAlpha] = 0f
         this[expandedContentAlpha] = 0.8f
@@ -582,7 +582,7 @@ private fun expandableStateTransition() = transitionDefinition<ExpandableState> 
         this[expandedContentHeightFraction] = 0f
     }
     transition(fromState = ExpandableState.Expanded, toState = ExpandableState.Collapsed) {
-        expandButtonAlpha using tween(300)
+        expandButtonAlpha using tween(300, 200)
         expandedContentAlpha using tween(300)
         expandedContentHeightFraction using tween(300)
     }
@@ -602,7 +602,7 @@ private fun expandableStateTransition() = transitionDefinition<ExpandableState> 
     var expanded by savedInstanceState { false }
 
     val expandableState = transition(
-        definition = expandableStateTransition(),
+        definition = expandableStateTransition,
         toState = if (expanded) ExpandableState.Expanded else ExpandableState.Collapsed,
     )
 
@@ -622,7 +622,8 @@ private fun expandableStateTransition() = transitionDefinition<ExpandableState> 
                     onClick = { expanded = true },
                     enabled = !expanded && delayCauses.isNotEmpty(),
                     Modifier.weight(1f),
-                    color = StationTheme.colors.late.copy(alpha = expandableState[expandButtonAlpha])
+                    color = if (delayCauses.isEmpty()) Color.Transparent
+                    else StationTheme.colors.late.copy(alpha = expandableState[expandButtonAlpha])
                 )
             }
             Row(Modifier.heightFraction(expandableState[expandedContentHeightFraction])) {
@@ -835,10 +836,8 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         modifier,
         alignment = Alignment.CenterEnd
     ) {
-        if (enabled) {
-            IconButton(onClick, Modifier.preferredSize(30.dp), enabled = enabled) {
-                Icon(Icons.Outlined.Info, tint = color)
-            }
+        IconButton(onClick, Modifier.preferredSize(30.dp), enabled = enabled) {
+            Icon(Icons.Outlined.Info, tint = color)
         }
     }
 }
