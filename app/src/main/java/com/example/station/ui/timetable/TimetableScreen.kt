@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.material.icons.rounded.ExpandLess
+import androidx.compose.material.icons.rounded.LocationCity
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -118,7 +119,8 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
         TimetableScreen(
             viewState,
             viewModel::offer,
-            trainSelected = { train -> navigateTo(Screen.TrainDetails(train)) }
+            onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
+            onSelectStations = { navigateTo(Screen.SelectStation) }
         )
     }
 }
@@ -127,7 +129,8 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
 fun TimetableScreen(
     viewState: TimetableViewState,
     onEvent: (TimetableEvent) -> Unit = {},
-    trainSelected: (Train) -> Unit = {},
+    onTrainSelected: (Train) -> Unit = {},
+    onSelectStations: () -> Unit = {}
 ) {
     var filterSelectionEnabled by savedInstanceState { false }
 
@@ -169,7 +172,8 @@ fun TimetableScreen(
             selectedTrainCategories,
             filterSelectionEnabled,
             onShowFilters = { filterSelectionEnabled = true },
-            onHideFilters = { filterSelectionEnabled = false }
+            onHideFilters = { filterSelectionEnabled = false },
+            onSelectStations
         )
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
@@ -180,7 +184,7 @@ fun TimetableScreen(
                     station = viewState.station,
                     trains = viewState.timetable,
                     modifier,
-                    trainSelected,
+                    onTrainSelected,
                     selectedTimetableTypes,
                     timetableTypeSelected,
                     selectedTrainCategories,
@@ -205,6 +209,7 @@ fun TimetableScreen(
     filterSelectionEnabled: Boolean,
     onShowFilters: () -> Unit,
     onHideFilters: () -> Unit,
+    onSelectStations: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -220,6 +225,7 @@ fun TimetableScreen(
             } else {
                 IconButton(onClick = onShowFilters) { Icon(Icons.Default.FilterList) }
             }
+            IconButton(onClick = onSelectStations) { Icon(Icons.Rounded.LocationCity) }
         }
     )
 }
