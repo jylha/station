@@ -6,12 +6,12 @@ import org.junit.Test
 
 class TrainTest {
 
-    private val scheduledTime1 = ZonedDateTime.parse("2020-09-05T10:00:00.000Z")
-    private val actualTime1 = ZonedDateTime.parse("2020-09-05T10:02:00.000Z")
-    private val scheduledTime2 = ZonedDateTime.parse("2020-09-05T10:30:00.000Z")
-    private val actualTime2 = ZonedDateTime.parse("2020-09-05T10:31:00.000Z")
-    private val scheduledTime3 = ZonedDateTime.parse("2020-09-05T10:40:00.000Z")
-    private val scheduledTime4 = ZonedDateTime.parse("2020-09-05T11:10:00.000Z")
+    private val scheduledTime1 = ZonedDateTime.parse("2020-09-05T10:00Z")
+    private val actualTime1 = ZonedDateTime.parse("2020-09-05T10:02Z")
+    private val scheduledTime2 = ZonedDateTime.parse("2020-09-05T10:30Z")
+    private val actualTime2 = ZonedDateTime.parse("2020-09-05T10:31Z")
+    private val scheduledTime3 = ZonedDateTime.parse("2020-09-05T10:40Z")
+    private val scheduledTime4 = ZonedDateTime.parse("2020-09-05T11:10Z")
 
     private val train = Train(
         1, "S", Train.Category.LongDistance, timetable = listOf(
@@ -165,6 +165,32 @@ class TrainTest {
         assertThat(result.last().stationUic()).isEqualTo(3)
     }
 
+    private val trainNotReady = trainWithEmptyTimetable.copy(
+        timetable = listOf(
+            departure(1, "1", scheduledTime1, markedReady = false),
+            arrival(2, "2", scheduledTime2)
+        )
+    )
+
+    @Test fun `currentCommercialStop() returns null for a train that is not yet running`() {
+        val result = trainNotReady.currentCommercialStop()
+        assertThat(result).isNull()
+    }
+
+    private val trainReady = trainWithEmptyTimetable.copy(
+        timetable = listOf(
+            departure(1, "1", scheduledTime1, markedReady = true),
+            arrival(2, "2", scheduledTime2)
+        )
+    )
+
+    @Test fun `currentCommercialStop() returns origin for a train that is marked ready`() {
+        val result = trainReady.currentCommercialStop()
+        assertThat(result).isNotNull()
+        assertThat(result?.isOrigin()).isTrue()
+        assertThat(result?.departure?.stationUic).isEqualTo(1)
+    }
+
     @Test fun `stopsAt() for origin returns list of single stop`() {
         val result = train.stopsAt(100)
         assertThat(result).hasSize(1)
@@ -196,16 +222,16 @@ class TrainTest {
 
     private val delayedTrain = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            departure(1, "1", ZonedDateTime.parse("2020-10-10T08:30:00.000Z")),
+            departure(1, "1", ZonedDateTime.parse("2020-10-10T08:30Z")),
             arrival(
-                2, "2", ZonedDateTime.parse("2020-10-10T09:30:00.000Z"),
+                2, "2", ZonedDateTime.parse("2020-10-10T09:30Z"),
                 causes = listOf(DelayCause(1))
             ),
             departure(
-                2, "2", ZonedDateTime.parse("2020-10-10T09:35:00.000Z"),
+                2, "2", ZonedDateTime.parse("2020-10-10T09:35Z"),
                 causes = listOf(DelayCause(2))
             ),
-            arrival(3, "3", ZonedDateTime.parse("2020-10-10T10:30:00.000Z"))
+            arrival(3, "3", ZonedDateTime.parse("2020-10-10T10:30Z"))
         )
     )
 

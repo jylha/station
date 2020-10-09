@@ -7,7 +7,7 @@ import org.junit.Test
 class StopTest {
 
     private val arrival = arrival(
-        1, "1", ZonedDateTime.parse("2020-10-10T10:10:00.000Z")
+        1, "1", ZonedDateTime.parse("2020-10-10T10:10Z")
     )
 
     private val departure = arrival.copy(type = TimetableRow.Type.Departure)
@@ -133,10 +133,10 @@ class StopTest {
         assertThat(result).isEqualTo("bar")
     }
 
-    private val time1 = ZonedDateTime.parse("2020-01-01T08:30:00.000Z")
-    private val time2 = ZonedDateTime.parse("2020-01-01T08:35:00.000Z")
-    private val time3 = ZonedDateTime.parse("2020-01-01T09:00:00.000Z")
-    private val time4 = ZonedDateTime.parse("2020-01-01T09:01:00.000Z")
+    private val time1 = ZonedDateTime.parse("2020-01-01T08:30Z")
+    private val time2 = ZonedDateTime.parse("2020-01-01T08:35Z")
+    private val time3 = ZonedDateTime.parse("2020-01-01T09:00Z")
+    private val time4 = ZonedDateTime.parse("2020-01-01T09:01Z")
 
     @Test
     fun `timeOfNextEvent() returns scheduled time of arrival when no actualTime or departure`() {
