@@ -6,11 +6,5 @@ data class CauseCategoryNetworkEntity(
     val categoryName: String,
     val validFrom: String,
     val validTo: String? = null,
-    val passengerTerm: PassengerTerm? = null
-) {
-    data class PassengerTerm(
-        val fi: String,
-        val sv: String,
-        val en: String
-    )
-}
+    val passengerTerm: PassengerTermNetworkEntity? = null
+)

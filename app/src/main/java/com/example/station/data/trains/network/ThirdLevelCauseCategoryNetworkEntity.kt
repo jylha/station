@@ -6,11 +6,5 @@ data class ThirdLevelCauseCategoryNetworkEntity(
     val thirdCategoryName: String,
     val validFrom: String,
     val validTo: String? = null,
-    val passengerTerm: PassengerTerm? = null
-) {
-    data class PassengerTerm(
-        val fi: String,
-        val en: String,
-        val sv: String
-    )
-}
+    val passengerTerm: PassengerTermNetworkEntity? = null
+)

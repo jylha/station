@@ -864,12 +864,12 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     Column(modifier.fillMaxWidth().padding(top = 8.dp)) {
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f * alpha))
         Row(
-            Modifier.padding(top = 8.dp),
+            Modifier.padding(8.dp),
             verticalAlignment = Alignment.Bottom
         ) {
             Column(Modifier.weight(12f)) {
                 Text(
-                    "Cause of delay".toUpperCase(Locale.getDefault()),
+                    stringResource(R.string.label_delay_causes).toUpperCase(Locale.getDefault()),
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
                     style = MaterialTheme.typography.caption
                 )
@@ -889,10 +889,12 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     color: Color,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier.padding(8.dp)) {
-        with (cause) {
-            Text(delayCause(categoryId, detailedCategoryId, thirdLevelCategoryId), color = color)
-        }
+    with(cause) {
+        Text(
+            delayCause(categoryId, detailedCategoryId, thirdLevelCategoryId),
+            modifier.padding(top = 8.dp),
+            color = color
+        )
     }
 }
 

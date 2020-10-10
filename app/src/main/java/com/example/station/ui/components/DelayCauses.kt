@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.ambientOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.ConfigurationAmbient
 import com.example.station.model.CauseCategories
 
 @Composable fun DelayCauseProvider(
@@ -32,7 +33,16 @@ import com.example.station.model.CauseCategories
         else ->
             categories.categories.firstOrNull { it.id == categoryId }
     }
-    return cause?.name ?: "-"
+    val localeList = ConfigurationAmbient.current.locales
+    val locale = localeList.getFirstMatch(arrayOf("fi", "sv", "en"))
+    return cause?.passengerFriendlyName?.run {
+        when (locale?.language) {
+            "fi" -> fi
+            "en" -> en
+            "sv" -> sv
+            else -> en
+        }
+    } ?: "-"
 }
 
 private val DelayCauseAmbient = ambientOf<CauseCategories> {
