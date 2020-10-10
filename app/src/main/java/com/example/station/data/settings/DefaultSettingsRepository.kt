@@ -34,12 +34,13 @@ class DefaultSettingsRepository @Inject constructor(
     override suspend fun setStation(stationUicCode: Int) {
         dataStore.edit { preferences ->
             val recent = (preferences[recentStationsKey] ?: emptySet()).toMutableList()
-            if (!recent.contains(stationUicCode.toString())) {
-                if (recent.size == maxRecentCount) {
-                    recent.removeLast()
-                }
-                recent.add(0, stationUicCode.toString())
+            val station = stationUicCode.toString()
+            if (recent.contains(station)) {
+                recent.remove(station)
+            } else if (recent.size == maxRecentCount) {
+                recent.removeLast()
             }
+            recent.add(0, station)
             preferences[currentStationKey] = stationUicCode
             preferences[recentStationsKey] = recent.toSet()
         }
