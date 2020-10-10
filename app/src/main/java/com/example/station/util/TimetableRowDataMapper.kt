@@ -29,9 +29,9 @@ fun TimetableRowNetworkEntity.toDomainModel(): TimetableRow {
 
 fun CauseNetworkEntity.toDomainModel(): DelayCause {
     return DelayCause(
-        categoryCodeId = categoryCodeId,
-        detailedCategoryCodeId = detailedCategoryCodeId,
-        thirdCategoryCodeId = thirdCategoryCodeId,
+        categoryId = categoryCodeId,
+        detailedCategoryId = detailedCategoryCodeId,
+        thirdLevelCategoryId = thirdCategoryCodeId,
     )
 }
 

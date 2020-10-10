@@ -29,4 +29,7 @@ class DefaultTrainRepository @Inject constructor(
         return trainService.fetchDetailedCauseCategoryCodes().map { it.toDomainModel() }
     }
 
+    override suspend fun thirdLevelCauseCategories(): List<CauseCategory> {
+        return trainService.fetchThirdLevelCauseCategoryCodes().map { it.toDomainModel() }
+    }
 }

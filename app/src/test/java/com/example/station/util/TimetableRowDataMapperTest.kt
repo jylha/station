@@ -116,8 +116,8 @@ class TimetableRowDataMapperTest {
         ).toDomainModel()
 
         assertThat(result.causes).isNotNull()
-        assertThat(result.causes.first().categoryCodeId).isEqualTo(111)
-        assertThat(result.causes.first().detailedCategoryCodeId).isEqualTo(222)
-        assertThat(result.causes.first().thirdCategoryCodeId).isEqualTo(333)
+        assertThat(result.causes.first().categoryId).isEqualTo(111)
+        assertThat(result.causes.first().detailedCategoryId).isEqualTo(222)
+        assertThat(result.causes.first().thirdLevelCategoryId).isEqualTo(333)
     }
 }

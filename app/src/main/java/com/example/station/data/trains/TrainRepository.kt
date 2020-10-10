@@ -16,4 +16,7 @@ interface TrainRepository {
     /** Returns a list of detailed cause categories for train delays. */
     suspend fun detailedCauseCategories(): List<CauseCategory>
 
+    /** Returns a list of third level cause categories for train delays. */
+    suspend fun thirdLevelCauseCategories(): List<CauseCategory>
+
 }

@@ -890,21 +890,9 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     modifier: Modifier = Modifier
 ) {
     Column(modifier.padding(8.dp)) {
-        val category = "${cause.categoryCodeId}"
-        val detailedCategory = cause.detailedCategoryCodeId?.run { " - $this" } ?: ""
-        val thirdCategory = cause.thirdCategoryCodeId?.run { " - $this" } ?: ""
-        Text(
-            category + detailedCategory + thirdCategory,
-
-            color = color
-        )
-        Text(
-            delayCause(
-                cause.categoryCodeId,
-                cause.detailedCategoryCodeId,
-                cause.thirdCategoryCodeId
-            )
-        )
+        with (cause) {
+            Text(delayCause(categoryId, detailedCategoryId, thirdLevelCategoryId), color = color)
+        }
     }
 }
 

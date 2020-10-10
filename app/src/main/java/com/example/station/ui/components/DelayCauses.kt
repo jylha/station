@@ -5,15 +5,14 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.ambientOf
 import androidx.compose.runtime.remember
 import com.example.station.model.CauseCategories
-import timber.log.Timber
 
 @Composable fun DelayCauseProvider(
     causeCategories: CauseCategories?,
     content: @Composable () -> Unit
 ) {
-    Timber.d("Update delay causes")
     val categories = remember(causeCategories) {
-        causeCategories ?: CauseCategories(emptyList(), emptyList(), emptyList())}
+        causeCategories ?: CauseCategories(emptyList(), emptyList(), emptyList())
+    }
     Providers(DelayCauseAmbient provides categories) {
         content()
     }
@@ -26,12 +25,14 @@ import timber.log.Timber
 ): String {
     val categories = DelayCauseAmbient.current
     val cause = when {
+        thirdCategoryId != null ->
+            categories.thirdLevelCategories.firstOrNull { it.id == thirdCategoryId }
         detailedCategoryId != null ->
             categories.detailedCategories.firstOrNull { it.id == detailedCategoryId }
         else ->
             categories.categories.firstOrNull { it.id == categoryId }
     }
-    return cause?.name ?: "<unknown>"
+    return cause?.name ?: "-"
 }
 
 private val DelayCauseAmbient = ambientOf<CauseCategories> {

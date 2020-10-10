@@ -12,6 +12,7 @@ import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,10 +60,15 @@ class TimetableViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             reduceState(TimetableResult.LoadingCauseCategories)
-            val causeCategories = trainRepository.causeCategories()
-            val detailedCauseCategories = trainRepository.detailedCauseCategories()
-            val allCategories = CauseCategories(causeCategories, detailedCauseCategories)
-            reduceState(TimetableResult.CauseCategoriesLoaded(allCategories))
+            val categories = async { trainRepository.causeCategories() }
+            val detailedCategories = async { trainRepository.detailedCauseCategories() }
+            val thirdLevelCategories = async { trainRepository.thirdLevelCauseCategories() }
+            val causeCategories = CauseCategories(
+                categories = categories.await(),
+                detailedCategories = detailedCategories.await(),
+                thirdLevelCategories = thirdLevelCategories.await()
+            )
+            reduceState(TimetableResult.CauseCategoriesLoaded(causeCategories))
         }
     }
 

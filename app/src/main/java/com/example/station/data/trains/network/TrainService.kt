@@ -22,4 +22,6 @@ interface TrainService {
     @GET("metadata/detailed-cause-category-codes")
     suspend fun fetchDetailedCauseCategoryCodes(): List<DetailedCauseCategoryNetworkEntity>
 
+    @GET("metadata/third-cause-category-codes")
+    suspend fun fetchThirdLevelCauseCategoryCodes(): List<ThirdLevelCauseCategoryNetworkEntity>
 }
