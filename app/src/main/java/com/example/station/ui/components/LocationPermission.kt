@@ -46,7 +46,7 @@ data class LocationPermission(val activity: ComponentActivity) : Permission {
         ActivityResultContracts.RequestPermission()
     ) { granted -> callback?.invoke(granted); callback = null }
 
-    /** Checks whether access to coarse locations is granted. */
+    /** Checks whether access to fine locations is granted. */
     override fun isGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(
             activity,

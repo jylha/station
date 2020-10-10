@@ -1,6 +1,7 @@
 package com.example.station.ui.timetable
 
 import com.example.station.data.stations.StationNameMapper
+import com.example.station.model.CauseCategories
 import com.example.station.model.CauseCategory
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
@@ -116,11 +117,13 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with CauseCategories result`() {
         val state =
-            TimetableViewState(isLoadingCauseCategories = true, causeCategories = emptyList())
+            TimetableViewState(isLoadingCauseCategories = true, causeCategories = null)
         val categories = listOf(CauseCategory(1, "First"))
-        val result = state.reduce(TimetableResult.CauseCategories(categories))
+        val detailedCategories = listOf(CauseCategory(2, "Second"))
+        val causeCategories = CauseCategories(categories, detailedCategories)
+        val result = state.reduce(TimetableResult.CauseCategoriesLoaded(causeCategories))
         assertThat(result.isLoadingCauseCategories).isFalse()
-        assertThat(result.causeCategories).containsExactly(CauseCategory(1, "First"))
+        assertThat(result.causeCategories).isEqualTo(causeCategories)
     }
 }
 

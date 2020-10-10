@@ -1,7 +1,7 @@
 package com.example.station.ui.timetable
 
 import com.example.station.data.stations.StationNameMapper
-import com.example.station.model.CauseCategory
+import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
@@ -22,5 +22,5 @@ sealed class TimetableResult {
     data class ReloadedData(val trains: List<Train>) : TimetableResult()
 
     object LoadingCauseCategories : TimetableResult()
-    data class CauseCategories(val categories: List<CauseCategory>) : TimetableResult()
+    data class CauseCategoriesLoaded(val categories: CauseCategories) : TimetableResult()
 }

@@ -2,7 +2,7 @@ package com.example.station.ui.timetable
 
 import androidx.compose.runtime.Immutable
 import com.example.station.data.stations.StationNameMapper
-import com.example.station.model.CauseCategory
+import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
@@ -21,7 +21,7 @@ data class TimetableViewState(
     val isLoadingStationNames: Boolean = false,
     val stationNameMapper: StationNameMapper? = null,
     val isLoadingCauseCategories: Boolean = false,
-    val causeCategories: List<CauseCategory> = emptyList(),
+    val causeCategories: CauseCategories? = null,
 )
 
 fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
@@ -55,7 +55,7 @@ fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
             timetable = result.trains
         )
         TimetableResult.LoadingCauseCategories -> copy(isLoadingCauseCategories = true)
-        is TimetableResult.CauseCategories -> copy(
+        is TimetableResult.CauseCategoriesLoaded -> copy(
             isLoadingCauseCategories = false,
             causeCategories = result.categories
         )

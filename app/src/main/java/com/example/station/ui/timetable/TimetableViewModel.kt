@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.stations.StationRepository
 import com.example.station.data.trains.TrainRepository
+import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class TimetableViewModel @ViewModelInject constructor(
@@ -60,7 +60,9 @@ class TimetableViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             reduceState(TimetableResult.LoadingCauseCategories)
             val causeCategories = trainRepository.causeCategories()
-            reduceState(TimetableResult.CauseCategories(causeCategories))
+            val detailedCauseCategories = trainRepository.detailedCauseCategories()
+            val allCategories = CauseCategories(causeCategories, detailedCauseCategories)
+            reduceState(TimetableResult.CauseCategoriesLoaded(allCategories))
         }
     }
 

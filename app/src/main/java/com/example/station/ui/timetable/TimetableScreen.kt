@@ -91,6 +91,7 @@ import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
 import com.example.station.ui.Screen
 import com.example.station.ui.components.ActualTime
+import com.example.station.ui.components.DelayCauseProvider
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.EstimatedTime
 import com.example.station.ui.components.Loading
@@ -98,6 +99,7 @@ import com.example.station.ui.components.RefreshIndicator
 import com.example.station.ui.components.ScheduledTime
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.SwipeRefreshLayout
+import com.example.station.ui.components.delayCause
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
 import com.example.station.util.differsFrom
@@ -116,14 +118,18 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewState by viewModel.state.collectAsState()
 
     StationNameProvider(viewState.stationNameMapper) {
-        TimetableScreen(
-            viewState,
-            viewModel::offer,
-            onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
-            onSelectStations = { navigateTo(Screen.SelectStation) }
-        )
+        DelayCauseProvider(causeCategories = viewState.causeCategories) {
+            TimetableScreen(
+                viewState,
+                viewModel::offer,
+                onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
+                onSelectStations = { navigateTo(Screen.SelectStation) }
+            )
+        }
     }
 }
+
+/** Checks whether access to fine locations is granted. */
 
 @Composable
 fun TimetableScreen(
@@ -883,14 +889,23 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     color: Color,
     modifier: Modifier = Modifier
 ) {
-    val category = "${cause.categoryCodeId}"
-    val detailedCategory = cause.detailedCategoryCodeId?.run { " - $this" } ?: ""
-    val thirdCategory = cause.thirdCategoryCodeId?.run { " - $this" } ?: ""
-    Text(
-        category + detailedCategory + thirdCategory,
-        modifier.padding(8.dp),
-        color = color
-    )
+    Column(modifier.padding(8.dp)) {
+        val category = "${cause.categoryCodeId}"
+        val detailedCategory = cause.detailedCategoryCodeId?.run { " - $this" } ?: ""
+        val thirdCategory = cause.thirdCategoryCodeId?.run { " - $this" } ?: ""
+        Text(
+            category + detailedCategory + thirdCategory,
+
+            color = color
+        )
+        Text(
+            delayCause(
+                cause.categoryCodeId,
+                cause.detailedCategoryCodeId,
+                cause.thirdCategoryCodeId
+            )
+        )
+    }
 }
 
 @Composable private fun HideDelayCauseAction(
