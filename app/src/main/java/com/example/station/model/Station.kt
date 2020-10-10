@@ -1,5 +1,7 @@
 package com.example.station.model
 
+import androidx.compose.runtime.Immutable
+
 /**
  * Domain Model for station information.
  *
@@ -12,6 +14,7 @@ package com.example.station.model
  * @param longitude Longitude in WGS-84 format.
  * @param latitude Latitude in WGS-84 format.
  */
+@Immutable
 data class Station(
     val passengerTraffic: Boolean,
     val type: Type,
