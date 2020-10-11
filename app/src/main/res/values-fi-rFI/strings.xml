@@ -17,6 +17,14 @@
     <string name="message_loading_timetable">Haetaan aikataulua.</string>
     <string name="message_no_matching_stations">Hakua vastaavia asemia ei löytynyt.</string>
     <string name="message_retrieving_location">Haetaan nykyistä sijaintia.</string>
+    <string name="message_empty_timetable">
+        Mikään juna ei pysähdy tällä asemalla lähiaikoina.
+    </string>
+    <string name="message_no_matching_trains">
+        Mikään juna valituista luokista ei pysähdy tällä asemalla lähiaikoina.
+    </string>
+    <string name="message_loading_train_details">Haetaan junan tietoja.</string>
+
 
     <string name="title_timetable">Aikataulu</string>
     <string name="subtitle_all_trains">Kaikki junat</string>

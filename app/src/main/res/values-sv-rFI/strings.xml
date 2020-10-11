@@ -16,6 +16,14 @@
     <string name="message_loading_timetable">Hämtar tidtabell.</string>
     <string name="message_no_matching_stations">Inga stationer matchar sökningen.</string>
     <string name="message_retrieving_location">Hämtar nuvarande plats.</string>
+    <string name="message_empty_timetable">
+        Inga tåg är planerade att stanna vid denna station inom en snar framtid.
+    </string>
+    <string name="message_no_matching_trains">
+        Inga tåg i den valda kategorin är planerade att stanna vid denna station inom en snar framtid.
+    </string>
+    <string name="message_loading_train_details">Hämtar tågdetaljer.</string>
+
 
     <string name="title_timetable">Tidtabell</string>
     <string name="subtitle_all_trains">Alla tåg</string>
