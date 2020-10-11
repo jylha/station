@@ -241,4 +241,27 @@ class TrainTest {
         assertThat(result[0]).isEqualTo(DelayCause(1))
         assertThat(result[1]).isEqualTo(DelayCause(2))
     }
+
+    private val trainWithDuplicatedDelayCause = trainWithEmptyTimetable.copy(
+        timetable = listOf(
+            departure(1, "1", ZonedDateTime.parse("2020-10-10T08:30Z")),
+            arrival(
+                2, "2", ZonedDateTime.parse("2020-10-10T09:30Z"),
+                causes = listOf(DelayCause(1, 2))
+            ),
+            departure(
+                2, "2", ZonedDateTime.parse("2020-10-10T09:35Z"),
+                causes = listOf(DelayCause(1, 2))
+            ),
+            arrival(3, "3", ZonedDateTime.parse("2020-10-10T10:30Z"),
+            causes = listOf(DelayCause(1, 1)))
+        )
+    )
+
+    @Test fun `delayCauses() returns a list of delay causes without duplicates`() {
+        val result = trainWithDuplicatedDelayCause.delayCauses()
+        assertThat(result).hasSize(2)
+        assertThat(result[0]).isEqualTo(DelayCause(1, 2))
+        assertThat(result[1]).isEqualTo(DelayCause(1, 1))
+    }
 }

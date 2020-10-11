@@ -113,5 +113,7 @@ fun Train.stopsAt(stationUic: Int): List<Stop> {
 
 /** Returns the causes for train's delay. */
 fun Train.delayCauses(): List<DelayCause> {
-    return timetable.flatMap { row -> row.causes }
+    return timetable.map { it.causes }
+        .fold(emptySet<DelayCause>()) { set, causes -> set + causes }
+        .toList()
 }
