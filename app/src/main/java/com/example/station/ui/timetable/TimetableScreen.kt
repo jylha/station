@@ -129,8 +129,6 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     }
 }
 
-/** Checks whether access to fine locations is granted. */
-
 @Composable
 fun TimetableScreen(
     viewState: TimetableViewState,
@@ -517,7 +515,8 @@ fun TimetableScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val color = if (selected) Color.Green.copy(alpha = 0.5f) else Color.Gray.copy(alpha = 0.7f)
+    val color = if (selected) MaterialTheme.colors.primaryVariant.copy(alpha = 0.7f)
+    else Color.Gray.copy(alpha = 0.7f)
 
     OutlinedButton(
         onClick,
@@ -569,10 +568,12 @@ fun TimetableScreen(
     )
     val stop = train.stopsAt(555).first()
 
-    StationNameProvider(
-        nameMapper = LocalizedStationNames.create(listOf(origin, somewhere, destination))
-    ) {
-        TimetableEntry(train, stop, {})
+    DelayCauseProvider(causeCategories = null) {
+        StationNameProvider(
+            nameMapper = LocalizedStationNames.create(listOf(origin, somewhere, destination))
+        ) {
+            TimetableEntry(train, stop, {})
+        }
     }
 }
 
