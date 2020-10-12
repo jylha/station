@@ -38,13 +38,6 @@ data class TimetableRow(
     }
 }
 
-/** Cause of delay. */
-data class DelayCause(
-    val categoryId: Int,
-    val detailedCategoryId: Int? = null,
-    val thirdLevelCategoryId: Int? = null,
-)
-
 /** Creates TimetableRow of commercial stop with type Arrival. */
 internal fun arrival(
     stationUic: Int,

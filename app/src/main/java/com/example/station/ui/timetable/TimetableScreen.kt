@@ -93,7 +93,7 @@ import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
 import com.example.station.ui.Screen
 import com.example.station.ui.components.ActualTime
-import com.example.station.ui.components.DelayCauseProvider
+import com.example.station.ui.components.CauseCategoriesProvider
 import com.example.station.ui.components.EmptyState
 import com.example.station.ui.components.EstimatedTime
 import com.example.station.ui.components.Loading
@@ -101,7 +101,7 @@ import com.example.station.ui.components.RefreshIndicator
 import com.example.station.ui.components.ScheduledTime
 import com.example.station.ui.components.StationNameProvider
 import com.example.station.ui.components.SwipeRefreshLayout
-import com.example.station.ui.components.delayCause
+import com.example.station.ui.components.causeName
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
 import com.example.station.util.differsFrom
@@ -120,7 +120,7 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewState by viewModel.state.collectAsState()
 
     StationNameProvider(viewState.stationNameMapper) {
-        DelayCauseProvider(causeCategories = viewState.causeCategories) {
+        CauseCategoriesProvider(causeCategories = viewState.causeCategories) {
             TimetableScreen(
                 viewState,
                 viewModel::offer,
@@ -570,7 +570,7 @@ fun TimetableScreen(
     )
     val stop = train.stopsAt(555).first()
 
-    DelayCauseProvider(causeCategories = null) {
+    CauseCategoriesProvider(causeCategories = null) {
         StationNameProvider(
             nameMapper = LocalizedStationNames.create(listOf(origin, somewhere, destination))
         ) {
@@ -904,13 +904,11 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     color: Color,
     modifier: Modifier = Modifier
 ) {
-    with(cause) {
-        Text(
-            delayCause(categoryId, detailedCategoryId, thirdLevelCategoryId),
-            modifier.padding(top = 8.dp),
-            color = color
-        )
-    }
+    Text(
+        causeName(cause),
+        modifier.padding(top = 8.dp),
+        color = color
+    )
 }
 
 @Composable private fun HideDelayCauseAction(
