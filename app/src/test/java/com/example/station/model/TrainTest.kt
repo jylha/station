@@ -93,6 +93,33 @@ class TrainTest {
         assertThat(result).isFalse()
     }
 
+    @Test fun `isNotReady() returns false when train is marked ready on origin`() {
+        val result = readyTrain.isNotReady()
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `hasReachedDestination() returns false when actualTime for destination is not set`() {
+        val train = trainWithEmptyTimetable.copy(
+            timetable = listOf(
+                departure(1, "1", scheduledTime1, actualTime = actualTime1),
+                arrival(2, "2", scheduledTime2, actualTime = null)
+            )
+        )
+        val result = train.hasReachedDestination()
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `hasReachedDestination() returns true when actualTime for destination is set`() {
+        val train = trainWithEmptyTimetable.copy(
+            timetable = listOf(
+                departure(1, "1", scheduledTime1, actualTime = actualTime1),
+                arrival(2, "2", scheduledTime2, actualTime = actualTime2)
+            )
+        )
+        val result = train.hasReachedDestination()
+        assertThat(result).isTrue()
+    }
+
     @Test fun `isOrigin() returns true for a the first station`() {
         val result = train.isOrigin(100)
         assertThat(result).isTrue()
@@ -253,8 +280,10 @@ class TrainTest {
                 2, "2", ZonedDateTime.parse("2020-10-10T09:35Z"),
                 causes = listOf(DelayCause(1, 2))
             ),
-            arrival(3, "3", ZonedDateTime.parse("2020-10-10T10:30Z"),
-            causes = listOf(DelayCause(1, 1)))
+            arrival(
+                3, "3", ZonedDateTime.parse("2020-10-10T10:30Z"),
+                causes = listOf(DelayCause(1, 1))
+            )
         )
     )
 

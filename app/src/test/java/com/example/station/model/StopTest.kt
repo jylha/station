@@ -13,46 +13,46 @@ class StopTest {
     private val departure = arrival.copy(type = TimetableRow.Type.Departure)
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Creating Stop with two arrival timetable rows throws an exception`() {
+    fun `Creating a Stop with two arrivals throws an exception`() {
         Stop(arrival, arrival)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Creating Stop with two departure timetable rows of throws an exception`() {
+    fun `Creating a Stop with two departures throws an exception`() {
         Stop(departure, departure)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Creating Stop with arrival set with departure timetable row throws an exception`() {
+    fun `Creating a Stop with a departure set as the arrival throws an exception`() {
         Stop(arrival = departure)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Creating Stop with departure set with arrival timetable row throws an exception`() {
+    fun `Creating a Stop with an arrival set as the departure throws an exception`() {
         Stop(departure = arrival)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Creating Stop with different stationUic in arrival and departure throws an exception`() {
+    fun `Creating a Stop with different stationUic in arrival and departure throws an exception`() {
         Stop(arrival, departure.copy(stationUic = 5))
     }
 
-    @Test fun `Creating Stop with only arrival succeeds`() {
-        val stop = Stop(arrival)
-        assertThat(stop.arrival).isEqualTo(arrival)
-        assertThat(stop.departure).isNull()
+    @Test fun `Creating a Stop by only setting the arrival succeeds`() {
+        val result = Stop(arrival)
+        assertThat(result.arrival).isEqualTo(arrival)
+        assertThat(result.departure).isNull()
     }
 
-    @Test fun `Creating Stop with only departure succeeds`() {
-        val stop = Stop(departure = departure)
-        assertThat(stop.arrival).isNull()
-        assertThat(stop.departure).isEqualTo(departure)
+    @Test fun `Creating a Stop by only setting the departure succeeds`() {
+        val result = Stop(departure = departure)
+        assertThat(result.arrival).isNull()
+        assertThat(result.departure).isEqualTo(departure)
     }
 
-    @Test fun `Creating Stop with arrival and departure succeeds`() {
-        val stop = Stop(arrival, departure)
-        assertThat(stop.arrival).isEqualTo(arrival)
-        assertThat(stop.departure).isEqualTo(departure)
+    @Test fun `Creating a Stop with arrival and departure succeeds`() {
+        val result = Stop(arrival, departure)
+        assertThat(result.arrival).isEqualTo(arrival)
+        assertThat(result.departure).isEqualTo(departure)
     }
 
     @Test fun `isOrigin() returns false for a stop with only arrival`() {
@@ -109,16 +109,22 @@ class StopTest {
         assertThat(result).isTrue()
     }
 
-    @Test fun `stationUic() returns the station uic of stops arrival`() {
-        val stop = Stop(arrival, departure)
-        val result = stop.stationUic()
+    @Test fun `stationUic() returns the station uic of waypoint stop`() {
+        val waypoint = Stop(arrival, departure)
+        val result = waypoint.stationUic()
         assertThat(result).isEqualTo(1)
     }
 
-    @Test fun `stationUic() returns the station uic of stops departure if arrival is not set`() {
-        val stop = Stop(departure = departure.copy(stationUic = 5))
-        val result = stop.stationUic()
+    @Test fun `stationUic() returns the station uic of origin stop`() {
+        val origin = Stop(departure = departure.copy(stationUic = 5))
+        val result = origin.stationUic()
         assertThat(result).isEqualTo(5)
+    }
+
+    @Test fun `stationUic() returns the station uic of destination stop`() {
+        val destination = Stop(arrival = arrival.copy(stationUic = 123))
+        val result = destination.stationUic()
+        assertThat(result).isEqualTo(123)
     }
 
     @Test fun `track() returns the arrival track`() {
@@ -209,7 +215,7 @@ class StopTest {
         assertThat(result).isTrue()
     }
 
-    @Test fun `isDeparted() returns true when actualTime of departure is not set`() {
+    @Test fun `isDeparted() returns false when actualTime of departure is not set`() {
         val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = null))
         val result = stop.isDeparted()
         assertThat(result).isFalse()
