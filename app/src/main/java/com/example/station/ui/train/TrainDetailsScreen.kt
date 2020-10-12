@@ -50,6 +50,7 @@ import com.example.station.model.arrival
 import com.example.station.model.commercialStops
 import com.example.station.model.currentCommercialStop
 import com.example.station.model.departure
+import com.example.station.model.isCommuterTrain
 import com.example.station.model.isDeparted
 import com.example.station.model.isDestination
 import com.example.station.model.isNotDeparted
@@ -113,7 +114,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Composable private fun TrainIdentification(train: Train) {
     train.run {
-        if (category == Train.Category.Commuter) {
+        if (isCommuterTrain()) {
             if (commuterLineId != null) {
                 CommuterTrainIdentification(commuterLineId)
             } else {

@@ -117,3 +117,13 @@ fun Train.delayCauses(): List<DelayCause> {
         .fold(emptySet<DelayCause>()) { set, causes -> set + causes }
         .toList()
 }
+
+/** Returns whether train is a long-distance train. */
+fun Train.isLongDistanceTrain(): Boolean {
+    return category == Train.Category.LongDistance
+}
+
+/** Returns whether train is a commuter train. */
+fun Train.isCommuterTrain(): Boolean {
+    return category == Train.Category.Commuter
+}

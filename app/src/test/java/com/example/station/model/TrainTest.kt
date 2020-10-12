@@ -293,4 +293,27 @@ class TrainTest {
         assertThat(result[0]).isEqualTo(DelayCause(1, 2))
         assertThat(result[1]).isEqualTo(DelayCause(1, 1))
     }
+
+    private val longDistanceTrain = Train(1, "IC", Train.Category.LongDistance)
+    private val commuterTrain = Train(2, "L", Train.Category.Commuter, commuterLineId = "A")
+
+    @Test fun `isLongDistanceTrain() returns true for a long-distance train`() {
+        val result = longDistanceTrain.isLongDistanceTrain()
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `isLongDistanceTrain() returns false for a commuter train`() {
+        val result = commuterTrain.isLongDistanceTrain()
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `isCommuterTrain() returns true for a commuter train`() {
+        val result = commuterTrain.isCommuterTrain()
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `isCommuterTrain() returns false for a long-distance train`() {
+        val result = longDistanceTrain.isCommuterTrain()
+        assertThat(result).isFalse()
+    }
 }

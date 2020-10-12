@@ -79,8 +79,10 @@ import com.example.station.model.Train.Category
 import com.example.station.model.arrival
 import com.example.station.model.delayCauses
 import com.example.station.model.departure
+import com.example.station.model.isCommuterTrain
 import com.example.station.model.isDeparted
 import com.example.station.model.isDestination
+import com.example.station.model.isLongDistanceTrain
 import com.example.station.model.isNotDeparted
 import com.example.station.model.isNotReached
 import com.example.station.model.isOrigin
@@ -662,10 +664,12 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 
 @Composable private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
     val identification = remember(train) {
-        if (train.category == Category.Commuter && train.commuterLineId?.isNotBlank() == true) {
-            train.commuterLineId
-        } else {
-            "${train.type} ${train.number}"
+        train.run {
+            if (isCommuterTrain() && commuterLineId?.isNotBlank() == true) {
+                commuterLineId
+            } else {
+                "$type $number"
+            }
         }
     }
     val label = trainIdentificationAccessibilityLabel(train)
@@ -679,7 +683,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 
 @Composable fun trainIdentificationAccessibilityLabel(train: Train): String {
     return train.run {
-        if (category == Category.LongDistance) {
+        if (isLongDistanceTrain()) {
             when (type) {
                 "IC" -> stringResource(R.string.accessibility_label_intercity_train, number)
                 "S" -> stringResource(R.string.accessibility_label_pendolino_train, number)
