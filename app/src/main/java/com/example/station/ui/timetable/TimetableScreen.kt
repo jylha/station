@@ -579,7 +579,7 @@ fun TimetableScreen(
     }
 }
 
-enum class ExpandableState { Expanded, Collapsed }
+private enum class ExpandableState { Expanded, Collapsed }
 
 private val expandButtonAlpha = FloatPropKey()
 private val expandedContentAlpha = FloatPropKey()
@@ -614,14 +614,18 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
     onSelect: (Train) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by savedInstanceState { false }
-
-    val expandableState = transition(
-        definition = expandableStateTransition,
-        toState = if (expanded) ExpandableState.Expanded else ExpandableState.Collapsed,
-    )
-
     val delayCauses = remember(train) { train.delayCauses() }
+    var expandableState by savedInstanceState(train) { ExpandableState.Collapsed }
+
+    // Note: For some reason the transition state returns incorrect values after changing the
+    // items in the lazyColumn. The problem seemed to disappear by simply reading the
+    // transition state on (1) onClick and (2) onClose calls, so check this issue before
+    // removing those.
+    val transitionState = transition(
+        definition = expandableStateTransition,
+        toState = expandableState,
+        initState = ExpandableState.Collapsed
+    )
 
     TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, stop)) {
         Column {
@@ -634,18 +638,24 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                 TrainTrack(stop.track(), Modifier.weight(2f))
                 Departure(stop.departure, Modifier.weight(5f))
                 ShowDelayCauseAction(
-                    onClick = { expanded = true },
-                    enabled = !expanded && delayCauses.isNotEmpty(),
+                    onClick = {
+                        transitionState[expandedContentHeightFraction] // (1)
+                        expandableState = ExpandableState.Expanded
+                    },
+                    enabled = expandableState == ExpandableState.Collapsed && delayCauses.isNotEmpty(),
                     Modifier.weight(1f),
                     color = if (delayCauses.isEmpty()) Color.Transparent
-                    else StationTheme.colors.late.copy(alpha = expandableState[expandButtonAlpha])
+                    else StationTheme.colors.late.copy(alpha = transitionState[expandButtonAlpha])
                 )
             }
-            Row(Modifier.heightFraction(expandableState[expandedContentHeightFraction])) {
+            Row(Modifier.heightFraction(transitionState[expandedContentHeightFraction])) {
                 DelayCauses(
                     train.delayCauses(),
-                    onClose = { expanded = false },
-                    alpha = expandableState[expandedContentAlpha]
+                    onClose = {
+                        transitionState[expandedContentHeightFraction] // (2)
+                        expandableState = ExpandableState.Collapsed
+                    },
+                    alpha = transitionState[expandedContentAlpha]
                 )
             }
         }
