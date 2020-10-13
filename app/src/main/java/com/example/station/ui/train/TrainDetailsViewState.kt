@@ -8,6 +8,7 @@ import com.example.station.model.Train
 data class TrainDetailsViewState constructor(
     private val isLoadingTrain: Boolean = false,
     private val isLoadingMapper: Boolean = false,
+    val isReloading: Boolean = false,
     val train: Train? = null,
     val nameMapper: StationNameMapper? = null,
 ) {
@@ -23,13 +24,18 @@ data class TrainDetailsViewState constructor(
     }
 }
 
-fun TrainDetailsViewState.reduce(result: TrainDetailsViewResult): TrainDetailsViewState {
+fun TrainDetailsViewState.reduce(result: TrainDetailsResult): TrainDetailsViewState {
     return when (result) {
-        TrainDetailsViewResult.LoadingTrainDetails -> copy(isLoadingTrain = true)
-        is TrainDetailsViewResult.TrainDetails -> copy(train = result.train, isLoadingTrain = false)
-        TrainDetailsViewResult.LoadingNameMapper -> copy(isLoadingMapper = true)
-        is TrainDetailsViewResult.NameMapper -> copy(
+        TrainDetailsResult.LoadingTrainDetails -> copy(isLoadingTrain = true)
+        is TrainDetailsResult.TrainDetails -> copy(train = result.train, isLoadingTrain = false)
+        TrainDetailsResult.LoadingNameMapper -> copy(isLoadingMapper = true)
+        is TrainDetailsResult.NameMapper -> copy(
             nameMapper = result.mapper, isLoadingMapper = false
+        )
+        TrainDetailsResult.ReloadingTrainDetails -> copy(isReloading = true)
+        is TrainDetailsResult.TrainDetailsReloaded -> copy(
+            isReloading = false,
+            train = result.train
         )
     }
 }

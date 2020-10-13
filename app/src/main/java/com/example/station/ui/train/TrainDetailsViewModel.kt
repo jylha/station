@@ -9,6 +9,7 @@ import com.example.station.model.Train
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -23,17 +24,25 @@ class TrainDetailsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            reduceState(TrainDetailsViewResult.LoadingNameMapper)
+            reduceState(TrainDetailsResult.LoadingNameMapper)
             val mapper = stationRepository.getStationNameMapper()
-            reduceState(TrainDetailsViewResult.NameMapper(mapper))
+            reduceState(TrainDetailsResult.NameMapper(mapper))
         }
     }
 
     fun setTrain(train: Train) {
-        reduceState(TrainDetailsViewResult.TrainDetails(train))
+        reduceState(TrainDetailsResult.TrainDetails(train))
     }
 
-    private fun reduceState(result: TrainDetailsViewResult) {
+    fun reload(number: Int) {
+        viewModelScope.launch {
+            reduceState(TrainDetailsResult.ReloadingTrainDetails)
+            val train = trainRepository.train(number).first()
+            reduceState(TrainDetailsResult.TrainDetailsReloaded(train))
+        }
+    }
+
+    private fun reduceState(result: TrainDetailsResult) {
         _state.value = _state.value.reduce(result)
     }
 }

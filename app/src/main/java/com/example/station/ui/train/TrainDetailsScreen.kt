@@ -61,8 +61,10 @@ import com.example.station.model.stationUic
 import com.example.station.ui.components.ActualTime
 import com.example.station.ui.components.EstimatedTime
 import com.example.station.ui.components.Loading
+import com.example.station.ui.components.RefreshIndicator
 import com.example.station.ui.components.ScheduledTime
 import com.example.station.ui.components.StationNameProvider
+import com.example.station.ui.components.SwipeRefreshLayout
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
@@ -77,15 +79,24 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     onCommit(train) { viewModel.setTrain(train) }
 
     if (train.number == viewState.train?.number) {
-        TrainDetailsScreen(viewState)
+        TrainDetailsScreen(viewState,
+            onReload = { viewModel.reload(train.number) }
+        )
     }
 }
 
-@Composable fun TrainDetailsScreen(state: TrainDetailsViewState) {
+@Composable fun TrainDetailsScreen(
+    state: TrainDetailsViewState,
+    onReload: () -> Unit = {},
+) {
     StationNameProvider(nameMapper = state.nameMapper) {
         when {
             state.isLoading -> LoadingTrainDetails()
-            state.train != null -> TrainDetails(state.train)
+            state.train != null -> TrainDetails(
+                state.train,
+                state.isReloading,
+                onRefresh = onReload
+            )
         }
     }
 }
@@ -95,19 +106,27 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     Loading(message)
 }
 
-@Composable private fun TrainDetails(train: Train) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        ScrollableColumn(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.height(20.dp))
-            TrainIdentification(train)
-            Spacer(Modifier.height(16.dp))
-            TrainRoute(train.origin(), train.destination())
-            Spacer(Modifier.height(20.dp))
-            Timetable(train)
-            Spacer(Modifier.height(20.dp))
+@Composable private fun TrainDetails(
+    train: Train,
+    refreshing: Boolean = false,
+    onRefresh: () -> Unit = {},
+) {
+    SwipeRefreshLayout(
+        Modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
+    ) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            ScrollableColumn(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(20.dp))
+                TrainIdentification(train)
+                Spacer(Modifier.height(16.dp))
+                TrainRoute(train.origin(), train.destination())
+                Spacer(Modifier.height(20.dp))
+                Timetable(train)
+                Spacer(Modifier.height(20.dp))
+            }
         }
     }
 }

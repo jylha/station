@@ -2,8 +2,8 @@ package com.example.station.ui.train
 
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Train
-import com.example.station.ui.train.TrainDetailsViewResult.NameMapper
-import com.example.station.ui.train.TrainDetailsViewResult.TrainDetails
+import com.example.station.ui.train.TrainDetailsResult.NameMapper
+import com.example.station.ui.train.TrainDetailsResult.TrainDetails
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -19,7 +19,7 @@ class TrainDetailsViewStateTest {
 
     @Test fun `Reduce state with LoadingNameMapper result`() {
         val state = TrainDetailsViewState.initial()
-        val result = state.reduce(TrainDetailsViewResult.LoadingNameMapper)
+        val result = state.reduce(TrainDetailsResult.LoadingNameMapper)
         assertThat(result.isLoading).isTrue()
     }
 
@@ -41,7 +41,7 @@ class TrainDetailsViewStateTest {
 
     @Test fun `Reduce state with LoadingTrainDetail result`() {
         val state = TrainDetailsViewState.initial()
-        val result = state.reduce(TrainDetailsViewResult.LoadingTrainDetails)
+        val result = state.reduce(TrainDetailsResult.LoadingTrainDetails)
         assertThat(result.isLoading).isTrue()
     }
 
@@ -51,5 +51,20 @@ class TrainDetailsViewStateTest {
         val result = state.reduce(TrainDetails(train))
         assertThat(result.train).isEqualTo(train)
         assertThat(result.isLoading).isFalse()
+    }
+
+    @Test fun `Reduce state with ReloadTrainDetails result`() {
+        val state = TrainDetailsViewState(isReloading = false)
+        val result = state.reduce(TrainDetailsResult.ReloadingTrainDetails)
+        assertThat(result.isLoading).isFalse()
+        assertThat(result.isReloading).isTrue()
+    }
+
+    @Test fun `Reduce state with TrainDetailsReloaded result`() {
+        val state = TrainDetailsViewState(isReloading = true)
+        val train = Train(5, "S", Train.Category.LongDistance)
+        val result = state.reduce(TrainDetailsResult.TrainDetailsReloaded(train))
+        assertThat(result.isReloading).isFalse()
+        assertThat(result.train).isEqualTo(train)
     }
 }

@@ -6,6 +6,7 @@ import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import timber.log.Timber
 
 @Immutable
 data class TimetableViewState(
@@ -25,6 +26,9 @@ data class TimetableViewState(
 )
 
 fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
+    if (result is TimetableResult.Error) {
+        Timber.e(result.msg)
+    }
     return when (result) {
         is TimetableResult.Loading -> copy(
             isLoadingTimetable = true,

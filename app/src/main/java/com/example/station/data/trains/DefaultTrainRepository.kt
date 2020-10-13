@@ -14,6 +14,14 @@ import javax.inject.Inject
 class DefaultTrainRepository @Inject constructor(
     private val trainService: TrainService
 ) : TrainRepository {
+
+    override fun train(number: Int): Flow<Train> {
+        return flow {
+            val train = trainService.fetchTrain(number).firstOrNull()?.toDomainModel()
+            if (train != null) emit(train)
+        }.flowOn(Dispatchers.IO)
+    }
+
     override fun trainsAtStation(station: Station): Flow<List<Train>> {
         return flow {
             val trains = trainService.fetchTrains(station.shortCode).toDomainModel()
