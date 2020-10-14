@@ -1,5 +1,7 @@
 package com.example.station.ui.timetable
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.asDisposableClock
 import androidx.compose.animation.core.FloatPropKey
 import androidx.compose.animation.core.transitionDefinition
@@ -185,21 +187,19 @@ fun TimetableScreen(
         val modifier = Modifier.padding(innerPadding)
         when {
             viewState.isLoadingTimetable -> LoadingTimetable(modifier)
-            viewState.station != null -> {
-                TimetableScreenContent(
-                    station = viewState.station,
-                    trains = viewState.timetable,
-                    modifier,
-                    onTrainSelected,
-                    selectedTimetableTypes,
-                    timetableTypeSelected,
-                    selectedTrainCategories,
-                    trainCategorySelected,
-                    filterSelectionEnabled,
-                    refreshing = viewState.isReloadingTimetable,
-                    onRefresh = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) }
-                )
-            }
+            viewState.station != null -> TimetableScreenContent(
+                station = viewState.station,
+                trains = viewState.timetable,
+                modifier,
+                onTrainSelected,
+                selectedTimetableTypes,
+                timetableTypeSelected,
+                selectedTrainCategories,
+                trainCategorySelected,
+                filterSelectionEnabled,
+                refreshing = viewState.isReloadingTimetable,
+                onRefresh = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) }
+            )
             else -> {
                 // TODO: 15.9.2020 Replace with error message..
                 EmptyState("Oops. Something went wrong.", modifier)
@@ -289,6 +289,7 @@ fun TimetableScreen(
     Text(subtitleText, modifier, style = MaterialTheme.typography.caption)
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable private fun TimetableScreenContent(
     station: Station,
     trains: List<Train>,
@@ -314,7 +315,7 @@ fun TimetableScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Column {
-                if (showFilterSelection) {
+                AnimatedVisibility(visible = showFilterSelection) {
                     FilterSelection(
                         selectedTimetableTypes, timetableTypeSelected,
                         selectedTrainCategories, trainCategorySelected
@@ -418,7 +419,7 @@ fun TimetableScreen(
     categorySelected: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(modifier.fillMaxWidth(), elevation = 4.dp) {
+    Surface(modifier.fillMaxWidth(), elevation = 2.dp) {
         Column(Modifier.padding(8.dp)) {
             TimetableTypeSelection(timetableTypes, timetableTypeSelected)
             Spacer(modifier = Modifier.height(8.dp))
