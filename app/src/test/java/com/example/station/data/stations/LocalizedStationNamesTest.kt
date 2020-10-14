@@ -13,7 +13,7 @@ class LocalizedStationNamesTest {
     )
 
     @Test fun `create LocalizedStationNames from empty station list`() {
-        val result = LocalizedStationNames.create(emptyList())
+        val result = LocalizedStationNames.from(emptyList())
         assertThat(result).isInstanceOf(LocalizedStationNames::class.java)
         assertThat(result.map).isEmpty()
     }
@@ -24,7 +24,7 @@ class LocalizedStationNamesTest {
             station("Station2", "s2", 2),
             station("Station3", "s3", 3),
         )
-        val result = LocalizedStationNames.create(stations)
+        val result = LocalizedStationNames.from(stations)
         assertThat(result.map).containsExactly(
             1, "Station1", 2, "Station2", 3, "Station3"
         )
@@ -37,7 +37,7 @@ class LocalizedStationNamesTest {
             station("Station3", "s1", 3)
         )
         val localizedNames = mapOf(1 to "Localized1", 3 to "Localized3")
-        val result = LocalizedStationNames.create(stations, localizedNames)
+        val result = LocalizedStationNames.from(stations, localizedNames)
         assertThat(result.map).containsExactly(
             1, "Localized1", 2, "Station2", 3, "Localized3"
         )
@@ -49,7 +49,7 @@ class LocalizedStationNamesTest {
             station("Station2", "s1", 2),
         )
         val localizedNames = mapOf(1 to "Localized1")
-        val mapper = LocalizedStationNames.create(stations, localizedNames)
+        val mapper = LocalizedStationNames.from(stations, localizedNames)
         val result = mapper.stationName(1)
         assertThat(result).isEqualTo("Localized1")
     }
@@ -59,7 +59,7 @@ class LocalizedStationNamesTest {
             station("Station2", "s1", 2),
         )
         val localizedNames = mapOf(1 to "Localized1")
-        val mapper = LocalizedStationNames.create(stations, localizedNames)
+        val mapper = LocalizedStationNames.from(stations, localizedNames)
         val result = mapper.stationName(1)
         assertThat(result).isNull()
     }

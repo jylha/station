@@ -25,7 +25,7 @@ class TrainDetailsViewStateTest {
 
     @Test fun `Reduce state with NameMapper result`() {
         val state = TrainDetailsViewState(isLoadingMapper = true)
-        val mapper = LocalizedStationNames.create(emptyList())
+        val mapper = LocalizedStationNames.from(emptyList())
         val result = state.reduce(NameMapper(mapper))
         assertThat(result.isLoading).isFalse()
         assertThat(result.nameMapper).isEqualTo(mapper)
@@ -33,7 +33,7 @@ class TrainDetailsViewStateTest {
 
     @Test fun `Reduce state with NameMapper result while loading train details`() {
         val state = TrainDetailsViewState(isLoadingTrain = true, isLoadingMapper = true)
-        val mapper = LocalizedStationNames.create(emptyList())
+        val mapper = LocalizedStationNames.from(emptyList())
         val result = state.reduce(NameMapper(mapper))
         assertThat(result.isLoading).isTrue()
         assertThat(result.nameMapper).isEqualTo(mapper)

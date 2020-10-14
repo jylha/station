@@ -85,7 +85,7 @@ class StoreBackedStationRepository @Inject constructor(
             mutex.withLock {
                 if (!::stationNameMapper.isInitialized) {
                     val stations = store.get(key = 0)
-                    stationNameMapper = LocalizedStationNames.create(stations, context)
+                    stationNameMapper = LocalizedStationNames.from(stations, context)
                 }
             }
         }

@@ -27,7 +27,7 @@ class StationsViewStateTest {
     @Test fun `reduce state with NameMapper result`() {
         val stations = listOf(Station.of("first", 1), Station.of("second", 2))
         val state = StationsViewState.initial().copy(stations = stations, isLoadingNameMapper = true)
-        val mapper = LocalizedStationNames.create(stations, mapOf(2 to "last"))
+        val mapper = LocalizedStationNames.from(stations, mapOf(2 to "last"))
         val result = state.reduce(Result.NameMapper(mapper))
         assertThat(result.nameMapper).isEqualTo(mapper)
         assertThat(result.isLoading).isFalse()
@@ -41,7 +41,7 @@ class StationsViewStateTest {
             isLoadingStations = true,
             isLoadingNameMapper = true
         )
-        val mapper = LocalizedStationNames.create(emptyList())
+        val mapper = LocalizedStationNames.from(emptyList())
         val result = state.reduce(Result.NameMapper(mapper))
         assertThat(result.nameMapper).isEqualTo(mapper)
         assertThat(result.isLoading).isTrue()
@@ -70,7 +70,7 @@ class StationsViewStateTest {
 
     @Test fun `reduce state with StationsData result when nameMapper is present`() {
         val newStations = listOf(Station.of("A", 1), Station.of("B", 2))
-        val mapper = LocalizedStationNames.create(newStations, mapOf(1 to "C"))
+        val mapper = LocalizedStationNames.from(newStations, mapOf(1 to "C"))
         val state = StationsViewState.initial().copy(nameMapper = mapper)
         val result = state.reduce(Result.StationsData(newStations))
         assertThat(result.stations).hasSize(2)

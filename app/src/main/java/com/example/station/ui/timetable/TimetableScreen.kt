@@ -572,7 +572,7 @@ fun TimetableScreen(
 
     CauseCategoriesProvider(causeCategories = null) {
         StationNameProvider(
-            nameMapper = LocalizedStationNames.create(listOf(origin, somewhere, destination))
+            nameMapper = LocalizedStationNames.from(listOf(origin, somewhere, destination))
         ) {
             TimetableEntry(train, stop, {})
         }
@@ -1014,7 +1014,7 @@ private fun PreviewTimetable() {
         )
     )
 
-    val mapper = LocalizedStationNames.create(
+    val mapper = LocalizedStationNames.from(
         listOf(helsinki, turku), ContextAmbient.current
     )
 

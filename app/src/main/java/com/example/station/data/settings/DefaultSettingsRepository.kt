@@ -8,11 +8,9 @@ import androidx.datastore.preferences.preferencesSetKey
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-
 
 class DefaultSettingsRepository @Inject constructor(
     @ApplicationContext private val context: Context
@@ -30,7 +28,6 @@ class DefaultSettingsRepository @Inject constructor(
         return dataStore.data.map { preferences -> preferences[currentStationKey] }
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     override suspend fun setStation(stationUicCode: Int) {
         dataStore.edit { preferences ->
             val recent = (preferences[recentStationsKey] ?: emptySet()).toMutableList()

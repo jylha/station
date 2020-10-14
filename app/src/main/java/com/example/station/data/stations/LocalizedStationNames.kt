@@ -4,17 +4,19 @@ import android.content.Context
 import com.example.station.R
 import com.example.station.model.Station
 
-/** Station name mapping. */
+/**
+ * Station name mapper that provides station names for each station.
+ */
 class LocalizedStationNames private constructor(
     val map: Map<Int, String>
 ) : StationNameMapper {
 
     companion object {
         /**
-         * Creates station name mapping from [stations]. Station name will be overridden by
-         * localized version from [localizedNames], when such is present.
+         * Creates station name mapping from [stations]. When an alternative name for station is
+         * given in [localizedNames], it will be used in the mapping.
          */
-        fun create(
+        fun from(
             stations: List<Station>,
             localizedNames: Map<Int, String> = emptyMap()
         ): LocalizedStationNames {
@@ -24,17 +26,25 @@ class LocalizedStationNames private constructor(
             return LocalizedStationNames(mapping)
         }
 
-        fun create(stations: List<Station>, context: Context): LocalizedStationNames {
+        /**
+         * Creates station name mapping from [stations]. This overload uses a replaces the name of
+         * of every station that requires either a localized or a commercial version of its name.
+         */
+        fun from(stations: List<Station>, context: Context): LocalizedStationNames {
             val localizedNames = LOCALIZED_STATION_NAMES
                 .map { (uic, resId) -> uic to context.getString(resId) }
                 .toMap()
-            return create(stations, localizedNames)
+            return from(stations, localizedNames)
         }
     }
 
     override fun stationName(stationUic: Int): String? = map[stationUic]
 }
 
+/**
+ * A map from station UICs to station names for those stations that require either a localized or
+ * a commercial version of their name.
+ */
 private val LOCALIZED_STATION_NAMES = mapOf(
     1 to R.string.station_name_0001_helsinki,
     9 to R.string.station_name_0009_ilmala,
