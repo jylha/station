@@ -8,7 +8,16 @@ import org.junit.Test
 
 class TrainDataMapperTest {
 
-    private val entity = TrainNetworkEntity(0, "", "Commuter", null, false, emptyList())
+    private val entity = TrainNetworkEntity(
+        number = 0,
+        type = "",
+        category = "Commuter",
+        commuterLineId = null,
+        runningCurrently = false,
+        cancelled = false,
+        version = 0,
+        timetable = emptyList()
+    )
 
     @Test fun `train number is mapped correctly into domain model`() {
         val dto = entity.copy(number = 123)
@@ -62,6 +71,18 @@ class TrainDataMapperTest {
         val dto = entity.copy(runningCurrently = true)
         val result = dto.toDomainModel()
         assertThat(result?.isRunning).isTrue()
+    }
+
+    @Test fun `cancelled is mapped correctly into domain model`() {
+        val dto = entity.copy(cancelled = true)
+        val result = dto.toDomainModel()
+        assertThat(result?.isCancelled).isTrue()
+    }
+
+    @Test fun `version is mapped correctly into domain model`() {
+        val dto = entity.copy(version = 555)
+        val result = dto.toDomainModel()
+        assertThat(result?.version).isEqualTo(555)
     }
 
     @Test fun `map list of entities into domain model`() {

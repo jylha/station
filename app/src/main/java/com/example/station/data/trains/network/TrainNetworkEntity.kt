@@ -19,6 +19,12 @@ data class TrainNetworkEntity(
     @SerializedName("runningCurrently")
     val runningCurrently: Boolean,
 
+    @SerializedName("cancelled")
+    val cancelled: Boolean,
+
+    @SerializedName("version")
+    val version: Long,
+
     @SerializedName("timeTableRows")
     val timetable: List<TimetableRowNetworkEntity>
 )

@@ -11,6 +11,8 @@ import com.example.station.model.TimetableRow.Type.Departure
  * @param category Train category.
  * @param commuterLineId Commuter line identifier.
  * @param isRunning Indicates whether train is currently running.
+ * @param isCancelled Indicates whether train is cancelled.
+ * @param version The number of version where the train data has last been changed.
  * @param timetable Train's timetable.
  */
 @Immutable
@@ -20,6 +22,8 @@ data class Train(
     val category: Category,
     val commuterLineId: String? = null,
     val isRunning: Boolean = true,
+    val isCancelled: Boolean = false,
+    val version: Long = 0,
     val timetable: List<TimetableRow> = emptyList()
 ) {
     /** Train category. */

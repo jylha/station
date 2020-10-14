@@ -26,6 +26,8 @@ fun TrainNetworkEntity.toDomainModel(): Train? {
             },
             commuterLineId = commuterLineId,
             isRunning = runningCurrently,
+            isCancelled = cancelled,
+            version = version,
             timetable = timetable.map { row -> row.toDomainModel() }
         )
     } catch (e: IllegalArgumentException) {
