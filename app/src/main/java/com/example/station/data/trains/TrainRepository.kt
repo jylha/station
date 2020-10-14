@@ -7,8 +7,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface TrainRepository {
 
-    /** Returns a train specified by its number. */
-    fun train(number: Int): Flow<Train>
+    /**
+     * Returns a train specified by its number, or null if the train has not been changed
+     * since the given [version].
+     * @param number Train number.
+     * @param version Version number where train was last updated.
+     */
+    suspend fun train(number: Int, version: Long? = null): Train?
 
     /** Returns a list of trains stopping at the specified station. */
     fun trainsAtStation(station: Station): Flow<List<Train>>

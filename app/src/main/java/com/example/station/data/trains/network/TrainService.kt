@@ -7,7 +7,10 @@ import retrofit2.http.Query
 interface TrainService {
 
     @GET("trains/latest/{number}")
-    suspend fun fetchTrain(@Path("number") number: Int): List<TrainNetworkEntity>
+    suspend fun fetchTrain(
+        @Path("number") number: Int,
+        @Query("version") version: Long?,
+    ): List<TrainNetworkEntity>
 
     @GET("live-trains/station/{stationCode}")
     suspend fun fetchTrains(

@@ -9,7 +9,6 @@ import com.example.station.model.Train
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,11 +33,11 @@ class TrainDetailsViewModel @ViewModelInject constructor(
         reduceState(TrainDetailsResult.TrainDetails(train))
     }
 
-    fun reload(number: Int) {
+    fun reload(train: Train) {
         viewModelScope.launch {
             reduceState(TrainDetailsResult.ReloadingTrainDetails)
-            val train = trainRepository.train(number).first()
-            reduceState(TrainDetailsResult.TrainDetailsReloaded(train))
+            val reloaded = trainRepository.train(train.number, train.version)
+            reduceState(TrainDetailsResult.TrainDetailsReloaded(reloaded ?: train))
         }
     }
 

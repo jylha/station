@@ -80,7 +80,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
     if (train.number == viewState.train?.number) {
         TrainDetailsScreen(viewState,
-            onReload = { viewModel.reload(train.number) }
+            onReload = { viewModel.reload(train) }
         )
     }
 }
