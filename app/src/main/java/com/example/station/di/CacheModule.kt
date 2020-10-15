@@ -2,7 +2,7 @@ package com.example.station.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.station.data.stations.cache.StationDatabase
+import com.example.station.data.StationDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

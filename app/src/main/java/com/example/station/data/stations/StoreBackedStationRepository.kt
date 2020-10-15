@@ -7,7 +7,7 @@ import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.get
-import com.example.station.data.stations.cache.StationDatabase
+import com.example.station.data.StationDatabase
 import com.example.station.data.stations.network.StationService
 import com.example.station.model.Station
 import com.example.station.util.toCacheEntity

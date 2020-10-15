@@ -1,9 +1,13 @@
 package com.example.station.util
 
+import com.example.station.data.trains.cache.CauseCategoryCacheEntity
+import com.example.station.data.trains.cache.PassengerFriendlyNameCacheEntity
 import com.example.station.data.trains.network.CauseCategoryNetworkEntity
 import com.example.station.data.trains.network.DetailedCauseCategoryNetworkEntity
 import com.example.station.data.trains.network.PassengerTermNetworkEntity
 import com.example.station.data.trains.network.ThirdLevelCauseCategoryNetworkEntity
+import com.example.station.model.CauseCategory
+import com.example.station.model.PassengerFriendlyName
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -11,7 +15,7 @@ import org.junit.Test
 class CauseMapperTest {
 
     private val causeCategoryNetworkEntity = CauseCategoryNetworkEntity(
-        id =1,
+        id = 1,
         categoryCode = "A1",
         categoryName = "Some category",
         validFrom = "2020-10-10T08:00Z",
@@ -74,5 +78,49 @@ class CauseMapperTest {
         assertThat(result.passengerFriendlyName?.fi).isEqualTo("C - fi")
         assertThat(result.passengerFriendlyName?.en).isEqualTo("C - en")
         assertThat(result.passengerFriendlyName?.sv).isEqualTo("C - sv")
+    }
+
+    private val causeCategory = CauseCategory(
+        id = 4,
+        name = "D",
+        passengerFriendlyName = PassengerFriendlyName(
+            fi = "D - fi",
+            en = "D - en",
+            sv = "D - sv"
+        )
+    )
+
+    @Test fun `map cause category into cache entity`() {
+        val result = causeCategory.toCacheEntity(2)
+        with(result) {
+            assertThat(id).isEqualTo(4)
+            assertThat(name).isEqualTo("D")
+            assertThat(level).isEqualTo(2)
+            assertThat(passengerFriendlyName?.fi).isEqualTo("D - fi")
+            assertThat(passengerFriendlyName?.en).isEqualTo("D - en")
+            assertThat(passengerFriendlyName?.sv).isEqualTo("D - sv")
+        }
+    }
+
+    private val causeCategoryCacheEntity = CauseCategoryCacheEntity(
+        id = 5,
+        name = "E",
+        level = 1,
+        passengerFriendlyName = PassengerFriendlyNameCacheEntity(
+            fi = "E - fi",
+            en = "E - en",
+            sv = "E - sv"
+        )
+    )
+
+    @Test fun `map cause category cache entity into domain model`() {
+        val result = causeCategoryCacheEntity.toDomainModel()
+        with(result) {
+            assertThat(id).isEqualTo(5)
+            assertThat(name).isEqualTo("E")
+            assertThat(passengerFriendlyName?.fi).isEqualTo("E - fi")
+            assertThat(passengerFriendlyName?.en).isEqualTo("E - en")
+            assertThat(passengerFriendlyName?.sv).isEqualTo("E - sv")
+        }
     }
 }
