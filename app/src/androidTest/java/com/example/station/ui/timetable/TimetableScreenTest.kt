@@ -8,8 +8,6 @@ import androidx.ui.test.createComposeRule
 import androidx.ui.test.hasSubstring
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
-import androidx.ui.test.onRoot
-import androidx.ui.test.printToLog
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
 import com.example.station.model.Train
@@ -89,6 +87,16 @@ class TimetableScreenTest {
                 departure(10, "1", at("12:45")),
                 arrival(1, "4", at("13:00"))
             )
+        ),
+        Train(
+            3, "ABC", Train.Category.Commuter, commuterLineId = "Z", isRunning = true,
+            timetable = listOf(
+                departure(1, "5", at("12:30")),
+                arrival(
+                    10, "3", at("12:45"), estimatedTime = at("12:48"),
+                    differenceInMinutes = 3
+                )
+            )
         )
     )
 
@@ -99,7 +107,6 @@ class TimetableScreenTest {
         )
         setThemedContent { TimetableScreen(viewState = state) }
 
-        rule.onRoot().printToLog("TT")
         rule.onNodeWithSubstring("IC, 1").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("Tikkurila"))
@@ -128,6 +135,17 @@ class TimetableScreenTest {
                         "Departs at 12:45"
             )
 
+        rule.onNodeWithSubstring("TRACK, 3").assertIsDisplayed()
+            .assert(hasSubstring("Helsinki"))
+            .assert(hasSubstring("Pasila"))
+            .assert(hasSubstring("ARRIVES, 12:45, 12:48"))
+            .assert(hasSubstring("Z"))
+            .assertLabelEquals(
+                "Z commuter train, " +
+                        "From Helsinki, " +
+                        "To Pasila, " +
+                        "Estimated time of arrival 12:48, " +
+                        "To track 3"
+            )
     }
-
 }
