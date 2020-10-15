@@ -176,7 +176,7 @@ fun TimetableScreen(
 
     Scaffold(topBar = {
         TimetableTopAppBar(
-            viewState.station?.name,
+            stationName(stationUic = viewState.station?.uic ?: 0),
             selectedTimetableTypes,
             selectedTrainCategories,
             filterSelectionEnabled,
@@ -780,9 +780,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     val origin = if (originUic != null) stationName(originUic) else null
     val destination = if (destinationUic != null) stationName(destinationUic) else null
 
-    ConstraintLayout(
-        modifier = modifier.semantics(mergeAllDescendants = true) {}
-    ) {
+    ConstraintLayout(modifier) {
         val iconRef = createRef()
         val originRef = createRef()
         val destinationRef = createRef()
@@ -803,7 +801,6 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
                     },
                 style = MaterialTheme.typography.body2,
                 fontWeight = FontWeight.Bold,
-
                 )
         }
         if (destination != null) {
