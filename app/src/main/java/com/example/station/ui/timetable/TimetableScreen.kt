@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -307,20 +308,20 @@ fun TimetableScreen(
         mutableStateOf(trains.filter { selectedTrainCategories.contains(it.category) })
     }
 
-    SwipeRefreshLayout(
-        modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
+    Surface(
+        color = MaterialTheme.colors.background,
+        modifier = modifier.fillMaxSize()
     ) {
-        Surface(
-            color = MaterialTheme.colors.background,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Column {
-                AnimatedVisibility(visible = showFilterSelection) {
-                    FilterSelection(
-                        selectedTimetableTypes, timetableTypeSelected,
-                        selectedTrainCategories, trainCategorySelected
-                    )
-                }
+        Column {
+            AnimatedVisibility(visible = showFilterSelection) {
+                FilterSelection(
+                    selectedTimetableTypes, timetableTypeSelected,
+                    selectedTrainCategories, trainCategorySelected
+                )
+            }
+            SwipeRefreshLayout(
+                Modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
+            ) {
                 when {
                     trains.isEmpty() -> EmptyTimetable()
                     matchingTrains.isEmpty() -> NoMatchingTrains()
@@ -599,12 +600,12 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
     }
     transition(fromState = ExpandableState.Expanded, toState = ExpandableState.Collapsed) {
         expandButtonAlpha using tween(300, 200)
-        expandedContentAlpha using tween(300)
+        expandedContentAlpha using tween(200)
         expandedContentHeightFraction using tween(300)
     }
     transition(fromState = ExpandableState.Collapsed, toState = ExpandableState.Expanded) {
         expandButtonAlpha using tween(300)
-        expandedContentAlpha using tween(300)
+        expandedContentAlpha using tween(200, 100)
         expandedContentHeightFraction using tween(300)
     }
 }
@@ -630,35 +631,64 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
 
     TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, stop)) {
         Column {
-            Row {
-                TrainIdentification(train, Modifier.weight(1f))
-                TrainRoute(train.origin(), train.destination(), Modifier.weight(4f))
-            }
-            Row {
-                Arrival(stop.arrival, Modifier.weight(5f))
-                TrainTrack(stop.track(), Modifier.weight(2f))
-                Departure(stop.departure, Modifier.weight(5f))
+            ConstraintLayout(Modifier.fillMaxWidth()) {
+                val identificationRef = createRef()
+                val routeRef = createRef()
+                val showDelayRef = createRef()
+                val arrivalRef = createRef()
+                val departureRef = createRef()
+                val trackRef = createRef()
+                val identifierGuideline = createGuidelineFromStart(20.dp)
+
+                TrainIdentification(train, Modifier.constrainAs(identificationRef) {
+                    centerVerticallyTo(parent)
+                    centerAround(identifierGuideline)
+                })
+                TrainRoute(train.origin(), train.destination(), Modifier.constrainAs(routeRef) {
+                    centerHorizontallyTo(parent)
+                    top.linkTo(parent.top)
+                })
+                Arrival(stop.arrival, Modifier.constrainAs(arrivalRef) {
+                    start.linkTo(identificationRef.end, margin = 8.dp)
+                    end.linkTo(trackRef.start, margin = 8.dp)
+                    top.linkTo(trackRef.top)
+                    bottom.linkTo(trackRef.bottom)
+                })
+                TrainTrack(stop.track(), Modifier.constrainAs(trackRef) {
+                    centerHorizontallyTo(parent)
+                    top.linkTo(routeRef.bottom, margin = 4.dp)
+                    bottom.linkTo(parent.bottom)
+                })
+                Departure(stop.departure, Modifier.constrainAs(departureRef) {
+                    start.linkTo(trackRef.end, margin = 8.dp)
+                    end.linkTo(showDelayRef.start, margin = 8.dp)
+                    top.linkTo(trackRef.top)
+                    bottom.linkTo(trackRef.bottom)
+                })
                 ShowDelayCauseAction(
                     onClick = {
                         transitionState[expandedContentHeightFraction] // (1)
                         expandableState = ExpandableState.Expanded
                     },
                     enabled = expandableState == ExpandableState.Collapsed && delayCauses.isNotEmpty(),
-                    Modifier.weight(1f),
+                    Modifier.constrainAs(showDelayRef) {
+                        end.linkTo(parent.end)
+                        top.linkTo(departureRef.top)
+                        bottom.linkTo(departureRef.bottom)
+                    },
                     color = if (delayCauses.isEmpty()) Color.Transparent
                     else StationTheme.colors.late.copy(alpha = transitionState[expandButtonAlpha])
                 )
             }
-            Row(Modifier.heightFraction(transitionState[expandedContentHeightFraction])) {
-                DelayCauses(
-                    train.delayCauses(),
-                    onClose = {
-                        transitionState[expandedContentHeightFraction] // (2)
-                        expandableState = ExpandableState.Collapsed
-                    },
-                    alpha = transitionState[expandedContentAlpha]
-                )
-            }
+            DelayCauses(
+                train.delayCauses(),
+                onClose = {
+                    transitionState[expandedContentHeightFraction] // (2)
+                    expandableState = ExpandableState.Collapsed
+                },
+                alpha = transitionState[expandedContentAlpha],
+                Modifier.heightFraction(transitionState[expandedContentHeightFraction])
+            )
         }
     }
 }
@@ -674,22 +704,49 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 }
 
 @Composable private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
-    val identification = remember(train) {
-        train.run {
-            if (isCommuterTrain() && commuterLineId?.isNotBlank() == true) {
-                commuterLineId
-            } else {
-                "$type $number"
-            }
+    val label = trainIdentificationAccessibilityLabel(train)
+    val accessibilityModifier = modifier.semantics { accessibilityLabel = label }
+    train.run {
+        if (isLongDistanceTrain() || commuterLineId.isNullOrBlank()) {
+            TrainTypeAndNumber(train.type, train.number, accessibilityModifier)
+        } else {
+            CommuterLineId(commuterLineId, accessibilityModifier)
         }
     }
-    val label = trainIdentificationAccessibilityLabel(train)
-    Text(
-        text = identification,
-        modifier = modifier.semantics { accessibilityLabel = label },
-        style = MaterialTheme.typography.body1,
-        fontWeight = FontWeight.Bold
-    )
+}
+
+@Composable fun TrainTypeAndNumber(type: String, number: Int, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            type,
+            style = MaterialTheme.typography.body1,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            number.toString(),
+            style = MaterialTheme.typography.body1,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable private fun CommuterLineId(lineId: String, modifier: Modifier = Modifier) {
+    Box(
+        modifier
+            .size(36.dp)
+            .background(color = MaterialTheme.colors.primary, shape = CircleShape),
+        alignment = Alignment.Center
+    ) {
+        Text(
+            lineId,
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.onPrimary,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 @Composable fun trainIdentificationAccessibilityLabel(train: Train): String {
@@ -722,29 +779,42 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     val iconAsset = remember { Icons.Rounded.ArrowRightAlt }
     val origin = if (originUic != null) stationName(originUic) else null
     val destination = if (destinationUic != null) stationName(destinationUic) else null
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+
+    ConstraintLayout(
+        modifier = modifier.semantics(mergeAllDescendants = true) {}
     ) {
+        val iconRef = createRef()
+        val originRef = createRef()
+        val destinationRef = createRef()
+
+        if (origin != null && destination != null) {
+            Icon(iconAsset, modifier = Modifier.constrainAs(iconRef) {
+                centerTo(parent)
+            })
+        }
         if (origin != null) {
             val label = stringResource(R.string.accessibility_label_from_station, origin)
             Text(
                 origin,
-                Modifier.weight(3f).semantics { accessibilityLabel = label },
-                textAlign = TextAlign.End,
+                Modifier.semantics { accessibilityLabel = label }
+                    .constrainAs(originRef) {
+                        centerVerticallyTo(parent)
+                        end.linkTo(iconRef.start, margin = 4.dp)
+                    },
                 style = MaterialTheme.typography.body2,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        if (origin != null && destination != null) {
-            Icon(iconAsset, Modifier.padding(horizontal = 4.dp))
+                fontWeight = FontWeight.Bold,
+
+                )
         }
         if (destination != null) {
             val label = stringResource(R.string.accessibility_label_to_station, destination)
             Text(
                 destination,
-                Modifier.weight(3f).semantics { accessibilityLabel = label },
+                Modifier.semantics { accessibilityLabel = label }
+                    .constrainAs(destinationRef) {
+                        centerVerticallyTo(parent)
+                        start.linkTo(iconRef.end, margin = 4.dp)
+                    },
                 style = MaterialTheme.typography.body2,
                 fontWeight = FontWeight.Bold
             )
@@ -864,7 +934,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         modifier,
         alignment = Alignment.CenterEnd
     ) {
-        IconButton(onClick, Modifier.preferredSize(30.dp), enabled = enabled) {
+        IconButton(onClick, Modifier.preferredSize(36.dp), enabled = enabled) {
             Icon(Icons.Outlined.Info, tint = color)
         }
     }
@@ -1003,14 +1073,14 @@ private fun PreviewTimetable() {
     val trains = listOf(
         Train(
             1, "S", Category.LongDistance, timetable = listOf(
-                departure(1, "1", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")),
-                arrival(130, "2", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"))
+                departure(1, "1", ZonedDateTime.parse("2020-01-01T09:30Z")),
+                arrival(130, "2", ZonedDateTime.parse("2020-01-01T10:30Z"))
             )
         ),
         Train(
             2, "IC", Category.LongDistance, timetable = listOf(
-                departure(130, "3", ZonedDateTime.parse("2020-01-01T09:30:00.000Z")),
-                arrival(1, "4", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"))
+                departure(130, "3", ZonedDateTime.parse("2020-01-01T09:30Z")),
+                arrival(1, "4", ZonedDateTime.parse("2020-01-01T10:30Z"))
             )
         )
     )

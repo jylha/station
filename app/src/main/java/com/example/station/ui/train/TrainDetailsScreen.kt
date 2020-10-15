@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
+import androidx.compose.ui.zIndex
 import androidx.ui.tooling.preview.Preview
 import com.example.station.R
 import com.example.station.data.stations.StationNameMapper
@@ -220,23 +221,40 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val fromStation = stringResource(R.string.accessibility_label_from_station, originName ?: "")
     val toStation = stringResource(R.string.accessibility_label_to_station, destinationName ?: "")
 
-    Row(
-        Modifier.fillMaxWidth().semantics(mergeAllDescendants = true) {},
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            originName ?: "",
-            Modifier.weight(1f).semantics { accessibilityLabel = fromStation },
-            textAlign = TextAlign.Right,
-            style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
-        )
-        Icon(Icons.Rounded.ArrowRightAlt, Modifier.padding(2.dp))
-        Text(
-            destinationName ?: "",
-            Modifier.weight(1f).semantics { accessibilityLabel = toStation },
-            style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.Bold
-        )
+    ConstraintLayout(Modifier.fillMaxWidth().semantics(mergeAllDescendants = true) {}) {
+        val originRef = createRef()
+        val destinationRef = createRef()
+        val iconRef = createRef()
+
+        Icon(Icons.Rounded.ArrowRightAlt, Modifier.constrainAs(iconRef) {
+            centerTo(parent)
+        })
+        if (originName != null) {
+            Text(
+                text = originName,
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .semantics { accessibilityLabel = fromStation }
+                    .constrainAs(originRef) {
+                        centerVerticallyTo(parent)
+                        end.linkTo(iconRef.start, margin = 4.dp)
+                    }
+            )
+        }
+        if (destinationName != null) {
+            Text(
+                text = destinationName,
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .semantics { accessibilityLabel = toStation }
+                    .constrainAs(destinationRef) {
+                        centerVerticallyTo(parent)
+                        start.linkTo(iconRef.end, margin = 4.dp)
+                    }
+            )
+        }
     }
 }
 
@@ -471,6 +489,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                     .background(MaterialTheme.colors.secondary, CircleShape)
                     .size(24.dp)
                     .padding(2.dp)
+                    .zIndex(1f)
                     .constrainAs(trainIndicatorRef) {
                         centerAround(verticalGuideCenter)
                         if (isCurrent) {
