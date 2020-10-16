@@ -9,7 +9,7 @@ import com.example.station.data.trains.cache.CauseCategoryDao
 
 @Database(
     entities = [StationCacheEntity::class, CauseCategoryCacheEntity::class],
-    version = 2f
+    version = 2
 )
 abstract class StationDatabase : RoomDatabase() {
 

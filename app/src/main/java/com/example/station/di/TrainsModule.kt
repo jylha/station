@@ -1,6 +1,6 @@
 package com.example.station.di
 
-import com.example.station.data.trains.DefaultTrainRepository
+import com.example.station.data.trains.StoreBackedTrainRepository
 import com.example.station.data.trains.TrainRepository
 import dagger.Binds
 import dagger.Module
@@ -15,5 +15,5 @@ abstract class TrainsModule {
 
     @Singleton
     @Binds
-    abstract fun bind(repository: DefaultTrainRepository): TrainRepository
+    abstract fun bind(repository: StoreBackedTrainRepository): TrainRepository
 }
