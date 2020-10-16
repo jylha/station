@@ -660,6 +660,7 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                 })
                 Departure(stop.departure, Modifier.constrainAs(departureRef) {
                     start.linkTo(trackRef.end, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 36.dp)
                     top.linkTo(trackRef.top)
                     bottom.linkTo(trackRef.bottom)
                 })
