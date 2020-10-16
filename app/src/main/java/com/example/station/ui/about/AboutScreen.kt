@@ -56,7 +56,9 @@ fun AboutScreen() {
                 "$sourceLabel $sourceText",
                 color = contentColor,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.body1.copy(
+                    lineHeight = MaterialTheme.typography.body1.fontSize * 1.5
+                )
             )
         }
     }

@@ -175,7 +175,9 @@ fun HomeScreen(
     val color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
     Text(
         introductionText, modifier, textAlign = TextAlign.Center, color = color,
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.body1.copy(
+            lineHeight = MaterialTheme.typography.body1.fontSize * 1.5
+        )
     )
 }
 
