@@ -30,11 +30,13 @@ class StoreBackedTrainRepository @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private val categoryStore = StoreBuilder.from(
         fetcher = Fetcher.of { level: Int ->
-            when (level) {
-                1 -> trainService.fetchCauseCategoryCodes().map { it.toDomainModel() }
-                2 -> trainService.fetchDetailedCauseCategoryCodes().map { it.toDomainModel() }
-                3 -> trainService.fetchThirdLevelCauseCategoryCodes().map { it.toDomainModel() }
-                else -> error("Invalid key.")
+            withContext(Dispatchers.IO) {
+                when (level) {
+                    1 -> trainService.fetchCauseCategoryCodes().map { it.toDomainModel() }
+                    2 -> trainService.fetchDetailedCauseCategoryCodes().map { it.toDomainModel() }
+                    3 -> trainService.fetchThirdLevelCauseCategoryCodes().map { it.toDomainModel() }
+                    else -> error("Invalid key.")
+                }
             }
         },
         sourceOfTruth = SourceOfTruth.of(
@@ -54,7 +56,9 @@ class StoreBackedTrainRepository @Inject constructor(
     ).build()
 
     override suspend fun train(number: Int, version: Long?): Train? {
-        return trainService.fetchTrain(number, version).firstOrNull()?.toDomainModel()
+        return withContext(Dispatchers.IO) {
+            trainService.fetchTrain(number, version).firstOrNull()?.toDomainModel()
+        }
     }
 
     override fun trainsAtStation(station: Station): Flow<List<Train>> {
@@ -65,20 +69,14 @@ class StoreBackedTrainRepository @Inject constructor(
     }
 
     override suspend fun causeCategories(): List<CauseCategory> {
-        return withContext(Dispatchers.IO) {
-            categoryStore.get(1)
-        }
+        return categoryStore.get(1)
     }
 
     override suspend fun detailedCauseCategories(): List<CauseCategory> {
-        return withContext(Dispatchers.IO) {
-            categoryStore.get(2)
-        }
+        return categoryStore.get(2)
     }
 
     override suspend fun thirdLevelCauseCategories(): List<CauseCategory> {
-        return withContext(Dispatchers.IO) {
-            categoryStore.get(3)
-        }
+        return categoryStore.get(3)
     }
 }

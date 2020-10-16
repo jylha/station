@@ -76,19 +76,21 @@ class StoreBackedStationRepository @Inject constructor(
 
     override suspend fun fetchStation(stationUic: Int): Station {
         require(stationUic > 0)
-        return store.get(key = stationUic)
-            .first { station -> station.uic == stationUic }
+        return withContext(Dispatchers.IO) {
+            store.get(key = stationUic)
+                .first { station -> station.uic == stationUic }
+        }
     }
 
     override suspend fun getStationNameMapper(): StationNameMapper {
-        withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.Default) {
             mutex.withLock {
                 if (!::stationNameMapper.isInitialized) {
                     val stations = store.get(key = 0)
                     stationNameMapper = LocalizedStationNames.from(stations, context)
                 }
+                stationNameMapper
             }
         }
-        return stationNameMapper
     }
 }

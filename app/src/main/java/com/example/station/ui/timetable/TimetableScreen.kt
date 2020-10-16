@@ -680,15 +680,17 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                     else StationTheme.colors.late.copy(alpha = transitionState[expandButtonAlpha])
                 )
             }
-            DelayCauses(
-                train.delayCauses(),
-                onClose = {
-                    transitionState[expandedContentHeightFraction] // (2)
-                    expandableState = ExpandableState.Collapsed
-                },
-                alpha = transitionState[expandedContentAlpha],
-                Modifier.heightFraction(transitionState[expandedContentHeightFraction])
-            )
+            if (delayCauses.isNotEmpty()) {
+                DelayCauses(
+                    delayCauses,
+                    onClose = {
+                        transitionState[expandedContentHeightFraction] // (2)
+                        expandableState = ExpandableState.Collapsed
+                    },
+                    alpha = transitionState[expandedContentAlpha],
+                    Modifier.heightFraction(transitionState[expandedContentHeightFraction])
+                )
+            }
         }
     }
 }
@@ -801,7 +803,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
                     },
                 style = MaterialTheme.typography.body2,
                 fontWeight = FontWeight.Bold,
-                )
+            )
         }
         if (destination != null) {
             val label = stringResource(R.string.accessibility_label_to_station, destination)
