@@ -13,7 +13,6 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.animation.defaultFlingConfig
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
@@ -67,7 +66,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.ui.tooling.preview.Preview
@@ -82,7 +80,6 @@ import com.example.station.model.Train.Category
 import com.example.station.model.arrival
 import com.example.station.model.delayCauses
 import com.example.station.model.departure
-import com.example.station.model.isCommuterTrain
 import com.example.station.model.isDeparted
 import com.example.station.model.isDestination
 import com.example.station.model.isLongDistanceTrain
@@ -107,7 +104,6 @@ import com.example.station.ui.components.SwipeRefreshLayout
 import com.example.station.ui.components.causeName
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
-import com.example.station.util.differsFrom
 import java.time.ZonedDateTime
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -392,10 +388,13 @@ fun TimetableScreen(
             )
         }
 
-    LazyColumnFor(
-        stops, modifier, listState, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
-    ) { (train, stop) ->
-        TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
+    when {
+        stops.isNotEmpty() -> LazyColumnFor(
+            stops, modifier, listState, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
+        ) { (train, stop) ->
+            TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
+        }
+        else -> NoMatchingTrains()
     }
 }
 
@@ -661,24 +660,25 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                 })
                 Departure(stop.departure, Modifier.constrainAs(departureRef) {
                     start.linkTo(trackRef.end, margin = 8.dp)
-                    end.linkTo(showDelayRef.start, margin = 8.dp)
                     top.linkTo(trackRef.top)
                     bottom.linkTo(trackRef.bottom)
                 })
-                ShowDelayCauseAction(
-                    onClick = {
-                        transitionState[expandedContentHeightFraction] // (1)
-                        expandableState = ExpandableState.Expanded
-                    },
-                    enabled = expandableState == ExpandableState.Collapsed && delayCauses.isNotEmpty(),
-                    Modifier.constrainAs(showDelayRef) {
-                        end.linkTo(parent.end)
-                        top.linkTo(departureRef.top)
-                        bottom.linkTo(departureRef.bottom)
-                    },
-                    color = if (delayCauses.isEmpty()) Color.Transparent
-                    else StationTheme.colors.late.copy(alpha = transitionState[expandButtonAlpha])
-                )
+                if (delayCauses.isNotEmpty()) {
+                    ShowDelayCauseAction(
+                        onClick = {
+                            transitionState[expandedContentHeightFraction] // (1)
+                            expandableState = ExpandableState.Expanded
+                        },
+                        enabled = expandableState == ExpandableState.Collapsed,
+                        Modifier.constrainAs(showDelayRef) {
+                            end.linkTo(parent.end)
+                            top.linkTo(departureRef.top)
+                            bottom.linkTo(departureRef.bottom)
+                        },
+                        color = if (delayCauses.isEmpty()) Color.Transparent
+                        else StationTheme.colors.late.copy(alpha = transitionState[expandButtonAlpha])
+                    )
+                }
             }
             if (delayCauses.isNotEmpty()) {
                 DelayCauses(
@@ -853,13 +853,12 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
                 time = {
                     ActualTime(
-                        actualTime, differenceInMinutes ?: 0,
-                        TimetableRow.Type.Arrival
+                        actualTime, differenceInMinutes, TimetableRow.Type.Arrival
                     )
                 },
                 modifier
             )
-            estimatedTime != null && estimatedTime.differsFrom(scheduledTime) -> TimeField(
+            estimatedTime != null && differenceInMinutes != 0 -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Arrival) },
                 modifier
@@ -879,14 +878,11 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             actualTime != null -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
                 time = {
-                    ActualTime(
-                        actualTime, differenceInMinutes ?: 0,
-                        TimetableRow.Type.Departure
-                    )
+                    ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Departure)
                 },
                 modifier
             )
-            estimatedTime != null && estimatedTime.differsFrom(scheduledTime) -> TimeField(
+            estimatedTime != null && differenceInMinutes != 0 -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Departure) },
                 modifier

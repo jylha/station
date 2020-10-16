@@ -21,7 +21,7 @@ fun TimetableRowNetworkEntity.toDomainModel(): TimetableRow {
         scheduledTime = ZonedDateTime.parse(scheduledTime),
         estimatedTime = if (liveEstimateTime != null) ZonedDateTime.parse(liveEstimateTime) else null,
         actualTime = if (actualTime != null) ZonedDateTime.parse(actualTime) else null,
-        differenceInMinutes = differenceInMinutes,
+        differenceInMinutes = differenceInMinutes ?: 0,
         markedReady = trainReady != null,
         causes = causes.map { it.toDomainModel() }
     )

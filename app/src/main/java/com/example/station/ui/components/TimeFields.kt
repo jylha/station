@@ -73,17 +73,15 @@ import java.time.ZonedDateTime
             scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
             style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
         )
-        if (scheduledTimeText != estimatedTimeText) {
-            Icon(
-                Icons.Rounded.ArrowRightAlt,
-                Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
-                tint = StationTheme.colors.delayed
-            )
-            Text(
-                estimatedTimeText, color = StationTheme.colors.delayed,
-                style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
-            )
-        }
+        Icon(
+            Icons.Rounded.ArrowRightAlt,
+            Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
+            tint = StationTheme.colors.delayed
+        )
+        Text(
+            estimatedTimeText, color = StationTheme.colors.delayed,
+            style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
+        )
     }
 }
 

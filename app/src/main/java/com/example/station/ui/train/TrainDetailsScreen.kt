@@ -392,10 +392,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     timetableRow?.apply {
         when {
             actualTime != null -> ActualTime(
-                actualTime, differenceInMinutes ?: 0,
-                timetableRow.type
+                actualTime, differenceInMinutes, timetableRow.type
             )
-            estimatedTime != null && estimatedTime.differsFrom(scheduledTime) -> {
+            estimatedTime != null && differenceInMinutes != 0 -> {
                 EstimatedTime(scheduledTime, estimatedTime, timetableRow.type)
             }
             else -> ScheduledTime(scheduledTime, timetableRow.type)

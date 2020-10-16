@@ -99,9 +99,9 @@ class TimetableRowDataMapperTest {
         assertThat(result.differenceInMinutes).isEqualTo(5)
     }
 
-    @Test fun `differenceInMinutes is set to null when not in network DTO`() {
+    @Test fun `differenceInMinutes is set to zero when not in network DTO`() {
         val result = networkEntity.copy(differenceInMinutes = null).toDomainModel()
-        assertThat(result.differenceInMinutes).isNull()
+        assertThat(result.differenceInMinutes).isEqualTo(0)
     }
 
     @Test fun `cause is mapped correctly into domain model`() {
