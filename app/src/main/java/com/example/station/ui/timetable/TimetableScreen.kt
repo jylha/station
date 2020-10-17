@@ -95,6 +95,7 @@ import com.example.station.ui.Screen
 import com.example.station.ui.components.ActualTime
 import com.example.station.ui.components.CauseCategoriesProvider
 import com.example.station.ui.components.EmptyState
+import com.example.station.ui.components.ErrorState
 import com.example.station.ui.components.EstimatedTime
 import com.example.station.ui.components.Loading
 import com.example.station.ui.components.RefreshIndicator
@@ -124,7 +125,7 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
                 viewState,
                 viewModel::offer,
                 onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
-                onSelectStations = { navigateTo(Screen.SelectStation) }
+                onSelectStation = { navigateTo(Screen.SelectStation) }
             )
         }
     }
@@ -135,12 +136,47 @@ fun TimetableScreen(
     viewState: TimetableViewState,
     onEvent: (TimetableEvent) -> Unit = {},
     onTrainSelected: (Train) -> Unit = {},
-    onSelectStations: () -> Unit = {}
+    onSelectStation: () -> Unit = {}
+) {
+    when {
+        viewState.isLoadingTimetable -> LoadingTimetable()
+        viewState.station != null -> TimetableScreen(
+            viewState.station,
+            viewState.timetable,
+            selectedTimetableTypes = viewState.selectedTimetableTypes,
+            onTimetableTypesChanged = { types: Set<TimetableRow.Type> ->
+                onEvent(TimetableEvent.SelectTimetableTypes(types))
+            },
+            selectedTrainCategories = viewState.selectedTrainCategories,
+            onTrainCategoriesChanged = { categories: Set<Category> ->
+                onEvent(TimetableEvent.SelectCategories(categories))
+            },
+            isReloading = viewState.isReloadingTimetable,
+            onReload = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) },
+            onSelectStation = onSelectStation,
+            onTrainSelected = onTrainSelected
+        )
+        else -> ErrorState("Oops. Something went wrong.") {
+            Button(onClick = onSelectStation) {
+                Text(stringResource(R.string.label_select_station))
+            }
+        }
+    }
+}
+
+@Composable private fun TimetableScreen(
+    station: Station,
+    timetable: List<Train>,
+    selectedTimetableTypes: Set<TimetableRow.Type>,
+    onTimetableTypesChanged: (Set<TimetableRow.Type>) -> Unit,
+    selectedTrainCategories: Set<Category>,
+    onTrainCategoriesChanged: (Set<Category>) -> Unit,
+    isReloading: Boolean,
+    onReload: () -> Unit,
+    onSelectStation: () -> Unit,
+    onTrainSelected: (Train) -> Unit
 ) {
     var filterSelectionEnabled by savedInstanceState { false }
-
-    val selectedTimetableTypes = viewState.selectedTimetableTypes
-    val selectedTrainCategories = viewState.selectedTrainCategories
 
     val timetableTypeSelected: (TimetableRow.Type) -> Unit = { type ->
         val updatedTypes =
@@ -153,7 +189,7 @@ fun TimetableScreen(
             } else {
                 selectedTimetableTypes + type
             }
-        onEvent(TimetableEvent.SelectTimetableTypes(updatedTypes))
+        onTimetableTypesChanged(updatedTypes)
     }
 
     val trainCategorySelected: (Category) -> Unit = { category ->
@@ -167,41 +203,34 @@ fun TimetableScreen(
             } else {
                 selectedTrainCategories + category
             }
-        onEvent(TimetableEvent.SelectCategories(updatedCategories))
+        onTrainCategoriesChanged(updatedCategories)
     }
 
     Scaffold(topBar = {
         TimetableTopAppBar(
-            stationName(stationUic = viewState.station?.uic ?: 0),
+            stationName(stationUic = station.uic),
             selectedTimetableTypes,
             selectedTrainCategories,
             filterSelectionEnabled,
             onShowFilters = { filterSelectionEnabled = true },
             onHideFilters = { filterSelectionEnabled = false },
-            onSelectStations
+            onSelectStation
         )
     }) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
-        when {
-            viewState.isLoadingTimetable -> LoadingTimetable(modifier)
-            viewState.station != null -> TimetableScreenContent(
-                station = viewState.station,
-                trains = viewState.timetable,
-                modifier,
-                onTrainSelected,
-                selectedTimetableTypes,
-                timetableTypeSelected,
-                selectedTrainCategories,
-                trainCategorySelected,
-                filterSelectionEnabled,
-                refreshing = viewState.isReloadingTimetable,
-                onRefresh = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) }
-            )
-            else -> {
-                // TODO: 15.9.2020 Replace with error message..
-                EmptyState("Oops. Something went wrong.", modifier)
-            }
-        }
+        TimetableScreenContent(
+            station = station,
+            trains = timetable,
+            modifier,
+            onTrainSelected,
+            selectedTimetableTypes,
+            timetableTypeSelected,
+            selectedTrainCategories,
+            trainCategorySelected,
+            filterSelectionEnabled,
+            refreshing = isReloading,
+            onRefresh = onReload
+        )
     }
 }
 
@@ -212,7 +241,7 @@ fun TimetableScreen(
     filterSelectionEnabled: Boolean,
     onShowFilters: () -> Unit,
     onHideFilters: () -> Unit,
-    onSelectStations: () -> Unit,
+    onSelectStation: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -223,7 +252,7 @@ fun TimetableScreen(
             }
         },
         actions = {
-            IconButton(onClick = onSelectStations) { Icon(Icons.Rounded.LocationCity) }
+            IconButton(onClick = onSelectStation) { Icon(Icons.Rounded.LocationCity) }
             if (filterSelectionEnabled) {
                 IconButton(onClick = onHideFilters) { Icon(Icons.Default.ExpandLess) }
             } else {
