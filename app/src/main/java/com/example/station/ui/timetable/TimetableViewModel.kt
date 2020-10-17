@@ -10,6 +10,7 @@ import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class TimetableViewModel @ViewModelInject constructor(
@@ -44,18 +46,22 @@ class TimetableViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            reduceState(TimetableResult.LoadingStationNames)
-            val mapper = stationRepository.getStationNameMapper()
-            reduceState(TimetableResult.StationNames(mapper))
+            withContext(Dispatchers.IO) {
+                reduceState(TimetableResult.LoadingStationNames)
+                val mapper = stationRepository.getStationNameMapper()
+                reduceState(TimetableResult.StationNames(mapper))
+            }
         }
 
         viewModelScope.launch {
-            combine(
-                settingsRepository.trainCategories(),
-                settingsRepository.timetableTypes()
-            ) { trainCategories, timetableTypes ->
-                TimetableResult.SettingsUpdated(trainCategories, timetableTypes)
-            }.collect { result -> reduceState(result) }
+            withContext(Dispatchers.Default) {
+                combine(
+                    settingsRepository.trainCategories(),
+                    settingsRepository.timetableTypes()
+                ) { trainCategories, timetableTypes ->
+                    TimetableResult.SettingsUpdated(trainCategories, timetableTypes)
+                }.collect { result -> reduceState(result) }
+            }
         }
 
         viewModelScope.launch {

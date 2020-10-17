@@ -6,12 +6,13 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
 abstract class SettingsModule {
 
+    @Singleton
     @Binds
-    abstract fun bindSettingsRepository(repository: DefaultSettingsRepository): SettingsRepository
-
+    abstract fun bind(repository: DefaultSettingsRepository): SettingsRepository
 }
