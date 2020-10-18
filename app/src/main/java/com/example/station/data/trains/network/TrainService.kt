@@ -13,13 +13,25 @@ interface TrainService {
     ): List<TrainNetworkEntity>
 
     @GET("live-trains/station/{stationCode}")
-    suspend fun fetchTrains(
+    suspend fun fetchTrainsByTime(
         @Path("stationCode") stationCode: String,
         @Query("minutes_before_departure") minutesBeforeDeparture: Int = 120,
         @Query("minutes_after_departure") minutesAfterDeparture: Int = 30,
         @Query("minutes_before_arrival") minutesBeforeArrival: Int = 120,
         @Query("minutes_after_arrival") minutesAfterArrival: Int = 30,
-        @Query("train_categories") trainCategories: String? = "Long-Distance,Commuter"
+        @Query("train_categories") trainCategories: String? = "Long-Distance,Commuter",
+        @Query("version") version: Long? = null,
+    ): List<TrainNetworkEntity>
+
+    @GET("live-trains/station/{stationCode}")
+    suspend fun fetchTrainsByCount(
+        @Path("stationCode") stationCode: String,
+        @Query("arrived_trains") arrived: Int = 5,
+        @Query("arriving_trains") arriving: Int = 20,
+        @Query("departed_trains") departed: Int = 5,
+        @Query("departing_trains") departing: Int = 20,
+        @Query("train_categories") trainCategories: String? = "Long-Distance,Commuter",
+        @Query("version") version: Long? = null,
     ): List<TrainNetworkEntity>
 
     @GET("metadata/cause-category-codes")
