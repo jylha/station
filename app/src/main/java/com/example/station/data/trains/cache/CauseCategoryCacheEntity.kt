@@ -2,12 +2,9 @@ package com.example.station.data.trains.cache
 
 import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "cause_categories")
+@Entity(tableName = "cause_categories", primaryKeys = ["id", "level"])
 data class CauseCategoryCacheEntity(
-
-    @PrimaryKey(autoGenerate = false)
     val id: Int,
     val name: String,
     val level: Int,
