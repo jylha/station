@@ -389,6 +389,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         Text(
             name,
             modifier.semantics { accessibilityLabel = name },
+            textAlign = TextAlign.End,
             style = MaterialTheme.typography.subtitle1
         )
     }
@@ -458,7 +459,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
         Box(Modifier.constrainAs(nameRef) {
             centerAround(horizontalGuideCenter)
-            end.linkTo(stationIconRef.start, margin = 16.dp)
+            linkTo(start = parent.start, end = stationIconRef.start, endMargin = 16.dp, bias = 1f)
+            width = Dimension.preferredWrapContent
         }) { name() }
 
         if (portraitOrientation()) {
