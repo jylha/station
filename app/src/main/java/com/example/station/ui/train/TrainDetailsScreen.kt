@@ -69,7 +69,6 @@ import com.example.station.ui.components.SwipeRefreshLayout
 import com.example.station.ui.components.portraitOrientation
 import com.example.station.ui.components.stationName
 import com.example.station.ui.theme.StationTheme
-import com.example.station.util.differsFrom
 import java.time.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -226,19 +225,24 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         val destinationRef = createRef()
         val iconRef = createRef()
 
-        Icon(Icons.Rounded.ArrowRightAlt, Modifier.constrainAs(iconRef) {
-            centerTo(parent)
-        })
+        Icon(
+            asset = Icons.Rounded.ArrowRightAlt,
+            modifier = Modifier.padding(horizontal = 4.dp).constrainAs(iconRef) {
+                centerTo(parent)
+            }
+        )
         if (originName != null) {
             Text(
                 text = originName,
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End,
                 modifier = Modifier
                     .semantics { accessibilityLabel = fromStation }
                     .constrainAs(originRef) {
-                        centerVerticallyTo(parent)
-                        end.linkTo(iconRef.start, margin = 4.dp)
+                        linkTo(top = parent.top, bottom = parent.bottom)
+                        linkTo(start = parent.start, end = iconRef.start, bias = 1f)
+                        width = Dimension.preferredWrapContent
                     }
             )
         }
@@ -247,11 +251,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 text = destinationName,
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start,
                 modifier = Modifier
                     .semantics { accessibilityLabel = toStation }
                     .constrainAs(destinationRef) {
-                        centerVerticallyTo(parent)
-                        start.linkTo(iconRef.end, margin = 4.dp)
+                        linkTo(top = parent.top, bottom = parent.bottom)
+                        linkTo(start = iconRef.end, end = parent.end, bias = 0f)
+                        width = Dimension.preferredWrapContent
                     }
             )
         }
