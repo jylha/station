@@ -43,7 +43,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.material.icons.rounded.ExpandLess
 import androidx.compose.material.icons.rounded.LocationCity
 import androidx.compose.material.icons.rounded.Train
@@ -248,8 +247,8 @@ fun TimetableScreen(
     TopAppBar(
         title = {
             Column(modifier) {
-                Title(stationName)
-                Subtitle(selectedTimetableTypes, selectedTrainCategories)
+                TopAppBarTitle(stationName)
+                TopAppBarSubtitle(selectedTimetableTypes, selectedTrainCategories)
             }
         },
         actions = {
@@ -269,13 +268,13 @@ fun TimetableScreen(
 }
 
 /** A title displaying the station name. */
-@Composable private fun Title(stationName: String?, modifier: Modifier = Modifier) {
+@Composable private fun TopAppBarTitle(stationName: String?, modifier: Modifier = Modifier) {
     val titleText = stationName ?: stringResource(id = R.string.title_timetable)
     Text(titleText, modifier)
 }
 
 /** A subtitle displaying the selected categories. */
-@Composable private fun Subtitle(
+@Composable private fun TopAppBarSubtitle(
     timetableTypes: Set<TimetableRow.Type>,
     trainCategories: Set<Category>,
     modifier: Modifier = Modifier
@@ -548,7 +547,7 @@ fun TimetableScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val color = if (selected) MaterialTheme.colors.primaryVariant.copy(alpha = 0.7f)
+    val color = if (selected) MaterialTheme.colors.primaryVariant.copy(alpha = 0.9f)
     else Color.Gray.copy(alpha = 0.7f)
 
     OutlinedButton(
