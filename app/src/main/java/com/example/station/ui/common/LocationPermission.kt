@@ -1,4 +1,4 @@
-package com.example.station.ui.components
+package com.example.station.ui.common
 
 import android.Manifest
 import android.content.pm.PackageManager

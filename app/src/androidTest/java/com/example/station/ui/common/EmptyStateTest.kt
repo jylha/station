@@ -1,4 +1,4 @@
-package com.example.station.ui.components
+package com.example.station.ui.common
 
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule

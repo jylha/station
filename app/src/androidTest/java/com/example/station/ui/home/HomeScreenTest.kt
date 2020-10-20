@@ -6,8 +6,8 @@ import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
-import com.example.station.ui.components.LocationPermissionAmbient
-import com.example.station.ui.components.Permission
+import com.example.station.ui.common.LocationPermissionAmbient
+import com.example.station.ui.common.Permission
 import org.junit.Rule
 import org.junit.Test
 

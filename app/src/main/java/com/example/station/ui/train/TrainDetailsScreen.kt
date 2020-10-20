@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -59,15 +58,16 @@ import com.example.station.model.isOrigin
 import com.example.station.model.isReached
 import com.example.station.model.isWaypoint
 import com.example.station.model.stationUic
-import com.example.station.ui.components.ActualTime
-import com.example.station.ui.components.EstimatedTime
-import com.example.station.ui.components.Loading
-import com.example.station.ui.components.RefreshIndicator
-import com.example.station.ui.components.ScheduledTime
-import com.example.station.ui.components.StationNameProvider
-import com.example.station.ui.components.SwipeRefreshLayout
-import com.example.station.ui.components.portraitOrientation
-import com.example.station.ui.components.stationName
+import com.example.station.ui.common.ActualTime
+import com.example.station.ui.common.EstimatedTime
+import com.example.station.ui.common.Loading
+import com.example.station.ui.common.RefreshIndicator
+import com.example.station.ui.common.ScheduledTime
+import com.example.station.ui.common.StationNameProvider
+import com.example.station.ui.common.SwipeRefreshLayout
+import com.example.station.ui.common.TrainRoute
+import com.example.station.ui.common.portraitOrientation
+import com.example.station.ui.common.stationName
 import com.example.station.ui.theme.StationTheme
 import java.time.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -122,7 +122,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 Spacer(Modifier.height(20.dp))
                 TrainIdentification(train)
                 Spacer(Modifier.height(16.dp))
-                TrainRoute(train.origin(), train.destination())
+                TrainRoute(
+                    stationName(train.origin()) ?: "",
+                    stationName(train.destination()) ?: ""
+                )
                 Spacer(Modifier.height(20.dp))
                 Timetable(train)
                 Spacer(Modifier.height(20.dp))
@@ -214,55 +217,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     }
 }
 
-@Composable private fun TrainRoute(originUic: Int?, destinationUic: Int?) {
-    val originName = if (originUic != null) stationName(originUic) else null
-    val destinationName = if (destinationUic != null) stationName(destinationUic) else null
-    val fromStation = stringResource(R.string.accessibility_label_from_station, originName ?: "")
-    val toStation = stringResource(R.string.accessibility_label_to_station, destinationName ?: "")
-
-    ConstraintLayout(Modifier.fillMaxWidth().semantics(mergeAllDescendants = true) {}) {
-        val originRef = createRef()
-        val destinationRef = createRef()
-        val iconRef = createRef()
-
-        Icon(
-            asset = Icons.Rounded.ArrowRightAlt,
-            modifier = Modifier.padding(horizontal = 4.dp).constrainAs(iconRef) {
-                centerTo(parent)
-            }
-        )
-        if (originName != null) {
-            Text(
-                text = originName,
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.End,
-                modifier = Modifier
-                    .semantics { accessibilityLabel = fromStation }
-                    .constrainAs(originRef) {
-                        linkTo(top = parent.top, bottom = parent.bottom)
-                        linkTo(start = parent.start, end = iconRef.start, bias = 1f)
-                        width = Dimension.preferredWrapContent
-                    }
-            )
-        }
-        if (destinationName != null) {
-            Text(
-                text = destinationName,
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .semantics { accessibilityLabel = toStation }
-                    .constrainAs(destinationRef) {
-                        linkTo(top = parent.top, bottom = parent.bottom)
-                        linkTo(start = iconRef.end, end = parent.end, bias = 0f)
-                        width = Dimension.preferredWrapContent
-                    }
-            )
-        }
-    }
-}
 
 @Composable private fun Timetable(train: Train) {
     val stops = remember(train) { train.commercialStops() }
@@ -271,9 +225,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val nextStopIndex = remember(currentStop) {
         if (currentStop?.isDeparted() == true) currentStopIndex + 1 else -1
     }
-
     Column {
-        stops.forEachIndexed() { index, stop ->
+        stops.forEachIndexed { index, stop ->
             val isCurrent = index == currentStopIndex && stop.isNotDeparted()
             val isNext = index == nextStopIndex
             when {

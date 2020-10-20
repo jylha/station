@@ -92,18 +92,19 @@ import com.example.station.model.stopsAt
 import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
 import com.example.station.ui.Screen
-import com.example.station.ui.components.ActualTime
-import com.example.station.ui.components.CauseCategoriesProvider
-import com.example.station.ui.components.EmptyState
-import com.example.station.ui.components.ErrorState
-import com.example.station.ui.components.EstimatedTime
-import com.example.station.ui.components.Loading
-import com.example.station.ui.components.RefreshIndicator
-import com.example.station.ui.components.ScheduledTime
-import com.example.station.ui.components.StationNameProvider
-import com.example.station.ui.components.SwipeRefreshLayout
-import com.example.station.ui.components.causeName
-import com.example.station.ui.components.stationName
+import com.example.station.ui.common.ActualTime
+import com.example.station.ui.common.CauseCategoriesProvider
+import com.example.station.ui.common.EmptyState
+import com.example.station.ui.common.ErrorState
+import com.example.station.ui.common.EstimatedTime
+import com.example.station.ui.common.Loading
+import com.example.station.ui.common.RefreshIndicator
+import com.example.station.ui.common.ScheduledTime
+import com.example.station.ui.common.StationNameProvider
+import com.example.station.ui.common.SwipeRefreshLayout
+import com.example.station.ui.common.TrainRoute
+import com.example.station.ui.common.causeName
+import com.example.station.ui.common.stationName
 import com.example.station.ui.theme.StationTheme
 import java.time.ZonedDateTime
 import java.util.Locale
@@ -669,13 +670,19 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                 val identifierGuideline = createGuidelineFromStart(20.dp)
 
                 TrainIdentification(train, Modifier.constrainAs(identificationRef) {
-                    centerVerticallyTo(parent)
+                    linkTo(top = parent.top, bottom = parent.bottom)
                     centerAround(identifierGuideline)
                 })
-                TrainRoute(train.origin(), train.destination(), Modifier.constrainAs(routeRef) {
-                    centerHorizontallyTo(parent)
-                    top.linkTo(parent.top)
-                })
+                TrainRoute(
+                    stationName(train.origin()) ?: "",
+                    stationName(train.destination()) ?: "",
+                    textStyle = MaterialTheme.typography.body2,
+                    modifier = Modifier.constrainAs(routeRef) {
+                        linkTo(parent.start, parent.end, startMargin = 40.dp, endMargin = 40.dp)
+                        top.linkTo(parent.top)
+                        width = Dimension.fillToConstraints
+                    }
+                )
                 Arrival(stop.arrival, Modifier.constrainAs(arrivalRef) {
                     start.linkTo(identificationRef.end, margin = 8.dp)
                     end.linkTo(trackRef.start, margin = 8.dp)
@@ -799,54 +806,6 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             } else {
                 stringResource(R.string.accessibility_label_commuter_line, commuterLineId)
             }
-        }
-    }
-}
-
-@Composable private fun TrainRoute(
-    originUic: Int?,
-    destinationUic: Int?,
-    modifier: Modifier = Modifier
-) {
-    val iconAsset = remember { Icons.Rounded.ArrowRightAlt }
-    val origin = if (originUic != null) stationName(originUic) else null
-    val destination = if (destinationUic != null) stationName(destinationUic) else null
-
-    ConstraintLayout(modifier) {
-        val iconRef = createRef()
-        val originRef = createRef()
-        val destinationRef = createRef()
-
-        if (origin != null && destination != null) {
-            Icon(iconAsset, modifier = Modifier.constrainAs(iconRef) {
-                centerTo(parent)
-            })
-        }
-        if (origin != null) {
-            val label = stringResource(R.string.accessibility_label_from_station, origin)
-            Text(
-                origin,
-                Modifier.semantics { accessibilityLabel = label }
-                    .constrainAs(originRef) {
-                        centerVerticallyTo(parent)
-                        end.linkTo(iconRef.start, margin = 4.dp)
-                    },
-                style = MaterialTheme.typography.body2,
-                fontWeight = FontWeight.Bold,
-            )
-        }
-        if (destination != null) {
-            val label = stringResource(R.string.accessibility_label_to_station, destination)
-            Text(
-                destination,
-                Modifier.semantics { accessibilityLabel = label }
-                    .constrainAs(destinationRef) {
-                        centerVerticallyTo(parent)
-                        start.linkTo(iconRef.end, margin = 4.dp)
-                    },
-                style = MaterialTheme.typography.body2,
-                fontWeight = FontWeight.Bold
-            )
         }
     }
 }
@@ -1103,7 +1062,7 @@ private fun PreviewTimetable() {
             )
         ),
         Train(
-            2, "IC", Category.LongDistance, timetable = listOf(
+            2, "HDM", Category.LongDistance, timetable = listOf(
                 departure(130, "3", ZonedDateTime.parse("2020-01-01T09:30Z")),
                 arrival(1, "4", ZonedDateTime.parse("2020-01-01T10:30Z"))
             )
@@ -1117,7 +1076,8 @@ private fun PreviewTimetable() {
     StationTheme(darkTheme = true) {
         StationNameProvider(mapper) {
             TimetableScreenContent(helsinki, trains, Modifier, {},
-                setOf(TimetableRow.Type.Arrival), {}, setOf(Category.LongDistance), {})
+                setOf(TimetableRow.Type.Arrival, TimetableRow.Type.Departure), {},
+                setOf(Category.LongDistance), {})
         }
     }
 }

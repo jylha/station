@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.setContent
-import com.example.station.ui.components.LocationPermission
-import com.example.station.ui.components.LocationPermissionProvider
+import com.example.station.ui.common.LocationPermission
+import com.example.station.ui.common.LocationPermissionProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

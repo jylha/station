@@ -1,4 +1,4 @@
-package com.example.station.ui.components
+package com.example.station.ui.common
 
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package com.example.station.ui.components
+package com.example.station.ui.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
@@ -29,7 +29,9 @@ fun StationNameProvider(
  * Returns the localised station name for the specified [stationUic] from the StationNameAmbient.
  */
 @Composable
-fun stationName(stationUic: Int): String? = StationNameAmbient.current.stationName(stationUic)
+fun stationName(stationUic: Int?): String? {
+    return if (stationUic != null) StationNameAmbient.current.stationName(stationUic) else null
+}
 
 /**
  * Ambient to provide [StationNameMapper] instance to allow accessing localised station names.

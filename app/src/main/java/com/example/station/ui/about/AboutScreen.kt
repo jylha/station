@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.station.R
-import com.example.station.ui.components.portraitOrientation
+import com.example.station.ui.common.portraitOrientation
 
 @Preview
 @Composable

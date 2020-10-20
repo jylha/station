@@ -40,11 +40,11 @@ import com.airbnb.lottie.LottieDrawable
 import com.example.station.R
 import com.example.station.model.Station
 import com.example.station.ui.Screen
-import com.example.station.ui.components.Loading
-import com.example.station.ui.components.LocationPermissionAmbient
-import com.example.station.ui.components.landscapeOrientation
-import com.example.station.ui.components.portraitOrientation
-import com.example.station.ui.components.withPermission
+import com.example.station.ui.common.Loading
+import com.example.station.ui.common.LocationPermissionAmbient
+import com.example.station.ui.common.landscapeOrientation
+import com.example.station.ui.common.portraitOrientation
+import com.example.station.ui.common.withPermission
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)

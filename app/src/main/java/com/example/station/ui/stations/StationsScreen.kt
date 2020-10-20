@@ -36,11 +36,11 @@ import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.R
 import com.example.station.model.Station
 import com.example.station.ui.Screen
-import com.example.station.ui.components.EmptyState
-import com.example.station.ui.components.Loading
-import com.example.station.ui.components.LocationPermissionAmbient
-import com.example.station.ui.components.SearchBar
-import com.example.station.ui.components.withPermission
+import com.example.station.ui.common.EmptyState
+import com.example.station.ui.common.Loading
+import com.example.station.ui.common.LocationPermissionAmbient
+import com.example.station.ui.common.SearchBar
+import com.example.station.ui.common.withPermission
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 

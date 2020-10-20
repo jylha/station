@@ -1,4 +1,4 @@
-package com.example.station.ui.components
+package com.example.station.ui.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offsetPx
