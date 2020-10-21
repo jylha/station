@@ -280,20 +280,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     isNext: Boolean,
     isPassed: Boolean
 ) {
-    val stationIconResId = if (waypoint.isReached()) R.drawable.waypoint_closed
-    else R.drawable.waypoint_open
+    val stationIconResId = if (waypoint.isReached() || waypoint.isDeparted())
+        R.drawable.waypoint_closed else R.drawable.waypoint_open
 
-    val arrivedIconColor = if (waypoint.isReached() || isPassed) {
-        MaterialTheme.colors.primaryVariant
-    } else {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
-    }
+    val arrivedIconColor = if (waypoint.isReached() || isPassed)
+        MaterialTheme.colors.primaryVariant else MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
 
-    val departedIconColor = if (waypoint.isDeparted() || isPassed) {
-        MaterialTheme.colors.primaryVariant
-    } else {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
-    }
+    val departedIconColor = if (waypoint.isDeparted() || isPassed)
+        MaterialTheme.colors.primaryVariant else MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
 
     val arrivedColorFilter = ColorFilter.tint(arrivedIconColor)
 
@@ -378,7 +372,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Commercial stop.
  * @param isCurrent Whether train is currently on this stop.
  * @param isNext Whether train will arrive next on this stop.
- * @param isPassed Whether train has already passed this stop.
  */
 @Composable private fun CommercialStop(
     name: @Composable () -> Unit,
