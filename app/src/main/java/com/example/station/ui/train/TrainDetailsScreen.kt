@@ -229,56 +229,67 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         stops.forEachIndexed { index, stop ->
             val isCurrent = index == currentStopIndex && stop.isNotDeparted()
             val isNext = index == nextStopIndex
+            val isPassed = index < currentStopIndex
             when {
-                stop.isOrigin() -> TrainOrigin(train, stop, isCurrent)
-                stop.isWaypoint() -> TrainWaypoint(stop, isCurrent, isNext)
+                stop.isOrigin() -> TrainOrigin(train, stop, isCurrent, isPassed)
+                stop.isWaypoint() -> TrainWaypoint(stop, isCurrent, isNext, isPassed)
                 stop.isDestination() -> TrainDestination(stop, isCurrent, isNext)
             }
         }
     }
 }
 
-@Composable private fun TrainOrigin(train: Train, origin: Stop, isCurrent: Boolean) {
-
-    val (stationIconResId, stationIconColor) = if (train.isReady() || origin.isDeparted()) {
-        Pair(R.drawable.origin_closed, MaterialTheme.colors.primaryVariant)
-    } else {
-        Pair(R.drawable.origin_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
-    }
-
-    val lineColor = if (origin.isDeparted()) {
+@Composable private fun TrainOrigin(
+    train: Train,
+    origin: Stop,
+    isCurrent: Boolean,
+    isPassed: Boolean
+) {
+    val stationIconResId = if (train.isReady() || origin.isDeparted())
+        R.drawable.origin_closed else R.drawable.origin_open
+    val color = if (origin.isDeparted() || isPassed) {
         MaterialTheme.colors.primaryVariant
     } else {
         MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
     }
+    val colorFilter = ColorFilter.tint(color)
 
     CommercialStop(
         name = { StopName(stationName(origin.stationUic())) },
         stationIcon = {
             Image(
                 vectorResource(stationIconResId),
-                colorFilter = ColorFilter.tint(stationIconColor)
+                colorFilter = colorFilter
             )
         },
         departureTime = { StopTime(origin.departure) },
         departureIcon = {
             Image(
-                vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(lineColor)
+                vectorResource(R.drawable.line),
+                contentScale = ContentScale.Crop,
+                colorFilter = colorFilter
             )
         },
-        isCurrent = isCurrent
+        isCurrent = isCurrent,
     )
 }
 
-@Composable private fun TrainWaypoint(waypoint: Stop, isCurrent: Boolean, isNext: Boolean) {
-    val (stationIconResId, arrivedIconColor) = if (waypoint.isReached()) {
-        Pair(R.drawable.waypoint_closed, MaterialTheme.colors.primaryVariant)
+@Composable private fun TrainWaypoint(
+    waypoint: Stop,
+    isCurrent: Boolean,
+    isNext: Boolean,
+    isPassed: Boolean
+) {
+    val stationIconResId = if (waypoint.isReached()) R.drawable.waypoint_closed
+    else R.drawable.waypoint_open
+
+    val arrivedIconColor = if (waypoint.isReached() || isPassed) {
+        MaterialTheme.colors.primaryVariant
     } else {
-        Pair(R.drawable.waypoint_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
+        MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
     }
 
-    val departedIconColor = if (waypoint.isDeparted()) {
+    val departedIconColor = if (waypoint.isDeparted() || isPassed) {
         MaterialTheme.colors.primaryVariant
     } else {
         MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
@@ -362,6 +373,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     }
 }
 
+
+/**
+ * Commercial stop.
+ * @param isCurrent Whether train is currently on this stop.
+ * @param isNext Whether train will arrive next on this stop.
+ * @param isPassed Whether train has already passed this stop.
+ */
 @Composable private fun CommercialStop(
     name: @Composable () -> Unit,
     stationIcon: @Composable () -> Unit,
@@ -371,7 +389,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     departureIcon: (@Composable () -> Unit)? = null,
     departureTime: (@Composable () -> Unit)? = null,
     isCurrent: Boolean = false,
-    isNext: Boolean = false
+    isNext: Boolean = false,
 ) {
     ConstraintLayout(modifier.fillMaxWidth().semantics(mergeAllDescendants = true) {}) {
         val nameRef = createRef()

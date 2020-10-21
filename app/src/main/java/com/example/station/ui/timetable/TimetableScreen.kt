@@ -982,8 +982,8 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 
 @Composable private fun statusColor(train: Train, stop: Stop): Color? {
     return when {
-        train.isNotReady() -> StationTheme.colors.trainIsNotReady
         train.hasReachedDestination() -> StationTheme.colors.trainReachedDestination
+        train.isNotReady() -> StationTheme.colors.trainIsNotReady
         train.isRunning && stop.isNotReached() -> StationTheme.colors.trainOnRouteToStation
         stop.isReached() && stop.isNotDeparted() -> StationTheme.colors.trainOnStation
         stop.isDeparted() -> StationTheme.colors.trainHasDepartedStation
