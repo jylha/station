@@ -283,7 +283,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val stationIconResId = if (waypoint.isReached() || waypoint.isDeparted())
         R.drawable.waypoint_closed else R.drawable.waypoint_open
 
-    val arrivedIconColor = if (waypoint.isReached() || isPassed)
+    val arrivedIconColor = if (waypoint.isReached() || waypoint.isDeparted() || isPassed)
         MaterialTheme.colors.primaryVariant else MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
 
     val departedIconColor = if (waypoint.isDeparted() || isPassed)

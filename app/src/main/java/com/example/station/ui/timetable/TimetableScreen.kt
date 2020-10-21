@@ -827,8 +827,12 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 }
 
 @Composable private fun TrackLabel() {
+    val context = ContextAmbient.current
+    val label = remember {
+        context.getString(R.string.label_track).toUpperCase(Locale.getDefault())
+    }
     Text(
-        text = stringResource(R.string.label_track).toUpperCase(Locale.getDefault()),
+        text = label,
         style = MaterialTheme.typography.caption,
         color = Color.Gray
     )

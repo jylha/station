@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
@@ -32,12 +32,15 @@ import java.time.ZonedDateTime
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
+    val context = ContextAmbient.current
     val scheduledTimeText = remember(scheduledTime) { scheduledTime.toLocalTimeString() }
-    val label = stringResource(
-        if (type == TimetableRow.Type.Arrival)
-            R.string.accessibility_label_scheduled_arrival else R.string.accessibility_label_scheduled_departure,
-        scheduledTimeText
-    )
+    val label = remember(scheduledTimeText, type) {
+        context.getString(
+            if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_scheduled_arrival
+            else R.string.accessibility_label_scheduled_departure,
+            scheduledTimeText
+        )
+    }
     Text(
         scheduledTimeText,
         modifier.semantics { accessibilityLabel = label },
@@ -54,16 +57,19 @@ import java.time.ZonedDateTime
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
+    val context = ContextAmbient.current
     val scheduledTimeText = remember(scheduledTime) { scheduledTime.toLocalTimeString() }
     val estimatedTimeText = remember(estimatedTime) { estimatedTime.toLocalTimeString() }
+    val label = remember(type, estimatedTimeText) {
+        context.getString(
+            if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_estimated_arrival
+            else R.string.accessibility_label_estimated_departure,
+            estimatedTimeText
+        )
+    }
     val textStyle = MaterialTheme.typography.body1
     val fontStyle = FontStyle.Italic
     val fontWeight = FontWeight.Light
-    val label = stringResource(
-        if (type == TimetableRow.Type.Arrival)
-            R.string.accessibility_label_estimated_arrival else R.string.accessibility_label_estimated_departure,
-        estimatedTimeText
-    )
     Row(
         modifier.semantics { accessibilityLabel = label },
         horizontalArrangement = Arrangement.Start,
@@ -91,12 +97,15 @@ import java.time.ZonedDateTime
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
+    val context = ContextAmbient.current
     val actualTimeText = remember(actualTime) { actualTime.toLocalTimeString() }
-    val label = stringResource(
-        if (type == TimetableRow.Type.Arrival)
-            R.string.accessibility_label_actual_arrival else R.string.accessibility_label_actual_departure,
-        actualTimeText
-    )
+    val label = remember(type, actualTimeText) {
+        context.getString(
+            if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_actual_arrival
+            else R.string.accessibility_label_actual_departure,
+            actualTimeText
+        )
+    }
     Row(
         modifier.semantics { accessibilityLabel = label },
         horizontalArrangement = Arrangement.Start,
