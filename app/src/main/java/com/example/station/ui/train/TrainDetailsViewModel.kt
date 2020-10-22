@@ -23,21 +23,29 @@ class TrainDetailsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            reduceState(TrainDetailsResult.LoadingNameMapper)
-            val mapper = stationRepository.getStationNameMapper()
-            reduceState(TrainDetailsResult.NameMapper(mapper))
+            reduceState(LoadNameMapper.Loading)
+            try {
+                val mapper = stationRepository.getStationNameMapper()
+                reduceState(LoadNameMapper.Success(mapper))
+            } catch (e: Exception) {
+                reduceState(LoadNameMapper.Error(e.message))
+            }
         }
     }
 
     fun setTrain(train: Train) {
-        reduceState(TrainDetailsResult.TrainDetails(train))
+        reduceState(LoadTrainDetails.Success(train))
     }
 
     fun reload(train: Train) {
         viewModelScope.launch {
-            reduceState(TrainDetailsResult.ReloadingTrainDetails)
-            val reloaded = trainRepository.train(train.number, train.version)
-            reduceState(TrainDetailsResult.TrainDetailsReloaded(reloaded ?: train))
+            reduceState(ReloadTrainDetails.Loading)
+            try {
+                val reloaded = trainRepository.train(train.number, train.version)
+                reduceState(ReloadTrainDetails.Success(reloaded ?: train))
+            } catch (e: Exception) {
+                reduceState(ReloadTrainDetails.Error(e.message))
+            }
         }
     }
 

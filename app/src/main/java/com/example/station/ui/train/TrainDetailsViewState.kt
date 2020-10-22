@@ -26,16 +26,16 @@ data class TrainDetailsViewState constructor(
 
 fun TrainDetailsViewState.reduce(result: TrainDetailsResult): TrainDetailsViewState {
     return when (result) {
-        TrainDetailsResult.LoadingTrainDetails -> copy(isLoadingTrain = true)
-        is TrainDetailsResult.TrainDetails -> copy(train = result.train, isLoadingTrain = false)
-        TrainDetailsResult.LoadingNameMapper -> copy(isLoadingMapper = true)
-        is TrainDetailsResult.NameMapper -> copy(
-            nameMapper = result.mapper, isLoadingMapper = false
-        )
-        TrainDetailsResult.ReloadingTrainDetails -> copy(isReloading = true)
-        is TrainDetailsResult.TrainDetailsReloaded -> copy(
-            isReloading = false,
-            train = result.train
-        )
+        LoadTrainDetails.Loading -> copy(isLoadingTrain = true)
+        is LoadTrainDetails.Success -> copy(train = result.train, isLoadingTrain = false)
+        is LoadTrainDetails.Error -> copy(isLoadingTrain = false)
+
+        ReloadTrainDetails.Loading -> copy(isReloading = true)
+        is ReloadTrainDetails.Success -> copy(isReloading = false, train = result.train)
+        is ReloadTrainDetails.Error -> copy(isReloading = false)
+
+        LoadNameMapper.Loading -> copy(isLoadingMapper = true)
+        is LoadNameMapper.Success -> copy(nameMapper = result.mapper, isLoadingMapper = false)
+        is LoadNameMapper.Error -> copy(isLoadingMapper = false)
     }
 }
