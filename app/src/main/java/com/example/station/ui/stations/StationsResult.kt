@@ -3,23 +3,34 @@ package com.example.station.ui.stations
 import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Station
 
-sealed class StationsResult {
+/** Base class for all stations results. */
+sealed class StationsResult
 
-    /** This is used for clearing nearest station. */
-    object SelectStation : StationsResult()
+/** Result for update on recently selected stations list. */
+data class RecentStationsUpdated(val stations: List<Int>) : StationsResult()
 
-    object LoadingStations : StationsResult()
-    object ReloadingStations : StationsResult()
-    object NoNewData : StationsResult()
-    data class StationsData(val stations: List<Station>) : StationsResult()
-    data class RecentStations(val stations: List<Int>) : StationsResult()
-    data class Error(val message: String?) : StationsResult()
+/** Results for loading stations. */
+sealed class LoadStations : StationsResult() {
+    object Loading : LoadStations()
+    object Reloading : LoadStations()
+    object NoNewData : LoadStations()
+    data class Success(val stations: List<Station>) : LoadStations()
+    data class Error(val message: String?) : LoadStations()
+}
 
-    object LoadingNameMapper : StationsResult()
-    data class NameMapper(val mapper: StationNameMapper) : StationsResult()
+/** Results for loading station name mapper. */
+sealed class LoadNameMapper : StationsResult() {
+    object Loading : LoadNameMapper()
+    data class Success(val mapper: StationNameMapper) : LoadNameMapper()
+    data class Error(val message: String?) : LoadNameMapper()
+}
 
-    object SelectNearest: StationsResult()
+/** Results for fetching location and selecting nearest station. */
+sealed class FetchLocation : StationsResult() {
+    object Fetching : FetchLocation()
+    data class Success(val latitude: Double, val longitude: Double) : FetchLocation()
+    data class Error(val message: String?) : FetchLocation()
 
-    data class Location(val latitude: Double, val longitude: Double): StationsResult()
-    data class LocationError(val message: String?): StationsResult()
+    /** This is used for changing mode back to selecting station from list of stations. */
+    object Cancel : FetchLocation()
 }

@@ -2,8 +2,8 @@ package com.example.station.ui.stations
 
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
-import com.example.station.ui.stations.StationsResult as Result
 import com.google.common.truth.Truth.assertThat
+import org.junit.Ignore
 import org.junit.Test
 
 class StationsViewStateTest {
@@ -16,19 +16,26 @@ class StationsViewStateTest {
         assertThat(result.nameMapper).isNull()
     }
 
-    @Test fun `reduce state with RecentStations result`() {
+    @Test fun `reduce state with RecentStationsUpdated result`() {
         val state = StationsViewState.initial()
         val stations = listOf(1, 2, 3)
-        val result = state.reduce(Result.RecentStations(stations))
+        val result = state.reduce(RecentStationsUpdated(stations))
         assertThat(result.stations).isEmpty()
         assertThat(result.recentStations).isEqualTo(stations)
     }
 
-    @Test fun `reduce state with NameMapper result`() {
+    @Test fun `reduce state with LoadNameMapper_Loading result`() {
+        val state = StationsViewState.initial()
+        val result = state.reduce(LoadNameMapper.Loading)
+        assertThat(result.isLoading).isTrue()
+    }
+
+    @Test fun `reduce state with LoadNameMapper_Success result`() {
         val stations = listOf(Station.of("first", 1), Station.of("second", 2))
-        val state = StationsViewState.initial().copy(stations = stations, isLoadingNameMapper = true)
+        val state =
+            StationsViewState.initial().copy(stations = stations, isLoadingNameMapper = true)
         val mapper = LocalizedStationNames.from(stations, mapOf(2 to "last"))
-        val result = state.reduce(Result.NameMapper(mapper))
+        val result = state.reduce(LoadNameMapper.Success(mapper))
         assertThat(result.nameMapper).isEqualTo(mapper)
         assertThat(result.isLoading).isFalse()
         assertThat(result.stations).hasSize(2)
@@ -36,43 +43,70 @@ class StationsViewStateTest {
         assertThat(result.stations[1].name).isEqualTo("last")
     }
 
-    @Test fun `reduce state with NameMapper result when loading stations`() {
-        val state = StationsViewState.initial().copy(
-            isLoadingStations = true,
-            isLoadingNameMapper = true
-        )
+    @Test fun `reduce state with LoadNameMapper_Success result when loading stations`() {
+        val state = StationsViewState(isLoadingStations = true, isLoadingNameMapper = true)
         val mapper = LocalizedStationNames.from(emptyList())
-        val result = state.reduce(Result.NameMapper(mapper))
+        val result = state.reduce(LoadNameMapper.Success(mapper))
         assertThat(result.nameMapper).isEqualTo(mapper)
         assertThat(result.isLoading).isTrue()
     }
 
-    @Test fun `reduce state with LoadingStations result`() {
+    @Test fun `reduce state with LoadNameMapper_Error result`() {
+        val state = StationsViewState(isLoadingNameMapper = true)
+        val message = "Fail"
+        val result = state.reduce(LoadNameMapper.Error(message))
+        assertThat(result.isLoading).isFalse()
+        assertThat(result.errorMessage).isEqualTo(message)
+    }
+
+    @Test fun `reduce state with LoadStations_Loading result`() {
         val state = StationsViewState.initial()
-        val result = state.reduce(Result.LoadingStations)
+        val result = state.reduce(LoadStations.Loading)
         assertThat(result.isLoading).isTrue()
     }
 
-    @Test fun `reduce state with LoadingNameMapper result`() {
+    @Test fun `reduce state with LoadStations_Reloading result`() {
         val state = StationsViewState.initial()
-        val result = state.reduce(Result.LoadingNameMapper)
-        assertThat(result.isLoading).isTrue()
+        val result = state.reduce(LoadStations.Reloading)
+        assertThat(result.isLoading).isFalse()
+        assertThat(result.isReloadingStations).isTrue()
     }
 
-    @Test fun `reduce state with StationsData result`() {
+    @Test fun `reduce state with LoadStations_NoNewData result while reloading`() {
+        val state = StationsViewState.initial().copy(isReloadingStations = true)
+        val result = state.reduce(LoadStations.NoNewData)
+        assertThat(result.isReloadingStations).isFalse()
+    }
+
+    @Test fun `reduce state with LoadStations_Success result while reloading`() {
+        val newStations = listOf(
+            Station.of("C", 3), Station.of("D", 4)
+        )
+        val state = StationsViewState(
+            isReloadingStations = true, stations = listOf(
+                Station.of("A", 1), Station.of("B", 2)
+            )
+        )
+        val result = state.reduce(LoadStations.Success(newStations))
+        assertThat(result.isLoading).isFalse()
+        assertThat(result.isReloadingStations).isFalse()
+        assertThat(result.stations).isEqualTo(newStations)
+    }
+
+    @Test fun `reduce state with LoadStations_Success result`() {
         val newStations = listOf(Station.of("A", 1), Station.of("B", 2))
         val state = StationsViewState.initial().copy(isLoadingStations = true)
         assertThat(state.isLoading).isTrue()
-        val result = state.reduce(Result.StationsData(newStations))
+        val result = state.reduce(LoadStations.Success(newStations))
         assertThat(result.isLoading).isFalse()
         assertThat(result.stations).isEqualTo(newStations)
     }
 
-    @Test fun `reduce state with StationsData result when nameMapper is present`() {
+    @Test fun `reduce state with LoadStations_Success result when nameMapper is present`() {
         val newStations = listOf(Station.of("A", 1), Station.of("B", 2))
         val mapper = LocalizedStationNames.from(newStations, mapOf(1 to "C"))
         val state = StationsViewState.initial().copy(nameMapper = mapper)
-        val result = state.reduce(Result.StationsData(newStations))
+        val result = state.reduce(LoadStations.Success(newStations))
         assertThat(result.stations).hasSize(2)
         assertThat(result.stations[0].name).isEqualTo("B")
         assertThat(result.stations[0].uic).isEqualTo(2)
@@ -80,16 +114,72 @@ class StationsViewStateTest {
         assertThat(result.stations[1].uic).isEqualTo(1)
     }
 
-    @Test fun `reduce state with NoNewData result`() {
+    @Test fun `reduce state with LoadStations_NoNewData result`() {
         val state = StationsViewState.initial().copy(isLoadingStations = true)
-        val result = state.reduce(Result.NoNewData)
-        assertThat(result.isLoading).isTrue()
+        val result = state.reduce(LoadStations.NoNewData)
+        assertThat(result.isLoading).isFalse()
     }
 
-    @Test fun `reduce state with Error result`() {
+    @Test fun `reduce state with LoadStations_Error result`() {
         val state = StationsViewState.initial()
-        val result = state.reduce(Result.Error("Oops!"))
+        val result = state.reduce(LoadStations.Error("Oops!"))
+        assertThat(result.isLoading).isFalse()
         assertThat(result.errorMessage).isEqualTo("Oops!")
+    }
+
+    @Test fun `reduce state with FetchLocation_Fetching result`() {
+        val state = StationsViewState(
+            isFetchingLocation = false,
+            nearestStation = Station("A", "a", 1, 1.0, 2.0)
+        )
+        val result = state.reduce(FetchLocation.Fetching)
+        assertThat(result.isFetchingLocation).isTrue()
+        assertThat(result.selectNearest).isTrue()
+        assertThat(result.nearestStation).isNull()
+    }
+
+    @Test fun `reduce state with FetchLocation_Success result when no stations`() {
+        val state = StationsViewState(isFetchingLocation = true, selectNearest = true)
+        val latitude = 1.0
+        val longitude = 2.0
+        val result = state.reduce(FetchLocation.Success(latitude, longitude))
+        assertThat(result.latitude).isEqualTo(latitude)
+        assertThat(result.longitude).isEqualTo(longitude)
+        assertThat(result.nearestStation).isNull()
+    }
+
+    @Ignore("Location.distanceBetween() would need to be mocked.")
+    @Test fun `reduce state with FetchLocation_Success result when stations are loaded`() {
+        val stationA = Station("Aa", "A", 1, 10.0, 20.0)
+        val stationB = Station("Bb", "B", 2, 20.0, 10.0)
+        val state = StationsViewState(
+            stations = listOf(stationA, stationB),
+            isFetchingLocation = true,
+            selectNearest = true
+        )
+        val longitude = 11.0
+        val latitude = 19.0
+        val result = state.reduce(FetchLocation.Success(latitude, longitude))
+        assertThat(result.isFetchingLocation).isFalse()
+        assertThat(result.selectNearest).isTrue()
+        assertThat(result.nearestStation).isEqualTo(stationA)
+    }
+
+    @Test fun `reduce state with FetchLocation_Error result`() {
+        val state = StationsViewState(isFetchingLocation = true, selectNearest = true)
+        val message = "Error."
+        val result = state.reduce(FetchLocation.Error(message))
+        assertThat(result.isFetchingLocation).isFalse()
+        assertThat(result.selectNearest).isFalse()
+        assertThat(result.errorMessage).isEqualTo(message)
+    }
+
+    @Test fun `reduce state with FetchLocation_Cancel result`() {
+        val station = Station("A", "a", 1, 10.0, 10.0)
+        val state = StationsViewState(selectNearest = true, nearestStation = station)
+        val result = state.reduce(FetchLocation.Cancel)
+        assertThat(result.nearestStation).isNull()
+        assertThat(result.selectNearest).isFalse()
     }
 }
 

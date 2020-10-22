@@ -33,19 +33,23 @@ class StationsViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            reduceState(StationsResult.LoadingNameMapper)
-            val mapper = stationRepository.getStationNameMapper()
-            reduceState(StationsResult.NameMapper(mapper))
+            reduceState(LoadNameMapper.Loading)
+            try {
+                val mapper = stationRepository.getStationNameMapper()
+                reduceState(LoadNameMapper.Success(mapper))
+            } catch (e: Exception) {
+                reduceState(LoadNameMapper.Error(e.message))
+            }
         }
 
         viewModelScope.launch {
-            reduceState(StationsResult.LoadingStations)
+            reduceState(LoadStations.Loading)
             stationRepository.fetchStations().collect { response ->
                 val result = when (response) {
-                    is StoreResponse.Loading -> StationsResult.ReloadingStations
-                    is StoreResponse.Data -> StationsResult.StationsData(response.value)
-                    is StoreResponse.NoNewData -> StationsResult.NoNewData
-                    is StoreResponse.Error -> StationsResult.Error(response.errorMessageOrNull())
+                    is StoreResponse.Loading -> LoadStations.Reloading
+                    is StoreResponse.Data -> LoadStations.Success(response.value)
+                    is StoreResponse.NoNewData -> LoadStations.NoNewData
+                    is StoreResponse.Error -> LoadStations.Error(response.errorMessageOrNull())
                 }
                 reduceState(result)
             }
@@ -53,7 +57,7 @@ class StationsViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             settingsRepository.recentStations().collect { stations ->
-                reduceState(StationsResult.RecentStations(stations))
+                reduceState(RecentStationsUpdated(stations))
             }
         }
     }
@@ -63,26 +67,30 @@ class StationsViewModel @ViewModelInject constructor(
         if (selectNearestStation) {
             selectNearestStation()
         } else {
-            selectStation()
+            showStationList()
         }
     }
 
-    /** Notify of station selection to store it to recently selected stations. */
+    /** Notify of station selection to add the station to the list of recently selected stations. */
     fun stationSelected(station: Station) {
         viewModelScope.launch {
             settingsRepository.setStation(station.uic)
         }
     }
 
-    private fun selectStation() {
-        reduceState(StationsResult.SelectStation)
+    private fun showStationList() {
+        reduceState(FetchLocation.Cancel)
     }
 
     private fun selectNearestStation() {
         viewModelScope.launch {
-            reduceState(StationsResult.SelectNearest)
-            val location = locationService.currentLocation().first()
-            reduceState(StationsResult.Location(location.latitude, location.longitude))
+            reduceState(FetchLocation.Fetching)
+            try {
+                val location = locationService.currentLocation().first()
+                reduceState(FetchLocation.Success(location.latitude, location.longitude))
+            } catch (e: Exception) {
+                reduceState(FetchLocation.Error(e.message))
+            }
         }
     }
 

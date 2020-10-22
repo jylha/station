@@ -7,11 +7,12 @@ import com.example.station.model.Station
 
 @Immutable
 data class StationsViewState(
-    val stations: List<Station>,
+    val stations: List<Station> = emptyList(),
     val recentStations: List<Int> = emptyList(),
     val nameMapper: StationNameMapper? = null,
     private val isLoadingStations: Boolean = false,
     private val isLoadingNameMapper: Boolean = false,
+    val isReloadingStations: Boolean = false,
     val selectNearest: Boolean = false,
     val isFetchingLocation: Boolean = false,
     val longitude: Double? = null,
@@ -20,77 +21,76 @@ data class StationsViewState(
     val errorMessage: String? = null,
 ) {
     companion object {
-        fun initial(): StationsViewState = StationsViewState(
-            stations = emptyList()
-        )
+        fun initial(): StationsViewState = StationsViewState()
     }
 
     val isLoading: Boolean
         get() = isLoadingStations || isLoadingNameMapper
-}
 
-fun StationsViewState.reduce(result: StationsResult): StationsViewState {
-    return when (result) {
-
-        StationsResult.SelectStation -> {
-            copy(
-                selectNearest = false,
-                isFetchingLocation = false,
-                nearestStation = null
-            )
-        }
-
-        StationsResult.LoadingStations -> copy(isLoadingStations = true)
-        StationsResult.ReloadingStations -> this
-        StationsResult.NoNewData -> this
-
-        is StationsResult.StationsData -> {
-            val updatedStations = result.stations.updateNames(nameMapper)
-            if (selectNearest && !isFetchingLocation) {
-                val nearest = if (latitude != null && longitude != null)
-                    findNearest(result.stations, latitude, longitude) else null
-                copy(
-                    stations = updatedStations,
-                    isLoadingStations = false,
-                    nearestStation = nearest
-                )
-            } else {
-                copy(stations = updatedStations, isLoadingStations = false)
+    fun reduce(result: StationsResult): StationsViewState {
+        return when (result) {
+            LoadStations.Loading -> copy(isLoadingStations = true)
+            LoadStations.Reloading -> copy(isReloadingStations = true)
+            LoadStations.NoNewData -> copy(isLoadingStations = false, isReloadingStations = false)
+            is LoadStations.Success -> {
+                val updatedStations = result.stations.updateNames(nameMapper)
+                if (selectNearest && !isFetchingLocation) {
+                    val nearest = if (latitude != null && longitude != null)
+                        findNearest(result.stations, latitude, longitude) else null
+                    copy(
+                        stations = updatedStations,
+                        isLoadingStations = false,
+                        nearestStation = nearest
+                    )
+                } else {
+                    copy(
+                        stations = updatedStations,
+                        isLoadingStations = false,
+                        isReloadingStations = false
+                    )
+                }
             }
-        }
+            is LoadStations.Error -> copy(
+                isLoadingStations = false,
+                isReloadingStations = false,
+                errorMessage = result.message
+            )
 
-        is StationsResult.RecentStations -> copy(recentStations = result.stations)
-        is StationsResult.Error -> copy(errorMessage = result.message)
+            is RecentStationsUpdated -> copy(recentStations = result.stations)
 
-        is StationsResult.NameMapper -> copy(
-            nameMapper = result.mapper, isLoadingNameMapper = false,
-            stations = stations.updateNames(result.mapper)
-        )
+            LoadNameMapper.Loading -> copy(isLoadingNameMapper = true)
+            is LoadNameMapper.Success -> copy(
+                nameMapper = result.mapper,
+                isLoadingNameMapper = false,
+                stations = stations.updateNames(result.mapper)
+            )
+            is LoadNameMapper.Error -> copy(
+                isLoadingNameMapper = false,
+                errorMessage = result.message
+            )
 
-        is StationsResult.LoadingNameMapper -> copy(isLoadingNameMapper = true)
-
-        StationsResult.SelectNearest -> {
-            copy(
+            FetchLocation.Fetching -> copy(
                 selectNearest = true,
                 nearestStation = null,
                 isFetchingLocation = true
             )
-        }
-
-        is StationsResult.Location -> {
-            copy(
+            is FetchLocation.Success -> copy(
                 isFetchingLocation = false,
                 latitude = result.latitude,
                 longitude = result.longitude,
-                nearestStation = if (isLoading) null else
+                nearestStation = if (isLoadingStations) null else
                     findNearest(stations, result.latitude, result.longitude)
             )
-        }
-
-        is StationsResult.LocationError -> {
-            copy(
+            is FetchLocation.Error -> copy(
                 isFetchingLocation = false,
-                selectNearest = false
+                selectNearest = false,
+                errorMessage = result.message
+            )
+
+            FetchLocation.Cancel -> copy(
+                isFetchingLocation = false,
+                selectNearest = false,
+                nearestStation = null
             )
         }
     }
@@ -103,10 +103,7 @@ private fun findNearest(stations: List<Station>, latitude: Double, longitude: Do
 }
 
 private fun distanceBetween(
-    latitudeFirst: Double,
-    longitudeFirst: Double,
-    latitudeSecond: Double,
-    longitudeSecond: Double
+    latitudeFirst: Double, longitudeFirst: Double, latitudeSecond: Double, longitudeSecond: Double
 ): Float {
     val result = FloatArray(3)
     Location.distanceBetween(latitudeFirst, longitudeFirst, latitudeSecond, longitudeSecond, result)
