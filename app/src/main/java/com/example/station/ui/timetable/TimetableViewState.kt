@@ -6,11 +6,11 @@ import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
-import timber.log.Timber
 
 @Immutable
 data class TimetableViewState(
     val isLoadingTimetable: Boolean = false,
+    val loadingTimetableFailed: Boolean = false,
     val isReloadingTimetable: Boolean = false,
     val station: Station? = null,
     val timetable: List<Train> = emptyList(),
@@ -26,40 +26,56 @@ data class TimetableViewState(
 )
 
 fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
-    if (result is TimetableResult.Error) {
-        Timber.e(result.msg)
-    }
     return when (result) {
-        is TimetableResult.Loading -> copy(
+        is LoadTimetable.Loading -> copy(
             isLoadingTimetable = true,
             station = result.station,
             timetable = emptyList()
         )
-        is TimetableResult.Data -> copy(
+        is LoadTimetable.Success -> copy(
             isLoadingTimetable = false,
+            loadingTimetableFailed = false,
             station = result.station,
-            timetable = result.trains
+            timetable = result.timetable
         )
-        is TimetableResult.Error -> copy(
+        is LoadTimetable.Error -> copy(
             isLoadingTimetable = false,
-            errorMessage = result.msg
+            loadingTimetableFailed = true,
+            errorMessage = result.message,
+            timetable = emptyList()
         )
-        is TimetableResult.SettingsUpdated -> copy(
+
+        is SettingsUpdated -> copy(
             selectedTrainCategories = result.trainCategories ?: selectedTrainCategories,
             selectedTimetableTypes = result.timetableTypes ?: selectedTimetableTypes
         )
-        TimetableResult.LoadingStationNames -> copy(isLoadingStationNames = true)
-        is TimetableResult.StationNames -> copy(
+
+        LoadStationNames.Loading -> copy(isLoadingStationNames = true)
+        is LoadStationNames.Error -> copy(
+            isLoadingStationNames = false,
+            errorMessage = result.message
+        )
+        is LoadStationNames.Success -> copy(
             isLoadingStationNames = false,
             stationNameMapper = result.stationNameMapper
         )
-        TimetableResult.Reloading -> copy(isReloadingTimetable = true)
-        is TimetableResult.ReloadedData -> copy(
+
+        ReloadTimetable.Loading -> copy(isReloadingTimetable = true)
+        is ReloadTimetable.Error -> copy(
+            isReloadingTimetable = false,
+            errorMessage = result.message
+        )
+        is ReloadTimetable.Success -> copy(
             isReloadingTimetable = false,
             timetable = result.trains
         )
-        TimetableResult.LoadingCauseCategories -> copy(isLoadingCauseCategories = true)
-        is TimetableResult.CauseCategoriesLoaded -> copy(
+
+        LoadCauseCategories.Loading -> copy(isLoadingCauseCategories = true)
+        is LoadCauseCategories.Error -> copy(
+            isLoadingCauseCategories = false,
+            errorMessage = result.message
+        )
+        is LoadCauseCategories.Success -> copy(
             isLoadingCauseCategories = false,
             causeCategories = result.categories
         )

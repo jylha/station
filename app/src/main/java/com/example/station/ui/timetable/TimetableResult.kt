@@ -6,21 +6,40 @@ import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 
-sealed class TimetableResult {
-    data class Loading(val station: Station) : TimetableResult()
-    data class Data(val station: Station, val trains: List<Train>) : TimetableResult()
-    data class Error(val msg: String) : TimetableResult()
-    data class SettingsUpdated(
-        val trainCategories: Set<Train.Category>?,
-        val timetableTypes: Set<TimetableRow.Type>?
-    ) : TimetableResult()
+/** Base class for all results on timetable screen. */
+sealed class TimetableResult
 
-    object LoadingStationNames : TimetableResult()
-    data class StationNames(val stationNameMapper: StationNameMapper) : TimetableResult()
+/** Result for updated application preferences. */
+data class SettingsUpdated(
+    val trainCategories: Set<Train.Category>?,
+    val timetableTypes: Set<TimetableRow.Type>?
+) : TimetableResult()
 
-    object Reloading : TimetableResult()
-    data class ReloadedData(val trains: List<Train>) : TimetableResult()
-
-    object LoadingCauseCategories : TimetableResult()
-    data class CauseCategoriesLoaded(val categories: CauseCategories) : TimetableResult()
+/** Results for loading the timetable. */
+sealed class LoadTimetable : TimetableResult() {
+    data class Loading(val station: Station) : LoadTimetable()
+    data class Error(val message: String?) : LoadTimetable()
+    data class Success(val station: Station, val timetable: List<Train>) : LoadTimetable()
 }
+
+/** Results for reloading the timetable. */
+sealed class ReloadTimetable : TimetableResult() {
+    object Loading : ReloadTimetable()
+    data class Error(val message: String?) : ReloadTimetable()
+    data class Success(val trains: List<Train>) : ReloadTimetable()
+}
+
+/** Results for loading station name mapper. */
+sealed class LoadStationNames : TimetableResult() {
+    object Loading : LoadStationNames()
+    data class Error(val message: String?) : LoadStationNames()
+    data class Success(val stationNameMapper: StationNameMapper) : LoadStationNames()
+}
+
+/** Results for loading cause categories for train delays. */
+sealed class LoadCauseCategories : TimetableResult() {
+    object Loading : LoadCauseCategories()
+    data class Error(val message: String?) : LoadCauseCategories()
+    data class Success(val categories: CauseCategories) : LoadCauseCategories()
+}
+

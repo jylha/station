@@ -18,7 +18,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -47,9 +46,13 @@ class TimetableViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                reduceState(TimetableResult.LoadingStationNames)
-                val mapper = stationRepository.getStationNameMapper()
-                reduceState(TimetableResult.StationNames(mapper))
+                reduceState(LoadStationNames.Loading)
+                try {
+                    val mapper = stationRepository.getStationNameMapper()
+                    reduceState(LoadStationNames.Success(mapper))
+                } catch (e: Exception) {
+                    reduceState(LoadStationNames.Error(e.message))
+                }
             }
         }
 
@@ -59,22 +62,26 @@ class TimetableViewModel @ViewModelInject constructor(
                     settingsRepository.trainCategories(),
                     settingsRepository.timetableTypes()
                 ) { trainCategories, timetableTypes ->
-                    TimetableResult.SettingsUpdated(trainCategories, timetableTypes)
+                    SettingsUpdated(trainCategories, timetableTypes)
                 }.collect { result -> reduceState(result) }
             }
         }
 
         viewModelScope.launch {
-            reduceState(TimetableResult.LoadingCauseCategories)
-            val categories = async { trainRepository.causeCategories() }
-            val detailedCategories = async { trainRepository.detailedCauseCategories() }
-            val thirdLevelCategories = async { trainRepository.thirdLevelCauseCategories() }
-            val causeCategories = CauseCategories(
-                categories = categories.await(),
-                detailedCategories = detailedCategories.await(),
-                thirdLevelCategories = thirdLevelCategories.await()
-            )
-            reduceState(TimetableResult.CauseCategoriesLoaded(causeCategories))
+            reduceState(LoadCauseCategories.Loading)
+            try {
+                val categories = async { trainRepository.causeCategories() }
+                val detailedCategories = async { trainRepository.detailedCauseCategories() }
+                val thirdLevelCategories = async { trainRepository.thirdLevelCauseCategories() }
+                val causeCategories = CauseCategories(
+                    categories = categories.await(),
+                    detailedCategories = detailedCategories.await(),
+                    thirdLevelCategories = thirdLevelCategories.await()
+                )
+                reduceState(LoadCauseCategories.Success(causeCategories))
+            } catch (e: Exception) {
+                reduceState(LoadCauseCategories.Error(e.message))
+            }
         }
     }
 
@@ -99,20 +106,25 @@ class TimetableViewModel @ViewModelInject constructor(
 
     private fun loadTimetable(station: Station): Flow<TimetableResult> {
         return flow {
-            emit(TimetableResult.Loading(station))
-            trainRepository.trainsAtStation(station)
-                .catch { e -> emit(TimetableResult.Error(e.toString())) }
-                .collect { trains -> emit(TimetableResult.Data(station, trains)) }
+            emit(LoadTimetable.Loading(station))
+            try {
+                val trains = trainRepository.trainsAtStation(station).first()
+                emit(LoadTimetable.Success(station, trains))
+            } catch (e: Exception) {
+                emit(LoadTimetable.Error(e.message))
+            }
         }
     }
 
     private fun reloadTimetable(station: Station): Flow<TimetableResult> {
         return flow {
-            emit(TimetableResult.Reloading)
-            val trains = trainRepository.trainsAtStation(station)
-                .catch { e -> emit(TimetableResult.Error(e.toString())) }
-                .first()
-            emit(TimetableResult.ReloadedData(trains))
+            emit(ReloadTimetable.Loading)
+            try {
+                val trains = trainRepository.trainsAtStation(station).first()
+                emit(ReloadTimetable.Success(trains))
+            } catch (e: Exception) {
+                emit(ReloadTimetable.Error(e.message))
+            }
         }
     }
 

@@ -13,12 +13,9 @@ import org.junit.Test
 
 class TimetableViewStateTest {
 
-    private val helsinki = Station(
-        true, Station.Type.Station, "Helsinki",
-        "HKI", 1, "FI", 1.0, 1.0
-    )
+    private val helsinki = Station("Helsinki", "HKI", 1, 1.0, 1.0)
 
-    private val trains = listOf(
+    private val timetable = listOf(
         Train(1, "S", LongDistance)
     )
 
@@ -29,29 +26,49 @@ class TimetableViewStateTest {
         assertThat(state.isLoadingTimetable).isFalse()
     }
 
-    @Test fun `reduce state with Loading result`() {
-        val state = TimetableViewState(station = null, isLoadingTimetable = false)
-        val result = state.reduce(TimetableResult.Loading(helsinki))
+    @Test fun `reduce state with LoadTimetable_Loading result`() {
+        val state = TimetableViewState(
+            station = null, isLoadingTimetable = false, timetable = timetable
+        )
+        val result = state.reduce(LoadTimetable.Loading(helsinki))
         assertThat(result.station).isEqualTo(helsinki)
         assertThat(result.isLoadingTimetable).isTrue()
+        assertThat(result.timetable).isEmpty()
     }
 
-    @Test fun `reduce state with Data result`() {
+    @Test fun `reduce state with LoadTimetable_Success result`() {
         val state = TimetableViewState(
             station = helsinki,
             isLoadingTimetable = true,
+            loadingTimetableFailed = true,
             timetable = emptyList()
         )
-        val result = state.reduce(TimetableResult.Data(helsinki, trains))
+        val result = state.reduce(LoadTimetable.Success(helsinki, timetable))
         assertThat(result.station).isEqualTo(helsinki)
         assertThat(result.isLoadingTimetable).isFalse()
-        assertThat(result.timetable).isEqualTo(trains)
+        assertThat(result.loadingTimetableFailed).isFalse()
+        assertThat(result.timetable).isEqualTo(timetable)
+    }
+
+    @Test fun `reduce state with LoadTimetable_Error result`() {
+        val state = TimetableViewState(
+            station = helsinki,
+            isLoadingTimetable = true,
+            loadingTimetableFailed = false,
+            timetable = timetable
+        )
+        val message = "Oops. Error happened."
+        val result = state.reduce(LoadTimetable.Error(message))
+        assertThat(result.station).isEqualTo(helsinki)
+        assertThat(result.timetable).isEmpty()
+        assertThat(result.isLoadingTimetable).isFalse()
+        assertThat(result.loadingTimetableFailed).isTrue()
     }
 
     @Test fun `reduce state with SettingsUpdated result`() {
         val state = TimetableViewState()
         val result = state.reduce(
-            TimetableResult.SettingsUpdated(
+            SettingsUpdated(
                 setOf(Train.Category.Commuter), setOf(TimetableRow.Type.Arrival)
             )
         )
@@ -65,7 +82,7 @@ class TimetableViewStateTest {
             selectedTimetableTypes = setOf(TimetableRow.Type.Arrival)
         )
         val result = state.reduce(
-            TimetableResult.SettingsUpdated(
+            SettingsUpdated(
                 setOf(Train.Category.LongDistance), null
             )
         )
@@ -73,57 +90,75 @@ class TimetableViewStateTest {
         assertThat(result.selectedTrainCategories).containsExactly(Train.Category.LongDistance)
     }
 
-    @Test fun `reduce state with Reloading result`() {
+    @Test fun `reduce state with ReloadTimetable_Loading result`() {
         val state = TimetableViewState(isLoadingTimetable = false, isReloadingTimetable = false)
-        val result = state.reduce(TimetableResult.Reloading)
+        val result = state.reduce(ReloadTimetable.Loading)
         assertThat(result.isLoadingTimetable).isFalse()
         assertThat(result.isReloadingTimetable).isTrue()
     }
 
-    @Test fun `reduce state with ReloadedData result`() {
+    @Test fun `reduce state with ReloadTimetable_Success result`() {
         val state = TimetableViewState(
             isReloadingTimetable = true, station = station("Pasila", 2),
             timetable = listOf(Train(1, "A", LongDistance))
         )
-        val data = listOf(Train(2, "B", Train.Category.Commuter))
-        val result = state.reduce(TimetableResult.ReloadedData(data))
+        val timetable = listOf(Train(2, "B", Train.Category.Commuter))
+        val result = state.reduce(ReloadTimetable.Success(timetable))
         assertThat(result.isReloadingTimetable).isFalse()
         assertThat(result.station).isEqualTo(station("Pasila", 2))
-        assertThat(result.timetable).isEqualTo(data)
+        assertThat(result.timetable).isEqualTo(timetable)
     }
 
-    @Test fun `reduce state with LoadingStationNames result`() {
+    @Test fun `reduce state with ReloadTimetable_Error result`() {
+        val state = TimetableViewState(
+            isReloadingTimetable = true, station = station("Pasila", 2),
+            timetable = listOf(Train(1, "A", LongDistance))
+        )
+        val message = "Error!"
+        val result = state.reduce(ReloadTimetable.Error(message))
+        assertThat(result.isReloadingTimetable).isFalse()
+        assertThat(result.errorMessage).isEqualTo(message)
+    }
+
+    @Test fun `reduce state with LoadStationNames_Loading result`() {
         val state = TimetableViewState(isLoadingStationNames = false)
         val expected = state.copy(isLoadingStationNames = true)
-        val result = state.reduce(TimetableResult.LoadingStationNames)
+        val result = state.reduce(LoadStationNames.Loading)
         assertThat(result).isEqualTo(expected)
     }
 
-    @Test fun `reduce state with StationNames result`() {
+    @Test fun `reduce state with LoadStationNames_Success result`() {
         val state = TimetableViewState(isLoadingStationNames = true, stationNameMapper = null)
         val mapper = object : StationNameMapper {
             override fun stationName(stationUic: Int): String? = "Station $stationUic"
         }
-        val result = state.reduce(TimetableResult.StationNames(mapper))
+        val result = state.reduce(LoadStationNames.Success(mapper))
         assertThat(result.isLoadingStationNames).isFalse()
         assertThat(result.stationNameMapper).isEqualTo(mapper)
     }
 
-    @Test fun `reduce state with LoadingCauseCategories result`() {
+    @Test fun `reduce state with LoadCauseCategories_Loading result`() {
         val state = TimetableViewState(isLoadingCauseCategories = false)
-        val result = state.reduce(TimetableResult.LoadingCauseCategories)
+        val result = state.reduce(LoadCauseCategories.Loading)
         assertThat(result.isLoadingCauseCategories).isTrue()
     }
 
-    @Test fun `reduce state with CauseCategories result`() {
-        val state =
-            TimetableViewState(isLoadingCauseCategories = true, causeCategories = null)
+    @Test fun `reduce state with LoadCauseCategories_Success result`() {
+        val state = TimetableViewState(isLoadingCauseCategories = true, causeCategories = null)
         val categories = listOf(CauseCategory(1, "First"))
         val detailedCategories = listOf(CauseCategory(2, "Second"))
         val causeCategories = CauseCategories(categories, detailedCategories)
-        val result = state.reduce(TimetableResult.CauseCategoriesLoaded(causeCategories))
+        val result = state.reduce(LoadCauseCategories.Success(causeCategories))
         assertThat(result.isLoadingCauseCategories).isFalse()
         assertThat(result.causeCategories).isEqualTo(causeCategories)
+    }
+
+    @Test fun `reduce state with LoadCauseCategories_Error result`() {
+        val state = TimetableViewState(isLoadingCauseCategories = true, errorMessage = null)
+        val message = "Something."
+        val result = state.reduce(LoadCauseCategories.Error(message))
+        assertThat(result.isLoadingCauseCategories).isFalse()
+        assertThat(result.errorMessage).isEqualTo(message)
     }
 }
 
