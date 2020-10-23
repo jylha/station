@@ -24,9 +24,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -921,7 +921,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         modifier,
         alignment = Alignment.CenterEnd
     ) {
-        IconButton(onClick, Modifier.preferredSize(36.dp), enabled = enabled) {
+        IconButton(onClick, Modifier.size(36.dp), enabled = enabled) {
             Icon(Icons.Outlined.Info, tint = color)
         }
     }
@@ -937,10 +937,10 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     Column(modifier.fillMaxWidth().padding(top = 8.dp)) {
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f * alpha))
         Row(
-            Modifier.padding(8.dp),
+            Modifier.fillMaxWidth().padding(top = 8.dp, start = 4.dp),
             verticalAlignment = Alignment.Bottom
         ) {
-            Column(Modifier.weight(12f)) {
+            Column(Modifier.weight(1f)) {
                 Text(
                     stringResource(R.string.label_delay_causes).toUpperCase(Locale.getDefault()),
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
@@ -951,7 +951,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             HideDelayCauseAction(
                 onClick = onClose,
                 color = contentColor,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.wrapContentWidth(align = Alignment.End)
             )
         }
     }
@@ -978,7 +978,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         modifier,
         alignment = Alignment.Center
     ) {
-        IconButton(onClick, Modifier.preferredSize(30.dp)) {
+        IconButton(onClick, Modifier.size(36.dp)) {
             Icon(Icons.Rounded.ExpandLess, tint = color)
         }
     }
