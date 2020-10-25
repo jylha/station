@@ -60,10 +60,10 @@ class StoreBackedStationRepository @Inject constructor(
                     }
                 },
                 writer = { _, stations ->
-                    // FIXME: 9.9.2020 Delete all before insert?
-                    stationDatabase.stationDao().insertAll(
-                        stations.map { entity -> entity.toCacheEntity() }
-                    )
+                    with(stationDatabase.stationDao()) {
+                        deleteAll()
+                        insertAll(stations.map { entity -> entity.toCacheEntity() })
+                    }
                 }
             )
         )
@@ -83,7 +83,7 @@ class StoreBackedStationRepository @Inject constructor(
     }
 
     override suspend fun getStationNameMapper(): StationNameMapper {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
             mutex.withLock {
                 if (!::stationNameMapper.isInitialized) {
                     val stations = store.get(key = 0)
