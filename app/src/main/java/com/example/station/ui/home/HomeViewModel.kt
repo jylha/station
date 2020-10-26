@@ -23,14 +23,18 @@ class HomeViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            reduceState(HomeViewResult.LoadingSettings)
+            reduceState(LoadSettings.Loading)
             settingsRepository.station().collect { stationUicCode ->
                 if (true || stationUicCode == null) {
-                    reduceState(HomeViewResult.SettingsLoaded)
+                    reduceState(LoadSettings.Success(stationUicCode))
                 } else {
-                    reduceState(HomeViewResult.LoadingStation)
-                    val station = stationRepository.fetchStation(stationUicCode)
-                    reduceState(HomeViewResult.StationLoaded(station))
+                    reduceState(LoadStation.Loading)
+                    try {
+                        val station = stationRepository.fetchStation(stationUicCode)
+                        reduceState(LoadStation.Success(station))
+                    } catch (e: Exception) {
+                        reduceState(LoadStation.Error(e.message))
+                    }
                 }
             }
         }

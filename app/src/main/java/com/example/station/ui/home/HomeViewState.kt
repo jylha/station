@@ -12,16 +12,19 @@ data class HomeViewState(
         get() = isLoadingSettings || isLoadingStation
 
     companion object {
-        fun initial() = HomeViewState(isLoadingSettings = true)
+        fun initial() = HomeViewState()
     }
 }
 
 fun HomeViewState.reduce(result: HomeViewResult): HomeViewState {
     return when (result) {
-        HomeViewResult.LoadingSettings -> copy(isLoadingSettings = true)
-        HomeViewResult.SettingsLoaded -> copy(isLoadingSettings = false)
-        HomeViewResult.LoadingStation -> copy(isLoadingSettings = false, isLoadingStation = true)
-        is HomeViewResult.StationLoaded -> copy(isLoadingStation = false, station = result.station)
+        LoadSettings.Loading -> copy(isLoadingSettings = true)
+        is LoadSettings.Error -> copy(isLoadingSettings = false)
+        is LoadSettings.Success -> copy(isLoadingSettings = false)
+
+        LoadStation.Loading -> copy(isLoadingStation = true, isLoadingSettings = false)
+        is LoadStation.Error -> copy(isLoadingStation = false)
+        is LoadStation.Success -> copy(isLoadingStation = false, station = result.station)
     }
 }
 

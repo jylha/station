@@ -76,6 +76,8 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     testImplementation "com.google.truth:truth:${versions.truth}"
     testImplementation "androidx.room:room-testing:${versions.room}"
+    testImplementation "org.mockito:mockito-core:3.5.15"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation "androidx.ui:ui-test:${versions.compose}"

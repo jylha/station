@@ -9,7 +9,6 @@ import com.example.station.data.location.LocationService
 import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.stations.StationRepository
 import com.example.station.model.Station
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +21,6 @@ class StationsViewModel @ViewModelInject constructor(
     private val stationRepository: StationRepository,
     private val settingsRepository: SettingsRepository,
     private val locationService: LocationService,
-    @ApplicationContext val context: Context
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(StationsViewState.initial())
