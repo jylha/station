@@ -29,6 +29,7 @@ fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
     return when (result) {
         is LoadTimetable.Loading -> copy(
             isLoadingTimetable = true,
+            loadingTimetableFailed = false,
             station = result.station,
             timetable = emptyList()
         )

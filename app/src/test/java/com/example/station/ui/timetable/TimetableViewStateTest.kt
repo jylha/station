@@ -28,11 +28,13 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with LoadTimetable_Loading result`() {
         val state = TimetableViewState(
-            station = null, isLoadingTimetable = false, timetable = timetable
+            station = null, isLoadingTimetable = false, timetable = timetable,
+            loadingTimetableFailed = true
         )
         val result = state.reduce(LoadTimetable.Loading(helsinki))
         assertThat(result.station).isEqualTo(helsinki)
         assertThat(result.isLoadingTimetable).isTrue()
+        assertThat(result.loadingTimetableFailed).isFalse()
         assertThat(result.timetable).isEmpty()
     }
 

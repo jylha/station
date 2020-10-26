@@ -22,5 +22,5 @@ interface StationDao {
     fun getStation(stationUic: Int): Flow<StationCacheEntity>
 
     @Query("DELETE FROM stations")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

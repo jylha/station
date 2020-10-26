@@ -125,7 +125,8 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
                 viewState,
                 viewModel::offer,
                 onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
-                onSelectStation = { navigateTo(Screen.SelectStation) }
+                onSelectStation = { navigateTo(Screen.SelectStation) },
+                onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(station)) },
             )
         }
     }
@@ -136,10 +137,12 @@ fun TimetableScreen(
     viewState: TimetableViewState,
     onEvent: (TimetableEvent) -> Unit = {},
     onTrainSelected: (Train) -> Unit = {},
-    onSelectStation: () -> Unit = {}
+    onSelectStation: () -> Unit = {},
+    onRetry: () -> Unit = {},
 ) {
     when {
         viewState.isLoadingTimetable -> LoadingTimetable()
+        viewState.loadingTimetableFailed -> LoadingTimetableFailed(onRetry)
         viewState.station != null -> TimetableScreen(
             viewState.station,
             viewState.timetable,
@@ -265,6 +268,15 @@ fun TimetableScreen(
 @Composable private fun LoadingTimetable(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_loading_timetable)
     Loading(message, modifier)
+}
+
+@Composable private fun LoadingTimetableFailed(onRetry: () -> Unit, modifier: Modifier = Modifier) {
+    val message = stringResource(R.string.message_loading_timetable_failed)
+    ErrorState(message, modifier) {
+        Button(onClick = onRetry, Modifier.width(180.dp)) {
+            Text(stringResource(R.string.label_retry))
+        }
+    }
 }
 
 /** A title displaying the station name. */
