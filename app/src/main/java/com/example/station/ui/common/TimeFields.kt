@@ -1,6 +1,5 @@
 package com.example.station.ui.common
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowRightAlt
@@ -27,6 +27,12 @@ import com.example.station.ui.theme.StationTheme
 import com.example.station.util.toLocalTimeString
 import java.time.ZonedDateTime
 
+/**
+ * Composable for displaying schedule time.
+ * @param scheduledTime Scheduled time.
+ * @param type TimetableRow type.
+ * @param modifier Modifier.
+ */
 @Composable fun ScheduledTime(
     scheduledTime: ZonedDateTime,
     type: TimetableRow.Type,
@@ -51,6 +57,13 @@ import java.time.ZonedDateTime
     )
 }
 
+/**
+ * Composable for displaying estimated time of arrival or departure.
+ * @param scheduledTime Scheduled time.
+ * @param estimatedTime Estimated time.
+ * @param type TimetableRow type.
+ * @param modifier Modifier.
+ */
 @Composable fun EstimatedTime(
     scheduledTime: ZonedDateTime,
     estimatedTime: ZonedDateTime,
@@ -91,6 +104,14 @@ import java.time.ZonedDateTime
     }
 }
 
+/**
+ * Composable for displaying actual time of arrival or departure along with time difference
+ * in minutes.
+ * @param actualTime Actual time.
+ * @param differenceInMinutes Time difference from scheduled time in minutes.
+ * @param type TimetableRow type.
+ * @param modifier Modifier.
+ */
 @Composable fun ActualTime(
     actualTime: ZonedDateTime,
     differenceInMinutes: Int,

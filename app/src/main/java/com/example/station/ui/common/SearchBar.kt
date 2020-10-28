@@ -1,10 +1,10 @@
 package com.example.station.ui.common
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -86,8 +86,8 @@ fun SearchBar(
                 inactiveColor = textColor,
                 keyboardType = KeyboardType.Ascii,
                 imeAction = ImeAction.Done,
-                onImeActionPerformed = { _, kb ->
-                    kb?.hideSoftwareKeyboard()
+                onImeActionPerformed = { _, controller ->
+                    controller?.hideSoftwareKeyboard()
                     onClose?.invoke()
                 }
             )

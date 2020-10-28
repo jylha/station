@@ -1,6 +1,5 @@
 package com.example.station.ui.common
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ReportProblem
@@ -22,7 +22,12 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.station.ui.theme.StationTheme
 
-/** An error state composable for displaying error states in the application. */
+/**
+ * An error state composable for displaying error states in the application.
+ * @param message The error message to be displayed.
+ * @param modifier Modifier.
+ * @param content Composable content to be displayed below error message.
+ */
 @Composable
 fun ErrorState(
     message: String,
@@ -42,7 +47,6 @@ fun ErrorState(
         ) {
             Icon(
                 Icons.Rounded.ReportProblem.copy(defaultHeight = 80.dp, defaultWidth = 80.dp),
-
                 tint = Color.Red.copy(alpha = 0.6f)
             )
             Spacer(modifier = Modifier.height(30.dp))

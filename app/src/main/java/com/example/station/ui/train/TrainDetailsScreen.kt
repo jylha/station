@@ -1,6 +1,5 @@
 package com.example.station.ui.train
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
@@ -75,8 +75,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(train: Train) {
     val viewModel = viewModel<TrainDetailsViewModel>()
-    val viewState by viewModel.state.collectAsState()
     onCommit(train) { viewModel.setTrain(train) }
+    val viewState by viewModel.state.collectAsState()
 
     if (train.number == viewState.train?.number) {
         TrainDetailsScreen(viewState,
@@ -217,7 +217,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     }
 }
 
-
 @Composable private fun Timetable(train: Train) {
     val stops = remember(train) { train.commercialStops() }
     val currentStop = remember(train) { train.currentCommercialStop() }
@@ -356,9 +355,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable private fun StopTime(timetableRow: TimetableRow?) {
     timetableRow?.apply {
         when {
-            actualTime != null -> ActualTime(
-                actualTime, differenceInMinutes, timetableRow.type
-            )
+            actualTime != null -> ActualTime(actualTime, differenceInMinutes, timetableRow.type)
             estimatedTime != null && differenceInMinutes != 0 -> {
                 EstimatedTime(scheduledTime, estimatedTime, timetableRow.type)
             }
@@ -366,7 +363,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         }
     }
 }
-
 
 /**
  * Commercial stop.
