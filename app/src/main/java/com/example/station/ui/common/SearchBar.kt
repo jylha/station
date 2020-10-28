@@ -76,7 +76,10 @@ fun SearchBar(
                 onValueChange = onValueChanged,
                 label = { if (!active) Text(placeholderText) },
                 placeholder = { Text(placeholderText) },
-                onTextInputStarted = { active = true },
+                onTextInputStarted = { controller ->
+                    active = true
+                    controller.showSoftwareKeyboard()
+                },
                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                 backgroundColor = Color.Transparent,
                 activeColor = textColor,

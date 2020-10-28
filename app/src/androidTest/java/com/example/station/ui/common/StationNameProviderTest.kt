@@ -9,14 +9,11 @@ import com.example.station.data.stations.StationNameMapper
 import org.junit.Rule
 import org.junit.Test
 
-
 class StationNameProviderTest {
 
-    @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    @get:Rule val composeTestRule = createComposeRule()
 
-    @Composable
-    private fun Station(uic: Int) {
+    @Composable private fun Station(uic: Int) {
         Text(stationName(uic) ?: "name not found")
     }
 
@@ -61,5 +58,4 @@ class StationNameProviderTest {
         }
         composeTestRule.onNodeWithText("something").assertIsDisplayed()
     }
-
 }

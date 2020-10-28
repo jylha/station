@@ -57,7 +57,7 @@ class TimetableViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            withContext(Dispatchers.Default) {
+            withContext(Dispatchers.IO) {
                 combine(
                     settingsRepository.trainCategories(),
                     settingsRepository.timetableTypes()

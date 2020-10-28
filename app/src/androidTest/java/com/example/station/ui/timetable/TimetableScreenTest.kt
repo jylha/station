@@ -23,8 +23,7 @@ import org.junit.Test
 
 class TimetableScreenTest {
 
-    @get:Rule
-    val rule = createComposeRule(disableTransitions = true)
+    @get:Rule val rule = createComposeRule()
 
     private val helsinki = Station("Helsinki", "HKI", 1, 24.941249, 60.172097)
     private val pasila = Station("Pasila", "PSL", 10, 24.933521, 60.198689)
@@ -50,7 +49,9 @@ class TimetableScreenTest {
 
     @Test fun loadingTimetable() {
         val state = TimetableViewState(isLoadingTimetable = true)
+        rule.clockTestRule.pauseClock()
         setThemedContent { TimetableScreen(viewState = state) }
+        rule.clockTestRule.advanceClock(100)
 
         rule.onNodeWithText("Retrieving timetable.").assertIsDisplayed()
     }

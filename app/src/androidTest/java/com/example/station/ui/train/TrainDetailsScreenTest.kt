@@ -22,8 +22,7 @@ import org.junit.Test
 
 class TrainDetailsScreenTest {
 
-    @get:Rule
-    val rule = createComposeRule(disableTransitions = true)
+    @get:Rule val rule = createComposeRule()
 
     private val stationNameMapper = object : StationNameMapper {
         override fun stationName(stationUic: Int): String? = stationNames[stationUic]
@@ -52,7 +51,9 @@ class TrainDetailsScreenTest {
 
     @Test fun loadingTrainDetails() {
         val state = TrainDetailsViewState(isLoadingMapper = true)
+        rule.clockTestRule.pauseClock()
         rule.setContent { TrainDetailsScreen(state) }
+        rule.clockTestRule.advanceClock(100)
 
         rule.onNodeWithText("Retrieving train details.").assertIsDisplayed()
     }

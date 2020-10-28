@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.transition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.animation.defaultFlingConfig
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonConstants.defaultButtonColors
 import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -419,7 +421,7 @@ fun TimetableScreen(
     val clock = AnimationClockAmbient.current.asDisposableClock()
     val config = defaultFlingConfig()
     val saver = remember(config, clock) {
-        LazyListState.Saver(config, clock)
+        LazyListState.Saver(config, clock, InteractionState())
     }
     val listState =
         rememberSavedInstanceState(stops, config, clock, saver = saver) {
@@ -548,8 +550,10 @@ fun TimetableScreen(
     Button(
         onClick,
         modifier,
-        backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.Gray,
-        contentColor = MaterialTheme.colors.onPrimary
+        colors = defaultButtonColors(
+            backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.Gray,
+            contentColor = MaterialTheme.colors.onPrimary
+        )
     ) { content() }
 }
 
@@ -565,9 +569,11 @@ fun TimetableScreen(
     OutlinedButton(
         onClick,
         modifier,
-        contentColor = color,
-        backgroundColor = Color.Transparent,
         border = BorderStroke(2.dp, color),
+        colors = defaultButtonColors(
+            backgroundColor = Color.Transparent,
+            contentColor = color,
+        ),
     ) { content() }
 }
 

@@ -9,11 +9,9 @@ import org.junit.Test
 
 class AboutScreenTest {
 
-    @get:Rule
-    val rule = createComposeRule(disableTransitions = true)
+    @get:Rule val rule = createComposeRule()
 
-    @Test
-    fun aboutScreen() {
+    @Test fun aboutScreen() {
         rule.setContent { AboutScreen() }
         rule.onNodeWithText("About the application").assertIsDisplayed()
         rule.onNode(

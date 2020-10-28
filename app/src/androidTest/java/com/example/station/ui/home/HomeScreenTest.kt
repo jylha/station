@@ -13,17 +13,18 @@ import org.junit.Test
 
 class HomeScreenTest {
 
-    @get:Rule
-    val rule = createComposeRule(disableTransitions = true)
+    @get:Rule val rule = createComposeRule()
 
     @Test fun loadingApplicationSettings() {
         val state = HomeViewState(isLoadingSettings = true)
+
+        rule.clockTestRule.pauseClock()
         rule.setContent {
             MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
                 HomeScreen(viewState = state)
             }
         }
-
+        rule.clockTestRule.advanceClock(500)
         rule.onNodeWithText("Loading application settings.")
         rule.onNodeWithSubstring("Welcome").assertDoesNotExist()
     }

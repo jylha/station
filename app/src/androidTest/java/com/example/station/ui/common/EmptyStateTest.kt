@@ -11,8 +11,7 @@ import org.junit.Test
 
 class EmptyStateTest {
 
-    @get:Rule
-    val composeTestRule = createComposeRule(disableTransitions = true)
+    @get:Rule val composeTestRule = createComposeRule()
 
     @Before fun setup() {
         composeTestRule.setContent {

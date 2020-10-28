@@ -19,8 +19,7 @@ import org.junit.Test
 
 class StationsScreenTest {
 
-    @get:Rule
-    val rule = createComposeRule(disableTransitions = true)
+    @get:Rule val rule = createComposeRule()
 
     @Test fun displayListOfStations() {
         val state = StationsViewState(
