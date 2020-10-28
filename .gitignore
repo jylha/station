@@ -48,11 +48,14 @@ captures/
 .idea/gradle.xml
 .idea/assetWizardSettings.xml
 .idea/dictionaries
-.idea/libraries
-.idea/caches
+.idea/libraries/
+.idea/caches/
 .idea/modules.xml
 # Comment next line if keeping position of elements in Navigation Editor is relevant for you
 .idea/navEditor.xml
+
+# Keystore properties
+keystore.properties
 
 # Keystore files
 *.jks
