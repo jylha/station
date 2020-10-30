@@ -2,15 +2,12 @@ package com.example.station.ui.timetable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.asDisposableClock
 import androidx.compose.animation.core.FloatPropKey
 import androidx.compose.animation.core.transitionDefinition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.transition
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.animation.defaultFlingConfig
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,7 +25,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -53,14 +49,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout
-import androidx.compose.ui.platform.AnimationClockAmbient
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -417,23 +411,9 @@ fun TimetableScreen(
             .sortedBy { (_, stop) -> timeOfSelectedStopType(stop) }
     }
 
-    // FIXME: 2.10.2020 This is a temporary workaround to reset scroll position after filtering.
-    val clock = AnimationClockAmbient.current.asDisposableClock()
-    val config = defaultFlingConfig()
-    val saver = remember(config, clock) {
-        LazyListState.Saver(config, clock, InteractionState())
-    }
-    val listState =
-        rememberSavedInstanceState(stops, config, clock, saver = saver) {
-            LazyListState(
-                flingConfig = config,
-                animationClock = clock
-            )
-        }
-
     when {
         stops.isNotEmpty() -> LazyColumnFor(
-            stops, modifier, listState, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
+            stops, modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
         ) { (train, stop) ->
             TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
         }
