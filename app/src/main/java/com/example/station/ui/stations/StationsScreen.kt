@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.R
@@ -41,6 +42,7 @@ import com.example.station.ui.common.Loading
 import com.example.station.ui.common.LocationPermissionAmbient
 import com.example.station.ui.common.SearchBar
 import com.example.station.ui.common.withPermission
+import com.example.station.util.findAllMatches
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -51,9 +53,8 @@ fun StationScreen(
     selectNearestStation: Boolean = false
 ) {
     val viewModel = viewModel<StationsViewModel>()
-    val state by viewModel.state.collectAsState()
-
     onActive { viewModel.setSelectionMode(selectNearestStation) }
+    val state by viewModel.state.collectAsState()
 
     when {
         selectNearestStation -> SelectNearestStation(state, navigateTo)
@@ -212,17 +213,19 @@ fun StationScreen(
     modifier: Modifier = Modifier,
     searchText: String? = null
 ) {
-    val fg = MaterialTheme.colors.onPrimary
-    val bg = MaterialTheme.colors.primary
+    val textColor = if (searchText.isNullOrBlank()) MaterialTheme.colors.onBackground else
+        MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
+    val highlightedTextColor = MaterialTheme.colors.onBackground
     val name = remember(station.name, searchText) {
         with(AnnotatedString.Builder(station.name)) {
-            if (searchText?.isNotBlank() == true) {
-                val index = station.name.indexOf(searchText, 0, ignoreCase = true)
-                addStyle(
-                    SpanStyle(color = fg, background = bg),
-                    index,
-                    index + searchText.length
-                )
+            if (!searchText.isNullOrBlank()) {
+                station.name.findAllMatches(searchText).forEach { (startIndex, endIndex) ->
+                    addStyle(
+                        SpanStyle(highlightedTextColor, fontWeight = FontWeight.Bold),
+                        startIndex,
+                        endIndex
+                    )
+                }
             }
             toAnnotatedString()
         }
@@ -235,7 +238,7 @@ fun StationScreen(
             .clickable(onClick = { onSelect(station) })
             .padding(horizontal = 8.dp, vertical = 10.dp)
     ) {
-        Text(name, style = MaterialTheme.typography.body1)
+        Text(name, style = MaterialTheme.typography.body1, color = textColor)
     }
 }
 
