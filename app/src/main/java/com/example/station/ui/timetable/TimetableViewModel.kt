@@ -6,11 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.stations.StationRepository
 import com.example.station.data.trains.TrainRepository
+import com.example.station.di.IoDispatcher
 import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
@@ -31,7 +32,8 @@ import kotlinx.coroutines.withContext
 class TimetableViewModel @ViewModelInject constructor(
     private val trainRepository: TrainRepository,
     private val stationRepository: StationRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val eventChannel = Channel<TimetableEvent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow(TimetableViewState())
@@ -45,7 +47,7 @@ class TimetableViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 reduceState(LoadStationNames.Loading)
                 try {
                     val mapper = stationRepository.getStationNameMapper()
@@ -57,7 +59,7 @@ class TimetableViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 combine(
                     settingsRepository.trainCategories(),
                     settingsRepository.timetableTypes()

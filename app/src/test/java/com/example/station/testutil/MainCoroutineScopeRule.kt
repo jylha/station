@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.station.utils
+package com.example.station.testutil
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

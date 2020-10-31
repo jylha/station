@@ -4,7 +4,7 @@ import com.example.station.data.stations.StationNameMapper
 import com.example.station.data.stations.StationRepository
 import com.example.station.data.trains.TrainRepository
 import com.example.station.model.Train
-import com.example.station.utils.MainCoroutineScopeRule
+import com.example.station.testutil.MainCoroutineScopeRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest

@@ -2,7 +2,7 @@ package com.example.station.ui.home
 
 import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.stations.StationRepository
-import com.example.station.utils.MainCoroutineScopeRule
+import com.example.station.testutil.MainCoroutineScopeRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
