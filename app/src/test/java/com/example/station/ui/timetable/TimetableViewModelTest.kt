@@ -11,8 +11,9 @@ import com.example.station.model.Train
 import com.example.station.testutil.MainCoroutineScopeRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
@@ -59,8 +60,6 @@ class TimetableViewModelTest {
     private val trainCategoryFlow = MutableStateFlow<Set<Train.Category>?>(
         setOf(Train.Category.LongDistance, Train.Category.Commuter)
     )
-
-    private val trains = MutableStateFlow<List<Train>?>(null)
 
     @Before fun setup() = coroutineRule.runBlockingTest {
         whenCalled(trainRepository.causeCategories()).thenReturn(emptyList())
@@ -114,38 +113,44 @@ class TimetableViewModelTest {
 
     @Test fun `handle LoadTimetable event`() = coroutineRule.runBlockingTest {
         val station = Station("Helsinki", "HKI", 1, 10.0, 10.0)
-        whenCalled(trainRepository.trainsAtStation(station)).thenReturn(trains.filterNotNull())
+        val trainChannel = Channel<List<Train>>()
+        whenCalled(trainRepository.trainsAtStation(station)).thenReturn(trainChannel.receiveAsFlow())
         viewModel.offer(TimetableEvent.LoadTimetable(station))
 
-        val result1 = viewModel.state.value
-        assertThat(result1.isLoadingTimetable).isTrue()
-        assertThat(result1.timetable).isEmpty()
+        with(viewModel.state.value) {
+            assertThat(isLoadingTimetable).isTrue()
+            assertThat(timetable).isEmpty()
+        }
 
-        trains.value = timetable1
-        val result2 = viewModel.state.value
-        assertThat(result2.isLoadingTimetable).isFalse()
-        assertThat(result2.timetable).isEqualTo(timetable1)
+        trainChannel.send(timetable1)
+
+        with(viewModel.state.value) {
+            assertThat(isLoadingTimetable).isFalse()
+            assertThat(timetable).isEqualTo(timetable1)
+        }
     }
 
     @Test fun `handle ReloadTimetable event`() = coroutineRule.runBlockingTest {
         val station = Station("Helsinki", "HKI", 1, 10.0, 10.0)
-        whenCalled(trainRepository.trainsAtStation(station)).thenReturn(trains.filterNotNull())
+        val trainChannel = Channel<List<Train>>()
+        whenCalled(trainRepository.trainsAtStation(station)).thenReturn(trainChannel.receiveAsFlow())
         viewModel.offer(TimetableEvent.LoadTimetable(station))
-        trains.value = timetable1
+        trainChannel.send(timetable1)
 
-        trains.value = null
         viewModel.offer(TimetableEvent.ReloadTimetable(station))
 
-        val result1 = viewModel.state.value
-        assertThat(result1.isLoadingTimetable).isFalse()
-        assertThat(result1.isReloadingTimetable).isTrue()
-        assertThat(result1.timetable).isEqualTo(timetable1)
+        with(viewModel.state.value) {
+            assertThat(isLoadingTimetable).isFalse()
+            assertThat(isReloadingTimetable).isTrue()
+            assertThat(timetable).isEqualTo(timetable1)
+        }
 
-        trains.value = timetable2
+        trainChannel.send(timetable2)
 
-        val result2 = viewModel.state.value
-        assertThat(result2.isReloadingTimetable).isFalse()
-        assertThat(result2.timetable).isEqualTo(timetable2)
+        with(viewModel.state.value) {
+            assertThat(isReloadingTimetable).isFalse()
+            assertThat(timetable).isEqualTo(timetable2)
+        }
     }
 
     @Test fun `handle SelectCategories event`() = coroutineRule.runBlockingTest {
