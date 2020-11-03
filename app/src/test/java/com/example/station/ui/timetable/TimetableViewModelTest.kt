@@ -36,8 +36,8 @@ class TimetableViewModelTest {
 
     private lateinit var viewModel: TimetableViewModel
 
-    private val testMapper = object : StationNameMapper {
-        override fun stationName(stationUic: Int): String? = when (stationUic) {
+    private val testMapper = StationNameMapper { stationUic ->
+        when (stationUic) {
             1 -> "Helsinki"
             else -> null
         }

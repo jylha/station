@@ -26,12 +26,10 @@ class TrainDetailsViewModelTest {
     @Mock private lateinit var stationRepository: StationRepository
 
     private lateinit var viewModel: TrainDetailsViewModel
-    private val testMapper = object : StationNameMapper {
-        override fun stationName(stationUic: Int): String? {
-            return when (stationUic) {
-                1 -> "Helsinki"
-                else -> null
-            }
+    private val testMapper = StationNameMapper { stationUic ->
+        when (stationUic) {
+            1 -> "Helsinki"
+            else -> null
         }
     }
 

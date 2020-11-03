@@ -131,9 +131,7 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with LoadStationNames_Success result`() {
         val state = TimetableViewState(isLoadingStationNames = true, stationNameMapper = null)
-        val mapper = object : StationNameMapper {
-            override fun stationName(stationUic: Int): String? = "Station $stationUic"
-        }
+        val mapper = StationNameMapper { stationUic -> "Station $stationUic" }
         val result = state.reduce(LoadStationNames.Success(mapper))
         assertThat(result.isLoadingStationNames).isFalse()
         assertThat(result.stationNameMapper).isEqualTo(mapper)

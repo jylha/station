@@ -497,9 +497,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
     val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere", 4 to "Riihimäki")
     StationTheme {
-        StationNameProvider(nameMapper = object : StationNameMapper {
-            override fun stationName(stationUic: Int): String? = names[stationUic]
-        }) {
+        StationNameProvider({ stationUic -> names[stationUic] }) {
             TrainDetails(train)
         }
     }

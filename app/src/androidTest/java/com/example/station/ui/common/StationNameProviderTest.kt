@@ -27,9 +27,8 @@ class StationNameProviderTest {
         map: Map<Int, String>? = null,
         content: @Composable () -> Unit
     ) {
-        val testMapper = if (map != null) object : StationNameMapper {
-            override fun stationName(stationUic: Int): String? = map[stationUic]
-        } else null
+        val testMapper = if (map != null)
+            StationNameMapper { stationUic -> map[stationUic] } else null
 
         composeTestRule.setContent {
             StationNameProvider(nameMapper = testMapper) {

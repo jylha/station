@@ -16,9 +16,7 @@ fun StationNameProvider(
     content: @Composable () -> Unit
 ) {
     val mapper = remember(nameMapper) {
-        nameMapper ?: object : StationNameMapper {
-            override fun stationName(stationUic: Int): String? = null
-        }
+        nameMapper ?: StationNameMapper { null }
     }
     Providers(StationNameAmbient provides mapper) {
         content()
