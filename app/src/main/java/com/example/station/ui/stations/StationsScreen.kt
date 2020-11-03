@@ -42,6 +42,7 @@ import com.example.station.ui.common.Loading
 import com.example.station.ui.common.LocationPermissionAmbient
 import com.example.station.ui.common.SearchBar
 import com.example.station.ui.common.withPermission
+import com.example.station.util.filterWhen
 import com.example.station.util.findAllMatches
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -240,12 +241,4 @@ fun StationScreen(
     ) {
         Text(name, style = MaterialTheme.typography.body1, color = textColor)
     }
-}
-
-/** Filter a list with [predicate] only when given [condition] is true. */
-private inline fun <T> List<T>.filterWhen(
-    condition: Boolean,
-    predicate: (T) -> Boolean
-): List<T> {
-    return if (condition) filterTo(ArrayList(), predicate) else this
 }
