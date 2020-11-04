@@ -42,15 +42,22 @@ data class TimetableRowNetworkEntity(
 )
 
 data class TrainReadyNetworkEntity(
+    @SerializedName("timestamp")
     val timestamp: String
 )
 
 data class CauseNetworkEntity(
+    @SerializedName("categoryCodeId")
     val categoryCodeId: Int,
+    @SerializedName("categoryCode")
     val categoryCode: String,
+    @SerializedName("detailedCategoryCodeId")
     val detailedCategoryCodeId: Int? = null,
+    @SerializedName("detailedCategoryCode")
     val detailedCategoryCode: String? = null,
+    @SerializedName("thirdCategoryCodeId")
     val thirdCategoryCodeId: Int? = null,
+    @SerializedName("thirdCategoryCode")
     val thirdCategoryCode: String? = null
 )
 

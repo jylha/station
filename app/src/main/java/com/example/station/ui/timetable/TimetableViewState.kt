@@ -23,7 +23,10 @@ data class TimetableViewState(
     val stationNameMapper: StationNameMapper? = null,
     val isLoadingCauseCategories: Boolean = false,
     val causeCategories: CauseCategories? = null,
-)
+) {
+    val isLoading: Boolean
+        get() = isLoadingTimetable || isLoadingStationNames
+}
 
 fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
     return when (result) {

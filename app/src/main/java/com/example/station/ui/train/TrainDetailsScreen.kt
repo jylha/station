@@ -42,7 +42,6 @@ import androidx.compose.ui.viewinterop.viewModel
 import androidx.compose.ui.zIndex
 import androidx.ui.tooling.preview.Preview
 import com.example.station.R
-import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Stop
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
@@ -89,7 +88,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     state: TrainDetailsViewState,
     onReload: () -> Unit = {},
 ) {
-    StationNameProvider(nameMapper = state.nameMapper) {
+    StationNameProvider(state.nameMapper) {
         when {
             state.isLoading -> LoadingTrainDetails()
             state.train != null -> TrainDetails(

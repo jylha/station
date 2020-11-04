@@ -115,17 +115,13 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     }
     val viewState by viewModel.state.collectAsState()
 
-    StationNameProvider(viewState.stationNameMapper) {
-        CauseCategoriesProvider(causeCategories = viewState.causeCategories) {
-            TimetableScreen(
-                viewState,
-                viewModel::offer,
-                onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
-                onSelectStation = { navigateTo(Screen.SelectStation) },
-                onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(station)) },
-            )
-        }
-    }
+    TimetableScreen(
+        viewState,
+        viewModel::offer,
+        onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
+        onSelectStation = { navigateTo(Screen.SelectStation) },
+        onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(station)) },
+    )
 }
 
 @Composable
@@ -139,22 +135,26 @@ fun TimetableScreen(
     when {
         viewState.isLoadingTimetable -> LoadingTimetable()
         viewState.loadingTimetableFailed -> LoadingTimetableFailed(onRetry)
-        viewState.station != null -> TimetableScreen(
-            viewState.station,
-            viewState.timetable,
-            selectedTimetableTypes = viewState.selectedTimetableTypes,
-            onTimetableTypesChanged = { types: Set<TimetableRow.Type> ->
-                onEvent(TimetableEvent.SelectTimetableTypes(types))
-            },
-            selectedTrainCategories = viewState.selectedTrainCategories,
-            onTrainCategoriesChanged = { categories: Set<Category> ->
-                onEvent(TimetableEvent.SelectCategories(categories))
-            },
-            isReloading = viewState.isReloadingTimetable,
-            onReload = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) },
-            onSelectStation = onSelectStation,
-            onTrainSelected = onTrainSelected
-        )
+        viewState.station != null -> StationNameProvider(viewState.stationNameMapper) {
+            CauseCategoriesProvider(causeCategories = viewState.causeCategories) {
+                TimetableScreen(
+                    viewState.station,
+                    viewState.timetable,
+                    selectedTimetableTypes = viewState.selectedTimetableTypes,
+                    onTimetableTypesChanged = { types: Set<TimetableRow.Type> ->
+                        onEvent(TimetableEvent.SelectTimetableTypes(types))
+                    },
+                    selectedTrainCategories = viewState.selectedTrainCategories,
+                    onTrainCategoriesChanged = { categories: Set<Category> ->
+                        onEvent(TimetableEvent.SelectCategories(categories))
+                    },
+                    isReloading = viewState.isReloadingTimetable,
+                    onReload = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) },
+                    onSelectStation = onSelectStation,
+                    onTrainSelected = onTrainSelected
+                )
+            }
+        }
         else -> ErrorState("Oops. Something went wrong.") {
             Button(onClick = onSelectStation) {
                 Text(stringResource(R.string.label_select_station))
@@ -599,9 +599,7 @@ fun TimetableScreen(
     val stop = train.stopsAt(555).first()
 
     CauseCategoriesProvider(causeCategories = null) {
-        StationNameProvider(
-            nameMapper = LocalizedStationNames.from(listOf(origin, somewhere, destination))
-        ) {
+        StationNameProvider(LocalizedStationNames.from(listOf(origin, somewhere, destination))) {
             TimetableEntry(train, stop, {})
         }
     }

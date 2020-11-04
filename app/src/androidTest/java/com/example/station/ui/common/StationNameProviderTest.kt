@@ -31,7 +31,7 @@ class StationNameProviderTest {
             StationNameMapper { stationUic -> map[stationUic] } else null
 
         composeTestRule.setContent {
-            StationNameProvider(nameMapper = testMapper) {
+            StationNameProvider(stationNameMapper = testMapper) {
                 content()
             }
         }

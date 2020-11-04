@@ -70,19 +70,21 @@ class TimetableViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            reduceState(LoadCauseCategories.Loading)
-            try {
-                val categories = async { trainRepository.causeCategories() }
-                val detailedCategories = async { trainRepository.detailedCauseCategories() }
-                val thirdLevelCategories = async { trainRepository.thirdLevelCauseCategories() }
-                val causeCategories = CauseCategories(
-                    categories = categories.await(),
-                    detailedCategories = detailedCategories.await(),
-                    thirdLevelCategories = thirdLevelCategories.await()
-                )
-                reduceState(LoadCauseCategories.Success(causeCategories))
-            } catch (e: Exception) {
-                reduceState(LoadCauseCategories.Error(e.message))
+            withContext(dispatcher) {
+                reduceState(LoadCauseCategories.Loading)
+                try {
+                    val categories = async { trainRepository.causeCategories() }
+                    val detailedCategories = async { trainRepository.detailedCauseCategories() }
+                    val thirdLevelCategories = async { trainRepository.thirdLevelCauseCategories() }
+                    val causeCategories = CauseCategories(
+                        categories = categories.await(),
+                        detailedCategories = detailedCategories.await(),
+                        thirdLevelCategories = thirdLevelCategories.await()
+                    )
+                    reduceState(LoadCauseCategories.Success(causeCategories))
+                } catch (e: Exception) {
+                    reduceState(LoadCauseCategories.Error(e.message))
+                }
             }
         }
     }
