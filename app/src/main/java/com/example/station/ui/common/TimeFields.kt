@@ -12,6 +12,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +42,7 @@ import java.time.ZonedDateTime
     modifier: Modifier = Modifier
 ) {
     val context = ContextAmbient.current
-    val scheduledTimeText = remember(scheduledTime) { scheduledTime.toLocalTimeString() }
+    val scheduledTimeText by produceLocalTime(scheduledTime)
     val label = remember(scheduledTimeText, type) {
         context.getString(
             if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_scheduled_arrival
@@ -71,8 +74,8 @@ import java.time.ZonedDateTime
     modifier: Modifier = Modifier
 ) {
     val context = ContextAmbient.current
-    val scheduledTimeText = remember(scheduledTime) { scheduledTime.toLocalTimeString() }
-    val estimatedTimeText = remember(estimatedTime) { estimatedTime.toLocalTimeString() }
+    val localTimes by produceLocalTimes(scheduledTime, estimatedTime)
+    val (scheduledTimeText, estimatedTimeText) = localTimes
     val label = remember(type, estimatedTimeText) {
         context.getString(
             if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_estimated_arrival
@@ -119,7 +122,7 @@ import java.time.ZonedDateTime
     modifier: Modifier = Modifier
 ) {
     val context = ContextAmbient.current
-    val actualTimeText = remember(actualTime) { actualTime.toLocalTimeString() }
+    val actualTimeText by produceLocalTime(actualTime)
     val label = remember(type, actualTimeText) {
         context.getString(
             if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_actual_arrival
@@ -145,5 +148,17 @@ import java.time.ZonedDateTime
             }
             Text(text, color = color, style = MaterialTheme.typography.caption)
         }
+    }
+}
+
+@Composable fun produceLocalTime(time: ZonedDateTime): State<String> {
+    return produceState("", time) {
+        value = time.toLocalTimeString()
+    }
+}
+
+@Composable fun produceLocalTimes(time1: ZonedDateTime, time2: ZonedDateTime): State<Pair<String, String>> {
+    return produceState(Pair("", ""), time1, time2) {
+        value = Pair(time1.toLocalTimeString(), time2.toLocalTimeString())
     }
 }
