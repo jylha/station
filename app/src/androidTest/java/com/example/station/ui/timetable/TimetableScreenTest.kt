@@ -34,9 +34,7 @@ class TimetableScreenTest {
     private fun setThemedContent(darkMode: Boolean = true, content: @Composable () -> Unit) {
         rule.setContent {
             StationTheme(darkMode) {
-                StationNameProvider(stationNameMapper  = testStationMapper) {
-                    content()
-                }
+                content()
             }
         }
     }
