@@ -1,8 +1,12 @@
 package com.example.station.model
 
+import android.os.LocaleList
 import com.google.common.truth.Truth.assertThat
 import java.util.Locale
 import org.junit.Test
+import org.mockito.Mockito.any
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when` as whenCalled
 
 class CauseCategoriesTest {
 
@@ -80,5 +84,23 @@ class CauseCategoriesTest {
         val cause = DelayCause(3)
         val result = causeCategories.passengerFriendlyNameFor(cause, english)
         assertThat(result).isEqualTo("-")
+    }
+
+    @Test
+    fun `passengerFriendlyNameFor a cause when finnish is the preferred language in localeList`() {
+        val cause = DelayCause(1)
+        val localeList = mock(LocaleList::class.java)
+        whenCalled(localeList.getFirstMatch(any())).thenReturn(finnish)
+        val result = causeCategories.passengerFriendlyNameFor(cause, localeList)
+        assertThat(result).isEqualTo("1 - fi")
+    }
+
+    @Test
+    fun `passengerFriendlyNameFor a cause when swedish is the preferred language in localeList`() {
+        val cause = DelayCause(1, 21)
+        val localeList = mock(LocaleList::class.java)
+        whenCalled(localeList.getFirstMatch(any())).thenReturn(swedish)
+        val result = causeCategories.passengerFriendlyNameFor(cause, localeList)
+        assertThat(result).isEqualTo("21 - sv")
     }
 }

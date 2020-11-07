@@ -37,7 +37,11 @@ data class PassengerFriendlyName(
     }
 }
 
-/** All delay cause categories divided in three different levels. */
+/** All delay cause categories divided into three category levels.
+ *  @param categories List of top level categories of delay causes.
+ *  @param detailedCategories List of detailed categories of delay causes.
+ *  @param thirdLevelCategories List of third level categories of delay causes.
+ */
 @Immutable
 data class CauseCategories(
     val categories: List<CauseCategory>,
@@ -61,7 +65,6 @@ data class CauseCategories(
                 ?.run { return@with this }
             return@with null
         }
-        // TODO: 13.10.2020 Add localized message when no passenger friendly name is available?
         return categoryName?.forLocale(locale) ?: "-"
     }
 }
