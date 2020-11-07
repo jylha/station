@@ -34,7 +34,7 @@ import com.example.station.ui.theme.StationTheme
  * @param text Current search text.
  * @param onValueChanged A callback that is called whenever search text changes.
  * @param modifier Modifier.
- * @param placeholderText A text that is shown in search field when it is empty.
+ * @param placeholderText A text that is shown in search field when search text is empty.
  * @param onClose A callback that is called when user clicks either the Done button on keyboard
  * or the BackSpace button beside the search field.
  */
@@ -48,18 +48,14 @@ fun SearchBar(
     onClose: (() -> Unit)? = {}
 ) {
     var active by remember { mutableStateOf(false) }
-    val textColor = if (MaterialTheme.colors.isLight) MaterialTheme.colors.onPrimary
-    else MaterialTheme.colors.onBackground
-
+    val (textColor, surfaceColor) = with(MaterialTheme.colors) {
+        if (isLight) Pair(onPrimary, primary) else Pair(onSurface, surface)
+    }
     val focusRequester = FocusRequester()
 
     Surface(
         modifier,
-        color = if (MaterialTheme.colors.isLight) {
-            MaterialTheme.colors.primary
-        } else {
-            MaterialTheme.colors.surface
-        },
+        color = surfaceColor,
         elevation = 4.dp
     ) {
         Row(
@@ -73,7 +69,10 @@ fun SearchBar(
             }
             TextField(
                 value = text,
-                onValueChange = onValueChanged,
+                onValueChange = { value ->
+                    // FIXME: 7.11.2020 Temporary fix to prevent multiple lines on search field.
+                    onValueChanged(value.substringBefore('\n'))
+                },
                 label = { if (!active) Text(placeholderText) },
                 placeholder = { Text(placeholderText) },
                 onTextInputStarted = { controller ->
@@ -84,11 +83,13 @@ fun SearchBar(
                 backgroundColor = Color.Transparent,
                 activeColor = textColor,
                 inactiveColor = textColor,
-                keyboardType = KeyboardType.Ascii,
+                keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done,
-                onImeActionPerformed = { _, controller ->
-                    controller?.hideSoftwareKeyboard()
-                    onClose?.invoke()
+                onImeActionPerformed = { action, controller ->
+                    if (action == ImeAction.Done) {
+                        controller?.hideSoftwareKeyboard()
+                        onClose?.invoke()
+                    }
                 }
             )
         }

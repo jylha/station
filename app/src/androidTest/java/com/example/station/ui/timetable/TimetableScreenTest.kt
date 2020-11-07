@@ -13,7 +13,6 @@ import com.example.station.model.Station
 import com.example.station.model.Train
 import com.example.station.model.arrival
 import com.example.station.model.departure
-import com.example.station.ui.common.StationNameProvider
 import com.example.station.ui.theme.StationTheme
 import java.time.ZoneId
 import java.time.ZonedDateTime
