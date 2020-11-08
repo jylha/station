@@ -113,7 +113,7 @@ class TimetableViewModel @ViewModelInject constructor(
             emit(LoadTimetable.Loading(station))
             try {
                 val trains = trainRepository.trainsAtStation(station).first()
-                emit(LoadTimetable.Success(station, trains))
+                emit(LoadTimetable.Success(trains))
             } catch (e: Exception) {
                 emit(LoadTimetable.Error(e.message))
             }

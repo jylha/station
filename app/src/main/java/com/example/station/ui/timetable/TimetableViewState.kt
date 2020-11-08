@@ -7,6 +7,9 @@ import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 
+/**
+ * The state of timetable screen.
+ */
 @Immutable
 data class TimetableViewState(
     val isLoadingTimetable: Boolean = false,
@@ -28,6 +31,7 @@ data class TimetableViewState(
         get() = isLoadingTimetable || isLoadingStationNames
 }
 
+/** Reduce timetable state with given [TimetableResult]. */
 fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
     return when (result) {
         is LoadTimetable.Loading -> copy(
@@ -39,7 +43,6 @@ fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
         is LoadTimetable.Success -> copy(
             isLoadingTimetable = false,
             loadingTimetableFailed = false,
-            station = result.station,
             timetable = result.timetable
         )
         is LoadTimetable.Error -> copy(
@@ -54,7 +57,10 @@ fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
             selectedTimetableTypes = result.timetableTypes ?: selectedTimetableTypes
         )
 
-        LoadStationNames.Loading -> copy(isLoadingStationNames = true)
+        LoadStationNames.Loading -> copy(
+            isLoadingStationNames = true,
+            stationNameMapper = null
+        )
         is LoadStationNames.Error -> copy(
             isLoadingStationNames = false,
             errorMessage = result.message

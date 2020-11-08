@@ -19,26 +19,32 @@ data class SettingsUpdated(
 sealed class LoadTimetable : TimetableResult() {
     data class Loading(val station: Station) : LoadTimetable()
     data class Error(val message: String?) : LoadTimetable()
-    data class Success(val station: Station, val timetable: List<Train>) : LoadTimetable()
+    data class Success(val timetable: List<Train>) : LoadTimetable()
 }
 
 /** Results for reloading the timetable. */
 sealed class ReloadTimetable : TimetableResult() {
-    object Loading : ReloadTimetable()
+    object Loading : ReloadTimetable() {
+        override fun toString(): String = "ReloadTimetable.Loading"
+    }
     data class Error(val message: String?) : ReloadTimetable()
     data class Success(val trains: List<Train>) : ReloadTimetable()
 }
 
 /** Results for loading station name mapper. */
 sealed class LoadStationNames : TimetableResult() {
-    object Loading : LoadStationNames()
+    object Loading : LoadStationNames() {
+        override fun toString(): String = "LoadStationNames.Loading"
+    }
     data class Error(val message: String?) : LoadStationNames()
     data class Success(val stationNameMapper: StationNameMapper) : LoadStationNames()
 }
 
 /** Results for loading cause categories for train delays. */
 sealed class LoadCauseCategories : TimetableResult() {
-    object Loading : LoadCauseCategories()
+    object Loading : LoadCauseCategories() {
+        override fun toString(): String = "LoadCauseCategories.Loading"
+    }
     data class Error(val message: String?) : LoadCauseCategories()
     data class Success(val categories: CauseCategories) : LoadCauseCategories()
 }

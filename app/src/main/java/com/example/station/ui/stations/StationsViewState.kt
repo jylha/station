@@ -3,6 +3,7 @@ package com.example.station.ui.stations
 import android.location.Location
 import androidx.compose.runtime.Immutable
 import com.example.station.data.stations.StationNameMapper
+import com.example.station.data.stations.renameAndSort
 import com.example.station.model.Station
 
 @Immutable
@@ -33,10 +34,9 @@ data class StationsViewState(
             LoadStations.Reloading -> copy(isReloadingStations = true)
             LoadStations.NoNewData -> copy(isLoadingStations = false, isReloadingStations = false)
             is LoadStations.Success -> {
-                val updatedStations = result.stations.updateNames(nameMapper)
+                val updatedStations = nameMapper?.renameAndSort(result.stations) ?: result.stations
                 if (selectNearest && !isFetchingLocation) {
-                    val nearest = if (latitude != null && longitude != null)
-                        findNearest(result.stations, latitude, longitude) else null
+                    val nearest = findNearest(result.stations, latitude, longitude)
                     copy(
                         stations = updatedStations,
                         isLoadingStations = false,
@@ -62,7 +62,7 @@ data class StationsViewState(
             is LoadNameMapper.Success -> copy(
                 nameMapper = result.mapper,
                 isLoadingNameMapper = false,
-                stations = stations.updateNames(result.mapper)
+                stations = result.mapper.renameAndSort(stations)
             )
             is LoadNameMapper.Error -> copy(
                 isLoadingNameMapper = false,
@@ -96,9 +96,13 @@ data class StationsViewState(
     }
 }
 
-private fun findNearest(stations: List<Station>, latitude: Double, longitude: Double): Station? {
-    return stations.minByOrNull { station ->
-        distanceBetween(station.latitude, station.longitude, latitude, longitude)
+private fun findNearest(stations: List<Station>, latitude: Double?, longitude: Double?): Station? {
+    return if (latitude != null && longitude != null) {
+        stations.minByOrNull { station ->
+            distanceBetween(station.latitude, station.longitude, latitude, longitude)
+        }
+    } else {
+        null
     }
 }
 
@@ -108,12 +112,5 @@ private fun distanceBetween(
     val result = FloatArray(3)
     Location.distanceBetween(latitudeFirst, longitudeFirst, latitudeSecond, longitudeSecond, result)
     return result[0]
-}
-
-private fun List<Station>.updateNames(mapper: StationNameMapper?): List<Station> {
-    return map { station ->
-        val updatedName = mapper?.stationName(station.uic)
-        if (updatedName != null) station.copy(name = updatedName) else station
-    }.sortedBy { station -> station.name }
 }
 

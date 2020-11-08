@@ -1,5 +1,7 @@
 package com.example.station.data.stations
 
+import com.example.station.model.Station
+
 /** A functional interface for mapping station UIC to corresponding station name. */
 fun interface StationNameMapper {
 
@@ -9,4 +11,16 @@ fun interface StationNameMapper {
      * @return Station name or null if matching station is not found.
      */
     fun stationName(stationUic: Int): String?
+}
+
+/** Use station name mapper to rename each station in given [stations] list. */
+fun StationNameMapper.rename(stations: List<Station>): List<Station> {
+    return stations.map { station ->
+        stationName(station.uic)?.let { station.copy(name = it) } ?: station
+    }
+}
+
+/** Renames and sorts stations in alphabetical order. */
+fun StationNameMapper.renameAndSort(stations: List<Station>) : List<Station> {
+    return rename(stations).sortedBy { it.name }
 }

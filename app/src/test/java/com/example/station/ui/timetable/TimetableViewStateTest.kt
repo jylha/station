@@ -23,7 +23,13 @@ class TimetableViewStateTest {
         val state = TimetableViewState()
         assertThat(state).isNotNull()
         assertThat(state.station).isNull()
+        assertThat(state.isLoading).isFalse()
         assertThat(state.isLoadingTimetable).isFalse()
+        assertThat(state.isReloadingTimetable).isFalse()
+        assertThat(state.isLoadingStationNames).isFalse()
+        assertThat(state.stationNameMapper).isNull()
+        assertThat(state.isLoadingCauseCategories).isFalse()
+        assertThat(state.causeCategories).isNull()
     }
 
     @Test fun `reduce state with LoadTimetable_Loading result`() {
@@ -45,7 +51,7 @@ class TimetableViewStateTest {
             loadingTimetableFailed = true,
             timetable = emptyList()
         )
-        val result = state.reduce(LoadTimetable.Success(helsinki, timetable))
+        val result = state.reduce(LoadTimetable.Success(timetable))
         assertThat(result.station).isEqualTo(helsinki)
         assertThat(result.isLoadingTimetable).isFalse()
         assertThat(result.loadingTimetableFailed).isFalse()
@@ -65,6 +71,7 @@ class TimetableViewStateTest {
         assertThat(result.timetable).isEmpty()
         assertThat(result.isLoadingTimetable).isFalse()
         assertThat(result.loadingTimetableFailed).isTrue()
+        assertThat(result.errorMessage).isEqualTo(message)
     }
 
     @Test fun `reduce state with SettingsUpdated result`() {
@@ -135,6 +142,15 @@ class TimetableViewStateTest {
         val result = state.reduce(LoadStationNames.Success(mapper))
         assertThat(result.isLoadingStationNames).isFalse()
         assertThat(result.stationNameMapper).isEqualTo(mapper)
+    }
+
+    @Test fun `reduce state with LoadStationNames_Error result`() {
+        val state = TimetableViewState(isLoadingStationNames = true, stationNameMapper = null)
+        val errorMessage = "Something."
+        val result = state.reduce(LoadStationNames.Error(errorMessage))
+        assertThat(result.isLoadingStationNames).isFalse()
+        assertThat(result.stationNameMapper).isNull()
+        assertThat(result.errorMessage).isEqualTo(errorMessage)
     }
 
     @Test fun `reduce state with LoadCauseCategories_Loading result`() {
