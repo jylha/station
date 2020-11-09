@@ -5,8 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Providers
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.graphics.Color
 
@@ -27,7 +27,8 @@ private val LightColorPalette = lightColors(
 )
 
 /** Custom color palette for the application. */
-class StationColorPalette(
+@Immutable
+data class StationColorPalette(
     val trainIsNotReady: Color = Color.Blue,
     val trainOnStation: Color = Color.Green,
     val trainHasDepartedStation: Color = Color.Red,
@@ -48,7 +49,7 @@ private val DarkStationColorPalette = StationColorPalette(
     isDark = true
 )
 
-
+/** Composable that provides StationColorPalette and MaterialTheme elements. */
 @Composable
 fun StationTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -61,28 +62,31 @@ fun StationTheme(
         MaterialTheme(
             colors = colors,
             typography = typography,
-            shapes = shapes,
-            content = content
-        )
+            shapes = shapes
+        ) {
+            content()
+        }
     }
 }
 
+/** An object for getting access to StationColorPalette. */
 object StationTheme {
     @Composable
     val colors: StationColorPalette
-        get() = StationColorAmbient.current
+        get() = AmbientStationColorPalette.current
 }
 
-private val StationColorAmbient = staticAmbientOf<StationColorPalette> {
+private val AmbientStationColorPalette = staticAmbientOf<StationColorPalette> {
     error("StationColorPalette is not set.")
 }
 
 @Composable
 fun ProvideStationColors(
-    colors: StationColorPalette,
+    colorPalette: StationColorPalette,
     content: @Composable () -> Unit
 ) {
-    val colorPalette = remember { colors }
-    Providers(StationColorAmbient provides colorPalette, children = content)
+    Providers(AmbientStationColorPalette provides colorPalette) {
+        content()
+    }
 }
 
