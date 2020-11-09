@@ -37,8 +37,8 @@ import com.airbnb.lottie.LottieDrawable
 import com.example.station.R
 import com.example.station.model.Station
 import com.example.station.ui.Screen
+import com.example.station.ui.common.AmbientLocationPermission
 import com.example.station.ui.common.Loading
-import com.example.station.ui.common.LocationPermissionAmbient
 import com.example.station.ui.common.landscapeOrientation
 import com.example.station.ui.common.portraitOrientation
 import com.example.station.ui.common.withPermission
@@ -74,7 +74,7 @@ fun HomeScreen(
             else MaterialTheme.colors.background
         )
     ) {
-        val locationPermission = LocationPermissionAmbient.current
+        val locationPermission = AmbientLocationPermission.current
         when {
             viewState.isLoadingSettings -> LoadingSettings()
             viewState.isLoadingStation -> LoadingStation()

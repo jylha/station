@@ -84,6 +84,7 @@ class StationsViewModelTest {
         viewModel.setSelectionMode(selectNearestStation = true)
 
         with(viewModel.state.value) {
+            assertThat(selectNearest).isTrue()
             assertThat(isFetchingLocation).isTrue()
             assertThat(latitude).isNull()
             assertThat(longitude).isNull()
@@ -105,5 +106,25 @@ class StationsViewModelTest {
         val station = testStations.first()
         viewModel.stationSelected(station)
         verify(settingsRepository).setStation(station.uic)
+    }
+
+    @Test fun `change mode back to selecting station from list`() {
+        val locationChannel = Channel<Location>()
+        whenCalled(locationService.currentLocation()).thenReturn(locationChannel.consumeAsFlow())
+        viewModel.setSelectionMode(selectNearestStation = true)
+
+        with(viewModel.state.value) {
+            assertThat(selectNearest).isTrue()
+            assertThat(isFetchingLocation).isTrue()
+            assertThat(latitude).isNull()
+            assertThat(longitude).isNull()
+        }
+
+        viewModel.setSelectionMode(selectNearestStation = false)
+
+        with(viewModel.state.value) {
+            assertThat(selectNearest).isFalse()
+            assertThat(isFetchingLocation).isFalse()
+        }
     }
 }

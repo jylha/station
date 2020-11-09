@@ -6,8 +6,9 @@ import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
-import com.example.station.ui.common.LocationPermissionAmbient
+import com.example.station.ui.common.AmbientLocationPermission
 import com.example.station.ui.common.Permission
+import com.example.station.ui.theme.StationTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,8 +21,10 @@ class HomeScreenTest {
 
         rule.clockTestRule.pauseClock()
         rule.setContent {
-            MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
-                HomeScreen(viewState = state)
+            StationTheme(darkTheme = true) {
+                MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
+                    HomeScreen(viewState = state)
+                }
             }
         }
         rule.clockTestRule.advanceClock(500)
@@ -32,8 +35,10 @@ class HomeScreenTest {
     @Test fun displayWelcomeText() {
         val state = HomeViewState(isLoadingSettings = false)
         rule.setContent {
-            MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
-                HomeScreen(viewState = state)
+            StationTheme(darkTheme = false) {
+                MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
+                    HomeScreen(viewState = state)
+                }
             }
         }
 
@@ -50,7 +55,7 @@ class HomeScreenTest {
     content: @Composable () -> Unit
 ) {
     val permission = MockLocationPermission(isGranted, grantRequest)
-    Providers(LocationPermissionAmbient provides permission) {
+    Providers(AmbientLocationPermission provides permission) {
         content()
     }
 }
@@ -59,7 +64,5 @@ data class MockLocationPermission(
     private val isGranted: Boolean, private val grantRequest: Boolean
 ) : Permission {
     override fun isGranted(): Boolean = isGranted
-    override fun request(onResult: (Boolean) -> Unit) {
-        onResult(grantRequest)
-    }
+    override fun request(onResult: (Boolean) -> Unit) =onResult(grantRequest)
 }

@@ -8,6 +8,12 @@ import androidx.compose.ui.platform.ConfigurationAmbient
 import com.example.station.model.CauseCategories
 import com.example.station.model.DelayCause
 
+/**
+ * Composable function that provides passenger friendly descriptions for delay causes. The content
+ * of this composable can use [causeName] function to query descriptions for delay causes.
+ * @param causeCategories Cause categories that contain descriptions of delay causes.
+ * @param content Composable content.
+ */
 @Composable fun CauseCategoriesProvider(
     causeCategories: CauseCategories?,
     content: @Composable () -> Unit
@@ -15,19 +21,20 @@ import com.example.station.model.DelayCause
     val categories = remember(causeCategories) {
         causeCategories ?: CauseCategories(emptyList(), emptyList(), emptyList())
     }
-    Providers(CauseCategoriesAmbient provides categories) {
+    Providers(AmbientCauseCategories provides categories) {
         content()
     }
 }
 
+/** Returns a passenger friendly name for given [delayCause] in preferred language. */
 @Composable fun causeName(delayCause: DelayCause): String {
-    val categories = CauseCategoriesAmbient.current
+    val categories = AmbientCauseCategories.current
     val localeList = ConfigurationAmbient.current.locales
     return categories.passengerFriendlyNameFor(delayCause, localeList)
 }
 
-private val CauseCategoriesAmbient = ambientOf<CauseCategories> {
-    error("CauseCategoriesProvider is not set.")
+private val AmbientCauseCategories = ambientOf<CauseCategories> {
+    error("CauseCategories is not set.")
 }
 
 

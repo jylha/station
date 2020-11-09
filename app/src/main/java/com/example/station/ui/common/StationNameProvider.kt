@@ -5,9 +5,10 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.staticAmbientOf
 import com.example.station.data.stations.StationNameMapper
 
-
 /**
  * Provider component that provides the StationNameMapper for the AmbientStationNameMapper.
+ * @param stationNameMapper A station name mapper that provides localised station names.
+ * @param content The composable content that can
  */
 @Composable
 fun StationNameProvider(
@@ -21,7 +22,7 @@ fun StationNameProvider(
 }
 
 /**
- * Returns the localised station name for the specified [stationUic] from the StationNameAmbient.
+ * Returns the localised station name for the specified [stationUic] from AmbientStationNameMapper.
  */
 @Composable
 fun stationName(stationUic: Int?): String? {

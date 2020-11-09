@@ -37,9 +37,9 @@ import androidx.compose.ui.viewinterop.viewModel
 import com.example.station.R
 import com.example.station.model.Station
 import com.example.station.ui.Screen
+import com.example.station.ui.common.AmbientLocationPermission
 import com.example.station.ui.common.EmptyState
 import com.example.station.ui.common.Loading
-import com.example.station.ui.common.LocationPermissionAmbient
 import com.example.station.ui.common.SearchBar
 import com.example.station.ui.common.withPermission
 import com.example.station.util.filterWhen
@@ -61,7 +61,7 @@ fun StationScreen(
         selectNearestStation -> SelectNearestStation(state, navigateTo)
         state.isLoading -> LoadingStations()
         else -> {
-            val locationPermission = LocationPermissionAmbient.current
+            val locationPermission = AmbientLocationPermission.current
             StationsScreen(
                 state,
                 onSelect = { station ->

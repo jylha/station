@@ -24,10 +24,6 @@ import com.example.station.ui.common.portraitOrientation
 @Preview
 @Composable
 fun AboutScreen() {
-    AboutCard()
-}
-
-@Composable private fun AboutCard() {
     val aboutLabel = stringResource(R.string.label_about)
     val sourceLabel = stringResource(R.string.label_source)
     val sourceText = stringResource(R.string.text_source)
