@@ -12,13 +12,13 @@ import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -30,7 +30,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@OptIn(FlowPreview::class)
 class TimetableViewModel @ViewModelInject constructor(
     private val trainRepository: TrainRepository,
     private val stationRepository: StationRepository,
@@ -38,11 +38,11 @@ class TimetableViewModel @ViewModelInject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val eventChannel = Channel<TimetableEvent>(Channel.UNLIMITED)
-    private val _state = MutableStateFlow(TimetableViewState.initial())
     private val mutex = Mutex()
+    private val _state = MutableStateFlow(TimetableViewState.initial())
 
-    val state: StateFlow<TimetableViewState>
-        get() = _state
+    /** View model state. */
+    val state: StateFlow<TimetableViewState> = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -92,6 +92,7 @@ class TimetableViewModel @ViewModelInject constructor(
         }
     }
 
+    /** Offer an [event] to be handled by the view model. */
     fun offer(event: TimetableEvent) {
         viewModelScope.launch {
             eventChannel.send(event)

@@ -6,23 +6,22 @@ import androidx.lifecycle.viewModelScope
 import com.example.station.data.stations.StationRepository
 import com.example.station.data.trains.TrainRepository
 import com.example.station.model.Train
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class TrainDetailsViewModel @ViewModelInject constructor(
     private val trainRepository: TrainRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(TrainDetailsViewState.initial())
     private val mutex = Mutex()
+    private val _state = MutableStateFlow(TrainDetailsViewState.initial())
 
-    val state: StateFlow<TrainDetailsViewState>
-        get() = _state
+    /** View model state. */
+    val state: StateFlow<TrainDetailsViewState> = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -36,12 +35,14 @@ class TrainDetailsViewModel @ViewModelInject constructor(
         }
     }
 
+    /** Set a [train] for the train details view. */
     fun setTrain(train: Train) {
         viewModelScope.launch {
             reduceState(LoadTrainDetails.Success(train))
         }
     }
 
+    /** Reload [train] details. */
     fun reload(train: Train) {
         viewModelScope.launch {
             reduceState(ReloadTrainDetails.Loading)

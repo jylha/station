@@ -8,27 +8,25 @@ import com.example.station.data.location.LocationService
 import com.example.station.data.settings.SettingsRepository
 import com.example.station.data.stations.StationRepository
 import com.example.station.model.Station
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class StationsViewModel @ViewModelInject constructor(
     private val stationRepository: StationRepository,
     private val settingsRepository: SettingsRepository,
     private val locationService: LocationService,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(StationsViewState.initial())
     private val mutex = Mutex()
+    private val _state = MutableStateFlow(StationsViewState.initial())
 
     /** A flow of view states. */
-    val state: StateFlow<StationsViewState>
-        get() = _state
+    val state: StateFlow<StationsViewState> = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
