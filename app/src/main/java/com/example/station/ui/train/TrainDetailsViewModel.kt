@@ -10,6 +10,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TrainDetailsViewModel @ViewModelInject constructor(
@@ -17,6 +19,7 @@ class TrainDetailsViewModel @ViewModelInject constructor(
     private val stationRepository: StationRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(TrainDetailsViewState.initial())
+    private val mutex = Mutex()
 
     val state: StateFlow<TrainDetailsViewState>
         get() = _state
@@ -34,7 +37,9 @@ class TrainDetailsViewModel @ViewModelInject constructor(
     }
 
     fun setTrain(train: Train) {
-        reduceState(LoadTrainDetails.Success(train))
+        viewModelScope.launch {
+            reduceState(LoadTrainDetails.Success(train))
+        }
     }
 
     fun reload(train: Train) {
@@ -49,7 +54,7 @@ class TrainDetailsViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun reduceState(result: TrainDetailsResult) {
-        _state.value = _state.value.reduce(result)
+    private suspend fun reduceState(result: TrainDetailsResult) {
+        mutex.withLock { _state.value = _state.value.reduce(result) }
     }
 }

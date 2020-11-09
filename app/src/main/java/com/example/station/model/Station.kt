@@ -55,5 +55,7 @@ data class Station(
                 }
             }
         }
+
+        override fun toString(): String = value
     }
 }

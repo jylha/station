@@ -80,6 +80,7 @@ class TimetableViewModelTest {
     @Test fun `initial state`() = coroutineRule.runBlockingTest {
         setup()
         val expected = TimetableViewState(
+            isLoadingTimetable = true,
             stationNameMapper = testMapper,
             causeCategories = CauseCategories(emptyList(), emptyList(), emptyList())
         )

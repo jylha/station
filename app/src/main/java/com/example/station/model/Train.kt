@@ -30,6 +30,8 @@ data class Train(
     sealed class Category(val name: String) {
         object LongDistance : Category("Long-distance")
         object Commuter : Category("Commuter")
+
+        override fun toString(): String = name
     }
 
     /** Returns the station uic code for the train's origin. */
@@ -69,6 +71,8 @@ data class Train(
     fun isDestination(stationUic: Int): Boolean {
         return timetable.lastOrNull()?.stationUic == stationUic
     }
+
+    override fun toString(): String = "Train(number=$number, type=$type, category=$category, ...)"
 }
 
 /** Returns all train's stops. */

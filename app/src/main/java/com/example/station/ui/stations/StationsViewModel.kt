@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class StationsViewModel @ViewModelInject constructor(
@@ -21,8 +23,8 @@ class StationsViewModel @ViewModelInject constructor(
     private val settingsRepository: SettingsRepository,
     private val locationService: LocationService,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(StationsViewState.initial())
+    private val mutex = Mutex()
 
     /** A flow of view states. */
     val state: StateFlow<StationsViewState>
@@ -76,7 +78,9 @@ class StationsViewModel @ViewModelInject constructor(
     }
 
     private fun showStationList() {
-        reduceState(FetchLocation.Cancel)
+        viewModelScope.launch {
+            reduceState(FetchLocation.Cancel)
+        }
     }
 
     private fun selectNearestStation() {
@@ -91,8 +95,8 @@ class StationsViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun reduceState(result: StationsResult) {
-        _state.value = _state.value.reduce(result)
+    private suspend fun reduceState(result: StationsResult) {
+        mutex.withLock { _state.value = _state.value.reduce(result) }
     }
 }
 

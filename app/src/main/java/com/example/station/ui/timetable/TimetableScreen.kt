@@ -135,24 +135,26 @@ fun TimetableScreen(
     when {
         viewState.isLoadingTimetable -> LoadingTimetable()
         viewState.loadingTimetableFailed -> LoadingTimetableFailed(onRetry)
-        viewState.station != null -> StationNameProvider(viewState.stationNameMapper) {
-            CauseCategoriesProvider(causeCategories = viewState.causeCategories) {
-                TimetableScreen(
-                    viewState.station,
-                    viewState.timetable,
-                    selectedTimetableTypes = viewState.selectedTimetableTypes,
-                    onTimetableTypesChanged = { types: Set<TimetableRow.Type> ->
-                        onEvent(TimetableEvent.SelectTimetableTypes(types))
-                    },
-                    selectedTrainCategories = viewState.selectedTrainCategories,
-                    onTrainCategoriesChanged = { categories: Set<Category> ->
-                        onEvent(TimetableEvent.SelectCategories(categories))
-                    },
-                    isReloading = viewState.isReloadingTimetable,
-                    onReload = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) },
-                    onSelectStation = onSelectStation,
-                    onTrainSelected = onTrainSelected
-                )
+        viewState.station != null -> {
+            StationNameProvider(viewState.stationNameMapper) {
+                CauseCategoriesProvider(causeCategories = viewState.causeCategories) {
+                    TimetableScreen(
+                        viewState.station,
+                        viewState.timetable,
+                        selectedTimetableTypes = viewState.selectedTimetableTypes,
+                        onTimetableTypesChanged = { types: Set<TimetableRow.Type> ->
+                            onEvent(TimetableEvent.SelectTimetableTypes(types))
+                        },
+                        selectedTrainCategories = viewState.selectedTrainCategories,
+                        onTrainCategoriesChanged = { categories: Set<Category> ->
+                            onEvent(TimetableEvent.SelectCategories(categories))
+                        },
+                        isReloading = viewState.isReloadingTimetable,
+                        onReload = { onEvent(TimetableEvent.ReloadTimetable(viewState.station)) },
+                        onSelectStation = onSelectStation,
+                        onTrainSelected = onTrainSelected
+                    )
+                }
             }
         }
         else -> ErrorState("Oops. Something went wrong.") {

@@ -10,7 +10,10 @@ data class DelayCause(
     val categoryId: Int,
     val detailedCategoryId: Int? = null,
     val thirdLevelCategoryId: Int? = null,
-)
+) {
+    override fun toString(): String =
+        "DelayCause($categoryId, ${detailedCategoryId ?: '-'}, ${thirdLevelCategoryId ?: '-'})"
+}
 
 /** Single delay cause category. */
 @Immutable
@@ -18,7 +21,9 @@ data class CauseCategory(
     val id: Int,
     val name: String,
     val passengerFriendlyName: PassengerFriendlyName? = null
-)
+) {
+    override fun toString(): String = "CauseCategory($id, $name)"
+}
 
 /** Passenger friendly names for a delay cause category in each supported language. */
 @Immutable
@@ -67,6 +72,11 @@ data class CauseCategories(
         }
         return categoryName?.forLocale(locale) ?: "-"
     }
+
+    override fun toString(): String = "CauseCategories(" +
+            "${categories.size} categories, " +
+            "${detailedCategories.size} detailed categories, " +
+            "${thirdLevelCategories.size} third level categories)"
 }
 
 private fun passengerFriendlyName(

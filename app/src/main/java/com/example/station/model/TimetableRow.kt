@@ -35,6 +35,8 @@ data class TimetableRow(
     sealed class Type(val name: String) {
         object Arrival : Type("Arrival")
         object Departure : Type("Departure")
+
+        override fun toString(): String = name
     }
 }
 
@@ -76,7 +78,7 @@ internal fun departure(
     trainStopping: Boolean = true,
     commercialStop: Boolean? = true,
     causes: List<DelayCause> = emptyList(),
-    ): TimetableRow =
+): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Departure,
         stationUic,

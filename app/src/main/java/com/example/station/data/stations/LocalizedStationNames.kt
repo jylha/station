@@ -39,6 +39,8 @@ class LocalizedStationNames private constructor(
     }
 
     override fun stationName(stationUic: Int): String? = map[stationUic]
+
+    override fun toString(): String  = "LocalizedStationNames[${map.size} stations]"
 }
 
 /**

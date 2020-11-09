@@ -6,6 +6,7 @@ import com.example.station.model.CauseCategories
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
+import timber.log.Timber
 
 /**
  * The state of timetable screen.
@@ -29,10 +30,15 @@ data class TimetableViewState(
 ) {
     val isLoading: Boolean
         get() = isLoadingTimetable || isLoadingStationNames
+
+    companion object {
+        fun initial() = TimetableViewState(isLoadingTimetable = true)
+    }
 }
 
 /** Reduce timetable state with given [TimetableResult]. */
 fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
+    Timber.d("TimetableViewState.reduce(result = $result)")
     return when (result) {
         is LoadTimetable.Loading -> copy(
             isLoadingTimetable = true,
