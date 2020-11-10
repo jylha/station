@@ -11,8 +11,8 @@ interface StationRepository {
     /** Fetch all stations. */
     fun fetchStations(): Flow<StoreResponse<List<Station>>>
 
-    /** Fetch a single station with given [stationUic]. */
-    suspend fun fetchStation(stationUic: Int): Station
+    /** Fetch a single station with given [stationCode]. */
+    suspend fun fetchStation(stationCode: Int): Station
 
     /** Station name mapper. */
     suspend fun getStationNameMapper(): StationNameMapper

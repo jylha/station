@@ -26,7 +26,7 @@ class HomeViewStateTest {
         assertThat(result.isLoadingSettings).isFalse()
         assertThat(result.isLoadingStation).isFalse()
         assertThat(result.isLoading).isFalse()
-        assertThat(result.stationUicCode).isEqualTo(null)
+        assertThat(result.stationCode).isEqualTo(null)
     }
 
     @Test fun `reduce state with LoadStation_Loading result`() {

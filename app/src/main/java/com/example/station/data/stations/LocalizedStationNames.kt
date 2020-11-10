@@ -21,7 +21,7 @@ class LocalizedStationNames private constructor(
             localizedNames: Map<Int, String> = emptyMap()
         ): LocalizedStationNames {
             val mapping = stations
-                .map { station -> station.uic to (localizedNames[station.uic] ?: station.name) }
+                .map { station -> station.code to (localizedNames[station.code] ?: station.name) }
                 .toMap()
             return LocalizedStationNames(mapping)
         }
@@ -32,13 +32,13 @@ class LocalizedStationNames private constructor(
          */
         fun from(stations: List<Station>, context: Context): LocalizedStationNames {
             val localizedNames = LOCALIZED_STATION_NAMES
-                .map { (uic, resId) -> uic to context.getString(resId) }
+                .map { (stationCode, resId) -> stationCode to context.getString(resId) }
                 .toMap()
             return from(stations, localizedNames)
         }
     }
 
-    override fun stationName(stationUic: Int): String? = map[stationUic]
+    override fun stationName(stationCode: Int): String? = map[stationCode]
 
     override fun toString(): String  = "LocalizedStationNames[${map.size} stations]"
 }

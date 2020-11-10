@@ -109,9 +109,9 @@ class StationsViewStateTest {
         val result = state.reduce(LoadStations.Success(newStations))
         assertThat(result.stations).hasSize(2)
         assertThat(result.stations[0].name).isEqualTo("B")
-        assertThat(result.stations[0].uic).isEqualTo(2)
+        assertThat(result.stations[0].code).isEqualTo(2)
         assertThat(result.stations[1].name).isEqualTo("C")
-        assertThat(result.stations[1].uic).isEqualTo(1)
+        assertThat(result.stations[1].code).isEqualTo(1)
     }
 
     @Test fun `reduce state with LoadStations_NoNewData result`() {
@@ -184,6 +184,6 @@ class StationsViewStateTest {
 }
 
 /** Creates an instance of Station for testing purposes. */
-fun Station.Companion.of(name: String, uic: Int): Station {
-    return Station(true, Station.Type.Station, name, "", uic, "FI", 1.0, 1.0)
+fun Station.Companion.of(name: String, code: Int): Station {
+    return Station(true, Station.Type.Station, name, "", code, "FI", 1.0, 1.0)
 }

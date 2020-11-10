@@ -28,8 +28,8 @@ class StationNameMapperTest {
             Station("Station1", "s1", 1, 1.0, 2.0),
             Station("Station2", "s2", 2, 1.0, 2.0)
         )
-        val mapper = StationNameMapper { uic ->
-            when (uic) {
+        val mapper = StationNameMapper { stationCode ->
+            when (stationCode) {
                 1 -> "Renamed station 1"
                 2 -> "Renamed station 2"
                 else -> null
@@ -49,8 +49,8 @@ class StationNameMapperTest {
             Station("B", "b", 2, 1.0, 2.0),
             Station("C", "c", 3, 1.0, 2.0)
         )
-        val mapper = StationNameMapper { uic ->
-            when (uic) {
+        val mapper = StationNameMapper { stationCode ->
+            when (stationCode) {
                 1 -> "D"
                 2 -> "E"
                 else -> null

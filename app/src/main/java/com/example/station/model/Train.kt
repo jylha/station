@@ -34,19 +34,19 @@ data class Train(
         override fun toString(): String = name
     }
 
-    /** Returns the station uic code for the train's origin. */
+    /** Returns the UIC code for the train's origin station. */
     fun origin(): Int? {
-        return timetable.firstOrNull()?.stationUic
+        return timetable.firstOrNull()?.stationCode
     }
 
-    /** Returns the station uic code for the train's destination. */
+    /** Returns the UIC code for the train's destination station. */
     fun destination(): Int? {
-        return timetable.lastOrNull()?.stationUic
+        return timetable.lastOrNull()?.stationCode
     }
 
-    /** Returns the track for the given [stationUic]. */
-    fun track(stationUic: Int): String? {
-        return timetable.firstOrNull { it.stationUic == stationUic }?.track
+    /** Returns the track for the given [stationCode]. */
+    fun track(stationCode: Int): String? {
+        return timetable.firstOrNull { it.stationCode == stationCode }?.track
     }
 
     /** Checks whether train is marked ready on origin station. */
@@ -63,13 +63,13 @@ data class Train(
     }
 
     /** Checks whether the specified station is train's origin. */
-    fun isOrigin(stationUic: Int): Boolean {
-        return timetable.firstOrNull()?.stationUic == stationUic
+    fun isOrigin(stationCode: Int): Boolean {
+        return timetable.firstOrNull()?.stationCode == stationCode
     }
 
     /** Checks whether the specified station is train's destination. */
-    fun isDestination(stationUic: Int): Boolean {
-        return timetable.lastOrNull()?.stationUic == stationUic
+    fun isDestination(stationCode: Int): Boolean {
+        return timetable.lastOrNull()?.stationCode == stationCode
     }
 
     override fun toString(): String = "Train(number=$number, type=$type, category=$category, ...)"
@@ -87,7 +87,7 @@ fun Train.stops(): List<Stop> {
         timetable
             .subList(1, timetable.lastIndex)
             .windowed(2, 2, false) { (first, last) ->
-                if (first.type == Arrival && last.type == Departure && first.stationUic == last.stationUic) {
+                if (first.type == Arrival && last.type == Departure && first.stationCode == last.stationCode) {
                     stops += Stop(first, last)
                 }
             }
@@ -115,8 +115,8 @@ fun Train.currentCommercialStop(): Stop? {
 }
 
 /** Returns train's stops at the specified station. */
-fun Train.stopsAt(stationUic: Int): List<Stop> {
-    return stops().filter { stop -> stop.stationUic() == stationUic }
+fun Train.stopsAt(stationCode: Int): List<Stop> {
+    return stops().filter { stop -> stop.stationCode() == stationCode }
 }
 
 /** Returns the causes for train's delay. */

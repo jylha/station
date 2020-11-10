@@ -7,8 +7,8 @@ import org.junit.Test
 
 class LocalizedStationNamesTest {
 
-    private fun station(name: String, shortCode: String, uic: Int) = Station(
-        true, Station.Type.Station, name, shortCode, uic,
+    private fun station(name: String, shortCode: String, code: Int) = Station(
+        true, Station.Type.Station, name, shortCode, code,
         "FI", 0.0, 0.0
     )
 
@@ -43,7 +43,7 @@ class LocalizedStationNamesTest {
         )
     }
 
-    @Test fun `stationName() returns correct name for given UIC`() {
+    @Test fun `stationName() returns correct name for given station code`() {
         val stations = listOf(
             station("Station1", "s1", 1),
             station("Station2", "s1", 2),
@@ -54,7 +54,7 @@ class LocalizedStationNamesTest {
         assertThat(result).isEqualTo("Localized1")
     }
 
-    @Test fun `stationName() returns null when UIC is not found`() {
+    @Test fun `stationName() returns null when station code is not found`() {
         val stations = listOf(
             station("Station2", "s1", 2),
         )

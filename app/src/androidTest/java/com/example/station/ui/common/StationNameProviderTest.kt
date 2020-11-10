@@ -13,8 +13,8 @@ class StationNameProviderTest {
 
     @get:Rule val composeTestRule = createComposeRule()
 
-    @Composable private fun Station(uic: Int) {
-        Text(stationName(uic) ?: "name not found")
+    @Composable private fun Station(stationCode: Int) {
+        Text(stationName(stationCode) ?: "name not found")
     }
 
     private fun composeWithoutStationNameProvider(content: @Composable () -> Unit) {
@@ -28,7 +28,7 @@ class StationNameProviderTest {
         content: @Composable () -> Unit
     ) {
         val testMapper = if (map != null)
-            StationNameMapper { stationUic -> map[stationUic] } else null
+            StationNameMapper { stationCode -> map[stationCode] } else null
 
         composeTestRule.setContent {
             StationNameProvider(stationNameMapper = testMapper) {

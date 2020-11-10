@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
  * Domain model for train's timetable row data.
  *
  * @param type Time table entry type (either Arrival or Departure).
- * @param stationUic The UIC code for the station.
+ * @param stationCode The UIC code for the station.
  * @param trainStopping Whether train is stopping on the station.
  * @param commercialStop Whether the stop is commercial, or null if train is no stopping..
  * @param track Track number.
@@ -21,7 +21,7 @@ import java.time.ZonedDateTime
 @Immutable
 data class TimetableRow(
     val type: Type,
-    val stationUic: Int,
+    val stationCode: Int,
     val trainStopping: Boolean = true,
     val commercialStop: Boolean? = null,
     val track: String? = null,
@@ -42,7 +42,7 @@ data class TimetableRow(
 
 /** Creates TimetableRow of commercial stop with type Arrival. */
 internal fun arrival(
-    stationUic: Int,
+    stationCode: Int,
     track: String,
     scheduledTime: ZonedDateTime,
     estimatedTime: ZonedDateTime? = null,
@@ -54,7 +54,7 @@ internal fun arrival(
 ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Arrival,
-        stationUic,
+        stationCode,
         trainStopping,
         commercialStop,
         track,
@@ -68,7 +68,7 @@ internal fun arrival(
 
 /** Creates TimetableRow of commercial stop with type Departure. */
 internal fun departure(
-    stationUic: Int,
+    stationCode: Int,
     track: String,
     scheduledTime: ZonedDateTime,
     estimatedTime: ZonedDateTime? = null,
@@ -81,7 +81,7 @@ internal fun departure(
 ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Departure,
-        stationUic,
+        stationCode,
         trainStopping,
         commercialStop,
         track,

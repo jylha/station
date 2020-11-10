@@ -26,13 +26,13 @@ class HomeViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch {
             reduceState(LoadSettings.Loading)
-            settingsRepository.station().collect { stationUicCode ->
-                if (true || stationUicCode == null) {
-                    reduceState(LoadSettings.Success(stationUicCode))
+            settingsRepository.station().collect { stationCode ->
+                if (true || stationCode == null) {
+                    reduceState(LoadSettings.Success(stationCode))
                 } else {
                     reduceState(LoadStation.Loading)
                     try {
-                        val station = stationRepository.fetchStation(stationUicCode)
+                        val station = stationRepository.fetchStation(stationCode)
                         reduceState(LoadStation.Success(station))
                     } catch (e: Exception) {
                         reduceState(LoadStation.Error(e.message))

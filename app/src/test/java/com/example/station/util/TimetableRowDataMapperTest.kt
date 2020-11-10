@@ -15,9 +15,9 @@ class TimetableRowDataMapperTest {
         scheduledTime = "2020-01-01T00:00:00.000Z"
     )
 
-    @Test fun `stationUicCode is mapped correctly into domain model`() {
-        val result = networkEntity.copy(stationUicCode = 123).toDomainModel()
-        assertThat(result.stationUic).isEqualTo(123)
+    @Test fun `stationCode is mapped correctly into domain model`() {
+        val result = networkEntity.copy(stationCode = 123).toDomainModel()
+        assertThat(result.stationCode).isEqualTo(123)
     }
 
     @Test fun `arrival type is mapped correctly into domain model`() {

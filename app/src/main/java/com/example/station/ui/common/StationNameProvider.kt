@@ -22,13 +22,13 @@ fun StationNameProvider(
 }
 
 /**
- * Returns the localised station name for the specified [stationUic] from AmbientStationNameMapper.
+ * Returns the localised station name for the specified [stationCode] from AmbientStationNameMapper.
  */
 @Composable
-fun stationName(stationUic: Int?): String? {
-    return when (stationUic) {
+fun stationName(stationCode: Int?): String? {
+    return when (stationCode) {
         null -> null
-        else -> AmbientStationNameMapper.current.stationName(stationUic)
+        else -> AmbientStationNameMapper.current.stationName(stationCode)
     }
 }
 

@@ -9,8 +9,11 @@ interface SettingsRepository {
     /** Returns currently selected station's UIC code, or null if none is selected. */
     fun station(): Flow<Int?>
 
-    /** Set selected station. */
-    suspend fun setStation(stationUicCode: Int)
+    /**
+     *  Set selected station.
+     *  @param stationCode The UIC code of the selected station.
+     */
+    suspend fun setStation(stationCode: Int)
 
     /**
      * Returns a list of recently selected station UIC codes. The list is updated

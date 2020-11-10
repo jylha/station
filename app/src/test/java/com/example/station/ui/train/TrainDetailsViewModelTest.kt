@@ -26,8 +26,8 @@ class TrainDetailsViewModelTest {
     @Mock private lateinit var stationRepository: StationRepository
 
     private lateinit var viewModel: TrainDetailsViewModel
-    private val testMapper = StationNameMapper { stationUic ->
-        when (stationUic) {
+    private val testMapper = StationNameMapper { stationCode ->
+        when (stationCode) {
             1 -> "Helsinki"
             else -> null
         }

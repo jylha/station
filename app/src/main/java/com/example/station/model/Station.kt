@@ -9,7 +9,7 @@ import androidx.compose.runtime.Immutable
  * @param type Station type.
  * @param name Station name.
  * @param shortCode Short station code.
- * @param uic Country specific UIC code of the station [1-9999].
+ * @param code Country specific UIC code of the station [1-9999].
  * @param countryCode Country code.
  * @param longitude Longitude in WGS-84 format.
  * @param latitude Latitude in WGS-84 format.
@@ -20,7 +20,7 @@ data class Station(
     val type: Type,
     val name: String,
     val shortCode: String,
-    val uic: Int,
+    val code: Int,
     val countryCode: String,
     val longitude: Double,
     val latitude: Double
@@ -28,13 +28,13 @@ data class Station(
     companion object;
 
     /** Secondary constructor for creating stations in Finland that have passenger traffic. */
-    constructor(name: String, shortCode: String, uic: Int, longitude: Double, latitude: Double) :
+    constructor(name: String, shortCode: String, code: Int, longitude: Double, latitude: Double) :
             this(
                 passengerTraffic = true,
                 type = Type.Station,
                 name,
                 shortCode,
-                uic,
+                code,
                 countryCode = "FI",
                 longitude,
                 latitude

@@ -13,7 +13,7 @@ class StationDataMapperTest {
         type = "STATION",
         name = "Station Name",
         shortCode = "SN",
-        uic = 111,
+        code = 111,
         countryCode = "A",
         longitude = 50.0,
         latitude = 100.0
@@ -53,9 +53,9 @@ class StationDataMapperTest {
         assertThat(result.shortCode).isEqualTo("ABC")
     }
 
-    @Test fun `station UIC is mapped correctly into domain model`() {
-        val result = networkEntity.copy(uic = 555).toDomainModel()
-        assertThat(result.uic).isEqualTo(555)
+    @Test fun `station code is mapped correctly into domain model`() {
+        val result = networkEntity.copy(code = 555).toDomainModel()
+        assertThat(result.code).isEqualTo(555)
     }
 
     @Test fun `station country code is mapped correctly into domain model`() {
@@ -102,11 +102,11 @@ class StationDataMapperTest {
         assertThat(result.type).isEqualTo(Station.Type.TurnoutInTheOpenLine)
     }
 
-    @Test fun `station name and uic are correctly mapped from cache DTO into domain model`() {
+    @Test fun `station name and code are correctly mapped from cache DTO into domain model`() {
         val dto = cacheEntity.copy(name = "Name", uic = 100)
         val result = dto.toDomainModel()
         assertThat(result.name).isEqualTo("Name")
-        assertThat(result.uic).isEqualTo(100)
+        assertThat(result.code).isEqualTo(100)
     }
 
     @Test fun `station short code is correctly mapped from cache DTO into domain model`() {
@@ -132,7 +132,7 @@ class StationDataMapperTest {
         type = Station.Type.Station,
         name = "Station Name",
         shortCode = "SN",
-        uic = 333,
+        code = 333,
         countryCode = "C",
         longitude = 50.0,
         latitude = 50.0
@@ -156,8 +156,8 @@ class StationDataMapperTest {
         assertThat(result.type).isEqualTo("TURNOUT_IN_THE_OPEN_LINE")
     }
 
-    @Test fun `station name and uic are correctly mapped from domain model into cache entity`() {
-        val station = domainEntity.copy(name = "Name", uic = 200)
+    @Test fun `station name and code are correctly mapped from domain model into cache entity`() {
+        val station = domainEntity.copy(name = "Name", code = 200)
         val result = station.toCacheEntity()
         assertThat(result.name).isEqualTo("Name")
         assertThat(result.uic).isEqualTo(200)

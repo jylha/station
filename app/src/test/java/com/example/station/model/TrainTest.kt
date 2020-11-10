@@ -143,9 +143,9 @@ class TrainTest {
     @Test fun `stops() returns the trains timetable rows as a list of stops`() {
         val result = train.stops()
         assertThat(result.size).isEqualTo(3)
-        assertThat(result[0].stationUic()).isEqualTo(100)
-        assertThat(result[1].stationUic()).isEqualTo(200)
-        assertThat(result[2].stationUic()).isEqualTo(300)
+        assertThat(result[0].stationCode()).isEqualTo(100)
+        assertThat(result[1].stationCode()).isEqualTo(200)
+        assertThat(result[2].stationCode()).isEqualTo(300)
     }
 
     @Test fun `stops() returns empty list for a train with empty timetable`() {
@@ -172,8 +172,8 @@ class TrainTest {
     @Test fun `commercialStops() returns only the timetable rows marked as commercial stops`() {
         val result = trainWithNonCommercialStop.commercialStops()
         assertThat(result).hasSize(2)
-        assertThat(result.first().stationUic()).isEqualTo(1)
-        assertThat(result.last().stationUic()).isEqualTo(3)
+        assertThat(result.first().stationCode()).isEqualTo(1)
+        assertThat(result.last().stationCode()).isEqualTo(3)
     }
 
     private val trainWithNonStopTimetableRows = trainWithEmptyTimetable.copy(
@@ -188,8 +188,8 @@ class TrainTest {
     @Test fun `commercialStops() returns only timetable rows marked as stops `() {
         val result = trainWithNonStopTimetableRows.commercialStops()
         assertThat(result).hasSize(2)
-        assertThat(result.first().stationUic()).isEqualTo(1)
-        assertThat(result.last().stationUic()).isEqualTo(3)
+        assertThat(result.first().stationCode()).isEqualTo(1)
+        assertThat(result.last().stationCode()).isEqualTo(3)
     }
 
     private val trainNotReady = trainWithEmptyTimetable.copy(
@@ -215,19 +215,19 @@ class TrainTest {
         val result = trainReady.currentCommercialStop()
         assertThat(result).isNotNull()
         assertThat(result?.isOrigin()).isTrue()
-        assertThat(result?.departure?.stationUic).isEqualTo(1)
+        assertThat(result?.departure?.stationCode).isEqualTo(1)
     }
 
     @Test fun `stopsAt() for origin returns list of single stop`() {
         val result = train.stopsAt(100)
         assertThat(result).hasSize(1)
-        assertThat(result.first().stationUic()).isEqualTo(100)
+        assertThat(result.first().stationCode()).isEqualTo(100)
     }
 
     @Test fun `stopsAt() for destination return list of single stop`() {
         val result = train.stopsAt(300)
         assertThat(result).hasSize(1)
-        assertThat(result.first().stationUic()).isEqualTo(300)
+        assertThat(result.first().stationCode()).isEqualTo(300)
     }
 
     @Test fun `stopsAt() for a origin and destination returns separate stops`() {

@@ -33,8 +33,8 @@ class StopTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Creating a Stop with different stationUic in arrival and departure throws an exception`() {
-        Stop(arrival, departure.copy(stationUic = 5))
+    fun `Creating a Stop with different stationCode in arrival and departure throws an exception`() {
+        Stop(arrival, departure.copy(stationCode = 5))
     }
 
     @Test fun `Creating a Stop by only setting the arrival succeeds`() {
@@ -109,21 +109,21 @@ class StopTest {
         assertThat(result).isTrue()
     }
 
-    @Test fun `stationUic() returns the station uic of waypoint stop`() {
+    @Test fun `stationCode() returns the station code of waypoint stop`() {
         val waypoint = Stop(arrival, departure)
-        val result = waypoint.stationUic()
+        val result = waypoint.stationCode()
         assertThat(result).isEqualTo(1)
     }
 
-    @Test fun `stationUic() returns the station uic of origin stop`() {
-        val origin = Stop(departure = departure.copy(stationUic = 5))
-        val result = origin.stationUic()
+    @Test fun `stationCode() returns the station code of origin stop`() {
+        val origin = Stop(departure = departure.copy(stationCode = 5))
+        val result = origin.stationCode()
         assertThat(result).isEqualTo(5)
     }
 
-    @Test fun `stationUic() returns the station uic of destination stop`() {
-        val destination = Stop(arrival = arrival.copy(stationUic = 123))
-        val result = destination.stationUic()
+    @Test fun `stationCode() returns the station code of destination stop`() {
+        val destination = Stop(arrival = arrival.copy(stationCode = 123))
+        val result = destination.stationCode()
         assertThat(result).isEqualTo(123)
     }
 

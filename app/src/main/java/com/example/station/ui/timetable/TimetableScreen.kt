@@ -109,9 +109,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable
 fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewModel = viewModel<TimetableViewModel>()
-    savedInstanceState(station.uic) {
+    savedInstanceState(station.code) {
         viewModel.offer(TimetableEvent.LoadTimetable(station))
-        station.uic
+        station.code
     }
     val viewState by viewModel.state.collectAsState()
 
@@ -209,7 +209,7 @@ fun TimetableScreen(
 
     Scaffold(topBar = {
         TimetableTopAppBar(
-            stationName(stationUic = station.uic),
+            stationName(stationCode = station.code),
             selectedTimetableTypes,
             selectedTrainCategories,
             filterSelectionEnabled,
@@ -403,7 +403,7 @@ fun TimetableScreen(
 
     val stops = remember(trains, selectedTimetableTypes) {
         trains.flatMap { train ->
-            train.stopsAt(station.uic).map { stop -> Pair(train, stop) }
+            train.stopsAt(station.code).map { stop -> Pair(train, stop) }
         }
             .filter { (_, stop) ->
                 stop.isWaypoint() ||
@@ -1048,11 +1048,11 @@ private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? =
 @Composable
 private fun PreviewTimetable() {
     val helsinki = Station(
-        name = "Helsinki", shortCode = "HKI", uic = 1,
+        name = "Helsinki", shortCode = "HKI", code = 1,
         longitude = 1.0, latitude = 1.0
     )
     val turku = Station(
-        name = "Turku Central Station", shortCode = "TKU", uic = 130,
+        name = "Turku Central Station", shortCode = "TKU", code = 130,
         longitude = 1.0, latitude = 1.0
     )
     val trains = listOf(

@@ -138,7 +138,7 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with LoadStationNames_Success result`() {
         val state = TimetableViewState(isLoadingStationNames = true, stationNameMapper = null)
-        val mapper = StationNameMapper { stationUic -> "Station $stationUic" }
+        val mapper = StationNameMapper { stationCode -> "Station $stationCode" }
         val result = state.reduce(LoadStationNames.Success(mapper))
         assertThat(result.isLoadingStationNames).isFalse()
         assertThat(result.stationNameMapper).isEqualTo(mapper)
@@ -178,6 +178,6 @@ class TimetableViewStateTest {
     }
 }
 
-private fun station(name: String, uic: Int) = Station(
-    true, Station.Type.Station, name, "", uic, "FI", 0.0, 0.0
+private fun station(name: String, code: Int) = Station(
+    true, Station.Type.Station, name, "", code, "FI", 0.0, 0.0
 )

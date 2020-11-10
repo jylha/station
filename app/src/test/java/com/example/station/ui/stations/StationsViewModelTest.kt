@@ -37,8 +37,8 @@ class StationsViewModelTest {
 
     private lateinit var viewModel: StationsViewModel
 
-    private val testMapper = StationNameMapper { stationUic ->
-        when (stationUic) {
+    private val testMapper = StationNameMapper { stationCode ->
+        when (stationCode) {
             1 -> "Helsinki"
             else -> null
         }
@@ -105,7 +105,7 @@ class StationsViewModelTest {
     @Test fun `set selected station`() = coroutineRule.runBlockingTest {
         val station = testStations.first()
         viewModel.stationSelected(station)
-        verify(settingsRepository).setStation(station.uic)
+        verify(settingsRepository).setStation(station.code)
     }
 
     @Test fun `change mode back to selecting station from list`() {

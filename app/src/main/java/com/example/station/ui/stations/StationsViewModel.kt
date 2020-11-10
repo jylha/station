@@ -71,7 +71,7 @@ class StationsViewModel @ViewModelInject constructor(
     /** Notify of station selection to add the station to the list of recently selected stations. */
     fun stationSelected(station: Station) {
         viewModelScope.launch {
-            settingsRepository.setStation(station.uic)
+            settingsRepository.setStation(station.code)
         }
     }
 

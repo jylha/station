@@ -93,8 +93,8 @@ fun StationScreen(
 ) {
     val stations = state.stations
     val recentStations = remember(stations, state.recentStations) {
-        state.recentStations.mapNotNull { uic ->
-            stations.firstOrNull { station -> station.uic == uic }
+        state.recentStations.mapNotNull { stationCode ->
+            stations.firstOrNull { station -> station.code == stationCode }
         }
     }
 

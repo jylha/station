@@ -85,7 +85,7 @@ class StationsScreenTest {
     }
 }
 
-private fun station(name: String, uic: Int) = Station(
+private fun station(name: String, code: Int) = Station(
     passengerTraffic = true, type = Station.Type.Station, name = name, shortCode = "",
-    uic = uic, countryCode = "FI", 10.0, 20.0
+    code = code, countryCode = "FI", 10.0, 20.0
 )

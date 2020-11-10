@@ -5,10 +5,10 @@ import com.example.station.model.Station
 /** Base class for all results on HomeView. */
 sealed class HomeViewResult
 
-/** Results for loading the UIC of recent station from settings. */
+/** Results for loading the UIC Code of most recently used station from settings. */
 sealed class LoadSettings : HomeViewResult() {
     object Loading : LoadSettings()
-    data class Success(val stationUic: Int?) : LoadSettings()
+    data class Success(val stationCode: Int?) : LoadSettings()
     data class Error(val message: String?) : LoadSettings()
 }
 

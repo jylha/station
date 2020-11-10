@@ -32,7 +32,7 @@ class HomeViewModelTest {
         val expected = HomeViewState(
             isLoadingSettings = false,
             isLoadingStation = false,
-            stationUicCode = null,
+            stationCode = null,
             station = null
         )
         assertThat(result).isEqualTo(expected)

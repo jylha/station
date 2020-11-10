@@ -25,7 +25,7 @@ class TrainDetailsScreenTest {
     @get:Rule val rule = createComposeRule()
 
     private val stationNameMapper = object : StationNameMapper {
-        override fun stationName(stationUic: Int): String? = stationNames[stationUic]
+        override fun stationName(stationCode: Int): String? = stationNames[stationCode]
         private val stationNames = mapOf(
             1 to "Helsinki",
             18 to "Tikkurila",

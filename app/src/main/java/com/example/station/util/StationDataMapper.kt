@@ -12,7 +12,7 @@ fun StationNetworkEntity.toDomainModel(): Station {
         type = Station.Type.of(type),
         name = name,
         shortCode = shortCode,
-        uic = uic,
+        code = code,
         countryCode = countryCode,
         longitude = longitude,
         latitude = latitude
@@ -26,7 +26,7 @@ fun StationCacheEntity.toDomainModel(): Station {
         type = Station.Type.of(type),
         name = name,
         shortCode = shortCode,
-        uic = uic,
+        code = uic,
         countryCode = countryCode,
         longitude = longitude,
         latitude = latitude
@@ -40,7 +40,7 @@ fun Station.toCacheEntity() : StationCacheEntity {
         type = type.value,
         name = name,
         shortCode = shortCode,
-        uic = uic,
+        uic = code,
         countryCode = countryCode,
         longitude = longitude,
         latitude = latitude

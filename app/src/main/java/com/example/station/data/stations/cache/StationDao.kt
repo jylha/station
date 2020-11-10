@@ -18,8 +18,8 @@ interface StationDao {
     @Query("SELECT * FROM stations ORDER BY name ASC")
     fun getAll(): Flow<List<StationCacheEntity>>
 
-    @Query("SELECT * FROM stations WHERE uic = :stationUic ")
-    fun getStation(stationUic: Int): Flow<StationCacheEntity>
+    @Query("SELECT * FROM stations WHERE uic = :stationCode")
+    fun getStation(stationCode: Int): Flow<StationCacheEntity>
 
     @Query("DELETE FROM stations")
     suspend fun deleteAll()

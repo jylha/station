@@ -8,10 +8,10 @@ data class TimetableRowNetworkEntity(
     val type: String,
 
     @SerializedName("stationShortCode")
-    val stationCode: String,
+    val stationShortCode: String,
 
     @SerializedName("stationUICCode")
-    val stationUicCode: Int,
+    val stationCode: Int,
 
     @SerializedName("trainStopping")
     val trainStopping: Boolean,

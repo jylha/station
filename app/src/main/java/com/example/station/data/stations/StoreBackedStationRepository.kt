@@ -42,7 +42,7 @@ class StoreBackedStationRepository @Inject constructor(
         .from<Int, List<Station>, List<Station>>(
             fetcher = Fetcher.of { _ ->
                 stationService.fetchStations()
-                    .filter { it.passengerTraffic || it.uic == 769 /* Kempele (incorrectly marked in the data). */ }
+                    .filter { it.passengerTraffic || it.code == 769 /* Kempele (incorrectly marked in the data). */ }
                     .map { it.toDomainModel() }
                     .filter { it.type == Station.Type.Station || it.type == Station.Type.StoppingPoint }
             },
@@ -74,11 +74,11 @@ class StoreBackedStationRepository @Inject constructor(
             .flowOn(Dispatchers.IO)
     }
 
-    override suspend fun fetchStation(stationUic: Int): Station {
-        require(stationUic > 0)
+    override suspend fun fetchStation(stationCode: Int): Station {
+        require(stationCode > 0)
         return withContext(Dispatchers.IO) {
-            store.get(key = stationUic)
-                .first { station -> station.uic == stationUic }
+            store.get(key = stationCode)
+                .first { station -> station.code == stationCode }
         }
     }
 

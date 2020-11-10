@@ -36,8 +36,8 @@ class TimetableViewModelTest {
 
     private lateinit var viewModel: TimetableViewModel
 
-    private val testMapper = StationNameMapper { stationUic ->
-        when (stationUic) {
+    private val testMapper = StationNameMapper { stationCode ->
+        when (stationCode) {
             1 -> "Helsinki"
             else -> null
         }

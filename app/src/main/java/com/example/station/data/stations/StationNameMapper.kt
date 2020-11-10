@@ -6,17 +6,17 @@ import com.example.station.model.Station
 fun interface StationNameMapper {
 
     /**
-     * Returns the name of the station with given [stationUic].
-     * @param stationUic UIC of the station.
+     * Returns the name of the station with given [stationCode].
+     * @param stationCode UIC code of the station.
      * @return Station name or null if matching station is not found.
      */
-    fun stationName(stationUic: Int): String?
+    fun stationName(stationCode: Int): String?
 }
 
 /** Use station name mapper to rename each station in given [stations] list. */
 fun StationNameMapper.rename(stations: List<Station>): List<Station> {
     return stations.map { station ->
-        stationName(station.uic)?.let { station.copy(name = it) } ?: station
+        stationName(station.code)?.let { station.copy(name = it) } ?: station
     }
 }
 

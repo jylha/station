@@ -5,7 +5,7 @@ import com.example.station.model.Station
 data class HomeViewState(
     val isLoadingSettings: Boolean = false,
     val isLoadingStation: Boolean = false,
-    val stationUicCode: Int? = null,
+    val stationCode: Int? = null,
     val station: Station? = null
 ) {
     val isLoading: Boolean

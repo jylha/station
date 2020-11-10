@@ -56,7 +56,7 @@ import com.example.station.model.isNotDeparted
 import com.example.station.model.isOrigin
 import com.example.station.model.isReached
 import com.example.station.model.isWaypoint
-import com.example.station.model.stationUic
+import com.example.station.model.stationCode
 import com.example.station.ui.common.ActualTime
 import com.example.station.ui.common.EstimatedTime
 import com.example.station.ui.common.Loading
@@ -253,7 +253,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val colorFilter = ColorFilter.tint(color)
 
     CommercialStop(
-        name = { StopName(stationName(origin.stationUic())) },
+        name = { StopName(stationName(origin.stationCode())) },
         stationIcon = {
             Image(
                 vectorResource(stationIconResId),
@@ -290,7 +290,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val arrivedColorFilter = ColorFilter.tint(arrivedIconColor)
 
     CommercialStop(
-        name = { StopName(stationName(waypoint.stationUic())) },
+        name = { StopName(stationName(waypoint.stationCode())) },
         stationIcon = {
             Image(
                 vectorResource(stationIconResId),
@@ -326,7 +326,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val iconColorFilter = ColorFilter.tint(iconColor)
 
     CommercialStop(
-        name = { StopName(stationName(destination.stationUic())) },
+        name = { StopName(stationName(destination.stationCode())) },
         stationIcon = { Image(vectorResource(stationResId), colorFilter = iconColorFilter) },
         arrivalIcon = {
             Image(
@@ -496,7 +496,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
     val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere", 4 to "Riihimäki")
     StationTheme {
-        StationNameProvider({ stationUic -> names[stationUic] }) {
+        StationNameProvider({ stationCode -> names[stationCode] }) {
             TrainDetails(train)
         }
     }
