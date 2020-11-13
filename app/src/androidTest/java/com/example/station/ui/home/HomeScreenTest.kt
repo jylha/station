@@ -2,10 +2,10 @@ package com.example.station.ui.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithSubstring
+import androidx.compose.ui.test.onNodeWithText
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.onNodeWithSubstring
-import androidx.ui.test.onNodeWithText
 import com.example.station.testutil.setThemedContent
 import com.example.station.ui.common.AmbientLocationPermission
 import com.example.station.ui.common.Permission

@@ -4,15 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.ui.test.assert
-import androidx.ui.test.assertIsDisplayed
-import androidx.ui.test.assertLabelEquals
-import androidx.ui.test.createComposeRule
-import androidx.ui.test.hasSubstring
-import androidx.ui.test.onNodeWithLabel
-import androidx.ui.test.onNodeWithSubstring
-import androidx.ui.test.onNodeWithText
-import androidx.ui.test.performClick
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertLabelEquals
+import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithSubstring
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
@@ -26,6 +26,7 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 

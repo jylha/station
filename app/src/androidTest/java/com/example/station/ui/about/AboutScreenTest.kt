@@ -1,9 +1,9 @@
 package com.example.station.ui.about
 
-import androidx.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.onNodeWithText
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.hasSubstring
-import androidx.ui.test.onNodeWithText
 import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test

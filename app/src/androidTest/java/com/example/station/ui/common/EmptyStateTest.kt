@@ -1,8 +1,9 @@
 package com.example.station.ui.common
 
-import androidx.ui.test.assertIsDisplayed
-import androidx.ui.test.createComposeRule
-import androidx.ui.test.onNodeWithText
+
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test

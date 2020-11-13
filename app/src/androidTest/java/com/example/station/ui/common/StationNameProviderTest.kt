@@ -1,10 +1,10 @@
 package com.example.station.ui.common
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithText
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.onNodeWithText
 import com.example.station.data.stations.StationNameMapper
 import org.junit.Rule
 import org.junit.Test

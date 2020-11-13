@@ -1,16 +1,16 @@
 package com.example.station.ui.stations
 
-import androidx.ui.test.assertIsDisplayed
-import androidx.ui.test.assertTextEquals
-import androidx.ui.test.createComposeRule
-import androidx.ui.test.onChildAt
-import androidx.ui.test.onChildren
-import androidx.ui.test.onNodeWithLabel
-import androidx.ui.test.onNodeWithSubstring
-import androidx.ui.test.onNodeWithText
-import androidx.ui.test.onParent
-import androidx.ui.test.performClick
-import androidx.ui.test.performTextInput
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onChildAt
+import androidx.compose.ui.test.onChildren
+import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithSubstring
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onParent
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import com.example.station.model.Station
 import com.example.station.testutil.setThemedContent
 import org.junit.Rule

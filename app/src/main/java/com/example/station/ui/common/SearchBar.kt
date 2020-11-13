@@ -1,13 +1,14 @@
 package com.example.station.ui.common
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardBackspace
@@ -24,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -69,10 +71,7 @@ fun SearchBar(
             }
             TextField(
                 value = text,
-                onValueChange = { value ->
-                    // FIXME: 7.11.2020 Temporary fix to prevent multiple lines on search field.
-                    onValueChanged(value.substringBefore('\n'))
-                },
+                onValueChange = onValueChanged,
                 label = { if (!active) Text(placeholderText) },
                 placeholder = { Text(placeholderText) },
                 onTextInputStarted = { controller ->
@@ -83,8 +82,12 @@ fun SearchBar(
                 backgroundColor = Color.Transparent,
                 activeColor = textColor,
                 inactiveColor = textColor,
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                maxLines = 1,
                 onImeActionPerformed = { action, controller ->
                     if (action == ImeAction.Done) {
                         controller?.hideSoftwareKeyboard()

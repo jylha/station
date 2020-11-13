@@ -1,12 +1,12 @@
 package com.example.station.ui.train
 
-import androidx.ui.test.assertIsDisplayed
-import androidx.ui.test.assertLabelEquals
-import androidx.ui.test.assertTextEquals
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertLabelEquals
+import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithText
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.hasSubstring
-import androidx.ui.test.onNodeWithLabel
-import androidx.ui.test.onNodeWithText
 import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Train
 import com.example.station.model.arrival
