@@ -13,6 +13,7 @@ import com.example.station.model.Station
 import com.example.station.model.Train
 import com.example.station.model.arrival
 import com.example.station.model.departure
+import com.example.station.testutil.at
 import com.example.station.ui.theme.StationTheme
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -36,12 +37,6 @@ class TimetableScreenTest {
                 content()
             }
         }
-    }
-
-    private fun at(time: String, date: String = "2020-01-01"): ZonedDateTime {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-            .withZone(ZoneId.systemDefault())
-        return ZonedDateTime.parse("$date $time", formatter)
     }
 
     @Test fun loadingTimetable() {

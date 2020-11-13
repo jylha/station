@@ -12,10 +12,8 @@ import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Train
 import com.example.station.model.arrival
 import com.example.station.model.departure
+import com.example.station.testutil.at
 import com.example.station.ui.theme.StationTheme
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,12 +41,6 @@ class TrainDetailsScreenTest {
         }
     }
 
-    private fun at(time: String, date: String = "2020-01-01"): ZonedDateTime {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-            .withZone(ZoneId.systemDefault())
-        return ZonedDateTime.parse("$date $time", formatter)
-    }
-
     @Test fun loadingTrainDetails() {
         val state = TrainDetailsViewState(isLoadingMapper = true)
         rule.clockTestRule.pauseClock()
@@ -58,17 +50,16 @@ class TrainDetailsScreenTest {
         rule.onNodeWithText("Retrieving train details.").assertIsDisplayed()
     }
 
-    private val longDistanceTrain = Train(
-        123, "ABC", Train.Category.LongDistance,
-        timetable = listOf(
-            departure(1, "1", ZonedDateTime.parse("2020-01-01T10:00Z")),
-            arrival(30, "2", ZonedDateTime.parse("2020-01-01T10:10Z"))
-        )
-    )
-
     @Test fun longDistanceTrainDetails() {
+        val longDistanceTrain = Train(
+            123, "ABC", Train.Category.LongDistance,
+            timetable = listOf(
+                departure(1, "1", at("10:00")),
+                arrival(30, "2", at("10:10"))
+            )
+        )
         val state = TrainDetailsViewState(train = longDistanceTrain, nameMapper = stationNameMapper)
-        rule.setContent { TrainDetailsScreen(state) }
+        setThemedContent(darkTheme = true) { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Long-distance train ABC 123")
             .assertTextEquals("ABC 123").assertIsDisplayed()
@@ -138,15 +129,14 @@ class TrainDetailsScreenTest {
             .assertIsDisplayed()
     }
 
-    private val pendolinoTrain = Train(
-        55, "S", Train.Category.LongDistance,
-        timetable = listOf(
-            departure(1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")),
-            arrival(30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z"))
-        )
-    )
-
     @Test fun pendolinoTrainDetails() {
+        val pendolinoTrain = Train(
+            55, "S", Train.Category.LongDistance,
+            timetable = listOf(
+                departure(1, "1", at("10:00")),
+                arrival(30, "2", at("10:10"))
+            )
+        )
         val state = TrainDetailsViewState(train = pendolinoTrain, nameMapper = stationNameMapper)
         setThemedContent(darkTheme = false) { TrainDetailsScreen(state) }
 
@@ -158,19 +148,18 @@ class TrainDetailsScreenTest {
             .assertTextEquals("Pasila").assertIsDisplayed()
     }
 
-    private val commuterTrain = Train(
-        123, "ABC", Train.Category.Commuter,
-        timetable = listOf(
-            departure(1, "1", ZonedDateTime.parse("2020-01-01T10:00:00.0000Z")),
-            arrival(30, "2", ZonedDateTime.parse("2020-01-01T10:10:00.000Z")),
-            departure(30, "2", ZonedDateTime.parse("2020-01-01T10:11:00.000Z")),
-            arrival(18, "1", ZonedDateTime.parse("2020-01-01T10:20:00.000Z"))
-        )
-    )
-
     @Test fun commuterTrainDetails() {
+         val commuterTrain = Train(
+            123, "ABC", Train.Category.Commuter,
+            timetable = listOf(
+                departure(1, "1", at("10:00")),
+                arrival(30, "2", at("10:10")),
+                departure(30, "2", at("10:11")),
+                arrival(18, "1", at("10:20"))
+            )
+        )
         val state = TrainDetailsViewState(train = commuterTrain, nameMapper = stationNameMapper)
-        rule.setContent { TrainDetailsScreen(state) }
+        setThemedContent(darkTheme = true) { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Commuter train ABC 123")
             .assertTextEquals("ABC 123").assertIsDisplayed()
@@ -179,5 +168,4 @@ class TrainDetailsScreenTest {
         rule.onNodeWithLabel("To Tikkurila", useUnmergedTree = true)
             .assertTextEquals("Tikkurila").assertIsDisplayed()
     }
-
 }
