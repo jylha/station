@@ -4,6 +4,7 @@ import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.hasSubstring
 import androidx.ui.test.onNodeWithText
+import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
@@ -12,7 +13,8 @@ class AboutScreenTest {
     @get:Rule val rule = createComposeRule()
 
     @Test fun aboutScreen() {
-        rule.setContent { AboutScreen() }
+        rule.setThemedContent { AboutScreen() }
+
         rule.onNodeWithText("About the application").assertIsDisplayed()
         rule.onNode(
             hasSubstring("Source of traffic information:") and

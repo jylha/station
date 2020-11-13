@@ -14,6 +14,7 @@ import androidx.ui.test.performClick
 import androidx.ui.test.performTextInput
 import androidx.ui.test.printToLog
 import com.example.station.model.Station
+import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,7 +26,7 @@ class StationsScreenTest {
         val state = StationsViewState(
             stations = listOf(station("Helsinki", 1), station("Pasila", 2)),
         )
-        rule.setContent { StationsScreen(state = state, onSelect = {}) }
+        rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
         rule.onNodeWithText("Select station").assertIsDisplayed()
         rule.onNodeWithText("RECENT", ignoreCase = true).assertDoesNotExist()
@@ -39,7 +40,7 @@ class StationsScreenTest {
             stations = listOf(station("Helsinki", 1), station("Pasila", 2)),
             recentStations = listOf(1)
         )
-        rule.setContent { StationsScreen(state = state, onSelect = {}) }
+        rule.setThemedContent(darkMode = false) { StationsScreen(state = state, onSelect = {}) }
 
         rule.onNodeWithText("Select station").assertIsDisplayed()
         rule.onNodeWithText("RECENT").assertIsDisplayed()
@@ -58,7 +59,7 @@ class StationsScreenTest {
                 station("Helsinki Airport", 3)
             )
         )
-        rule.setContent { StationsScreen(state = state, onSelect = {}) }
+        rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
         rule.onNodeWithText("Select station")
         rule.onNodeWithText("ALL STATIONS").assertIsDisplayed()

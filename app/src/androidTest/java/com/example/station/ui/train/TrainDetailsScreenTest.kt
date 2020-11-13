@@ -1,6 +1,5 @@
 package com.example.station.ui.train
 
-import androidx.compose.runtime.Composable
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertLabelEquals
 import androidx.ui.test.assertTextEquals
@@ -13,7 +12,7 @@ import com.example.station.model.Train
 import com.example.station.model.arrival
 import com.example.station.model.departure
 import com.example.station.testutil.at
-import com.example.station.ui.theme.StationTheme
+import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,18 +32,10 @@ class TrainDetailsScreenTest {
         )
     }
 
-    private fun setThemedContent(darkTheme: Boolean = true, content: @Composable () -> Unit) {
-        rule.setContent {
-            StationTheme(darkTheme) {
-                content()
-            }
-        }
-    }
-
     @Test fun loadingTrainDetails() {
         val state = TrainDetailsViewState(isLoadingMapper = true)
         rule.clockTestRule.pauseClock()
-        rule.setContent { TrainDetailsScreen(state) }
+        rule.setThemedContent(darkMode = false) { TrainDetailsScreen(state) }
         rule.clockTestRule.advanceClock(100)
 
         rule.onNodeWithText("Retrieving train details.").assertIsDisplayed()
@@ -59,7 +50,7 @@ class TrainDetailsScreenTest {
             )
         )
         val state = TrainDetailsViewState(train = longDistanceTrain, nameMapper = stationNameMapper)
-        setThemedContent(darkTheme = true) { TrainDetailsScreen(state) }
+        rule.setThemedContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Long-distance train ABC 123")
             .assertTextEquals("ABC 123").assertIsDisplayed()
@@ -101,7 +92,7 @@ class TrainDetailsScreenTest {
 
     @Test fun intercityTrainDetails() {
         val state = TrainDetailsViewState(train = intercityTrain, nameMapper = stationNameMapper)
-        setThemedContent { TrainDetailsScreen(state) }
+        rule.setThemedContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Intercity train 10")
             .assertTextEquals("IC 10").assertIsDisplayed()
@@ -138,7 +129,7 @@ class TrainDetailsScreenTest {
             )
         )
         val state = TrainDetailsViewState(train = pendolinoTrain, nameMapper = stationNameMapper)
-        setThemedContent(darkTheme = false) { TrainDetailsScreen(state) }
+        rule.setThemedContent(darkMode = false) { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Pendolino train 55")
             .assertTextEquals("S 55").assertIsDisplayed()
@@ -149,7 +140,7 @@ class TrainDetailsScreenTest {
     }
 
     @Test fun commuterTrainDetails() {
-         val commuterTrain = Train(
+        val commuterTrain = Train(
             123, "ABC", Train.Category.Commuter,
             timetable = listOf(
                 departure(1, "1", at("10:00")),
@@ -159,7 +150,7 @@ class TrainDetailsScreenTest {
             )
         )
         val state = TrainDetailsViewState(train = commuterTrain, nameMapper = stationNameMapper)
-        setThemedContent(darkTheme = true) { TrainDetailsScreen(state) }
+        rule.setThemedContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithLabel("Commuter train ABC 123")
             .assertTextEquals("ABC 123").assertIsDisplayed()

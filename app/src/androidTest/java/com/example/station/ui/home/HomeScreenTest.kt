@@ -6,9 +6,9 @@ import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.createComposeRule
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
+import com.example.station.testutil.setThemedContent
 import com.example.station.ui.common.AmbientLocationPermission
 import com.example.station.ui.common.Permission
-import com.example.station.ui.theme.StationTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,11 +20,9 @@ class HomeScreenTest {
         val state = HomeViewState(isLoadingSettings = true)
 
         rule.clockTestRule.pauseClock()
-        rule.setContent {
-            StationTheme(darkTheme = true) {
-                MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
-                    HomeScreen(viewState = state)
-                }
+        rule.setThemedContent {
+            MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
+                HomeScreen(viewState = state)
             }
         }
         rule.clockTestRule.advanceClock(500)
@@ -34,11 +32,9 @@ class HomeScreenTest {
 
     @Test fun displayWelcomeText() {
         val state = HomeViewState(isLoadingSettings = false)
-        rule.setContent {
-            StationTheme(darkTheme = false) {
-                MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
-                    HomeScreen(viewState = state)
-                }
+        rule.setThemedContent(darkMode = false) {
+            MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
+                HomeScreen(viewState = state)
             }
         }
 
@@ -64,5 +60,5 @@ data class MockLocationPermission(
     private val isGranted: Boolean, private val grantRequest: Boolean
 ) : Permission {
     override fun isGranted(): Boolean = isGranted
-    override fun request(onResult: (Boolean) -> Unit) =onResult(grantRequest)
+    override fun request(onResult: (Boolean) -> Unit) = onResult(grantRequest)
 }

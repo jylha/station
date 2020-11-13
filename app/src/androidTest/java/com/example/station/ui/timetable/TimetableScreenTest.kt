@@ -1,6 +1,5 @@
 package com.example.station.ui.timetable
 
-import androidx.compose.runtime.Composable
 import androidx.ui.test.assert
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertLabelEquals
@@ -14,10 +13,7 @@ import com.example.station.model.Train
 import com.example.station.model.arrival
 import com.example.station.model.departure
 import com.example.station.testutil.at
-import com.example.station.ui.theme.StationTheme
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
@@ -31,18 +27,10 @@ class TimetableScreenTest {
     private val testStations = listOf(helsinki, pasila, tikkurila)
     private val testStationMapper = LocalizedStationNames.from(testStations)
 
-    private fun setThemedContent(darkMode: Boolean = true, content: @Composable () -> Unit) {
-        rule.setContent {
-            StationTheme(darkMode) {
-                content()
-            }
-        }
-    }
-
     @Test fun loadingTimetable() {
         val state = TimetableViewState(isLoadingTimetable = true)
         rule.clockTestRule.pauseClock()
-        setThemedContent { TimetableScreen(viewState = state) }
+        rule.setThemedContent { TimetableScreen(viewState = state) }
         rule.clockTestRule.advanceClock(100)
 
         rule.onNodeWithText("Retrieving timetable.").assertIsDisplayed()
@@ -50,7 +38,7 @@ class TimetableScreenTest {
 
     @Test fun emptyTimetable() {
         val state = TimetableViewState(station = pasila, stationNameMapper = testStationMapper)
-        setThemedContent { TimetableScreen(viewState = state) }
+        rule.setThemedContent { TimetableScreen(viewState = state) }
 
         rule.onNodeWithText("Pasila").assertIsDisplayed()
         rule.onNodeWithText("All trains").assertIsDisplayed()
@@ -98,7 +86,7 @@ class TimetableScreenTest {
             station = pasila, timetable = trains,
             stationNameMapper = testStationMapper
         )
-        setThemedContent { TimetableScreen(viewState = state) }
+        rule.setThemedContent { TimetableScreen(viewState = state) }
 
         rule.onNodeWithSubstring("IC, 1").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))
