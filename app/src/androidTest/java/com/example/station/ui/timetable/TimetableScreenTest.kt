@@ -1,5 +1,9 @@
 package com.example.station.ui.timetable
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.ui.test.assert
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertLabelEquals
@@ -138,8 +142,7 @@ class TimetableScreenTest {
 
     @Test fun filterByTrainCategory() {
         val state = TimetableViewState(
-            station = helsinki, timetable = trains,
-            stationNameMapper = testStationMapper
+            station = helsinki, timetable = trains, stationNameMapper = testStationMapper
         )
         val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
         rule.setThemedContent { TimetableScreen(viewState = state, onEvent = onTimetableEvent) }
@@ -155,13 +158,13 @@ class TimetableScreenTest {
 
         argumentCaptor<TimetableEvent>().apply {
             verify(onTimetableEvent, times(1)).invoke(capture())
-            val event = firstValue as TimetableEvent.SelectCategories
+            val event = firstValue as? TimetableEvent.SelectCategories
             assertThat(event).isNotNull()
-            assertThat(event.categories).containsExactly(Train.Category.Commuter)
+            assertThat(event?.categories).containsExactly(Train.Category.Commuter)
         }
     }
 
-    @Test fun filterByTimetableRowType() {
+    @Test fun changeTimetableTypeFromArrivalToDeparture() {
         val timetable = listOf(
             Train(
                 1, "ABC", Train.Category.LongDistance, timetable = listOf(
@@ -184,33 +187,45 @@ class TimetableScreenTest {
                 )
             )
         )
-        val state = TimetableViewState(
-            station = pasila, timetable = timetable,
-            stationNameMapper = testStationMapper,
+        val viewState = TimetableViewState(
+            station = pasila, timetable = timetable, stationNameMapper = testStationMapper,
             selectedTimetableTypes = setOf(TimetableRow.Type.Arrival)
         )
         val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
-        rule.setThemedContent { TimetableScreen(viewState = state, onEvent = onTimetableEvent) }
+        rule.setThemedContent {
+            var state by remember(viewState) { mutableStateOf(viewState) }
+            TimetableScreen(viewState = state, onEvent = { event: TimetableEvent ->
+                if (event is TimetableEvent.SelectTimetableTypes)
+                    state = state.copy(selectedTimetableTypes = event.types)
+                onTimetableEvent(event)
+            })
+        }
 
         rule.onNode(hasText("Arriving")).assertDoesNotExist()
         rule.onNode(hasText("Departing")).assertDoesNotExist()
+
+        rule.onNode(hasText("Arriving trains")).assertIsDisplayed()
+        rule.onNode(hasText("Departing trains")).assertDoesNotExist()
         rule.onNodeWithSubstring("ABC, 1").assertExists()
         rule.onNodeWithSubstring("DEF, 2").assertDoesNotExist()
         rule.onNodeWithSubstring("GHI, 3").assertExists()
 
         rule.onNode(hasLabel("Show filters", ignoreCase = true)).assertIsDisplayed().performClick()
 
-        rule.onNode(hasText("Arriving")).assertIsDisplayed()
-        rule.onNode(hasText("Departing")).assertIsDisplayed().performClick()
+        rule.onNode(hasText("Departing")).assertIsDisplayed()
+        rule.onNode(hasText("Arriving")).assertIsDisplayed().performClick()
+
+        rule.onNode(hasText("Arriving trains")).assertDoesNotExist()
+        rule.onNode(hasText("Departing trains")).assertIsDisplayed()
+        rule.onNodeWithSubstring("ABC, 1").assertExists()
+        rule.onNodeWithSubstring("DEF, 2").assertExists()
+        rule.onNodeWithSubstring("GHI, 3").assertDoesNotExist()
 
         argumentCaptor<TimetableEvent>().apply {
             verify(onTimetableEvent, times(1)).invoke(capture())
-            val event = firstValue as TimetableEvent.SelectTimetableTypes
+            val event = firstValue as? TimetableEvent.SelectTimetableTypes
             assertThat(event).isNotNull()
-            assertThat(event.types).containsExactly(
-                TimetableRow.Type.Arrival,
-                TimetableRow.Type.Departure
-            )
+            assertThat(event?.types).containsExactly(TimetableRow.Type.Departure)
         }
     }
 }
