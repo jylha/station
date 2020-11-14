@@ -99,10 +99,13 @@ dependencies {
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "com.google.truth:truth:${versions.truth}"
     testImplementation "androidx.room:room-testing:${versions.room}"
-    testImplementation "org.mockito:mockito-core:3.5.15"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation "com.google.truth:truth:${versions.truth}"
+    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
     androidTestImplementation "androidx.ui:ui-test:${versions.compose}"
 }
 

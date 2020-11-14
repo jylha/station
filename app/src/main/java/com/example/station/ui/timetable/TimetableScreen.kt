@@ -255,9 +255,17 @@ fun TimetableScreen(
         actions = {
             IconButton(onClick = onSelectStation) { Icon(Icons.Rounded.LocationCity) }
             if (filterSelectionEnabled) {
-                IconButton(onClick = onHideFilters) { Icon(Icons.Default.ExpandLess) }
+                IconButton(
+                    onClick = onHideFilters,
+                    // TODO: 14.11.2020 Translate label
+                    modifier = Modifier.semantics { accessibilityLabel = "Hide filters" }
+                ) { Icon(Icons.Default.ExpandLess) }
             } else {
-                IconButton(onClick = onShowFilters) { Icon(Icons.Default.FilterList) }
+                IconButton(
+                    onClick = onShowFilters,
+                    // TODO: 14.11.2020 Translate label
+                    modifier = Modifier.semantics { accessibilityLabel = "Show filters" }
+                ) { Icon(Icons.Default.FilterList) }
             }
         }
     )

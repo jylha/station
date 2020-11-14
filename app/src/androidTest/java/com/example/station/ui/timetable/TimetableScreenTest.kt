@@ -4,16 +4,25 @@ import androidx.ui.test.assert
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertLabelEquals
 import androidx.ui.test.createComposeRule
+import androidx.ui.test.hasLabel
 import androidx.ui.test.hasSubstring
+import androidx.ui.test.hasText
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
+import androidx.ui.test.performClick
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
+import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.arrival
 import com.example.station.model.departure
 import com.example.station.testutil.at
 import com.example.station.testutil.setThemedContent
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Rule
 import org.junit.Test
 
@@ -48,8 +57,7 @@ class TimetableScreenTest {
 
     private val trains = listOf(
         Train(
-            1, "IC", Train.Category.LongDistance, isRunning = true, timetable =
-            listOf(
+            1, "IC", Train.Category.LongDistance, timetable = listOf(
                 departure(
                     1, "1", at("12:00"), actualTime = at("12:00"),
                     differenceInMinutes = 0, markedReady = true
@@ -63,15 +71,13 @@ class TimetableScreenTest {
             )
         ),
         Train(
-            2, "S", Train.Category.LongDistance, isRunning = true, timetable =
-            listOf(
+            2, "S", Train.Category.LongDistance, timetable = listOf(
                 departure(10, "1", at("12:45")),
                 arrival(1, "4", at("13:00"))
             )
         ),
         Train(
-            3, "ABC", Train.Category.Commuter, commuterLineId = "Z", isRunning = true,
-            timetable = listOf(
+            3, "ABC", Train.Category.Commuter, commuterLineId = "Z", timetable = listOf(
                 departure(1, "5", at("12:30")),
                 arrival(
                     10, "3", at("12:45"), estimatedTime = at("12:48"),
@@ -128,5 +134,83 @@ class TimetableScreenTest {
                         "Estimated time of arrival 12:48, " +
                         "To track 3"
             )
+    }
+
+    @Test fun filterByTrainCategory() {
+        val state = TimetableViewState(
+            station = helsinki, timetable = trains,
+            stationNameMapper = testStationMapper
+        )
+        val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
+        rule.setThemedContent { TimetableScreen(viewState = state, onEvent = onTimetableEvent) }
+
+        rule.onNode(hasText("Commuter")).assertDoesNotExist()
+        rule.onNode(hasText("Long-distance")).assertDoesNotExist()
+
+        rule.onNode(hasLabel("Show filters", ignoreCase = true))
+            .assertIsDisplayed().performClick()
+
+        rule.onNode(hasText("Commuter")).assertIsDisplayed()
+        rule.onNode(hasText("Long-distance")).assertIsDisplayed().performClick()
+
+        argumentCaptor<TimetableEvent>().apply {
+            verify(onTimetableEvent, times(1)).invoke(capture())
+            val event = firstValue as TimetableEvent.SelectCategories
+            assertThat(event).isNotNull()
+            assertThat(event.categories).containsExactly(Train.Category.Commuter)
+        }
+    }
+
+    @Test fun filterByTimetableRowType() {
+        val timetable = listOf(
+            Train(
+                1, "ABC", Train.Category.LongDistance, timetable = listOf(
+                    departure(1, "1", at("12:00")),
+                    arrival(10, "2", at("12:10")),
+                    departure(10, "2", at("12:15")),
+                    arrival(18, "1", at("12:25"))
+                )
+            ),
+            Train(
+                2, "DEF", Train.Category.LongDistance, timetable = listOf(
+                    departure(10, "1", at("12:45")),
+                    arrival(1, "4", at("13:00"))
+                )
+            ),
+            Train(
+                3, "GHI", Train.Category.LongDistance, timetable = listOf(
+                    departure(1, "5", at("12:30")),
+                    arrival(10, "3", at("12:45"))
+                )
+            )
+        )
+        val state = TimetableViewState(
+            station = pasila, timetable = timetable,
+            stationNameMapper = testStationMapper,
+            selectedTimetableTypes = setOf(TimetableRow.Type.Arrival)
+        )
+        val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
+        rule.setThemedContent { TimetableScreen(viewState = state, onEvent = onTimetableEvent) }
+
+        rule.onNode(hasText("Arriving")).assertDoesNotExist()
+        rule.onNode(hasText("Departing")).assertDoesNotExist()
+        rule.onNodeWithSubstring("ABC, 1").assertExists()
+        rule.onNodeWithSubstring("DEF, 2").assertDoesNotExist()
+        rule.onNodeWithSubstring("GHI, 3").assertExists()
+
+        rule.onNode(hasLabel("Show filters", ignoreCase = true)).assertIsDisplayed().performClick()
+
+        rule.onNode(hasText("Arriving")).assertIsDisplayed()
+        rule.onNode(hasText("Departing")).assertIsDisplayed().performClick()
+
+        argumentCaptor<TimetableEvent>().apply {
+            verify(onTimetableEvent, times(1)).invoke(capture())
+            val event = firstValue as TimetableEvent.SelectTimetableTypes
+            assertThat(event).isNotNull()
+            assertThat(event.types).containsExactly(
+                TimetableRow.Type.Arrival,
+                TimetableRow.Type.Departure
+            )
+        }
     }
 }
