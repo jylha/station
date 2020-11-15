@@ -29,6 +29,9 @@ fun AboutScreen() {
     val sourceText = stringResource(R.string.text_source)
 
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+    val textStyle = MaterialTheme.typography.body1.copy(
+        lineHeight = MaterialTheme.typography.body1.fontSize * 1.5
+    )
     Card(
         Modifier
             .background(
@@ -52,9 +55,15 @@ fun AboutScreen() {
                 "$sourceLabel $sourceText",
                 color = contentColor,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1.copy(
-                    lineHeight = MaterialTheme.typography.body1.fontSize * 1.5
-                )
+                style = textStyle
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "Train animation by Léa Poisson on LottieFiles:\n" +
+                        "https://lottiefiles.com/11580-winter-train",
+                color = contentColor,
+                textAlign = TextAlign.Center,
+                style = textStyle
             )
         }
     }
