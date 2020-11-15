@@ -197,7 +197,7 @@ fun HomeScreen(
     AndroidView(
         { context: Context ->
             val view = LottieAnimationView(context)
-            view.setAnimation("train-animation.json")
+            view.setAnimation(R.raw.train_animation)
             view.repeatCount = 0
             view.repeatMode = LottieDrawable.RESTART
             view.playAnimation()
