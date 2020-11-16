@@ -8,8 +8,8 @@
     <string name="label_nearest_station">Närmaste station</string>
     <string name="label_search_station">Sök station</string>
 
-    <string name="label_about">Om den här applikationen</string>
-    <string name="label_source">Trafikinformationskälla:</string>
+    <string name="label_about_application">Om den här applikationen</string>
+    <string name="label_information_source">Trafikinformationskälla:</string>
 
     <string name="message_loading_settings">Hämtar inställningar.</string>>
     <string name="message_loading_stations">Hämtar stationer.</string>

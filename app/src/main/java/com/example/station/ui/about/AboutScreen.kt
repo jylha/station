@@ -24,9 +24,10 @@ import com.example.station.ui.common.portraitOrientation
 @Preview
 @Composable
 fun AboutScreen() {
-    val aboutLabel = stringResource(R.string.label_about)
-    val sourceLabel = stringResource(R.string.label_source)
-    val sourceText = stringResource(R.string.text_source)
+    val aboutLabel = stringResource(R.string.label_about_application)
+    val informationSourceLabel = stringResource(R.string.label_information_source)
+    val informationSourceText = stringResource(R.string.text_information_source)
+    val trainAnimationCreditText = stringResource(R.string.text_train_animation_credit)
 
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
     val textStyle = MaterialTheme.typography.body1.copy(
@@ -52,15 +53,14 @@ fun AboutScreen() {
             Text(aboutLabel, style = MaterialTheme.typography.h5)
             Spacer(Modifier.height(16.dp))
             Text(
-                "$sourceLabel $sourceText",
+                "$informationSourceLabel $informationSourceText",
                 color = contentColor,
                 textAlign = TextAlign.Center,
                 style = textStyle
             )
             Spacer(Modifier.height(16.dp))
             Text(
-                "Train animation by Léa Poisson on LottieFiles:\n" +
-                        "https://lottiefiles.com/11580-winter-train",
+                trainAnimationCreditText,
                 color = contentColor,
                 textAlign = TextAlign.Center,
                 style = textStyle

@@ -9,8 +9,8 @@
     <string name="label_nearest_station">Lähin asema</string>
     <string name="label_search_station">Etsi asema</string>
 
-    <string name="label_about">Tietoja sovelluksesta</string>
-    <string name="label_source">Liikennetietojen lähde:</string>
+    <string name="label_about_application">Tietoja sovelluksesta</string>
+    <string name="label_information_source">Liikennetietojen lähde:</string>
 
     <string name="message_loading_settings">Haetaan asetuksia.</string>
     <string name="message_loading_stations">Haetaan asemia.</string>

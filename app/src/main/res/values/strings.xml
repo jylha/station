@@ -10,9 +10,15 @@
     <string name="label_nearest_station">Nearest station</string>
     <string name="label_search_station">Search station</string>
     
-    <string name="label_about">About the application</string>
-    <string name="label_source">Source of traffic information:</string>
-    <string name="text_source" translatable="false">Traffic Management Finland / digitraffic.fi, license CC 4.0 BY</string>
+    <string name="label_about_application">About the application</string>
+    <string name="label_information_source">Source of traffic information:</string>
+    <string name="text_information_source" translatable="false">
+        Traffic Management Finland / digitraffic.fi, license CC 4.0 BY
+    </string>
+    <string name="text_train_animation_credit" translatable="false">
+        Train animation by Léa Poisson on LottieFiles:
+        https://lottiefiles.com/11580-winter-train
+    </string>
 
     <!-- The message shown when loading application settings. -->
     <string name="message_loading_settings">Retrieving application settings.</string>
