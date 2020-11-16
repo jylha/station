@@ -54,6 +54,8 @@
     <string name="label_matching_stations">Vastaavat asemat</string>
     <string name="label_delay_causes">Viivästymisen syyt</string>
     <string name="label_retry">Yritä uudelleen</string>
+    <string name="label_show_filters">Näytä valinnat</string>
+    <string name="label_hide_filters">Piilota valinnat</string>
 
     <string name="accessibility_label_long_distance_train">Kaukojuna %1$s %2$d</string>
     <string name="accessibility_label_intercity_train">Intercity juna %1$d</string>
