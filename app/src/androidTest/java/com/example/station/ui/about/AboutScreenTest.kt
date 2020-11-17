@@ -20,5 +20,6 @@ class AboutScreenTest {
             hasSubstring("Source of traffic information:") and
                     hasSubstring("Traffic Management Finland / digitraffic.fi, license CC 4.0 BY")
         ).assertIsDisplayed()
+        rule.onNode(hasSubstring("Train animation by")).assertIsDisplayed()
     }
 }
