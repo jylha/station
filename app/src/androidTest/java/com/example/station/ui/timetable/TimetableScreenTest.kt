@@ -11,6 +11,7 @@ import androidx.ui.test.createComposeRule
 import androidx.ui.test.hasLabel
 import androidx.ui.test.hasSubstring
 import androidx.ui.test.hasText
+import androidx.ui.test.onNodeWithLabel
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.performClick
@@ -97,6 +98,9 @@ class TimetableScreenTest {
             stationNameMapper = testStationMapper
         )
         rule.setThemedContent { TimetableScreen(viewState = state) }
+
+        rule.onNodeWithLabel("Select station").assertIsDisplayed()
+        rule.onNodeWithLabel("Show filters").assertIsDisplayed()
 
         rule.onNodeWithSubstring("IC, 1").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))

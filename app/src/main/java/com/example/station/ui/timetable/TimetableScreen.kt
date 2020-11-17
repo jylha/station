@@ -253,22 +253,22 @@ fun TimetableScreen(
             }
         },
         actions = {
-            IconButton(onClick = onSelectStation) { Icon(Icons.Rounded.LocationCity) }
+            val selectStationLabel = stringResource(R.string.label_select_station)
+            IconButton(
+                onClick = onSelectStation,
+                modifier = Modifier.semantics { accessibilityLabel = selectStationLabel }
+            ) { Icon(Icons.Rounded.LocationCity) }
             if (filterSelectionEnabled) {
                 val hideFiltersLabel = stringResource(R.string.label_hide_filters)
                 IconButton(
                     onClick = onHideFilters,
-                    modifier = Modifier.semantics {
-                        accessibilityLabel = hideFiltersLabel
-                    }
+                    modifier = Modifier.semantics { accessibilityLabel = hideFiltersLabel }
                 ) { Icon(Icons.Default.ExpandLess) }
             } else {
                 val showFiltersLabel = stringResource(R.string.label_show_filters)
                 IconButton(
                     onClick = onShowFilters,
-                    modifier = Modifier.semantics {
-                        accessibilityLabel = showFiltersLabel
-                    }
+                    modifier = Modifier.semantics { accessibilityLabel = showFiltersLabel }
                 ) { Icon(Icons.Default.FilterList) }
             }
         }
