@@ -2,6 +2,7 @@ package com.example.station.ui.common
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.station.R
+import com.example.station.ui.theme.StationTheme
 
 /** An empty state composable for displaying empty states in the application. */
 @Composable
@@ -27,17 +30,20 @@ fun EmptyState(
     text: String,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier.fillMaxSize().padding(20.dp),
-        alignment = Alignment.Center
+    Surface(
+        modifier.fillMaxSize()
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Box(
                 Modifier
-                    .preferredSize(150.dp)
+                    .preferredSize(140.dp)
                     .background(
                         MaterialTheme.colors.primary.copy(alpha = 0.1f),
-                        RoundedCornerShape(75.dp)
+                        RoundedCornerShape(70.dp)
                     )
             ) {
                 Icon(
@@ -46,7 +52,7 @@ fun EmptyState(
                     tint = MaterialTheme.colors.primary.copy(alpha = 0.3f)
                 )
             }
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text,
                 textAlign = TextAlign.Center,
@@ -62,7 +68,9 @@ fun EmptyState(
 @Preview(name = "Empty", showBackground = true)
 @Composable
 private fun Empty() {
-    EmptyState("(empty)")
+    StationTheme(darkTheme = true) {
+        EmptyState("(empty)")
+    }
 }
 
 @Preview(name = "Long text", showBackground = true)
