@@ -1,10 +1,10 @@
 package com.example.station.data.settings
 
 import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.core.preferencesSetKey
 import androidx.datastore.preferences.createDataStore
-import androidx.datastore.preferences.edit
-import androidx.datastore.preferences.preferencesKey
-import androidx.datastore.preferences.preferencesSetKey
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import dagger.hilt.android.qualifiers.ApplicationContext
