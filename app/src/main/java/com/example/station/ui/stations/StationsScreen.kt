@@ -107,14 +107,17 @@ fun StationScreen(
         }
     }
 
-    val searchLabel = stringResource(R.string.label_search_station)
+    val searchLabel = stringResource(R.string.accessibility_label_search)
+    val selectNearestLabel = stringResource(R.string.label_nearest_station)
+    val searchStationLabel = stringResource(R.string.label_search_station)
 
     Scaffold(
         topBar = {
             if (searchEnabled) {
                 SearchBar(
                     text = searchText,
-                    placeholderText = searchLabel,
+                    placeholderText = searchStationLabel,
+                    modifier = Modifier.semantics { accessibilityLabel = searchLabel },
                     onValueChanged = { value -> searchText = value },
                     onClose = { searchEnabled = false; searchText = "" }
                 )
@@ -122,15 +125,18 @@ fun StationScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.label_select_station)) },
                     actions = {
-                        IconButton(onClick = onSelectNearest) {
-                            Icon(Icons.Rounded.MyLocation)
-                        }
+                        IconButton(
+                            onClick = onSelectNearest,
+                            modifier = Modifier.semantics {
+                                accessibilityLabel = selectNearestLabel
+                            }
+                        ) { Icon(Icons.Rounded.MyLocation) }
                         IconButton(
                             onClick = { searchEnabled = true },
-                            modifier = Modifier.semantics { accessibilityLabel = searchLabel }
-                        ) {
-                            Icon(Icons.Default.Search)
-                        }
+                            modifier = Modifier.semantics {
+                                accessibilityLabel = searchStationLabel
+                            }
+                        ) { Icon(Icons.Default.Search) }
                     }
                 )
             }

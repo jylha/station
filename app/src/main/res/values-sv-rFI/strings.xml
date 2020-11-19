@@ -74,4 +74,5 @@
     <string name="accessibility_label_to_station">Till %1$s</string>
     <string name="accessibility_label_to_track">Till spår %1$s</string>
 
+    <string name="accessibility_label_search">Sök</string>
 </resources>

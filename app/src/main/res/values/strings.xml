@@ -98,4 +98,5 @@
     <string name="accessibility_label_to_station">To %1$s</string>
     <string name="accessibility_label_to_track">To track %1$s</string>
 
+    <string name="accessibility_label_search">Search</string>
 </resources>

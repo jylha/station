@@ -3,16 +3,14 @@ package com.example.station.ui.stations
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertTextEquals
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.hasLabel
-import androidx.ui.test.hasSubstring
+import androidx.ui.test.onChildAt
 import androidx.ui.test.onChildren
+import androidx.ui.test.onNodeWithLabel
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
 import androidx.ui.test.onParent
-import androidx.ui.test.onRoot
 import androidx.ui.test.performClick
 import androidx.ui.test.performTextInput
-import androidx.ui.test.printToLog
 import com.example.station.model.Station
 import com.example.station.testutil.setThemedContent
 import org.junit.Rule
@@ -28,6 +26,9 @@ class StationsScreenTest {
         )
         rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
+        rule.onNodeWithLabel("Nearest station").assertIsDisplayed()
+        rule.onNodeWithLabel("Search station").assertIsDisplayed()
+
         rule.onNodeWithText("Select station").assertIsDisplayed()
         rule.onNodeWithText("RECENT", ignoreCase = true).assertDoesNotExist()
         rule.onNodeWithText("ALL STATIONS").assertIsDisplayed()
@@ -41,6 +42,9 @@ class StationsScreenTest {
             recentStations = listOf(1)
         )
         rule.setThemedContent(darkMode = false) { StationsScreen(state = state, onSelect = {}) }
+
+        rule.onNodeWithLabel("Nearest station").assertIsDisplayed()
+        rule.onNodeWithLabel("Search station").assertIsDisplayed()
 
         rule.onNodeWithText("Select station").assertIsDisplayed()
         rule.onNodeWithText("RECENT").assertIsDisplayed()
@@ -61,6 +65,10 @@ class StationsScreenTest {
         )
         rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
+        rule.onNodeWithLabel("Nearest station").assertIsDisplayed()
+        rule.onNodeWithLabel("Search station").assertIsDisplayed()
+        rule.onNodeWithLabel("Search").assertDoesNotExist()
+
         rule.onNodeWithText("Select station")
         rule.onNodeWithText("ALL STATIONS").assertIsDisplayed()
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
@@ -68,21 +76,29 @@ class StationsScreenTest {
             .onParent().onChildren()[3].assertTextEquals("Helsinki Airport")
         rule.onNodeWithText("Search station").assertDoesNotExist()
 
-        rule.onRoot().printToLog("TAG")
+        rule.onNodeWithLabel("Search station").performClick()
 
-        rule.onNode(hasLabel("Search station")).performClick()
+        rule.onNodeWithLabel("Nearest station").assertDoesNotExist()
+        rule.onNodeWithLabel("Search station").assertDoesNotExist()
+        rule.onNodeWithLabel("Search").assertIsDisplayed()
 
         rule.onNodeWithSubstring("Search station").assertIsDisplayed()
         rule.onNodeWithText("ALL STATIONS").assertIsDisplayed()
         rule.onNodeWithText("MATCHING STATIONS").assertDoesNotExist()
 
-        rule.onNode(hasSubstring("Search station")).performTextInput("h")
+        rule.onNodeWithLabel("Search").onChildAt(1).performTextInput("h")
 
         rule.onNodeWithSubstring("Search station").assertDoesNotExist()
         rule.onNodeWithText("ALL STATIONS").assertDoesNotExist()
         rule.onNodeWithText("MATCHING STATIONS").assertIsDisplayed()
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
             .onParent().onChildren()[2].assertTextEquals("Helsinki Airport")
+
+        rule.onNodeWithLabel("Search").onChildAt(1).performTextInput("a")
+
+        rule.onNodeWithText("ALL STATIONS").assertDoesNotExist()
+        rule.onNodeWithText("MATCHING STATIONS").assertDoesNotExist()
+        rule.onNodeWithText("No stations match the search.").assertIsDisplayed()
     }
 }
 
