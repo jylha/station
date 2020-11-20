@@ -943,6 +943,9 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     alpha: Float,
     modifier: Modifier = Modifier
 ) {
+    val delayCauseNames = delayCauses.mapNotNull { cause -> causeName(cause) }
+        .distinct()
+
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = alpha)
     Column(modifier.fillMaxWidth().padding(top = 8.dp)) {
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f * alpha))
@@ -956,7 +959,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
                     style = MaterialTheme.typography.caption
                 )
-                delayCauses.forEach { cause -> DelayCause(cause, contentColor) }
+                delayCauseNames.forEach { causeName -> DelayCauseName(causeName, contentColor) }
             }
             HideDelayCauseAction(
                 onClick = onClose,
@@ -967,13 +970,13 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     }
 }
 
-@Composable private fun DelayCause(
-    cause: DelayCause,
+@Composable private fun DelayCauseName(
+    causeName: String,
     color: Color,
     modifier: Modifier = Modifier
 ) {
     Text(
-        causeName(cause),
+        causeName,
         modifier.padding(top = 8.dp),
         color = color
     )
