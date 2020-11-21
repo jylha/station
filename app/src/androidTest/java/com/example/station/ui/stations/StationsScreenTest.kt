@@ -16,6 +16,15 @@ import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
+private const val LABEL_NEAREST_STATION = "Nearest station"
+private const val LABEL_SEARCH_STATION = "Search station"
+private const val LABEL_SEARCH = "Search"
+
+private const val TEXT_RECENT = "RECENT"
+private const val TEXT_ALL_STATIONS = "ALL STATIONS"
+private const val TEXT_MATCHING_STATIONS = "MATCHING STATIONS"
+private const val TEXT_SELECT_STATION = "Select station"
+
 class StationsScreenTest {
 
     @get:Rule val rule = createComposeRule()
@@ -26,12 +35,12 @@ class StationsScreenTest {
         )
         rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
-        rule.onNodeWithLabel("Nearest station").assertIsDisplayed()
-        rule.onNodeWithLabel("Search station").assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertIsDisplayed()
 
-        rule.onNodeWithText("Select station").assertIsDisplayed()
-        rule.onNodeWithText("RECENT", ignoreCase = true).assertDoesNotExist()
-        rule.onNodeWithText("ALL STATIONS").assertIsDisplayed()
+        rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_RECENT, ignoreCase = true).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()
         rule.onNodeWithText("Helsinki").assertIsDisplayed()
         rule.onNodeWithText("Pasila").assertIsDisplayed()
     }
@@ -43,14 +52,14 @@ class StationsScreenTest {
         )
         rule.setThemedContent(darkMode = false) { StationsScreen(state = state, onSelect = {}) }
 
-        rule.onNodeWithLabel("Nearest station").assertIsDisplayed()
-        rule.onNodeWithLabel("Search station").assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertIsDisplayed()
 
-        rule.onNodeWithText("Select station").assertIsDisplayed()
-        rule.onNodeWithText("RECENT").assertIsDisplayed()
-            .onParent().onChildren()[0].assertTextEquals("RECENT")
+        rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_RECENT).assertIsDisplayed()
+            .onParent().onChildren()[0].assertTextEquals(TEXT_RECENT)
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
-            .onParent().onChildren()[2].assertTextEquals("ALL STATIONS")
+            .onParent().onChildren()[2].assertTextEquals(TEXT_ALL_STATIONS)
             .onParent().onChildren()[3].assertTextEquals("Helsinki")
             .onParent().onChildren()[4].assertTextEquals("Pasila")
     }
@@ -65,39 +74,38 @@ class StationsScreenTest {
         )
         rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
-        rule.onNodeWithLabel("Nearest station").assertIsDisplayed()
-        rule.onNodeWithLabel("Search station").assertIsDisplayed()
-        rule.onNodeWithLabel("Search").assertDoesNotExist()
+        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_SEARCH).assertDoesNotExist()
 
-        rule.onNodeWithText("Select station")
-        rule.onNodeWithText("ALL STATIONS").assertIsDisplayed()
+        rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
             .onParent().onChildren()[2].assertTextEquals("Pasila")
             .onParent().onChildren()[3].assertTextEquals("Helsinki Airport")
-        rule.onNodeWithText("Search station").assertDoesNotExist()
 
-        rule.onNodeWithLabel("Search station").performClick()
+        rule.onNodeWithLabel(LABEL_SEARCH_STATION).performClick()
 
-        rule.onNodeWithLabel("Nearest station").assertDoesNotExist()
-        rule.onNodeWithLabel("Search station").assertDoesNotExist()
-        rule.onNodeWithLabel("Search").assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertDoesNotExist()
+        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertDoesNotExist()
+        rule.onNodeWithLabel(LABEL_SEARCH).assertIsDisplayed()
 
         rule.onNodeWithSubstring("Search station").assertIsDisplayed()
-        rule.onNodeWithText("ALL STATIONS").assertIsDisplayed()
-        rule.onNodeWithText("MATCHING STATIONS").assertDoesNotExist()
+        rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()
 
-        rule.onNodeWithLabel("Search").onChildAt(1).performTextInput("h")
+        rule.onNodeWithLabel(LABEL_SEARCH).onChildAt(1).performTextInput("h")
 
         rule.onNodeWithSubstring("Search station").assertDoesNotExist()
-        rule.onNodeWithText("ALL STATIONS").assertDoesNotExist()
-        rule.onNodeWithText("MATCHING STATIONS").assertIsDisplayed()
+        rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertIsDisplayed()
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
             .onParent().onChildren()[2].assertTextEquals("Helsinki Airport")
 
-        rule.onNodeWithLabel("Search").onChildAt(1).performTextInput("a")
+        rule.onNodeWithLabel(LABEL_SEARCH).onChildAt(1).performTextInput("a")
 
-        rule.onNodeWithText("ALL STATIONS").assertDoesNotExist()
-        rule.onNodeWithText("MATCHING STATIONS").assertDoesNotExist()
+        rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()
         rule.onNodeWithText("No stations match the search.").assertIsDisplayed()
     }
 }

@@ -6,7 +6,7 @@ import com.example.station.ui.theme.StationTheme
 
 /**
  * Extension function that calls setContent on receiver with given [content] wrapped in
- * StationTheme with given [darkMode]].
+ * StationTheme with given [darkMode].
  * @receiver Compose test rule.
  */
 fun ComposeTestRuleJUnit.setThemedContent(

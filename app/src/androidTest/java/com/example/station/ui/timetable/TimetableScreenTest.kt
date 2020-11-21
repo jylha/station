@@ -8,9 +8,7 @@ import androidx.ui.test.assert
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.assertLabelEquals
 import androidx.ui.test.createComposeRule
-import androidx.ui.test.hasLabel
 import androidx.ui.test.hasSubstring
-import androidx.ui.test.hasText
 import androidx.ui.test.onNodeWithLabel
 import androidx.ui.test.onNodeWithSubstring
 import androidx.ui.test.onNodeWithText
@@ -30,6 +28,18 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Rule
 import org.junit.Test
+
+private const val LABEL_SELECT_STATION = "Select station"
+private const val LABEL_SHOW_FILTERS = "Show filters"
+private const val LABEL_HIDE_FILTERS = "Hide filters"
+
+private const val TEXT_COMMUTER = "Commuter"
+private const val TEXT_LONG_DISTANCE = "Long-distance"
+private const val TEXT_ARRIVING = "Arriving"
+private const val TEXT_DEPARTING = "Departing"
+private const val TEXT_ALL_TRAINS = "All trains"
+private const val TEXT_ARRIVING_TRAINS = "Arriving trains"
+private const val TEXT_DEPARTING_TRAINS = "Departing trains"
 
 class TimetableScreenTest {
 
@@ -55,7 +65,7 @@ class TimetableScreenTest {
         rule.setThemedContent { TimetableScreen(viewState = state) }
 
         rule.onNodeWithText("Pasila").assertIsDisplayed()
-        rule.onNodeWithText("All trains").assertIsDisplayed()
+        rule.onNodeWithText(TEXT_ALL_TRAINS).assertIsDisplayed()
         rule.onNodeWithText("No trains are scheduled to stop at this station in the near future.")
             .assertIsDisplayed()
     }
@@ -94,13 +104,14 @@ class TimetableScreenTest {
 
     @Test fun timetable() {
         val state = TimetableViewState(
-            station = pasila, timetable = trains,
-            stationNameMapper = testStationMapper
+            station = pasila, timetable = trains, stationNameMapper = testStationMapper
         )
         rule.setThemedContent { TimetableScreen(viewState = state) }
 
-        rule.onNodeWithLabel("Select station").assertIsDisplayed()
-        rule.onNodeWithLabel("Show filters").assertIsDisplayed()
+        rule.onNodeWithText(TEXT_ALL_TRAINS).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_SELECT_STATION).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
 
         rule.onNodeWithSubstring("IC, 1").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))
@@ -146,19 +157,24 @@ class TimetableScreenTest {
 
     @Test fun filterByTrainCategory() {
         val state = TimetableViewState(
-            station = helsinki, timetable = trains, stationNameMapper = testStationMapper
+            station = helsinki, timetable = trains, stationNameMapper = testStationMapper,
+            selectedTrainCategories = setOf(Train.Category.Commuter, Train.Category.LongDistance)
         )
         val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
         rule.setThemedContent { TimetableScreen(viewState = state, onEvent = onTimetableEvent) }
 
-        rule.onNode(hasText("Commuter")).assertDoesNotExist()
-        rule.onNode(hasText("Long-distance")).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_ALL_TRAINS).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_COMMUTER).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertDoesNotExist()
+        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
 
-        rule.onNode(hasLabel("Show filters", ignoreCase = true))
-            .assertIsDisplayed().performClick()
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed().performClick()
 
-        rule.onNode(hasText("Commuter")).assertIsDisplayed()
-        rule.onNode(hasText("Long-distance")).assertIsDisplayed().performClick()
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertDoesNotExist()
+        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertIsDisplayed()
+
+        rule.onNodeWithText(TEXT_COMMUTER).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertIsDisplayed().performClick()
 
         argumentCaptor<TimetableEvent>().apply {
             verify(onTimetableEvent, times(1)).invoke(capture())
@@ -168,7 +184,7 @@ class TimetableScreenTest {
         }
     }
 
-    @Test fun changeTimetableTypeFromArrivalToDeparture() {
+    @Test fun changeTimetableTypeFromArrivingToDeparting() {
         val timetable = listOf(
             Train(
                 1, "ABC", Train.Category.LongDistance, timetable = listOf(
@@ -205,22 +221,24 @@ class TimetableScreenTest {
             })
         }
 
-        rule.onNode(hasText("Arriving")).assertDoesNotExist()
-        rule.onNode(hasText("Departing")).assertDoesNotExist()
-
-        rule.onNode(hasText("Arriving trains")).assertIsDisplayed()
-        rule.onNode(hasText("Departing trains")).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_ARRIVING).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_DEPARTING).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_ARRIVING_TRAINS).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_DEPARTING_TRAINS).assertDoesNotExist()
         rule.onNodeWithSubstring("ABC, 1").assertExists()
         rule.onNodeWithSubstring("DEF, 2").assertDoesNotExist()
         rule.onNodeWithSubstring("GHI, 3").assertExists()
 
-        rule.onNode(hasLabel("Show filters", ignoreCase = true)).assertIsDisplayed().performClick()
+        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed().performClick()
 
-        rule.onNode(hasText("Departing")).assertIsDisplayed()
-        rule.onNode(hasText("Arriving")).assertIsDisplayed().performClick()
+        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertIsDisplayed()
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_DEPARTING).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_ARRIVING).assertIsDisplayed().performClick()
 
-        rule.onNode(hasText("Arriving trains")).assertDoesNotExist()
-        rule.onNode(hasText("Departing trains")).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_ARRIVING_TRAINS).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_DEPARTING_TRAINS).assertIsDisplayed()
         rule.onNodeWithSubstring("ABC, 1").assertExists()
         rule.onNodeWithSubstring("DEF, 2").assertExists()
         rule.onNodeWithSubstring("GHI, 3").assertDoesNotExist()
