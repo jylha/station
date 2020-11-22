@@ -11,6 +11,7 @@ import java.time.ZonedDateTime
  * @param trainStopping Whether train is stopping on the station.
  * @param commercialStop Whether the stop is commercial, or null if train is no stopping..
  * @param track Track number.
+ * @param cancelled Whether the train's arrival or departure is cancelled.
  * @param scheduledTime Scheduled time for train's arrival or departure.
  * @param estimatedTime Estimated time for train's arrival or departure.
  * @param actualTime Actual time of of arrival or departure.
@@ -25,6 +26,7 @@ data class TimetableRow(
     val trainStopping: Boolean = true,
     val commercialStop: Boolean? = null,
     val track: String? = null,
+    val cancelled: Boolean = false,
     val scheduledTime: ZonedDateTime,
     val estimatedTime: ZonedDateTime? = null,
     val actualTime: ZonedDateTime? = null,
@@ -58,6 +60,7 @@ internal fun arrival(
         trainStopping,
         commercialStop,
         track,
+        cancelled = false,
         scheduledTime,
         estimatedTime,
         actualTime,
@@ -85,6 +88,7 @@ internal fun departure(
         trainStopping,
         commercialStop,
         track,
+        cancelled = false,
         scheduledTime,
         estimatedTime,
         actualTime,

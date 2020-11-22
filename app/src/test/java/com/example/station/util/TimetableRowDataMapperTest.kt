@@ -11,8 +11,8 @@ import org.junit.Test
 class TimetableRowDataMapperTest {
 
     private val networkEntity = TimetableRowNetworkEntity(
-        "ARRIVAL", "", 1, false,
-        scheduledTime = "2020-01-01T00:00:00.000Z"
+        "ARRIVAL", "", 1, false, cancelled = false,
+        scheduledTime = "2020-01-01T00:00Z"
     )
 
     @Test fun `stationCode is mapped correctly into domain model`() {
@@ -48,6 +48,11 @@ class TimetableRowDataMapperTest {
     @Test fun `track is mapped correctly into domain model`() {
         val result = networkEntity.copy(track = "12").toDomainModel()
         assertThat(result.track).isEqualTo("12")
+    }
+
+    @Test fun `cancelled is mapped correctly into domain model`() {
+        val result = networkEntity.copy(cancelled = true).toDomainModel()
+        assertThat(result.cancelled).isTrue()
     }
 
     @Test fun `scheduledTime is mapped correctly into domain model`() {

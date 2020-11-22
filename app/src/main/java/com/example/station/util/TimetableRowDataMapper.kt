@@ -18,6 +18,7 @@ fun TimetableRowNetworkEntity.toDomainModel(): TimetableRow {
         trainStopping = trainStopping,
         commercialStop = commercialStop,
         track = track,
+        cancelled = cancelled,
         scheduledTime = ZonedDateTime.parse(scheduledTime),
         estimatedTime = if (liveEstimateTime != null) ZonedDateTime.parse(liveEstimateTime) else null,
         actualTime = if (actualTime != null) ZonedDateTime.parse(actualTime) else null,

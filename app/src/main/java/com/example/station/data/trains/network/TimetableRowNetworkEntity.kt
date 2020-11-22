@@ -22,6 +22,9 @@ data class TimetableRowNetworkEntity(
     @SerializedName("commercialTrack")
     val track: String? = null,
 
+    @SerializedName("cancelled")
+    val cancelled: Boolean,
+
     @SerializedName("scheduledTime")
     val scheduledTime: String,
 
