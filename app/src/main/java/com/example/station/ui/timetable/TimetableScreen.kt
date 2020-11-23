@@ -73,16 +73,15 @@ import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.Train.Category
 import com.example.station.model.arrival
+import com.example.station.model.arrivalAfter
 import com.example.station.model.delayCauses
+import com.example.station.model.departureAfter
 import com.example.station.model.departure
 import com.example.station.model.isDeparted
-import com.example.station.model.isDestination
 import com.example.station.model.isLongDistanceTrain
 import com.example.station.model.isNotDeparted
 import com.example.station.model.isNotReached
-import com.example.station.model.isOrigin
 import com.example.station.model.isReached
-import com.example.station.model.isWaypoint
 import com.example.station.model.stopsAt
 import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
@@ -414,13 +413,15 @@ fun TimetableScreen(
     }
 
     val stops = remember(trains, selectedTimetableTypes) {
+        val cutoffTime = ZonedDateTime.now().minusMinutes(5)
         trains.flatMap { train ->
             train.stopsAt(station.code).map { stop -> Pair(train, stop) }
         }
             .filter { (_, stop) ->
-                stop.isWaypoint() ||
-                        stop.isDestination() && selectedTimetableTypes.contains(TimetableRow.Type.Arrival) ||
-                        stop.isOrigin() && selectedTimetableTypes.contains(TimetableRow.Type.Departure)
+                selectedTimetableTypes.contains(TimetableRow.Type.Arrival)
+                        && stop.arrivalAfter(cutoffTime)
+                        || selectedTimetableTypes.contains(TimetableRow.Type.Departure)
+                        && stop.departureAfter(cutoffTime)
             }
             .sortedBy { (_, stop) -> timeOfSelectedStopType(stop) }
     }
@@ -763,7 +764,11 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     }
 }
 
-@Composable fun TrainTypeAndNumber(type: String, number: Int, modifier: Modifier = Modifier) {
+@Composable private fun TrainTypeAndNumber(
+    type: String,
+    number: Int,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -797,7 +802,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     }
 }
 
-@Composable fun trainIdentificationAccessibilityLabel(train: Train): String {
+@Composable private fun trainIdentificationAccessibilityLabel(train: Train): String {
     return train.run {
         if (isLongDistanceTrain()) {
             when (type) {

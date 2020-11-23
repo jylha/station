@@ -232,4 +232,52 @@ class StopTest {
         val result = stop.isNotDeparted()
         assertThat(result).isFalse()
     }
+
+    @Test fun `arrivalAfter() returns false for a origin station`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = time2))
+        val result =  stop.arrivalAfter(time1)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `arrivalAfter() returns false when actual time of arrival is before given time`() {
+        val stop = Stop(arrival = arrival.copy(scheduledTime = time1, actualTime = time1))
+        val result = stop.arrivalAfter(time2)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `arrivalAfter() returns true when actual time of arrival is after given time`() {
+        val stop = Stop(arrival = arrival.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.arrivalAfter(time1)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `arrivalAfter() returns true when actual time of arrival is not set`() {
+        val stop = Stop(arrival = arrival.copy(scheduledTime = time1))
+        val result = stop.arrivalAfter(time2)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `departureAfter()  returns false for a destination station`() {
+        val stop = Stop(arrival = arrival.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.departureAfter(time1)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `departureAfter() returns false when actual time of departure is before given time`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = time1))
+        val result = stop.departureAfter(time2)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `departureAfter() returns true when actual time of departure is after given time`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = time2))
+        val result = stop.departureAfter(time1)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `departureAfter() returns true when actual time of departure is not set`() {
+        val stop = Stop(departure = departure.copy(scheduledTime = time1))
+        val result = stop.departureAfter(time2)
+        assertThat(result).isTrue()
+    }
 }

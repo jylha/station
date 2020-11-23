@@ -40,3 +40,13 @@ fun Stop.timeOfNextEvent(): ZonedDateTime {
         else -> throw IllegalStateException()
     }
 }
+
+/** Checks whether the train either has not yet arrived to the stop or arrived after given time. */
+fun Stop.arrivalAfter(time: ZonedDateTime): Boolean {
+    return arrival?.run { actualTime?.isAfter(time) ?: true } ?: false
+}
+
+/** Checks whether the train has either not yet departed from the stop or departed after given time. */
+fun Stop.departureAfter(time: ZonedDateTime): Boolean {
+    return departure?.run { actualTime?.isAfter(time) ?: true } ?: false
+}
