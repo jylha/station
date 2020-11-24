@@ -1,5 +1,6 @@
 package com.example.station.di
 
+import com.example.station.BuildConfig
 import com.example.station.data.stations.network.StationService
 import com.example.station.data.trains.network.TrainService
 import com.google.gson.GsonBuilder
@@ -13,7 +14,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(ApplicationComponent::class)
 object NetworkModule {
@@ -24,7 +24,8 @@ object NetworkModule {
         val gson = GsonBuilder().create()
 
         val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BASIC
+        logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC
+        else HttpLoggingInterceptor.Level.NONE
 
         val client = OkHttpClient.Builder()
             .addInterceptor(logging)

@@ -14,6 +14,5 @@ abstract class LocationModule {
 
     @Singleton
     @Binds
-    abstract fun bindLocationService(service: DefaultLocationService): LocationService
-
+    abstract fun bind(service: DefaultLocationService): LocationService
 }

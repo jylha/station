@@ -10,10 +10,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-abstract class StationModule {
+abstract class StationsModule {
 
     @Singleton
     @Binds
-    abstract fun bindStationRepository(repository: StoreBackedStationRepository): StationRepository
+    abstract fun bind(repository: StoreBackedStationRepository): StationRepository
 }
 
