@@ -47,6 +47,7 @@
     <string name="label_arrived">Anlände</string>
     <string name="label_departs">Avgår</string>
     <string name="label_departed">Avgick</string>
+    <string name="label_cancelled">Inställt</string>
     <string name="label_track">Spår</string>
     <string name="label_recent">Senaste</string>
     <string name="label_all_stations">Alla stationer</string>

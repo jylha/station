@@ -58,6 +58,7 @@ import com.example.station.model.isReached
 import com.example.station.model.isWaypoint
 import com.example.station.model.stationCode
 import com.example.station.ui.common.ActualTime
+import com.example.station.ui.common.CancelledTime
 import com.example.station.ui.common.EstimatedTime
 import com.example.station.ui.common.Loading
 import com.example.station.ui.common.RefreshIndicator
@@ -354,6 +355,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable private fun StopTime(timetableRow: TimetableRow?) {
     timetableRow?.apply {
         when {
+            cancelled -> CancelledTime(timetableRow.type)
             actualTime != null -> ActualTime(actualTime, differenceInMinutes, timetableRow.type)
             estimatedTime != null && differenceInMinutes != 0 -> {
                 EstimatedTime(scheduledTime, estimatedTime, timetableRow.type)
@@ -475,22 +477,23 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val train = Train(
         5, "IC", Train.Category.LongDistance, timetable = listOf(
             departure(
-                1, "2", ZonedDateTime.parse("2020-01-01T09:30:00.000Z"),
-                actualTime = ZonedDateTime.parse("2020-01-01T09:31:00.000Z"),
+                1, "2", ZonedDateTime.parse("2020-01-01T09:30Z"),
+                actualTime = ZonedDateTime.parse("2020-01-01T09:31Z"),
                 differenceInMinutes = 1, markedReady = true
             ),
             arrival(
-                4, "4", ZonedDateTime.parse("2020-01-01T10:11:00.000Z"),
-                actualTime = ZonedDateTime.parse("2020-01-01T10:10:00.000Z"),
+                4, "4", ZonedDateTime.parse("2020-01-01T10:11Z"),
+                actualTime = ZonedDateTime.parse("2020-01-01T10:10Z"),
                 differenceInMinutes = -1
             ),
-            departure(4, "4", ZonedDateTime.parse("2020-01-01T10:12:00.000Z")),
+            departure(4, "4", ZonedDateTime.parse("2020-01-01T10:12Z")),
             arrival(
-                3, "1", ZonedDateTime.parse("2020-01-01T10:30:00.000Z"),
-                estimatedTime = ZonedDateTime.parse("2020-01-01T10:31:00.000Z")
+                3, "1", ZonedDateTime.parse("2020-01-01T10:30Z"),
+                estimatedTime = ZonedDateTime.parse("2020-01-01T10:32Z"),
+                differenceInMinutes = 2
             ),
-            departure(3, "1", ZonedDateTime.parse("2020-01-01T10:34:00.000Z")),
-            arrival(2, "3", ZonedDateTime.parse("2020-01-01T11:30:00.000Z"))
+            departure(3, "1", ZonedDateTime.parse("2020-01-01T10:34Z"), cancelled = true),
+            arrival(2, "3", ZonedDateTime.parse("2020-01-01T11:30Z"), cancelled = true)
         )
     )
 

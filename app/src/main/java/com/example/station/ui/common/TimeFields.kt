@@ -18,7 +18,9 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
@@ -29,6 +31,7 @@ import com.example.station.model.TimetableRow
 import com.example.station.ui.theme.StationTheme
 import com.example.station.util.toLocalTimeString
 import java.time.ZonedDateTime
+import java.util.Locale
 
 /**
  * Composable for displaying schedule time.
@@ -91,19 +94,23 @@ import java.time.ZonedDateTime
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
-            style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
-        )
-        Icon(
-            Icons.Rounded.ArrowRightAlt,
-            Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
-            tint = StationTheme.colors.delayed
-        )
-        Text(
-            estimatedTimeText, color = StationTheme.colors.delayed,
-            style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
-        )
+        if (scheduledTimeText.isNotBlank()) {
+            Text(
+                scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
+                style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
+            )
+            if (estimatedTimeText.isNotBlank()) {
+                Icon(
+                    Icons.Rounded.ArrowRightAlt,
+                    Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
+                    tint = StationTheme.colors.delayed
+                )
+                Text(
+                    estimatedTimeText, color = StationTheme.colors.delayed,
+                    style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
+                )
+            }
+        }
     }
 }
 
@@ -138,9 +145,8 @@ import java.time.ZonedDateTime
         Text(
             actualTimeText,
             style = MaterialTheme.typography.body1,
-            fontStyle = FontStyle.Normal
         )
-        if (differenceInMinutes != 0) {
+        if (actualTimeText.isNotBlank() && differenceInMinutes != 0) {
             Spacer(Modifier.width(4.dp))
             val (text, color) = when {
                 differenceInMinutes > 0 -> Pair("+$differenceInMinutes", StationTheme.colors.late)
@@ -151,13 +157,36 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable fun produceLocalTime(time: ZonedDateTime): State<String> {
+/**
+ * Composable function for displaying a cancellation instead of arrival or departure time.
+ * @param type TimetableRow type.
+ * @param modifier Modifier.
+ */
+@Composable fun CancelledTime(type: TimetableRow.Type, modifier: Modifier = Modifier) {
+    val cancelledLabel = stringResource(R.string.label_cancelled).toUpperCase(Locale.getDefault())
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = cancelledLabel,
+            color = Color.Red,
+            style = MaterialTheme.typography.body1,
+        )
+    }
+}
+
+@Composable private fun produceLocalTime(time: ZonedDateTime): State<String> {
     return produceState("", time) {
         value = time.toLocalTimeString()
     }
 }
 
-@Composable fun produceLocalTimes(time1: ZonedDateTime, time2: ZonedDateTime): State<Pair<String, String>> {
+@Composable private fun produceLocalTimes(
+    time1: ZonedDateTime,
+    time2: ZonedDateTime
+): State<Pair<String, String>> {
     return produceState(Pair("", ""), time1, time2) {
         value = Pair(time1.toLocalTimeString(), time2.toLocalTimeString())
     }

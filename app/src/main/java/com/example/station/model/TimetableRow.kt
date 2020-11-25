@@ -53,6 +53,7 @@ internal fun arrival(
     trainStopping: Boolean = true,
     commercialStop: Boolean? = true,
     causes: List<DelayCause> = emptyList(),
+    cancelled: Boolean = false,
 ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Arrival,
@@ -60,7 +61,7 @@ internal fun arrival(
         trainStopping,
         commercialStop,
         track,
-        cancelled = false,
+        cancelled,
         scheduledTime,
         estimatedTime,
         actualTime,
@@ -81,6 +82,7 @@ internal fun departure(
     trainStopping: Boolean = true,
     commercialStop: Boolean? = true,
     causes: List<DelayCause> = emptyList(),
+    cancelled: Boolean = false,
 ): TimetableRow =
     TimetableRow(
         TimetableRow.Type.Departure,
@@ -88,7 +90,7 @@ internal fun departure(
         trainStopping,
         commercialStop,
         track,
-        cancelled = false,
+        cancelled,
         scheduledTime,
         estimatedTime,
         actualTime,

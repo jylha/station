@@ -47,6 +47,7 @@
     <string name="label_arrived">Saapui</string>
     <string name="label_departs">Lähtee</string>
     <string name="label_departed">Lähti</string>
+    <string name="label_cancelled">Peruttu</string>
     <string name="label_track">Raide</string>
     <string name="label_recent">Äskeiset</string>
     <string name="label_all_stations">Kaikki asemat</string>
