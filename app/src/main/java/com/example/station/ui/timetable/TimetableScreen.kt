@@ -87,6 +87,7 @@ import com.example.station.model.timeOfNextEvent
 import com.example.station.model.track
 import com.example.station.ui.Screen
 import com.example.station.ui.common.ActualTime
+import com.example.station.ui.common.CancelledTime
 import com.example.station.ui.common.CauseCategoriesProvider
 import com.example.station.ui.common.EmptyState
 import com.example.station.ui.common.ErrorState
@@ -856,13 +857,14 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 @Composable private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
     arrival?.run {
         when {
+            cancelled -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_arrives)) },
+                time = { CancelledTime(type = TimetableRow.Type.Arrival) },
+                modifier
+            )
             actualTime != null -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
-                time = {
-                    ActualTime(
-                        actualTime, differenceInMinutes, TimetableRow.Type.Arrival
-                    )
-                },
+                time = { ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Arrival) },
                 modifier
             )
             estimatedTime != null && differenceInMinutes != 0 -> TimeField(
@@ -882,11 +884,14 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 @Composable private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
     departure?.run {
         when {
+            cancelled -> TimeField(
+                label = { TimeLabel(stringResource(R.string.label_departs)) },
+                time = { CancelledTime(type = TimetableRow.Type.Departure) },
+                modifier
+            )
             actualTime != null -> TimeField(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
-                time = {
-                    ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Departure)
-                },
+                time = { ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Departure) },
                 modifier
             )
             estimatedTime != null && differenceInMinutes != 0 -> TimeField(
@@ -948,7 +953,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     alpha: Float,
     modifier: Modifier = Modifier
 ) {
-    val delayCauseNames = delayCauses.mapNotNull { cause -> causeName(cause) }
+    val delayCauseNames = delayCauses.map { cause -> causeName(cause) }
         .distinct()
 
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = alpha)
@@ -1086,6 +1091,12 @@ private fun PreviewTimetable() {
             2, "HDM", Category.LongDistance, timetable = listOf(
                 departure(130, "3", ZonedDateTime.parse("2020-01-01T09:30Z")),
                 arrival(1, "4", ZonedDateTime.parse("2020-01-01T10:30Z"))
+            )
+        ),
+        Train(
+            3, "IC", Category.LongDistance, timetable = listOf(
+                departure(130, "4", ZonedDateTime.parse("2020-01-01T09:45Z"), cancelled = true),
+                arrival(1, "3", ZonedDateTime.parse("2020-01-01T10:50Z"), cancelled = true),
             )
         )
     )

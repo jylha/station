@@ -94,22 +94,20 @@ import java.util.Locale
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (scheduledTimeText.isNotBlank()) {
+        Text(
+            scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
+            style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
+        )
+        if (scheduledTimeText.isNotBlank() && estimatedTimeText.isNotBlank()) {
+            Icon(
+                Icons.Rounded.ArrowRightAlt,
+                Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
+                tint = StationTheme.colors.delayed
+            )
             Text(
-                scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
+                estimatedTimeText, color = StationTheme.colors.delayed,
                 style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
             )
-            if (estimatedTimeText.isNotBlank()) {
-                Icon(
-                    Icons.Rounded.ArrowRightAlt,
-                    Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
-                    tint = StationTheme.colors.delayed
-                )
-                Text(
-                    estimatedTimeText, color = StationTheme.colors.delayed,
-                    style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
-                )
-            }
         }
     }
 }
@@ -172,7 +170,7 @@ import java.util.Locale
         Text(
             text = cancelledLabel,
             color = Color.Red,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.body2,
         )
     }
 }
