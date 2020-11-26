@@ -2,6 +2,7 @@ package com.example.station.ui.common
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,23 @@ import com.example.station.ui.theme.StationTheme
 import com.example.station.util.toLocalTimeString
 import java.time.ZonedDateTime
 import java.util.Locale
+
+/**
+ * Composable for displaying time field for arrival or departure.
+ * @param timetableRow Timetable row.
+ * @param modifier Modifier.
+ */
+@Composable fun TimeField(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
+    timetableRow?.run {
+        when {
+            cancelled -> CancelledTime(type = timetableRow.type, modifier)
+            actualTime != null -> ActualTime(actualTime, differenceInMinutes, timetableRow.type)
+            estimatedTime != null && differenceInMinutes != 0 ->
+                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type)
+            else -> ScheduledTime(scheduledTime, timetableRow.type)
+        }
+    } ?: Box(modifier)
+}
 
 /**
  * Composable for displaying schedule time.

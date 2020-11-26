@@ -43,7 +43,6 @@ import androidx.compose.ui.zIndex
 import androidx.ui.tooling.preview.Preview
 import com.example.station.R
 import com.example.station.model.Stop
-import com.example.station.model.TimetableRow
 import com.example.station.model.Train
 import com.example.station.model.arrival
 import com.example.station.model.commercialStops
@@ -57,14 +56,11 @@ import com.example.station.model.isOrigin
 import com.example.station.model.isReached
 import com.example.station.model.isWaypoint
 import com.example.station.model.stationCode
-import com.example.station.ui.common.ActualTime
-import com.example.station.ui.common.CancelledTime
-import com.example.station.ui.common.EstimatedTime
 import com.example.station.ui.common.Loading
 import com.example.station.ui.common.RefreshIndicator
-import com.example.station.ui.common.ScheduledTime
 import com.example.station.ui.common.StationNameProvider
 import com.example.station.ui.common.SwipeRefreshLayout
+import com.example.station.ui.common.TimeField
 import com.example.station.ui.common.TrainRoute
 import com.example.station.ui.common.portraitOrientation
 import com.example.station.ui.common.stationName
@@ -261,7 +257,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 colorFilter = colorFilter
             )
         },
-        departureTime = { StopTime(origin.departure) },
+        departureTime = { TimeField(origin.departure) },
         departureIcon = {
             Image(
                 vectorResource(R.drawable.line),
@@ -298,14 +294,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 colorFilter = arrivedColorFilter
             )
         },
-        arrivalTime = { StopTime(waypoint.arrival) },
+        arrivalTime = { TimeField(waypoint.arrival) },
         arrivalIcon = {
             Image(
                 vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
                 colorFilter = arrivedColorFilter
             )
         },
-        departureTime = { StopTime(waypoint.departure) },
+        departureTime = { TimeField(waypoint.departure) },
         departureIcon = {
             Image(
                 vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
@@ -335,7 +331,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 colorFilter = iconColorFilter
             )
         },
-        arrivalTime = { StopTime(destination.arrival) },
+        arrivalTime = { TimeField(destination.arrival) },
         isCurrent = isCurrent,
         isNext = isNext
     )
@@ -349,19 +345,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
             textAlign = TextAlign.End,
             style = MaterialTheme.typography.subtitle1
         )
-    }
-}
-
-@Composable private fun StopTime(timetableRow: TimetableRow?) {
-    timetableRow?.apply {
-        when {
-            cancelled -> CancelledTime(timetableRow.type)
-            actualTime != null -> ActualTime(actualTime, differenceInMinutes, timetableRow.type)
-            estimatedTime != null && differenceInMinutes != 0 -> {
-                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type)
-            }
-            else -> ScheduledTime(scheduledTime, timetableRow.type)
-        }
     }
 }
 

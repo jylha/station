@@ -857,22 +857,22 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 @Composable private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
     arrival?.run {
         when {
-            cancelled -> TimeField(
+            cancelled -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = { CancelledTime(type = TimetableRow.Type.Arrival) },
                 modifier
             )
-            actualTime != null -> TimeField(
+            actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
                 time = { ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Arrival) },
                 modifier
             )
-            estimatedTime != null && differenceInMinutes != 0 -> TimeField(
+            estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Arrival) },
                 modifier
             )
-            else -> TimeField(
+            else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = { ScheduledTime(scheduledTime, TimetableRow.Type.Arrival) },
                 modifier
@@ -884,22 +884,22 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 @Composable private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
     departure?.run {
         when {
-            cancelled -> TimeField(
+            cancelled -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = { CancelledTime(type = TimetableRow.Type.Departure) },
                 modifier
             )
-            actualTime != null -> TimeField(
+            actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
                 time = { ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Departure) },
                 modifier
             )
-            estimatedTime != null && differenceInMinutes != 0 -> TimeField(
+            estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Departure) },
                 modifier
             )
-            else -> TimeField(
+            else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = { ScheduledTime(scheduledTime, TimetableRow.Type.Departure) },
                 modifier
@@ -917,7 +917,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     )
 }
 
-@Composable private fun TimeField(
+@Composable private fun LabeledTimeField(
     label: @Composable () -> Unit,
     time: @Composable () -> Unit,
     modifier: Modifier = Modifier,
