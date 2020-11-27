@@ -3,6 +3,15 @@
 An android app for browsing the timetable information of passenger trains
 operating in Finland.
 
+## Screenshots
+
+<img alt="HomeScreen" src="screenshots/screenshot1.png" width="300">
+<img alt="StationsScreen" src="screenshots/screenshot2.png" width="300">
+<img alt="TimetableScreen" src="screenshots/screenshot3.png" width="300">
+<img alt="TimetableScreen_Filtered" src="screenshots/screenshot4.png" width="300">
+<img alt="TrainDetailsScreen" src="screenshots/screenshot5.png" width="300">
+
+
 ## Technologies
 
 - Kotlin
@@ -20,7 +29,7 @@ operating in Finland.
 
 ## Data source
 
-Source of traffic information: Traffic Mnagement Finland / digitraffic.fi,
+Source of traffic information: Traffic Management Finland / digitraffic.fi,
 license CC 4.0 BY
 
 ## License
