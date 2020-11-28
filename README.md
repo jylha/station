@@ -1,16 +1,15 @@
 # Station
 
-An android app for browsing the timetable information of passenger trains
-operating in Finland.
+An android app for browsing timetable information of passenger trains operating
+in Finland.
 
 ## Screenshots
 
-<img alt="HomeScreen" src="screenshots/screenshot1.png" width="300">
-<img alt="StationsScreen" src="screenshots/screenshot2.png" width="300">
-<img alt="TimetableScreen" src="screenshots/screenshot3.png" width="300">
-<img alt="TimetableScreen_Filtered" src="screenshots/screenshot4.png" width="300">
-<img alt="TrainDetailsScreen" src="screenshots/screenshot5.png" width="300">
-
+|||
+|---|---|
+| <img alt="HomeScreen" src="screenshots/screenshot1.png" width="300"> | <img alt="StationsScreen" src="screenshots/screenshot2.png" width="300"> |
+| <img alt="TimetableScreen1" src="screenshots/screenshot3.png" width="300"> | <img alt="TimetableScreen2" src="screenshots/screenshot4.png" width="300"> |
+| <img alt="TrainDetailsScreen" src="screenshots/screenshot5.png" width="300"> | |
 
 ## Technologies
 
