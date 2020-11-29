@@ -3,6 +3,40 @@
 An android app for browsing timetable information of passenger trains operating
 in Finland.
 
+The application is a native Android application implemented with Kotlin. The
+application architecture is based on reactive programming model and the reactive
+streams are implemented with Kotlin Coroutines. 
+
+The application UI is implemented completely with Jetpack Compose, the Android's
+modern declarative UI toolkit, which is still in its alpha release. To build
+this application, the latest canary release of Android Studio 4.2 is required.
+
+## Features
+
+The application contains five screens:
+
+1. [**Home screen**][1] displays brief welcome message and allows the user to
+proceed to select a station from a list of train stations or to move directly
+to the timetable of the nearest station.
+2. [**About screen**][2] displays some information about the application.
+3. [**Stations screen**][3] contains a list train stations or stops in Finland
+that have passenger traffic. The screen displays also a list of recently
+selected stations and allows to search for a station by name.
+4. [**Timetable screen**][4] shows the timetable information for the selected
+station. The timetable contains a list of trains arriving and departing from the
+station, along with times of arrival and departure, track number, and possible
+delay causes. The list can be filtered to contain only arriving or departing
+trains, or commuter or long-distance trains.
+5. [**Train details screen**][5] displays more detailed information of a
+selected train, which includes the train route, list of train's commercial stops
+with arrival and departure times.
+
+[1]: app/src/main/java/com/example/station/ui/home/HomeScreen.kt
+[2]: app/src/main/java/com/example/station/ui/about/AboutScreen.kt
+[3]: app/src/main/java/com/example/station/ui/stations/StationsScreen.kt
+[4]: app/src/main/java/com/example/station/ui/timetable/TimetableScreen.kt
+[5]: app/src/main/java/com/example/station/ui/train/TrainDetailsScreen.kt
+
 ## Screenshots
 
 |||
