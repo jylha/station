@@ -148,23 +148,6 @@ class StationsViewStateTest {
         assertThat(result.nearestStation).isNull()
     }
 
-    @Ignore("Location.distanceBetween() would need to be mocked.")
-    @Test fun `reduce state with FetchLocation_Success result when stations are loaded`() {
-        val stationA = Station("Aa", "A", 1, 10.0, 20.0)
-        val stationB = Station("Bb", "B", 2, 20.0, 10.0)
-        val state = StationsViewState(
-            stations = listOf(stationA, stationB),
-            isFetchingLocation = true,
-            selectNearest = true
-        )
-        val longitude = 11.0
-        val latitude = 19.0
-        val result = state.reduce(FetchLocation.Success(latitude, longitude))
-        assertThat(result.isFetchingLocation).isFalse()
-        assertThat(result.selectNearest).isTrue()
-        assertThat(result.nearestStation).isEqualTo(stationA)
-    }
-
     @Test fun `reduce state with FetchLocation_Error result`() {
         val state = StationsViewState(isFetchingLocation = true, selectNearest = true)
         val message = "Error."
