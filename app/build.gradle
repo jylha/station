@@ -78,7 +78,6 @@ dependencies {
     implementation "androidx.compose.material:material:${versions.compose}"
     implementation "androidx.compose.material:material-icons-core:${versions.compose}"
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
-    implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
     implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
     implementation "androidx.datastore:datastore-preferences-core:${versions.datastore}"
     implementation "androidx.ui:ui-tooling:${versions.compose}"
