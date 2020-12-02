@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.ambientOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.ConfigurationAmbient
+import androidx.compose.ui.platform.AmbientConfiguration
 import com.example.station.model.CauseCategories
 import com.example.station.model.DelayCause
 
@@ -29,7 +29,7 @@ import com.example.station.model.DelayCause
 /** Returns a passenger friendly name for given [delayCause] in preferred language. */
 @Composable fun causeName(delayCause: DelayCause): String {
     val categories = AmbientCauseCategories.current
-    val localeList = ConfigurationAmbient.current.locales
+    val localeList = AmbientConfiguration.current.locales
     return categories.passengerFriendlyNameFor(delayCause, localeList)
 }
 

@@ -19,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.example.station.R
 import com.example.station.ui.theme.StationTheme
 
@@ -47,8 +47,8 @@ fun EmptyState(
                     )
             ) {
                 Icon(
-                    asset = vectorResource(id = R.drawable.magnifying_class),
-                    Modifier.preferredSize(100.dp).align(Alignment.Center),
+                    imageVector = vectorResource(id = R.drawable.magnifying_class),
+                    modifier = Modifier.preferredSize(100.dp).align(Alignment.Center),
                     tint = MaterialTheme.colors.primary.copy(alpha = 0.3f)
                 )
             }

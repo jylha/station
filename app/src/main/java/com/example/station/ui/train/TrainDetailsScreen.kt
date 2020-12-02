@@ -37,10 +37,10 @@ import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.compose.ui.zIndex
-import androidx.ui.tooling.preview.Preview
 import com.example.station.R
 import com.example.station.model.Stop
 import com.example.station.model.Train
@@ -59,7 +59,7 @@ import com.example.station.model.stationCode
 import com.example.station.ui.common.Loading
 import com.example.station.ui.common.RefreshIndicator
 import com.example.station.ui.common.StationNameProvider
-import com.example.station.ui.common.SwipeRefreshLayout
+import com.example.station.ui.common.SwipeToRefreshLayout
 import com.example.station.ui.common.TimeField
 import com.example.station.ui.common.TrainRoute
 import com.example.station.ui.common.portraitOrientation
@@ -107,7 +107,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {},
 ) {
-    SwipeRefreshLayout(
+    SwipeToRefreshLayout(
         Modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
@@ -364,7 +364,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     isCurrent: Boolean = false,
     isNext: Boolean = false,
 ) {
-    ConstraintLayout(modifier.fillMaxWidth().semantics(mergeAllDescendants = true) {}) {
+    ConstraintLayout(modifier.fillMaxWidth().semantics(mergeDescendants = true) {}) {
         val nameRef = createRef()
         val stationIconRef = createRef()
         val arrivalIconRef = createRef()

@@ -43,7 +43,7 @@ import com.example.station.R
         val iconRef = createRef()
 
         Icon(
-            asset = Icons.Rounded.ArrowRightAlt,
+            imageVector = Icons.Rounded.ArrowRightAlt,
             modifier = Modifier.padding(horizontal = 4.dp).constrainAs(iconRef) {
                 centerTo(parent)
             }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.ExperimentalTesting
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertLabelEquals
@@ -26,7 +27,6 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,6 +42,7 @@ private const val TEXT_ALL_TRAINS = "All trains"
 private const val TEXT_ARRIVING_TRAINS = "Arriving trains"
 private const val TEXT_DEPARTING_TRAINS = "Departing trains"
 
+@OptIn(ExperimentalTesting::class)
 class TimetableScreenTest {
 
     @get:Rule val rule = createComposeRule()

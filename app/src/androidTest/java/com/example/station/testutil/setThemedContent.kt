@@ -1,7 +1,7 @@
 package com.example.station.testutil
 
 import androidx.compose.runtime.Composable
-import  androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import com.example.station.ui.theme.StationTheme
 
 /**

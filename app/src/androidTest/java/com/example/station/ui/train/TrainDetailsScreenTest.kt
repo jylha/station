@@ -1,12 +1,13 @@
 package com.example.station.ui.train
 
+import androidx.compose.ui.test.ExperimentalTesting
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertLabelEquals
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasSubstring
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithLabel
 import androidx.compose.ui.test.onNodeWithText
-import androidx.ui.test.createComposeRule
 import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Train
 import com.example.station.model.arrival
@@ -16,7 +17,7 @@ import com.example.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
-
+@OptIn(ExperimentalTesting::class)
 class TrainDetailsScreenTest {
 
     @get:Rule val rule = createComposeRule()

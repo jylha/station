@@ -55,15 +55,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
 import com.example.station.R
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.DelayCause
@@ -96,7 +97,7 @@ import com.example.station.ui.common.Loading
 import com.example.station.ui.common.RefreshIndicator
 import com.example.station.ui.common.ScheduledTime
 import com.example.station.ui.common.StationNameProvider
-import com.example.station.ui.common.SwipeRefreshLayout
+import com.example.station.ui.common.SwipeToRefreshLayout
 import com.example.station.ui.common.TrainRoute
 import com.example.station.ui.common.causeName
 import com.example.station.ui.common.stationName
@@ -366,7 +367,7 @@ fun TimetableScreen(
                     selectedTrainCategories, trainCategorySelected
                 )
             }
-            SwipeRefreshLayout(
+            SwipeToRefreshLayout(
                 Modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
             ) {
                 when {
@@ -792,7 +793,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         modifier
             .size(36.dp)
             .background(color = MaterialTheme.colors.primary, shape = CircleShape),
-        alignment = Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
         Text(
             lineId,
@@ -939,7 +940,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 ) {
     Box(
         modifier,
-        alignment = Alignment.CenterEnd
+        contentAlignment = Alignment.CenterEnd
     ) {
         IconButton(onClick, Modifier.size(36.dp), enabled = enabled) {
             Icon(Icons.Outlined.Info, tint = color)
@@ -999,7 +1000,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 ) {
     Box(
         modifier,
-        alignment = Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
         IconButton(onClick, Modifier.size(36.dp)) {
             Icon(Icons.Rounded.ExpandLess, tint = color)
@@ -1101,10 +1102,7 @@ private fun PreviewTimetable() {
         )
     )
 
-    val mapper = LocalizedStationNames.from(
-        listOf(helsinki, turku), ContextAmbient.current
-    )
-
+    val mapper = LocalizedStationNames.from(listOf(helsinki, turku), AmbientContext.current)
     StationTheme(darkTheme = true) {
         StationNameProvider(mapper) {
             TimetableScreenContent(helsinki, trains, Modifier, {},
