@@ -8,8 +8,8 @@ application architecture is based on reactive programming model and the reactive
 streams are implemented with Kotlin Coroutines. 
 
 The application UI is implemented completely with Jetpack Compose, the Android's
-modern declarative UI toolkit, which is still in its alpha release. To build
-this application, the latest canary release of Android Studio 4.2 is required.
+modern declarative UI toolkit, which is still in its alpha release. Using
+Jetpack Compose requires the latest canary release of Android Studio.
 
 ## Features
 
@@ -39,10 +39,12 @@ with arrival and departure times.
 
 ## Screenshots
 
-|||
-|---|---|
+| Home screen | Stations screen |
+|:---:|:---:|
 | <img alt="HomeScreen" src="screenshots/screenshot1.png" width="300"> | <img alt="StationsScreen" src="screenshots/screenshot2.png" width="300"> |
+| **Timetable screen** | **Timetable screen (with filters)** |
 | <img alt="TimetableScreen1" src="screenshots/screenshot3.png" width="300"> | <img alt="TimetableScreen2" src="screenshots/screenshot4.png" width="300"> |
+| **Train details screen** ||
 | <img alt="TrainDetailsScreen" src="screenshots/screenshot5.png" width="300"> | |
 
 ## Technologies
