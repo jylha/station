@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -141,12 +142,23 @@ fun HomeScreen(
                     Introduction()
                 }
                 ButtonContainer(Modifier.padding(20.dp)) {
-                    Button(onSelectStation, Modifier.width(180.dp)) {
-                        Text(stringResource(R.string.label_select_station))
+                    Button(
+                        onSelectStation,
+                        Modifier.width(180.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.label_select_station),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                     }
                     Spacer(Modifier.size(16.dp))
                     Button(onShowNearestStation, Modifier.width(180.dp)) {
-                        Text(stringResource(R.string.label_nearest_station))
+                        Text(
+                            text = stringResource(R.string.label_nearest_station),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }

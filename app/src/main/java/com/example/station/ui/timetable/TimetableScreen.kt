@@ -56,7 +56,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.accessibilityLabel
@@ -624,9 +623,9 @@ fun TimetableScreen(
 
 private enum class ExpandableState { Expanded, Collapsed }
 
-private val expandButtonAlpha = FloatPropKey()
-private val expandedContentAlpha = FloatPropKey()
-private val expandedContentHeightFraction = FloatPropKey()
+private val expandButtonAlpha = FloatPropKey(label = "Button alpha")
+private val expandedContentAlpha = FloatPropKey(label = "Content alpha")
+private val expandedContentHeightFraction = FloatPropKey(label = "Content height fraction")
 
 private val expandableStateTransition = transitionDefinition<ExpandableState> {
     state(ExpandableState.Expanded) {
@@ -844,7 +843,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 }
 
 @Composable private fun TrackLabel() {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val label = remember {
         context.getString(R.string.label_track).toUpperCase(Locale.getDefault())
     }

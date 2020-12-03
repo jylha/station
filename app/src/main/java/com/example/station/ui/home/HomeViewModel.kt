@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+private const val SKIP_HOME_SCREEN_ENABLED: Boolean = false
+
 class HomeViewModel @ViewModelInject constructor(
     private val settingsRepository: SettingsRepository,
     private val stationRepository: StationRepository
@@ -24,18 +26,22 @@ class HomeViewModel @ViewModelInject constructor(
     val state: StateFlow<HomeViewState> = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            reduceState(LoadSettings.Loading)
-            settingsRepository.station().collect { stationCode ->
-                if (true || stationCode == null) {
-                    reduceState(LoadSettings.Success(stationCode))
-                } else {
-                    reduceState(LoadStation.Loading)
-                    try {
-                        val station = stationRepository.fetchStation(stationCode)
-                        reduceState(LoadStation.Success(station))
-                    } catch (e: Exception) {
-                        reduceState(LoadStation.Error(e.message))
+        if (SKIP_HOME_SCREEN_ENABLED) {
+            // When skipping home screen is enabled, most recently used station is loaded from the
+            // application settings and its timetable is loaded and shown instead of home screen.
+            viewModelScope.launch {
+                reduceState(LoadSettings.Loading)
+                settingsRepository.station().collect { stationCode ->
+                    if (stationCode == null) {
+                        reduceState(LoadSettings.Success(stationCode))
+                    } else {
+                        reduceState(LoadStation.Loading)
+                        try {
+                            val station = stationRepository.fetchStation(stationCode)
+                            reduceState(LoadStation.Success(station))
+                        } catch (e: Exception) {
+                            reduceState(LoadStation.Error(e.message))
+                        }
                     }
                 }
             }

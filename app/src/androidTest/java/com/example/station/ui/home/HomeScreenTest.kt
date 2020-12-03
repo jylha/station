@@ -47,6 +47,7 @@ class HomeScreenTest {
     }
 }
 
+@Suppress("TestFunctionName")
 @Composable fun MockLocationPermissionProvider(
     isGranted: Boolean,
     grantRequest: Boolean,

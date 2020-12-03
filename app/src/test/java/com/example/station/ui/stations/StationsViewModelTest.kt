@@ -59,7 +59,7 @@ class StationsViewModelTest {
         viewModel = StationsViewModel(stationRepository, settingsRepository, locationService)
     }
 
-    @Test fun `initialize`() = coroutineRule.runBlockingTest {
+    @Test fun `initialize view model`() = coroutineRule.runBlockingTest {
         val expected = StationsViewState(
             stations = testStations,
             recentStations = emptyList(),

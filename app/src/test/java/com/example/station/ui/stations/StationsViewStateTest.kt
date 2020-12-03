@@ -3,7 +3,6 @@ package com.example.station.ui.stations
 import com.example.station.data.stations.LocalizedStationNames
 import com.example.station.model.Station
 import com.google.common.truth.Truth.assertThat
-import org.junit.Ignore
 import org.junit.Test
 
 class StationsViewStateTest {

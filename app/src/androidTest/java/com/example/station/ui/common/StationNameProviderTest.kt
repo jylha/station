@@ -13,6 +13,7 @@ class StationNameProviderTest {
 
     @get:Rule val composeTestRule = createComposeRule()
 
+    @Suppress("TestFunctionName")
     @Composable private fun Station(stationCode: Int) {
         Text(stationName(stationCode) ?: "name not found")
     }

@@ -3,8 +3,7 @@
 
     <string name="label_welcome">Welcome!</string>
     <string name="text_introduction">
-        This application allows you to browse the timetable information of trains operating
-        in Finland.
+        This application allows you to browse timetable information of trains operating in Finland.
     </string>
     <string name="label_select_station">Select station</string>
     <string name="label_nearest_station">Nearest station</string>

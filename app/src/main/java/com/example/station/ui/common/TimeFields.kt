@@ -20,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.accessibilityLabel
 import androidx.compose.ui.semantics.semantics
@@ -62,7 +62,7 @@ import java.util.Locale
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val scheduledTimeText by produceLocalTime(scheduledTime)
     val label = remember(scheduledTimeText, type) {
         context.getString(
@@ -94,7 +94,7 @@ import java.util.Locale
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val localTimes by produceLocalTimes(scheduledTime, estimatedTime)
     val (scheduledTimeText, estimatedTimeText) = localTimes
     val label = remember(type, estimatedTimeText) {
@@ -144,7 +144,7 @@ import java.util.Locale
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val actualTimeText by produceLocalTime(actualTime)
     val label = remember(type, actualTimeText) {
         context.getString(

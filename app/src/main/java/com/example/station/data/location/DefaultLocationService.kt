@@ -25,7 +25,7 @@ class DefaultLocationService @Inject constructor(
 
     @SuppressLint("MissingPermission")
     override fun currentLocation(): Flow<Location> {
-        return channelFlow<Location> {
+        return channelFlow {
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.maxWaitTime = 1000

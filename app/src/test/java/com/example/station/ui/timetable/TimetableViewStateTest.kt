@@ -6,7 +6,6 @@ import com.example.station.model.CauseCategory
 import com.example.station.model.Station
 import com.example.station.model.TimetableRow
 import com.example.station.model.Train
-import com.example.station.model.Train.Category.LongDistance
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -14,9 +13,9 @@ import org.junit.Test
 class TimetableViewStateTest {
 
     private val helsinki = Station("Helsinki", "HKI", 1, 1.0, 1.0)
-
+    private val pasila = Station("Pasila", "PSL", 2, 2.0, 2.0)
     private val timetable = listOf(
-        Train(1, "S", LongDistance)
+        Train(1, "S", Train.Category.LongDistance)
     )
 
     @Test fun `initial state`() {
@@ -108,20 +107,20 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with ReloadTimetable_Success result`() {
         val state = TimetableViewState(
-            isReloadingTimetable = true, station = station("Pasila", 2),
-            timetable = listOf(Train(1, "A", LongDistance))
+            isReloadingTimetable = true, station = pasila,
+            timetable = listOf(Train(1, "A", Train.Category.LongDistance))
         )
         val timetable = listOf(Train(2, "B", Train.Category.Commuter))
         val result = state.reduce(ReloadTimetable.Success(timetable))
         assertThat(result.isReloadingTimetable).isFalse()
-        assertThat(result.station).isEqualTo(station("Pasila", 2))
+        assertThat(result.station).isEqualTo(pasila)
         assertThat(result.timetable).isEqualTo(timetable)
     }
 
     @Test fun `reduce state with ReloadTimetable_Error result`() {
         val state = TimetableViewState(
-            isReloadingTimetable = true, station = station("Pasila", 2),
-            timetable = listOf(Train(1, "A", LongDistance))
+            isReloadingTimetable = true, station = pasila,
+            timetable = listOf(Train(1, "A", Train.Category.LongDistance))
         )
         val message = "Error!"
         val result = state.reduce(ReloadTimetable.Error(message))
@@ -177,7 +176,3 @@ class TimetableViewStateTest {
         assertThat(result.errorMessage).isEqualTo(message)
     }
 }
-
-private fun station(name: String, code: Int) = Station(
-    true, Station.Type.Station, name, "", code, "FI", 0.0, 0.0
-)
