@@ -251,17 +251,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
     CommercialStop(
         name = { StopName(stationName(origin.stationCode())) },
-        stationIcon = {
-            Image(
-                vectorResource(stationIconResId),
-                colorFilter = colorFilter
-            )
+        stationIcon = { modifier ->
+            Image(vectorResource(stationIconResId), modifier, colorFilter = colorFilter)
         },
         departureTime = { TimeField(origin.departure) },
-        departureIcon = {
+        departureIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line),
-                contentScale = ContentScale.Crop,
+                vectorResource(R.drawable.line), modifier,
+                contentScale = ContentScale.FillBounds,
                 colorFilter = colorFilter
             )
         },
@@ -288,23 +285,22 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
     CommercialStop(
         name = { StopName(stationName(waypoint.stationCode())) },
-        stationIcon = {
-            Image(
-                vectorResource(stationIconResId),
-                colorFilter = arrivedColorFilter
-            )
+        stationIcon = { modifier ->
+            Image(vectorResource(stationIconResId), modifier, colorFilter = arrivedColorFilter)
         },
         arrivalTime = { TimeField(waypoint.arrival) },
-        arrivalIcon = {
+        arrivalIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
+                imageVector = vectorResource(R.drawable.line), modifier,
+                contentScale = ContentScale.FillBounds,
                 colorFilter = arrivedColorFilter
             )
         },
         departureTime = { TimeField(waypoint.departure) },
-        departureIcon = {
+        departureIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
+                vectorResource(R.drawable.line), modifier,
+                contentScale = ContentScale.FillBounds,
                 colorFilter = ColorFilter.tint(departedIconColor)
             )
         },
@@ -324,10 +320,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
     CommercialStop(
         name = { StopName(stationName(destination.stationCode())) },
-        stationIcon = { Image(vectorResource(stationResId), colorFilter = iconColorFilter) },
-        arrivalIcon = {
+        stationIcon = { modifier ->
+            Image(vectorResource(stationResId), modifier, colorFilter = iconColorFilter)
+        },
+        arrivalIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), contentScale = ContentScale.Crop,
+                vectorResource(R.drawable.line), modifier,
+                contentScale = ContentScale.FillBounds,
                 colorFilter = iconColorFilter
             )
         },
@@ -355,11 +354,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 @Composable private fun CommercialStop(
     name: @Composable () -> Unit,
-    stationIcon: @Composable () -> Unit,
+    stationIcon: @Composable (modifier: Modifier) -> Unit,
     modifier: Modifier = Modifier,
-    arrivalIcon: (@Composable () -> Unit)? = null,
+    arrivalIcon: (@Composable (modifier: Modifier) -> Unit) = { Box(modifier) },
     arrivalTime: (@Composable () -> Unit)? = null,
-    departureIcon: (@Composable () -> Unit)? = null,
+    departureIcon: (@Composable (modifier: Modifier) -> Unit) = { Box(modifier) },
     departureTime: (@Composable () -> Unit)? = null,
     isCurrent: Boolean = false,
     isNext: Boolean = false,
@@ -378,28 +377,28 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         val verticalGuideCenter = createGuidelineFromStart(0.5f)
         val verticalGuideEnd = createGuidelineFromStart(0.7f)
 
-        Box(Modifier.constrainAs(stationIconRef) {
+        stationIcon(modifier = Modifier.constrainAs(stationIconRef) {
             centerAround(verticalGuideCenter)
             centerAround(horizontalGuideCenter)
             width = Dimension.value(20.dp)
             height = Dimension.value(20.dp)
-        }) { stationIcon() }
+        })
 
-        Box(Modifier.constrainAs(arrivalIconRef) {
+        arrivalIcon(modifier = Modifier.constrainAs(arrivalIconRef) {
             centerAround(verticalGuideCenter)
             top.linkTo(parent.top)
             bottom.linkTo(stationIconRef.top)
             width = Dimension.value(20.dp)
             height = Dimension.fillToConstraints
-        }) { arrivalIcon?.invoke() }
+        })
 
-        Box(Modifier.constrainAs(departureIconRef) {
+        departureIcon(modifier = Modifier.constrainAs(departureIconRef) {
             centerAround(verticalGuideCenter)
             top.linkTo(stationIconRef.bottom)
             bottom.linkTo(parent.bottom)
             width = Dimension.value(20.dp)
             height = Dimension.fillToConstraints
-        }) { departureIcon?.invoke() }
+        })
 
         Box(Modifier.constrainAs(nameRef) {
             centerAround(horizontalGuideCenter)
@@ -465,6 +464,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 differenceInMinutes = 1, markedReady = true
             ),
             arrival(
+                5, "3", ZonedDateTime.parse("2020-01-01T09:40Z"),
+                actualTime = ZonedDateTime.parse("2020-01-01T09:38Z"),
+                differenceInMinutes = -2
+            ),
+            departure(
+                5, "3", ZonedDateTime.parse("2020-01-01T09:43Z"),
+                actualTime = ZonedDateTime.parse("2020-01-01T09:43Z")
+            ),
+            arrival(
                 4, "4", ZonedDateTime.parse("2020-01-01T10:11Z"),
                 actualTime = ZonedDateTime.parse("2020-01-01T10:10Z"),
                 differenceInMinutes = -1
@@ -480,7 +488,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         )
     )
 
-    val names = mapOf(1 to "Helsinki", 3 to "Hämeenlinna", 2 to "Tampere", 4 to "Riihimäki")
+    val names = mapOf(
+        1 to "Helsinki", 3 to "Hämeenlinna", 5 to "Pasila", 2 to "Tampere", 4 to "Riihimäki"
+    )
     StationTheme {
         StationNameProvider({ stationCode -> names[stationCode] }) {
             TrainDetails(train)
