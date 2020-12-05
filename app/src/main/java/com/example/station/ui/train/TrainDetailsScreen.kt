@@ -250,11 +250,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val colorFilter = ColorFilter.tint(color)
 
     CommercialStop(
-        name = { StopName(stationName(origin.stationCode())) },
+        name = { modifier -> StopName(stationName(origin.stationCode()), modifier) },
         stationIcon = { modifier ->
             Image(vectorResource(stationIconResId), modifier, colorFilter = colorFilter)
         },
-        departureTime = { TimeField(origin.departure) },
+        departureTime = { modifier -> TimeField(origin.departure, modifier) },
         departureIcon = { modifier ->
             Image(
                 vectorResource(R.drawable.line), modifier,
@@ -284,11 +284,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val arrivedColorFilter = ColorFilter.tint(arrivedIconColor)
 
     CommercialStop(
-        name = { StopName(stationName(waypoint.stationCode())) },
+        name = { modifier -> StopName(stationName(waypoint.stationCode()), modifier) },
         stationIcon = { modifier ->
             Image(vectorResource(stationIconResId), modifier, colorFilter = arrivedColorFilter)
         },
-        arrivalTime = { TimeField(waypoint.arrival) },
+        arrivalTime = { modifier -> TimeField(waypoint.arrival, modifier) },
         arrivalIcon = { modifier ->
             Image(
                 imageVector = vectorResource(R.drawable.line), modifier,
@@ -296,7 +296,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 colorFilter = arrivedColorFilter
             )
         },
-        departureTime = { TimeField(waypoint.departure) },
+        departureTime = { modifier -> TimeField(waypoint.departure, modifier) },
         departureIcon = { modifier ->
             Image(
                 vectorResource(R.drawable.line), modifier,
@@ -319,7 +319,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     val iconColorFilter = ColorFilter.tint(iconColor)
 
     CommercialStop(
-        name = { StopName(stationName(destination.stationCode())) },
+        name = { modifier -> StopName(stationName(destination.stationCode()), modifier) },
         stationIcon = { modifier ->
             Image(vectorResource(stationResId), modifier, colorFilter = iconColorFilter)
         },
@@ -330,7 +330,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                 colorFilter = iconColorFilter
             )
         },
-        arrivalTime = { TimeField(destination.arrival) },
+        arrivalTime = { modifier -> TimeField(destination.arrival, modifier) },
         isCurrent = isCurrent,
         isNext = isNext
     )
@@ -353,13 +353,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * @param isNext Whether train will arrive next on this stop.
  */
 @Composable private fun CommercialStop(
-    name: @Composable () -> Unit,
+    name: @Composable (modifier: Modifier) -> Unit,
     stationIcon: @Composable (modifier: Modifier) -> Unit,
     modifier: Modifier = Modifier,
     arrivalIcon: (@Composable (modifier: Modifier) -> Unit) = { Box(modifier) },
-    arrivalTime: (@Composable () -> Unit)? = null,
+    arrivalTime: (@Composable (modifier: Modifier) -> Unit)? = null,
     departureIcon: (@Composable (modifier: Modifier) -> Unit) = { Box(modifier) },
-    departureTime: (@Composable () -> Unit)? = null,
+    departureTime: (@Composable (modifier: Modifier) -> Unit)? = null,
     isCurrent: Boolean = false,
     isNext: Boolean = false,
 ) {
@@ -400,36 +400,36 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
             height = Dimension.fillToConstraints
         })
 
-        Box(Modifier.constrainAs(nameRef) {
+        name(modifier = Modifier.constrainAs(nameRef) {
             centerAround(horizontalGuideCenter)
             linkTo(start = parent.start, end = stationIconRef.start, endMargin = 16.dp, bias = 1f)
             width = Dimension.preferredWrapContent
-        }) { name() }
+        })
 
         if (portraitOrientation()) {
-            Box(Modifier.constrainAs(arrivalTimeRef) {
+            arrivalTime?.invoke(Modifier.constrainAs(arrivalTimeRef) {
                 start.linkTo(stationIconRef.end, margin = 16.dp)
                 top.linkTo(parent.top, margin = 4.dp)
                 bottom.linkTo(horizontalGuideCenter)
-            }) { arrivalTime?.invoke() }
+            })
 
-            Box(Modifier.constrainAs(departureTimeRef) {
+            departureTime?.invoke(Modifier.constrainAs(departureTimeRef) {
                 start.linkTo(stationIconRef.end, margin = 16.dp)
                 top.linkTo(horizontalGuideCenter)
                 bottom.linkTo(parent.bottom, margin = 4.dp)
-            }) { departureTime?.invoke() }
+            })
         } else {
-            Box(Modifier.constrainAs(arrivalTimeRef) {
+            arrivalTime?.invoke(Modifier.constrainAs(arrivalTimeRef) {
                 start.linkTo(stationIconRef.end, margin = 16.dp)
                 centerAround(horizontalGuideCenter)
                 top.linkTo(parent.top, margin = 4.dp)
                 bottom.linkTo(parent.bottom, margin = 4.dp)
-            }) { arrivalTime?.invoke() }
+            })
 
-            Box(Modifier.constrainAs(departureTimeRef) {
+            departureTime?.invoke(Modifier.constrainAs(departureTimeRef) {
                 start.linkTo(verticalGuideEnd)
                 centerAround(horizontalGuideCenter)
-            }) { departureTime?.invoke() }
+            })
         }
 
         if (isCurrent || isNext) {

@@ -43,10 +43,11 @@ import java.util.Locale
     timetableRow?.run {
         when {
             cancelled -> CancelledTime(type = timetableRow.type, modifier)
-            actualTime != null -> ActualTime(actualTime, differenceInMinutes, timetableRow.type)
+            actualTime != null ->
+                ActualTime(actualTime, differenceInMinutes, timetableRow.type, modifier)
             estimatedTime != null && differenceInMinutes != 0 ->
-                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type)
-            else -> ScheduledTime(scheduledTime, timetableRow.type)
+                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type, modifier)
+            else -> ScheduledTime(scheduledTime, timetableRow.type, modifier)
         }
     } ?: Box(modifier)
 }
