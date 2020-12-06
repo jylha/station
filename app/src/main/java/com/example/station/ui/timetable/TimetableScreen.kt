@@ -501,11 +501,21 @@ fun TimetableScreen(
     modifier: Modifier = Modifier
 ) {
     val image = remember { Icons.Rounded.Train }
+    val longDistanceLabel = if (categories.contains(Category.LongDistance))
+        stringResource(R.string.accessibility_label_hide_long_distance_trains)
+    else
+        stringResource(R.string.accessibility_label_show_long_distance_trains)
+
+    val commuterLabel = if (categories.contains(Category.Commuter))
+        stringResource(R.string.accessibility_label_hide_commuter_trains)
+    else
+        stringResource(R.string.accessibility_label_show_commuter_trains)
+
     Row(modifier.fillMaxWidth()) {
         SelectionButton(
             onClick = { categorySelected(Category.LongDistance) },
             selected = categories.contains(Category.LongDistance),
-            Modifier.weight(1f)
+            Modifier.weight(1f).semantics { accessibilityLabel = longDistanceLabel }
         ) {
             Icon(image)
             Spacer(modifier = Modifier.width(8.dp))
@@ -515,7 +525,7 @@ fun TimetableScreen(
         SelectionButton(
             onClick = { categorySelected(Category.Commuter) },
             selected = categories.contains(Category.Commuter),
-            Modifier.weight(1f)
+            Modifier.weight(1f).semantics { accessibilityLabel = commuterLabel }
         ) {
             Icon(image)
             Spacer(modifier = Modifier.width(8.dp))

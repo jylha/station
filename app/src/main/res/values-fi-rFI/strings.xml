@@ -57,6 +57,11 @@
     <string name="label_show_filters">Näytä valinnat</string>
     <string name="label_hide_filters">Piilota valinnat</string>
 
+    <string name="accessibility_label_hide_long_distance_trains">Piilota kaukojunat</string>
+    <string name="accessibility_label_show_long_distance_trains">Näytä kaukojunat</string>
+    <string name="accessibility_label_hide_commuter_trains">Piilota lähijunat</string>
+    <string name="accessibility_label_show_commuter_trains">Näytä lähijunat</string>
+
     <string name="accessibility_label_long_distance_train">Kaukojuna %1$s %2$d</string>
     <string name="accessibility_label_intercity_train">Intercity juna %1$d</string>
     <string name="accessibility_label_pendolino_train">Pendolino juna %1$d</string>

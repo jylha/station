@@ -80,6 +80,11 @@
     <string name="label_show_filters">Show filters</string>
     <string name="label_hide_filters">Hide filters</string>
 
+    <string name="accessibility_label_hide_long_distance_trains">Hide long-distance trains</string>
+    <string name="accessibility_label_show_long_distance_trains">Show long-distance trains</string>
+    <string name="accessibility_label_hide_commuter_trains">Hide commuter trains</string>
+    <string name="accessibility_label_show_commuter_trains">Show commuter trains</string>
+
     <string name="accessibility_label_long_distance_train">Long-distance train %1$s %2$d</string>
     <string name="accessibility_label_intercity_train">Intercity train %1$d</string>
     <string name="accessibility_label_pendolino_train">Pendolino train %1$d</string>
