@@ -51,13 +51,13 @@
 
     <string name="title_timetable">Timetable</string>
     <string name="subtitle_all_trains">All trains</string>
-    <string name="subtitle_long_distance_trains">Long distance trains</string>
+    <string name="subtitle_long_distance_trains">Long-distance trains</string>
     <string name="subtitle_commuter_trains">Commuter trains</string>
     <string name="subtitle_arriving_trains">Arriving trains</string>
-    <string name="subtitle_arriving_long_distance_trains">Arriving long distance trains</string>
+    <string name="subtitle_arriving_long_distance_trains">Arriving long-distance trains</string>
     <string name="subtitle_arriving_commuter_trains">Arriving commuter trains</string>
     <string name="subtitle_departing_trains">Departing trains</string>
-    <string name="subtitle_departing_long_distance_trains">Departing long distance trains</string>
+    <string name="subtitle_departing_long_distance_trains">Departing long-distance trains</string>
     <string name="subtitle_departing_commuter_trains">Departing commuter trains</string>
 
     <string name="category_long_distance_trains">Long-distance</string>
@@ -79,6 +79,11 @@
     <string name="label_retry">Try again</string>
     <string name="label_show_filters">Show filters</string>
     <string name="label_hide_filters">Hide filters</string>
+
+    <string name="accessibility_label_hide_departing_trains">Hide departing trains</string>
+    <string name="accessibility_label_show_departing_trains">Show departing trains</string>
+    <string name="accessibility_label_hide_arriving_trains">Hide arriving trains</string>
+    <string name="accessibility_label_show_arriving_trains">Show arriving trains</string>
 
     <string name="accessibility_label_hide_long_distance_trains">Hide long-distance trains</string>
     <string name="accessibility_label_show_long_distance_trains">Show long-distance trains</string>

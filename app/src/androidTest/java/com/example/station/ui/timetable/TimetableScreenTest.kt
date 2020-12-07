@@ -33,6 +33,14 @@ import org.junit.Test
 private const val LABEL_SELECT_STATION = "Select station"
 private const val LABEL_SHOW_FILTERS = "Show filters"
 private const val LABEL_HIDE_FILTERS = "Hide filters"
+private const val LABEL_SHOW_DEPARTING_TRAINS = "Show departing trains"
+private const val LABEL_HIDE_DEPARTING_TRAINS = "Hide departing trains"
+private const val LABEL_SHOW_ARRIVING_TRAINS = "Show arriving trains"
+private const val LABEL_HIDE_ARRIVING_TRAINS = "Hide arriving trains"
+private const val LABEL_SHOW_COMMUTER_TRAINS = "Show commuter trains"
+private const val LABEL_HIDE_COMMUTER_TRAINS = "Hide commuter trains"
+private const val LABEL_SHOW_LONG_DISTANCE_TRAINS = "Show long-distance trains"
+private const val LABEL_HIDE_LONG_DISTANCE_TRAINS = "Hide long-distance trains"
 
 private const val TEXT_COMMUTER = "Commuter"
 private const val TEXT_LONG_DISTANCE = "Long-distance"
@@ -41,6 +49,8 @@ private const val TEXT_DEPARTING = "Departing"
 private const val TEXT_ALL_TRAINS = "All trains"
 private const val TEXT_ARRIVING_TRAINS = "Arriving trains"
 private const val TEXT_DEPARTING_TRAINS = "Departing trains"
+private const val TEXT_COMMUTER_TRAINS = "Commuter trains"
+private const val TEXT_LONG_DISTANCE_TRAINS = "Long-distance trains"
 
 @OptIn(ExperimentalTesting::class)
 class TimetableScreenTest {
@@ -157,32 +167,51 @@ class TimetableScreenTest {
             )
     }
 
-    @Test fun filterByTrainCategory() {
-        val state = TimetableViewState(
+    @Test fun changeTrainCategoryFromCommuterToLongDistance() {
+        val viewState = TimetableViewState(
             station = helsinki, timetable = trains, stationNameMapper = testStationMapper,
-            selectedTrainCategories = setOf(Train.Category.Commuter, Train.Category.LongDistance)
+            selectedTrainCategories = setOf(Train.Category.Commuter)
         )
         val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
-        rule.setThemedContent { TimetableScreen(viewState = state, onEvent = onTimetableEvent) }
+        rule.setThemedContent {
+            var state by remember(viewState) { mutableStateOf(viewState) }
+            TimetableScreen(viewState = state, onEvent = { event: TimetableEvent ->
+                    if (event is TimetableEvent.SelectCategories)
+                        state = state.copy(selectedTrainCategories = event.categories)
+                    onTimetableEvent(event)
+                })
+            }
 
-        rule.onNodeWithText(TEXT_ALL_TRAINS).assertIsDisplayed()
-        rule.onNodeWithText(TEXT_COMMUTER).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_ALL_TRAINS).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_COMMUTER_TRAINS).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertDoesNotExist()
         rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed()
 
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed().performClick()
+        // Show filters
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).performClick()
 
         rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertDoesNotExist()
         rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertIsDisplayed()
 
-        rule.onNodeWithText(TEXT_COMMUTER).assertIsDisplayed()
-        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertIsDisplayed().performClick()
+        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertLabelEquals(LABEL_SHOW_LONG_DISTANCE_TRAINS)
+            .assertIsDisplayed()
+        rule.onNodeWithText(TEXT_COMMUTER).assertLabelEquals(LABEL_HIDE_COMMUTER_TRAINS)
+            .assertIsDisplayed()
+
+        // Change train categories to long-distance trains by hiding commuter trains
+        rule.onNodeWithText(TEXT_COMMUTER).performClick()
+
+        rule.onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_COMMUTER_TRAINS).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertLabelEquals(LABEL_HIDE_LONG_DISTANCE_TRAINS)
+        rule.onNodeWithText(TEXT_COMMUTER).assertLabelEquals(LABEL_SHOW_COMMUTER_TRAINS)
 
         argumentCaptor<TimetableEvent>().apply {
             verify(onTimetableEvent, times(1)).invoke(capture())
             val event = firstValue as? TimetableEvent.SelectCategories
             assertThat(event).isNotNull()
-            assertThat(event?.categories).containsExactly(Train.Category.Commuter)
+            assertThat(event?.categories).containsExactly(Train.Category.LongDistance)
         }
     }
 
@@ -230,15 +259,24 @@ class TimetableScreenTest {
         rule.onNodeWithSubstring("ABC, 1").assertExists()
         rule.onNodeWithSubstring("DEF, 2").assertDoesNotExist()
         rule.onNodeWithSubstring("GHI, 3").assertExists()
-
         rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed().performClick()
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed()
+
+        // Show filters.
+        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).performClick()
 
         rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertIsDisplayed()
         rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_DEPARTING).assertIsDisplayed()
-        rule.onNodeWithText(TEXT_ARRIVING).assertIsDisplayed().performClick()
+        rule.onNodeWithText(TEXT_DEPARTING).assertLabelEquals(LABEL_SHOW_DEPARTING_TRAINS)
+            .assertIsDisplayed()
+        rule.onNodeWithText(TEXT_ARRIVING).assertLabelEquals(LABEL_HIDE_ARRIVING_TRAINS)
+            .assertIsDisplayed()
 
+        // Change timetable type type to departing trains by hiding arriving trains.
+        rule.onNodeWithText(TEXT_ARRIVING).performClick()
+
+        rule.onNodeWithText(TEXT_DEPARTING).assertLabelEquals(LABEL_HIDE_DEPARTING_TRAINS)
+        rule.onNodeWithText(TEXT_ARRIVING).assertLabelEquals(LABEL_SHOW_ARRIVING_TRAINS)
         rule.onNodeWithText(TEXT_ARRIVING_TRAINS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_DEPARTING_TRAINS).assertIsDisplayed()
         rule.onNodeWithSubstring("ABC, 1").assertExists()

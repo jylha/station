@@ -57,6 +57,11 @@
     <string name="label_show_filters">Näytä valinnat</string>
     <string name="label_hide_filters">Piilota valinnat</string>
 
+    <string name="accessibility_label_hide_departing_trains">Piilota lähtevät junat</string>
+    <string name="accessibility_label_show_departing_trains">Näytä lähtevät junat</string>
+    <string name="accessibility_label_hide_arriving_trains">Piilota saapuvat junat</string>
+    <string name="accessibility_label_show_arriving_trains">Näytä saapuvat junat</string>
+
     <string name="accessibility_label_hide_long_distance_trains">Piilota kaukojunat</string>
     <string name="accessibility_label_show_long_distance_trains">Näytä kaukojunat</string>
     <string name="accessibility_label_hide_commuter_trains">Piilota lähijunat</string>

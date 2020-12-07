@@ -57,6 +57,11 @@
     <string name="label_show_filters">Visa filter</string>
     <string name="label_hide_filters">Dölj filter</string>
 
+    <string name="accessibility_label_hide_departing_trains">Dölj avgående tåg</string>
+    <string name="accessibility_label_show_departing_trains">Visa avgående tåg</string>
+    <string name="accessibility_label_hide_arriving_trains">Dölj ankommande tåg</string>
+    <string name="accessibility_label_show_arriving_trains">Visa ankommande tåg</string>
+
     <string name="accessibility_label_hide_long_distance_trains">Dölj fjärrtåg</string>
     <string name="accessibility_label_show_long_distance_trains">Visa fjärrtåg</string>
     <string name="accessibility_label_hide_commuter_trains">Dölj närtåg</string>

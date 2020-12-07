@@ -472,11 +472,21 @@ fun TimetableScreen(
     timetableTypeSelected: (TimetableRow.Type) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val arrivingLabel = if (timetableTypes.contains(TimetableRow.Type.Arrival))
+        stringResource(R.string.accessibility_label_hide_arriving_trains)
+    else
+        stringResource(R.string.accessibility_label_show_arriving_trains)
+
+    val departingLabel = if (timetableTypes.contains(TimetableRow.Type.Departure))
+        stringResource(R.string.accessibility_label_hide_departing_trains)
+    else
+        stringResource(R.string.accessibility_label_show_departing_trains)
+
     Row(modifier.fillMaxWidth()) {
         SelectionButton(
             onClick = { timetableTypeSelected(TimetableRow.Type.Arrival) },
             selected = timetableTypes.contains(TimetableRow.Type.Arrival),
-            Modifier.weight(1f)
+            Modifier.weight(1f).semantics { accessibilityLabel = arrivingLabel }
         ) {
             Icon(vectorResource(R.drawable.ic_arrival), Modifier.size(24.dp))
             Spacer(modifier = Modifier.width(8.dp))
@@ -486,7 +496,7 @@ fun TimetableScreen(
         SelectionButton(
             onClick = { timetableTypeSelected(TimetableRow.Type.Departure) },
             selected = timetableTypes.contains(TimetableRow.Type.Departure),
-            Modifier.weight(1f)
+            Modifier.weight(1f).semantics { accessibilityLabel = departingLabel }
         ) {
             Text(stringResource(R.string.timetable_type_departing))
             Spacer(modifier = Modifier.width(8.dp))
