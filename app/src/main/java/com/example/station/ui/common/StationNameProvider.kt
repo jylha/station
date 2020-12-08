@@ -8,7 +8,7 @@ import com.example.station.data.stations.StationNameMapper
 /**
  * Provider component that provides the StationNameMapper for the AmbientStationNameMapper.
  * @param stationNameMapper A station name mapper that provides localised station names.
- * @param content The composable content that can
+ * @param content The composable content that can access the provided [StationNameMapper].
  */
 @Composable
 fun StationNameProvider(

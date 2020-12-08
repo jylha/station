@@ -11,7 +11,8 @@ import androidx.core.app.ActivityCompat
 
 /**
  * Location permission provider.
- * @param locationPermission Location
+ * @param locationPermission Location permission.
+ * @param content The composable content that can query the provided location permission.
  */
 @Composable fun LocationPermissionProvider(
     locationPermission: LocationPermission,

@@ -973,10 +973,9 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     alpha: Float,
     modifier: Modifier = Modifier
 ) {
-    val delayCauseNames = delayCauses.map { cause -> causeName(cause) }
-        .distinct()
-
+    val delayCauseNames = delayCauses.map { cause -> causeName(cause) }.distinct()
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = alpha)
+
     Column(modifier.fillMaxWidth().padding(top = 8.dp)) {
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f * alpha))
         Row(

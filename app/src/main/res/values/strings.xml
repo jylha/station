@@ -109,4 +109,7 @@
     <string name="accessibility_label_to_track">To track %1$s</string>
 
     <string name="accessibility_label_search">Search</string>
+
+    <string name="accessibility_label_show_delay_causes">Show delay causes</string>
+    <string name="accessibility_label_hide_delay_causes">Hide delay causes</string>
 </resources>
