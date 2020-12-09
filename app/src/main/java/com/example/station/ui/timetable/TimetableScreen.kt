@@ -677,6 +677,7 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
     modifier: Modifier = Modifier
 ) {
     val delayCauses = remember(train) { train.delayCauses() }
+    var delayCausesShown by remember { mutableStateOf(false) }
     var expandableState by savedInstanceState(train) { ExpandableState.Collapsed }
 
     // Note: For some reason the transition state returns incorrect values after changing the
@@ -686,7 +687,8 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
     val transitionState = transition(
         definition = expandableStateTransition,
         toState = expandableState,
-        initState = ExpandableState.Collapsed
+        initState = ExpandableState.Collapsed,
+        onStateChangeFinished = { delayCausesShown = expandableState == ExpandableState.Expanded }
     )
 
     TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, stop)) {
@@ -736,6 +738,7 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                         onClick = {
                             transitionState[expandedContentHeightFraction] // (1)
                             expandableState = ExpandableState.Expanded
+                            delayCausesShown = true
                         },
                         enabled = expandableState == ExpandableState.Collapsed,
                         Modifier.constrainAs(showDelayRef) {
@@ -748,7 +751,7 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                     )
                 }
             }
-            if (delayCauses.isNotEmpty()) {
+            if (delayCauses.isNotEmpty() && delayCausesShown) {
                 DelayCauses(
                     delayCauses,
                     onClose = {
@@ -983,8 +986,10 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             verticalAlignment = Alignment.Bottom
         ) {
             Column(Modifier.weight(1f)) {
+                val delayCausesLabel = stringResource(R.string.label_delay_causes)
                 Text(
-                    stringResource(R.string.label_delay_causes).toUpperCase(Locale.getDefault()),
+                    delayCausesLabel.toUpperCase(Locale.getDefault()),
+                    Modifier.semantics { accessibilityLabel = delayCausesLabel },
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
                     style = MaterialTheme.typography.caption
                 )
@@ -1006,7 +1011,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 ) {
     Text(
         causeName,
-        modifier.padding(top = 8.dp),
+        modifier.padding(top = 8.dp).semantics { accessibilityLabel = causeName },
         color = color
     )
 }
