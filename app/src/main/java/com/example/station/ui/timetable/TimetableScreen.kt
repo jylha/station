@@ -75,8 +75,8 @@ import com.example.station.model.Train.Category
 import com.example.station.model.arrival
 import com.example.station.model.arrivalAfter
 import com.example.station.model.delayCauses
-import com.example.station.model.departureAfter
 import com.example.station.model.departure
+import com.example.station.model.departureAfter
 import com.example.station.model.isDeparted
 import com.example.station.model.isLongDistanceTrain
 import com.example.station.model.isNotDeparted
@@ -101,6 +101,7 @@ import com.example.station.ui.common.TrainRoute
 import com.example.station.ui.common.causeName
 import com.example.station.ui.common.stationName
 import com.example.station.ui.theme.StationTheme
+import com.example.station.util.insertSpaces
 import java.time.ZonedDateTime
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -826,6 +827,11 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
     }
 }
 
+/**
+ * Creates accessibility label for train identification.
+ * Note: When the label includes train's type, spaces are inserted to it to make accessibility
+ * system to read out each letter separately instead of interpreting it as a word.
+ */
 @Composable private fun trainIdentificationAccessibilityLabel(train: Train): String {
     return train.run {
         if (isLongDistanceTrain()) {
@@ -834,13 +840,15 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
                 "S" -> stringResource(R.string.accessibility_label_pendolino_train, number)
                 else -> stringResource(
                     R.string.accessibility_label_long_distance_train,
-                    type,
-                    number
+                    type.insertSpaces(), number
                 )
             }
         } else {
             if (commuterLineId.isNullOrBlank()) {
-                stringResource(R.string.accessibility_label_commuter_train, type, number)
+                stringResource(
+                    R.string.accessibility_label_commuter_train,
+                    type.insertSpaces(), number
+                )
             } else {
                 stringResource(R.string.accessibility_label_commuter_line, commuterLineId)
             }

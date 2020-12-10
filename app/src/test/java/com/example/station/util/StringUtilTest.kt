@@ -45,4 +45,19 @@ class StringUtilTest {
         val result = "abcAbc".findAllMatches("Abc", ignoreCase = true)
         assertThat(result).isEqualTo(listOf(Pair(0, 3), Pair(3, 6)))
     }
+
+    @Test fun `insert spaces into an empty string`() {
+        val result = "".insertSpaces()
+        assertThat(result).isEqualTo("")
+    }
+
+    @Test fun `insert spaces into a string of one char`() {
+        val result = "a".insertSpaces()
+        assertThat(result).isEqualTo("a")
+    }
+
+    @Test fun `insert spaces into a string with one word`() {
+        val result = "word".insertSpaces()
+        assertThat(result).isEqualTo("w o r d")
+    }
 }

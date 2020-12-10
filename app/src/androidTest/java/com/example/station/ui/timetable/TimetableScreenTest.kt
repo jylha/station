@@ -111,6 +111,12 @@ class TimetableScreenTest {
                     differenceInMinutes = 3
                 )
             )
+        ),
+        Train(
+            4, "DEF", Train.Category.Commuter, timetable = listOf(
+                departure(10, "4", at("13:00")),
+                arrival(1, "4", at("13:30"))
+            )
         )
     )
 
@@ -165,6 +171,20 @@ class TimetableScreenTest {
                         "Estimated time of arrival 12:48, " +
                         "To track 3"
             )
+
+        rule.onNodeWithSubstring("DEF, 4").assertIsDisplayed()
+            .assert(hasSubstring("Pasila"))
+            .assert(hasSubstring("Helsinki"))
+            .assert(hasSubstring("TRACK, 4"))
+            .assert(hasSubstring("DEPARTS, 13:00"))
+            .assertLabelEquals(
+                "Commuter train D E F 4, " +
+                        "From Pasila, " +
+                        "To Helsinki, " +
+                        "To track 4, " +
+                        "Departs at 13:00"
+             )
+
     }
 
     @Test fun changeTrainCategoryFromCommuterToLongDistance() {

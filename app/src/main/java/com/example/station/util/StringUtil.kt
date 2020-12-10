@@ -23,3 +23,14 @@ fun String.findAllMatches(substring: String, ignoreCase: Boolean = true): List<P
     }
     return list
 }
+
+/**
+ * Inserts spaces between each character of the string (for example, "ABC" -> "A B C").
+ * @receiver The original string
+ * @return New string with spaces inserted into the original string.
+ */
+fun String.insertSpaces() : String {
+    return foldIndexed("") { index, acc, ch ->
+        if (index != lastIndex) "$acc$ch " else "$acc$ch"
+    }
+}
