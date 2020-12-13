@@ -89,4 +89,6 @@
 
     <string name="accessibility_label_show_delay_causes">Näytä viivästymisen syyt</string>
     <string name="accessibility_label_hide_delay_causes">Piilota viivästymisen syyt</string>
+
+    <string name="accessibility_label_show_application_info">Näytä tietoja sovelluksesta</string>
 </resources>
