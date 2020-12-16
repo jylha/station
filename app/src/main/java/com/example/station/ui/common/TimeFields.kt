@@ -179,7 +179,11 @@ import java.util.Locale
  * @param type TimetableRow type.
  * @param modifier Modifier.
  */
-@Composable fun CancelledTime(type: TimetableRow.Type, modifier: Modifier = Modifier) {
+@Composable fun CancelledTime(
+    // TODO: 16.12.2020 Consider changing the accessibility label depending on the type.
+    @Suppress("UNUSED_PARAMETER") type: TimetableRow.Type,
+    modifier: Modifier = Modifier
+) {
     val cancelledLabel = stringResource(R.string.label_cancelled).toUpperCase(Locale.getDefault())
     Row(
         modifier = modifier,
