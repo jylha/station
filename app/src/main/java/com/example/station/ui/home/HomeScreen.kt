@@ -29,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -173,7 +173,7 @@ fun HomeScreen(
     val label = stringResource(R.string.accessibility_label_show_application_info)
     IconButton(
         onClick = onClick,
-        modifier.semantics { accessibilityLabel = label },
+        modifier.semantics { contentDescription = label },
     ) { Icon(Icons.Outlined.Info, tint = buttonColor) }
 }
 

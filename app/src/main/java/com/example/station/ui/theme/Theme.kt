@@ -71,9 +71,8 @@ fun StationTheme(
 
 /** An object for getting access to StationColorPalette. */
 object StationTheme {
-    @Composable
     val colors: StationColorPalette
-        get() = AmbientStationColorPalette.current
+        @Composable get() = AmbientStationColorPalette.current
 }
 
 private val AmbientStationColorPalette = staticAmbientOf<StationColorPalette> {

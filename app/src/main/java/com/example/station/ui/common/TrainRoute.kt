@@ -11,7 +11,7 @@ import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -54,7 +54,7 @@ import com.example.station.R
             fontWeight = fontWeight,
             textAlign = TextAlign.End,
             modifier = Modifier
-                .semantics { accessibilityLabel = fromStation }
+                .semantics { contentDescription = fromStation }
                 .constrainAs(originRef) {
                     linkTo(top = parent.top, bottom = parent.bottom)
                     linkTo(start = parent.start, end = iconRef.start, bias = 1f)
@@ -67,7 +67,7 @@ import com.example.station.R
             fontWeight = fontWeight,
             textAlign = TextAlign.Start,
             modifier = Modifier
-                .semantics { accessibilityLabel = toStation }
+                .semantics { contentDescription = toStation }
                 .constrainAs(destinationRef) {
                     linkTo(top = parent.top, bottom = parent.bottom)
                     linkTo(start = iconRef.end, end = parent.end, bias = 0f)

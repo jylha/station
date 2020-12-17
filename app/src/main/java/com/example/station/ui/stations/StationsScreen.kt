@@ -27,7 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -117,7 +117,7 @@ fun StationScreen(
                 SearchBar(
                     text = searchText,
                     placeholderText = searchStationLabel,
-                    modifier = Modifier.semantics { accessibilityLabel = searchLabel },
+                    modifier = Modifier.semantics { contentDescription = searchLabel },
                     onValueChanged = { value -> searchText = value },
                     onClose = { searchEnabled = false; searchText = "" }
                 )
@@ -128,13 +128,13 @@ fun StationScreen(
                         IconButton(
                             onClick = onSelectNearest,
                             modifier = Modifier.semantics {
-                                accessibilityLabel = selectNearestLabel
+                                contentDescription = selectNearestLabel
                             }
                         ) { Icon(Icons.Rounded.MyLocation) }
                         IconButton(
                             onClick = { searchEnabled = true },
                             modifier = Modifier.semantics {
-                                accessibilityLabel = searchStationLabel
+                                contentDescription = searchStationLabel
                             }
                         ) { Icon(Icons.Default.Search) }
                     }

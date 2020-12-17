@@ -5,7 +5,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onChildren
-import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onParent
@@ -35,8 +35,8 @@ class StationsScreenTest {
         )
         rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
-        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
 
         rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
         rule.onNodeWithText(TEXT_RECENT, ignoreCase = true).assertDoesNotExist()
@@ -52,8 +52,8 @@ class StationsScreenTest {
         )
         rule.setThemedContent(darkMode = false) { StationsScreen(state = state, onSelect = {}) }
 
-        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
 
         rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
         rule.onNodeWithText(TEXT_RECENT).assertIsDisplayed()
@@ -74,9 +74,9 @@ class StationsScreenTest {
         )
         rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
 
-        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_SEARCH).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_SEARCH).assertDoesNotExist()
 
         rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()
@@ -84,17 +84,17 @@ class StationsScreenTest {
             .onParent().onChildren()[2].assertTextEquals("Pasila")
             .onParent().onChildren()[3].assertTextEquals("Helsinki Airport")
 
-        rule.onNodeWithLabel(LABEL_SEARCH_STATION).performClick()
+        rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).performClick()
 
-        rule.onNodeWithLabel(LABEL_NEAREST_STATION).assertDoesNotExist()
-        rule.onNodeWithLabel(LABEL_SEARCH_STATION).assertDoesNotExist()
-        rule.onNodeWithLabel(LABEL_SEARCH).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_SEARCH).assertIsDisplayed()
 
         rule.onNodeWithSubstring("Search station").assertIsDisplayed()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()
         rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()
 
-        rule.onNodeWithLabel(LABEL_SEARCH).onChildAt(1).performTextInput("h")
+        rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("h")
 
         rule.onNodeWithSubstring("Search station").assertDoesNotExist()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
@@ -102,7 +102,7 @@ class StationsScreenTest {
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
             .onParent().onChildren()[2].assertTextEquals("Helsinki Airport")
 
-        rule.onNodeWithLabel(LABEL_SEARCH).onChildAt(1).performTextInput("a")
+        rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("a")
         rule.waitForIdle()
 
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()

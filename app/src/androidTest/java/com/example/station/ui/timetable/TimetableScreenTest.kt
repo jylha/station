@@ -10,7 +10,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertLabelEquals
 import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -127,9 +127,9 @@ class TimetableScreenTest {
         rule.setThemedContent { TimetableScreen(viewState = state) }
 
         rule.onNodeWithText(TEXT_ALL_TRAINS).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_SELECT_STATION).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_SELECT_STATION).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
 
         rule.onNodeWithSubstring("IC, 1").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))
@@ -205,14 +205,14 @@ class TimetableScreenTest {
         rule.onNodeWithText(TEXT_ALL_TRAINS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_COMMUTER_TRAINS).assertIsDisplayed()
         rule.onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertDoesNotExist()
-        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
 
         // Show filters
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).performClick()
+        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
 
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertDoesNotExist()
-        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
 
         rule.onNodeWithText(TEXT_LONG_DISTANCE).assertLabelEquals(LABEL_SHOW_LONG_DISTANCE_TRAINS)
             .assertIsDisplayed()
@@ -279,14 +279,14 @@ class TimetableScreenTest {
         rule.onNodeWithSubstring("ABC, 1").assertExists()
         rule.onNodeWithSubstring("DEF, 2").assertDoesNotExist()
         rule.onNodeWithSubstring("GHI, 3").assertExists()
-        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertDoesNotExist()
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
 
         // Show filters.
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).performClick()
+        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
 
-        rule.onNodeWithLabel(LABEL_HIDE_FILTERS).assertIsDisplayed()
-        rule.onNodeWithLabel(LABEL_SHOW_FILTERS).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_DEPARTING).assertLabelEquals(LABEL_SHOW_DEPARTING_TRAINS)
             .assertIsDisplayed()
         rule.onNodeWithText(TEXT_ARRIVING).assertLabelEquals(LABEL_HIDE_ARRIVING_TRAINS)

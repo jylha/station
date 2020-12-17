@@ -23,11 +23,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonConstants.defaultButtonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -58,7 +58,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -257,19 +257,19 @@ fun TimetableScreen(
             val selectStationLabel = stringResource(R.string.label_select_station)
             IconButton(
                 onClick = onSelectStation,
-                modifier = Modifier.semantics { accessibilityLabel = selectStationLabel }
+                modifier = Modifier.semantics { contentDescription = selectStationLabel }
             ) { Icon(Icons.Rounded.LocationCity) }
             if (filterSelectionEnabled) {
                 val hideFiltersLabel = stringResource(R.string.label_hide_filters)
                 IconButton(
                     onClick = onHideFilters,
-                    modifier = Modifier.semantics { accessibilityLabel = hideFiltersLabel }
+                    modifier = Modifier.semantics { contentDescription = hideFiltersLabel }
                 ) { Icon(Icons.Default.ExpandLess) }
             } else {
                 val showFiltersLabel = stringResource(R.string.label_show_filters)
                 IconButton(
                     onClick = onShowFilters,
-                    modifier = Modifier.semantics { accessibilityLabel = showFiltersLabel }
+                    modifier = Modifier.semantics { contentDescription = showFiltersLabel }
                 ) { Icon(Icons.Default.FilterList) }
             }
         }
@@ -367,8 +367,7 @@ fun TimetableScreen(
                     selectedTrainCategories, trainCategorySelected
                 )
             }
-            SwipeToRefreshLayout(
-                Modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
+            SwipeToRefreshLayout(refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
             ) {
                 when {
                     trains.isEmpty() -> EmptyTimetable()
@@ -429,10 +428,12 @@ fun TimetableScreen(
     }
 
     when {
-        stops.isNotEmpty() -> LazyColumnFor(
-            stops, modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
-        ) { (train, stop) ->
-            TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
+        stops.isNotEmpty() -> LazyColumn(
+            modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
+        ) {
+            items(stops) { (train, stop) ->
+                TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
+            }
         }
         else -> NoMatchingTrains()
     }
@@ -487,7 +488,7 @@ fun TimetableScreen(
         SelectionButton(
             onClick = { timetableTypeSelected(TimetableRow.Type.Arrival) },
             selected = timetableTypes.contains(TimetableRow.Type.Arrival),
-            Modifier.weight(1f).semantics { accessibilityLabel = arrivingLabel }
+            Modifier.weight(1f).semantics { contentDescription = arrivingLabel }
         ) {
             Icon(vectorResource(R.drawable.ic_arrival), Modifier.size(24.dp))
             Spacer(modifier = Modifier.width(8.dp))
@@ -497,7 +498,7 @@ fun TimetableScreen(
         SelectionButton(
             onClick = { timetableTypeSelected(TimetableRow.Type.Departure) },
             selected = timetableTypes.contains(TimetableRow.Type.Departure),
-            Modifier.weight(1f).semantics { accessibilityLabel = departingLabel }
+            Modifier.weight(1f).semantics { contentDescription = departingLabel }
         ) {
             Text(stringResource(R.string.timetable_type_departing))
             Spacer(modifier = Modifier.width(8.dp))
@@ -526,7 +527,7 @@ fun TimetableScreen(
         SelectionButton(
             onClick = { categorySelected(Category.LongDistance) },
             selected = categories.contains(Category.LongDistance),
-            Modifier.weight(1f).semantics { accessibilityLabel = longDistanceLabel }
+            Modifier.weight(1f).semantics { contentDescription = longDistanceLabel }
         ) {
             Icon(image)
             Spacer(modifier = Modifier.width(8.dp))
@@ -536,7 +537,7 @@ fun TimetableScreen(
         SelectionButton(
             onClick = { categorySelected(Category.Commuter) },
             selected = categories.contains(Category.Commuter),
-            Modifier.weight(1f).semantics { accessibilityLabel = commuterLabel }
+            Modifier.weight(1f).semantics { contentDescription = commuterLabel }
         ) {
             Icon(image)
             Spacer(modifier = Modifier.width(8.dp))
@@ -567,7 +568,7 @@ fun TimetableScreen(
     Button(
         onClick,
         modifier,
-        colors = defaultButtonColors(
+        colors = ButtonDefaults.buttonColors(
             backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.Gray,
             contentColor = MaterialTheme.colors.onPrimary
         )
@@ -587,7 +588,7 @@ fun TimetableScreen(
         onClick,
         modifier,
         border = BorderStroke(2.dp, color),
-        colors = defaultButtonColors(
+        colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent,
             contentColor = color,
         ),
@@ -779,7 +780,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 
 @Composable private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
     val label = trainIdentificationAccessibilityLabel(train)
-    val accessibilityModifier = modifier.semantics { accessibilityLabel = label }
+    val accessibilityModifier = modifier.semantics { contentDescription = label }
     train.run {
         if (isLongDistanceTrain() || commuterLineId.isNullOrBlank()) {
             TrainTypeAndNumber(train.type, train.number, accessibilityModifier)
@@ -866,7 +867,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             TrackLabel()
             Text(
                 track,
-                Modifier.semantics { accessibilityLabel = label },
+                Modifier.semantics { contentDescription = label },
                 fontWeight = FontWeight.Bold
             )
         }
@@ -997,7 +998,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
                 val delayCausesLabel = stringResource(R.string.label_delay_causes)
                 Text(
                     delayCausesLabel.toUpperCase(Locale.getDefault()),
-                    Modifier.semantics { accessibilityLabel = delayCausesLabel },
+                    Modifier.semantics { contentDescription = delayCausesLabel },
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
                     style = MaterialTheme.typography.caption
                 )
@@ -1019,7 +1020,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 ) {
     Text(
         causeName,
-        modifier.padding(top = 8.dp).semantics { accessibilityLabel = causeName },
+        modifier.padding(top = 8.dp).semantics { contentDescription = causeName },
         color = color
     )
 }

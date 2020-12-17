@@ -5,7 +5,7 @@ import androidx.compose.runtime.Providers
 import androidx.compose.ui.test.ExperimentalTesting
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithLabel
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onNodeWithText
 import com.example.station.testutil.setThemedContent
@@ -44,7 +44,8 @@ class HomeScreenTest {
         }
 
         rule.onNodeWithText("Loading application settings.").assertDoesNotExist()
-        rule.onNodeWithLabel("Show information about the application").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Show information about the application")
+            .assertIsDisplayed()
         rule.onNodeWithSubstring("Welcome").assertIsDisplayed()
         rule.onNodeWithText("Select station").assertIsDisplayed()
         rule.onNodeWithText("Nearest station").assertIsDisplayed()

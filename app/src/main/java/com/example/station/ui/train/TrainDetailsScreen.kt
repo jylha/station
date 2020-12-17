@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -107,8 +107,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {},
 ) {
-    SwipeToRefreshLayout(
-        Modifier, refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
+    SwipeToRefreshLayout(refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             ScrollableColumn(
@@ -167,7 +166,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         Row {
             Text(
                 "$type $number",
-                modifier = Modifier.semantics { accessibilityLabel = label },
+                modifier = Modifier.semantics { contentDescription = label },
                 style = MaterialTheme.typography.h5
             )
         }
@@ -191,7 +190,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         Row {
             Text(
                 "$type $number",
-                modifier = Modifier.semantics { accessibilityLabel = label },
+                modifier = Modifier.semantics { contentDescription = label },
                 style = MaterialTheme.typography.h5
             )
         }
@@ -203,7 +202,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     Column(
         Modifier.size(60.dp)
             .background(color = MaterialTheme.colors.primary, CircleShape)
-            .semantics { accessibilityLabel = label },
+            .semantics { contentDescription = label },
         verticalArrangement = Arrangement.Center
     ) {
         Text(
@@ -341,7 +340,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     if (!name.isNullOrBlank()) {
         Text(
             name,
-            modifier.semantics { accessibilityLabel = name },
+            modifier.semantics { contentDescription = name },
             textAlign = TextAlign.End,
             style = MaterialTheme.typography.subtitle1
         )

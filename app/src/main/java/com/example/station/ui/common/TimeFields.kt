@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.accessibilityLabel
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -74,7 +74,7 @@ import java.util.Locale
     }
     Text(
         scheduledTimeText,
-        modifier.semantics { accessibilityLabel = label },
+        modifier.semantics { contentDescription = label },
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
         style = MaterialTheme.typography.body1,
         fontStyle = FontStyle.Italic,
@@ -109,7 +109,7 @@ import java.util.Locale
     val fontStyle = FontStyle.Italic
     val fontWeight = FontWeight.Light
     Row(
-        modifier.semantics { accessibilityLabel = label },
+        modifier.semantics { contentDescription = label },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -155,7 +155,7 @@ import java.util.Locale
         )
     }
     Row(
-        modifier.semantics { accessibilityLabel = label },
+        modifier.semantics { contentDescription = label },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {

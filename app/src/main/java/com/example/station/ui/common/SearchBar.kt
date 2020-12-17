@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -40,7 +39,6 @@ import com.example.station.ui.theme.StationTheme
  * @param onClose A callback that is called when user clicks either the Done button on keyboard
  * or the BackSpace button beside the search field.
  */
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun SearchBar(
     text: String,
