@@ -2,7 +2,7 @@
 <resources>
     <string name="label_welcome">Tervetuloa!</string>
     <string name="text_introduction">
-        Tämän sovelluksen avulla voit selata tietoja Suomen rautieverkossa liikennöivien junien
+        Tämän sovelluksen avulla voit selata tietoja Suomen rautatieverkossa liikennöivien junien
         aikatauluista.
     </string>
     <string name="label_select_station">Valitse asema</string>
