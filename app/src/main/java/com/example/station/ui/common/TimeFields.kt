@@ -186,7 +186,7 @@ import java.util.Locale
 ) {
     val cancelledLabel = stringResource(R.string.label_cancelled).toUpperCase(Locale.getDefault())
     Row(
-        modifier = modifier,
+        modifier = modifier.semantics { contentDescription = cancelledLabel },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
