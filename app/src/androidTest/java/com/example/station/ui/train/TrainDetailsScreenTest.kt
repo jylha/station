@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onNodeWithText
 import com.example.station.data.stations.StationNameMapper
 import com.example.station.model.Train
@@ -159,5 +160,29 @@ class TrainDetailsScreenTest {
             .assertTextEquals("Helsinki").assertIsDisplayed()
         rule.onNodeWithContentDescription("To Tikkurila", useUnmergedTree = true)
             .assertTextEquals("Tikkurila").assertIsDisplayed()
+    }
+
+    @Test fun cancelledTrainDetails() {
+        val commuterTrain = Train(
+            456, "DEF", Train.Category.Commuter, "D",
+            timetable = listOf(
+                departure(1, "5", at("11:00")),
+                arrival(30, "2", at("11:15"), cancelled = true),
+                departure(30, "2", at("11:16"), cancelled = true),
+                arrival(160, "1", at("12:00"))
+            )
+        )
+        val state = TrainDetailsViewState(train = commuterTrain, nameMapper = stationNameMapper)
+        rule.setThemedContent { TrainDetailsScreen(state) }
+
+        rule.onNodeWithContentDescription("D commuter train").assertIsDisplayed()
+        rule.onNodeWithContentDescription("From Helsinki", useUnmergedTree = true)
+            .assertTextEquals("Helsinki").assertIsDisplayed()
+        rule.onNodeWithContentDescription("To Tampere", useUnmergedTree = true)
+            .assertTextEquals("Tampere").assertIsDisplayed()
+        rule.onNodeWithSubstring("Pasila")
+            .assertTextEquals("Pasila, CANCELLED, CANCELLED")
+            .assertLabelEquals("Pasila, Arrival is cancelled, Departure is cancelled")
+            .assertIsDisplayed()
     }
 }

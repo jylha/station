@@ -99,10 +99,12 @@
     <string name="accessibility_label_actual_arrival">Arrived at %1$s</string>
     <string name="accessibility_label_scheduled_arrival">Arrives at %1$s</string>
     <string name="accessibility_label_estimated_arrival">Estimated time of arrival %1$s</string>
+    <string name="accessibility_label_cancelled_arrival">Arrival is cancelled</string>
 
     <string name="accessibility_label_actual_departure">Departed at %1$s</string>
     <string name="accessibility_label_scheduled_departure">Departs at %1$s</string>
     <string name="accessibility_label_estimated_departure">Estimated time of departure %1$s</string>
+    <string name="accessibility_label_cancelled_departure">Departure is cancelled</string>
 
     <string name="accessibility_label_from_station">From %1$s</string>
     <string name="accessibility_label_to_station">To %1$s</string>

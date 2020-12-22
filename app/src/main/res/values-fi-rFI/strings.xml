@@ -76,10 +76,12 @@
     <string name="accessibility_label_actual_arrival">Saapui kello %1$s</string>
     <string name="accessibility_label_scheduled_arrival">Saapuu kello %1$s</string>
     <string name="accessibility_label_estimated_arrival">Arvioitu saapumisaika kello %1$s</string>
+    <string name="accessibility_label_cancelled_arrival">Saapuminen on peruttu</string>
 
     <string name="accessibility_label_actual_departure">Lähti kello %1$s</string>
     <string name="accessibility_label_scheduled_departure">Lähtee kello %1$s</string>
     <string name="accessibility_label_estimated_departure">Arvioitu lähtöaika kello %1$s</string>
+    <string name="accessibility_label_cancelled_departure">Lähtö on peruttu</string>
 
     <string name="accessibility_label_from_station">Asemalta %1$s</string>
     <string name="accessibility_label_to_station">Asemalle %1$s</string>

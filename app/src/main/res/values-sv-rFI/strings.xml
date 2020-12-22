@@ -76,10 +76,12 @@
     <string name="accessibility_label_actual_arrival">Anlände klockan %1$s</string>
     <string name="accessibility_label_scheduled_arrival">Anländer klockan %1$s</string>
     <string name="accessibility_label_estimated_arrival">Beräknad ankomsttid klockan %1$s</string>
+    <string name="accessibility_label_cancelled_arrival">Ankomsten ar inställt</string>
 
     <string name="accessibility_label_actual_departure">Avgick klockan %1$s</string>
     <string name="accessibility_label_scheduled_departure">Avgår klockac %1$s</string>
     <string name="accessibility_label_estimated_departure">Beräknad avgångstid klockan %1$s</string>
+    <string name="accessibility_label_cancelled_departure">Avgången ar inställt</string>
 
     <string name="accessibility_label_from_station">Från %1$s</string>
     <string name="accessibility_label_to_station">Till %1$s</string>
