@@ -973,7 +973,13 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         modifier,
         contentAlignment = Alignment.CenterEnd
     ) {
-        IconButton(onClick, Modifier.size(36.dp), enabled = enabled) {
+        val description = stringResource(R.string.accessibility_label_show_delay_causes)
+        IconButton(
+            onClick,
+            Modifier.size(36.dp)
+                .semantics { contentDescription = description },
+            enabled = enabled
+        ) {
             Icon(Icons.Outlined.Info, tint = color)
         }
     }
@@ -1034,7 +1040,11 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         modifier,
         contentAlignment = Alignment.Center
     ) {
-        IconButton(onClick, Modifier.size(36.dp)) {
+        val description = stringResource(R.string.accessibility_label_hide_delay_causes)
+        IconButton(
+            onClick,
+            Modifier.size(36.dp).semantics { contentDescription = description }
+        ) {
             Icon(Icons.Rounded.ExpandLess, tint = color)
         }
     }
