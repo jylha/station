@@ -31,11 +31,11 @@ trains, or commuter or long-distance trains.
 selected train, which includes the train route, list of train's commercial stops
 with arrival and departure times.
 
-[1]: app/src/main/java/com/example/station/ui/home/HomeScreen.kt
-[2]: app/src/main/java/com/example/station/ui/about/AboutScreen.kt
-[3]: app/src/main/java/com/example/station/ui/stations/StationsScreen.kt
-[4]: app/src/main/java/com/example/station/ui/timetable/TimetableScreen.kt
-[5]: app/src/main/java/com/example/station/ui/train/TrainDetailsScreen.kt
+[1]: app/src/main/java/dev/jylha/station/ui/home/HomeScreen.kt
+[2]: app/src/main/java/dev/jylha/station/ui/about/AboutScreen.kt
+[3]: app/src/main/java/dev/jylha/station/ui/stations/StationsScreen.kt
+[4]: app/src/main/java/dev/jylha/station/ui/timetable/TimetableScreen.kt
+[5]: app/src/main/java/dev/jylha/station/ui/train/TrainDetailsScreen.kt
 
 ## Screenshots
 
