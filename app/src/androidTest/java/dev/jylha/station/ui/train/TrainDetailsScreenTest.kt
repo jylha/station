@@ -1,6 +1,6 @@
 package dev.jylha.station.ui.train
 
-import androidx.compose.ui.test.ExperimentalTesting
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertLabelEquals
 import androidx.compose.ui.test.assertTextEquals
@@ -18,7 +18,7 @@ import dev.jylha.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
-@OptIn(ExperimentalTesting::class)
+@OptIn(ExperimentalTestApi::class)
 class TrainDetailsScreenTest {
 
     @get:Rule val rule = createComposeRule()

@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.test.ExperimentalTesting
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertLabelEquals
@@ -52,7 +52,7 @@ private const val TEXT_DEPARTING_TRAINS = "Departing trains"
 private const val TEXT_COMMUTER_TRAINS = "Commuter trains"
 private const val TEXT_LONG_DISTANCE_TRAINS = "Long-distance trains"
 
-@OptIn(ExperimentalTesting::class)
+@OptIn(ExperimentalTestApi::class)
 class TimetableScreenTest {
 
     @get:Rule val rule = createComposeRule()

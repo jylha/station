@@ -2,7 +2,7 @@ package dev.jylha.station.ui.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.compose.ui.test.ExperimentalTesting
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -14,7 +14,7 @@ import dev.jylha.station.ui.common.Permission
 import org.junit.Rule
 import org.junit.Test
 
-@OptIn(ExperimentalTesting::class)
+@OptIn(ExperimentalTestApi::class)
 class HomeScreenTest {
 
     @get:Rule val rule = createComposeRule()

@@ -2,9 +2,11 @@ package dev.jylha.station.ui.common
 
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Dimension
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowRightAlt
@@ -16,11 +18,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
+import dev.jylha.station.ui.theme.StationTheme
 
 /**
- *  A composable for train route that displays the given origin and the destination stations.
+ *  A composable that displays given origin and destination station for a train route.
  *  @param origin Name of train's origin station.
  *  @param destination Name of train's destination station.
  *  @param modifier Modifier.
@@ -74,5 +78,25 @@ import dev.jylha.station.R
                     width = Dimension.preferredWrapContent
                 }
         )
+    }
+}
+
+@Preview(name = "Light theme", showBackground = true)
+@Composable
+private fun PreviewLightTrainRoute() {
+    StationTheme(darkTheme = false) {
+        Surface(Modifier.fillMaxWidth()) {
+            TrainRoute(origin = "Origin", destination = "Destination")
+        }
+    }
+}
+
+@Preview(name = "Dark theme", showBackground = true)
+@Composable
+private fun PreviewDarkTrainRoute() {
+    StationTheme(darkTheme = true) {
+        Surface(Modifier.fillMaxWidth()) {
+            TrainRoute(origin = "Origin", destination = "Destination")
+        }
     }
 }
