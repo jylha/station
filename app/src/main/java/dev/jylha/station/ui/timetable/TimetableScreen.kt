@@ -681,11 +681,6 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
     val delayCauses = remember(train) { train.delayCauses() }
     var delayCausesShown by remember { mutableStateOf(false) }
     var expandableState by savedInstanceState(train) { ExpandableState.Collapsed }
-
-    // Note: For some reason the transition state returns incorrect values after changing the
-    // items in the lazyColumn. The problem seemed to disappear by simply reading the
-    // transition state on (1) onClick and (2) onClose calls, so check this issue before
-    // removing those.
     val transitionState = transition(
         definition = expandableStateTransition,
         toState = expandableState,
@@ -738,7 +733,6 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                 if (delayCauses.isNotEmpty()) {
                     ShowDelayCauseAction(
                         onClick = {
-                            transitionState[expandedContentHeightFraction] // (1)
                             expandableState = ExpandableState.Expanded
                             delayCausesShown = true
                         },
@@ -756,10 +750,7 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
             if (delayCauses.isNotEmpty() && delayCausesShown) {
                 DelayCauses(
                     delayCauses,
-                    onClose = {
-                        transitionState[expandedContentHeightFraction] // (2)
-                        expandableState = ExpandableState.Collapsed
-                    },
+                    onClose = { expandableState = ExpandableState.Collapsed },
                     alpha = transitionState[expandedContentAlpha],
                     Modifier.heightFraction(transitionState[expandedContentHeightFraction])
                 )
