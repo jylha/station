@@ -1,8 +1,8 @@
 package dev.jylha.station.ui.home
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,10 +12,12 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
 
 private const val SKIP_HOME_SCREEN_ENABLED: Boolean = false
 
-class HomeViewModel @ViewModelInject constructor(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {

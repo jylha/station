@@ -1,8 +1,8 @@
 package dev.jylha.station.ui.train
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jylha.station.data.stations.StationRepository
 import dev.jylha.station.data.trains.TrainRepository
 import dev.jylha.station.model.Train
@@ -12,8 +12,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
 
-class TrainDetailsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class TrainDetailsViewModel @Inject constructor(
     private val trainRepository: TrainRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {

@@ -1,9 +1,9 @@
 package dev.jylha.station.ui.stations
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jylha.station.data.location.LocationService
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationRepository
@@ -16,8 +16,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
 
-class StationsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class StationsViewModel @Inject constructor(
     private val stationRepository: StationRepository,
     private val settingsRepository: SettingsRepository,
     private val locationService: LocationService,
