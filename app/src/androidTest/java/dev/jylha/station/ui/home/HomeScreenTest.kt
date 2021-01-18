@@ -14,6 +14,12 @@ import dev.jylha.station.ui.common.Permission
 import org.junit.Rule
 import org.junit.Test
 
+private const val TEXT_WELCOME = "Welcome"
+private const val TEXT_LOADING_SETTINGS = "Retrieving application settings."
+private const val TEXT_SELECT_STATION = "Select station"
+private const val TEXT_NEAREST_STATION = "Nearest station"
+private const val DESCRIPTION_ABOUT = "Show information about the application"
+
 @OptIn(ExperimentalTestApi::class)
 class HomeScreenTest {
 
@@ -21,7 +27,6 @@ class HomeScreenTest {
 
     @Test fun loadingApplicationSettings() {
         val state = HomeViewState(isLoadingSettings = true)
-
         rule.clockTestRule.pauseClock()
         rule.setThemedContent {
             MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
@@ -29,10 +34,11 @@ class HomeScreenTest {
             }
         }
         rule.clockTestRule.advanceClock(500)
-        rule.onNodeWithText("Loading application settings.")
-        rule.onNodeWithSubstring("Welcome").assertDoesNotExist()
-        rule.onNodeWithText("Select station").assertDoesNotExist()
-        rule.onNodeWithText("Nearest station").assertDoesNotExist()
+        rule.onNodeWithText(TEXT_LOADING_SETTINGS).assertIsDisplayed()
+        rule.onNodeWithContentDescription(DESCRIPTION_ABOUT).assertDoesNotExist()
+        rule.onNodeWithSubstring(TEXT_WELCOME).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_SELECT_STATION).assertDoesNotExist()
+        rule.onNodeWithText(TEXT_NEAREST_STATION).assertDoesNotExist()
     }
 
     @Test fun displayWelcomeText() {
@@ -42,13 +48,11 @@ class HomeScreenTest {
                 HomeScreen(viewState = state)
             }
         }
-
-        rule.onNodeWithText("Loading application settings.").assertDoesNotExist()
-        rule.onNodeWithContentDescription("Show information about the application")
-            .assertIsDisplayed()
-        rule.onNodeWithSubstring("Welcome").assertIsDisplayed()
-        rule.onNodeWithText("Select station").assertIsDisplayed()
-        rule.onNodeWithText("Nearest station").assertIsDisplayed()
+        rule.onNodeWithText(TEXT_LOADING_SETTINGS).assertDoesNotExist()
+        rule.onNodeWithContentDescription(DESCRIPTION_ABOUT).assertIsDisplayed()
+        rule.onNodeWithSubstring(TEXT_WELCOME).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
+        rule.onNodeWithText(TEXT_NEAREST_STATION).assertIsDisplayed()
     }
 }
 
