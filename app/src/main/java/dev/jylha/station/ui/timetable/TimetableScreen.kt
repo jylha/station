@@ -821,8 +821,8 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
 
 /**
  * Creates accessibility label for train identification.
- * Note: When the label includes train's type, spaces are inserted to it to make accessibility
- * system to read out each letter separately instead of interpreting it as a word.
+ * Note: When the label includes train's type, spaces are inserted between the letters to make
+ * the accessibility system read out each letter instead of interpreting the type as a word.
  */
 @Composable private fun trainIdentificationAccessibilityLabel(train: Train): String {
     return train.run {
@@ -967,7 +967,8 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         val description = stringResource(R.string.accessibility_label_show_delay_causes)
         IconButton(
             onClick,
-            Modifier.size(36.dp)
+            Modifier
+                .size(48.dp)
                 .semantics { contentDescription = description },
             enabled = enabled
         ) {
@@ -1034,7 +1035,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         val description = stringResource(R.string.accessibility_label_hide_delay_causes)
         IconButton(
             onClick,
-            Modifier.size(36.dp).semantics { contentDescription = description }
+            Modifier.size(48.dp).semantics { contentDescription = description }
         ) {
             Icon(Icons.Rounded.ExpandLess, tint = color)
         }
