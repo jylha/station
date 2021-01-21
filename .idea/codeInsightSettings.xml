@@ -5,6 +5,8 @@
       <name>java.lang.reflect.Modifier</name>
       <name>java.nio.file.WatchEvent.Modifier</name>
       <name>java.time.format.TextStyle</name>
+      <name>java.util.concurrent.Flow</name>
+      <name>org.intellij.lang.annotations.Flow</name>
     </excluded-names>
   </component>
 </project>
