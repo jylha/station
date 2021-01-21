@@ -2,12 +2,12 @@ package dev.jylha.station.data.settings
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesKey
-import androidx.datastore.preferences.core.preferencesSetKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.createDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -17,10 +17,10 @@ class DefaultSettingsRepository @Inject constructor(
 ) : SettingsRepository {
 
     private val maxRecentCount = 3
-    private val currentStationKey = preferencesKey<Int>("stationUicCode")
-    private val recentStationsKey = preferencesSetKey<String>("recentStations")
-    private val trainCategoriesKey = preferencesSetKey<String>("trainCategories")
-    private val timetableTypesKey = preferencesSetKey<String>("timetableTypes")
+    private val currentStationKey = intPreferencesKey("stationUicCode")
+    private val recentStationsKey = stringSetPreferencesKey("recentStations")
+    private val trainCategoriesKey = stringSetPreferencesKey("trainCategories")
+    private val timetableTypesKey = stringSetPreferencesKey("timetableTypes")
 
     private val dataStore = context.createDataStore("preferences")
 
