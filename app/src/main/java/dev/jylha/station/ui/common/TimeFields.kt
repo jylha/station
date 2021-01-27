@@ -57,24 +57,30 @@ import java.util.Locale
  * @param scheduledTime Scheduled time.
  * @param type TimetableRow type.
  * @param modifier Modifier.
+ * @param track Track name that will be included in the content description.
  */
 @Composable fun ScheduledTime(
     scheduledTime: ZonedDateTime,
     type: TimetableRow.Type,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    track: String? = null,
 ) {
     val context = AmbientContext.current
+    val trackText = trackString(track, type)
     val scheduledTimeText by produceLocalTime(scheduledTime)
-    val label = remember(scheduledTimeText, type) {
-        context.getString(
-            if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_scheduled_arrival
-            else R.string.accessibility_label_scheduled_departure,
-            scheduledTimeText
-        )
+    val description = remember(type, trackText, scheduledTimeText) {
+        if (scheduledTimeText.isNotBlank())
+            context.getString(
+                if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_scheduled_arrival
+                else R.string.accessibility_label_scheduled_departure,
+                trackText,
+                scheduledTimeText
+            )
+        else ""
     }
     Text(
         scheduledTimeText,
-        modifier.semantics { contentDescription = label },
+        modifier.semantics { contentDescription = description },
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
         style = MaterialTheme.typography.body1,
         fontStyle = FontStyle.Italic,
@@ -88,28 +94,34 @@ import java.util.Locale
  * @param estimatedTime Estimated time.
  * @param type TimetableRow type.
  * @param modifier Modifier.
+ * @param track Track name that will be included in the content description.
  */
 @Composable fun EstimatedTime(
     scheduledTime: ZonedDateTime,
     estimatedTime: ZonedDateTime,
     type: TimetableRow.Type,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    track: String? = null
 ) {
     val context = AmbientContext.current
+    val trackText = trackString(track, type)
     val localTimes by produceLocalTimes(scheduledTime, estimatedTime)
     val (scheduledTimeText, estimatedTimeText) = localTimes
-    val label = remember(type, estimatedTimeText) {
-        context.getString(
-            if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_estimated_arrival
-            else R.string.accessibility_label_estimated_departure,
-            estimatedTimeText
-        )
+    val description = remember(type, trackText, estimatedTimeText) {
+        if (estimatedTimeText.isNotBlank())
+            context.getString(
+                if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_estimated_arrival
+                else R.string.accessibility_label_estimated_departure,
+                trackText,
+                estimatedTimeText
+            )
+        else ""
     }
     val textStyle = MaterialTheme.typography.body1
     val fontStyle = FontStyle.Italic
     val fontWeight = FontWeight.Light
     Row(
-        modifier.semantics { contentDescription = label },
+        modifier.semantics { contentDescription = description },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -120,7 +132,9 @@ import java.util.Locale
         if (scheduledTimeText.isNotBlank() && estimatedTimeText.isNotBlank()) {
             Icon(
                 Icons.Rounded.ArrowRightAlt,
-                Modifier.padding(horizontal = 4.dp, vertical = 0.dp).preferredSize(16.dp),
+                Modifier
+                    .padding(horizontal = 4.dp, vertical = 0.dp)
+                    .preferredSize(16.dp),
                 tint = StationTheme.colors.delayed
             )
             Text(
@@ -138,24 +152,30 @@ import java.util.Locale
  * @param differenceInMinutes Time difference from scheduled time in minutes.
  * @param type TimetableRow type.
  * @param modifier Modifier.
+ * @param track Track name that will be included in the content description.
  */
 @Composable fun ActualTime(
     actualTime: ZonedDateTime,
     differenceInMinutes: Int,
     type: TimetableRow.Type,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    track: String? = null
 ) {
     val context = AmbientContext.current
+    val trackText = trackString(track, type)
     val actualTimeText by produceLocalTime(actualTime)
-    val label = remember(type, actualTimeText) {
-        context.getString(
-            if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_actual_arrival
-            else R.string.accessibility_label_actual_departure,
-            actualTimeText
-        )
+    val description = remember(type, trackText, actualTimeText) {
+        if (actualTimeText.isNotBlank()) {
+            context.getString(
+                if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_actual_arrival
+                else R.string.accessibility_label_actual_departure,
+                trackText,
+                actualTimeText
+            )
+        } else ""
     }
     Row(
-        modifier.semantics { contentDescription = label },
+        modifier.semantics { contentDescription = description },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -198,6 +218,18 @@ import java.util.Locale
             color = Color.Red,
             style = MaterialTheme.typography.body2,
         )
+    }
+}
+
+@Composable private fun trackString(track: String?, type: TimetableRow.Type): String {
+    return if (track?.isNotBlank() == true) {
+        " " + stringResource(
+            if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_to_track
+            else R.string.accessibility_label_from_track,
+            track
+        )
+    } else {
+        ""
     }
 }
 

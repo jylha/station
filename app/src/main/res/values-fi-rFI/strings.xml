@@ -73,19 +73,20 @@
     <string name="accessibility_label_commuter_train">Lähijuna %1$s %2$d</string>
     <string name="accessibility_label_commuter_line">%1$s lähijuna</string>
 
-    <string name="accessibility_label_actual_arrival">Saapui kello %1$s</string>
-    <string name="accessibility_label_scheduled_arrival">Saapuu kello %1$s</string>
-    <string name="accessibility_label_estimated_arrival">Arvioitu saapumisaika kello %1$s</string>
-    <string name="accessibility_label_cancelled_arrival">Saapuminen on peruttu</string>
+    <string name="accessibility_label_actual_arrival">saapui%1$s kello %2$s</string>
+    <string name="accessibility_label_scheduled_arrival">saapuu%1$s kello %2$s</string>
+    <string name="accessibility_label_estimated_arrival">arvioitu saapumisaika%1$s kello %2$s</string>
+    <string name="accessibility_label_cancelled_arrival">saapuminen on peruttu</string>
 
-    <string name="accessibility_label_actual_departure">Lähti kello %1$s</string>
-    <string name="accessibility_label_scheduled_departure">Lähtee kello %1$s</string>
-    <string name="accessibility_label_estimated_departure">Arvioitu lähtöaika kello %1$s</string>
-    <string name="accessibility_label_cancelled_departure">Lähtö on peruttu</string>
+    <string name="accessibility_label_actual_departure">lähti%1$s kello %2$s</string>
+    <string name="accessibility_label_scheduled_departure">lähtee%1$s kello %2$s</string>
+    <string name="accessibility_label_estimated_departure">arvioitu lähtöaika%1$s kello %2$s</string>
+    <string name="accessibility_label_cancelled_departure">lähtö on peruttu</string>
 
-    <string name="accessibility_label_from_station">Asemalta %1$s</string>
-    <string name="accessibility_label_to_station">Asemalle %1$s</string>
-    <string name="accessibility_label_to_track">Raiteelle %1$s</string>
+    <string name="accessibility_label_from_station">asemalta %1$s</string>
+    <string name="accessibility_label_to_station">asemalle %1$s</string>
+    <string name="accessibility_label_from_track">raiteelta %1$s</string>
+    <string name="accessibility_label_to_track">raiteelle %1$s</string>
 
     <string name="accessibility_label_search">Etsi</string>
 

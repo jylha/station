@@ -56,9 +56,9 @@ class TrainDetailsScreenTest {
 
         rule.onNodeWithContentDescription("Long-distance train ABC 123")
             .assertTextEquals("ABC 123").assertIsDisplayed()
-        rule.onNodeWithContentDescription("From Helsinki", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("from Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithContentDescription("To Pasila", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("to Pasila", useUnmergedTree = true)
             .assertTextEquals("Pasila").assertIsDisplayed()
     }
 
@@ -98,27 +98,27 @@ class TrainDetailsScreenTest {
 
         rule.onNodeWithContentDescription("Intercity train 10")
             .assertTextEquals("IC 10").assertIsDisplayed()
-        rule.onNodeWithContentDescription("From Helsinki", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("from Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithContentDescription("To Tampere", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("to Tampere", useUnmergedTree = true)
             .assertTextEquals("Tampere").assertIsDisplayed()
 
         rule.onNodeWithText("Helsinki, 12:24").assertIsDisplayed()
-            .assertLabelEquals("Helsinki, Departed at 12:24")
+            .assertLabelEquals("Helsinki, departed at 12:24")
 
         rule.onNode(hasSubstring("Pasila"))
             .assertTextEquals("Pasila, 12:29, +1, 12:32, +2")
-            .assertLabelEquals("Pasila, Arrived at 12:29, Departed at 12:32")
+            .assertLabelEquals("Pasila, arrived at 12:29, departed at 12:32")
             .assertIsDisplayed()
 
         rule.onNode(hasSubstring("Tikkurila"))
             .assertTextEquals("Tikkurila, 12:38, -1, 12:41")
-            .assertLabelEquals("Tikkurila, Arrived at 12:38, Departed at 12:41")
+            .assertLabelEquals("Tikkurila, arrived at 12:38, departed at 12:41")
             .assertIsDisplayed()
 
         rule.onNode(hasSubstring("Tampere") and hasSubstring("13:"))
             .assertTextEquals("Tampere, 13:58, 13:56")
-            .assertLabelEquals("Tampere, Estimated time of arrival 13:56")
+            .assertLabelEquals("Tampere, estimated time of arrival at 13:56")
             .assertIsDisplayed()
     }
 
@@ -135,9 +135,9 @@ class TrainDetailsScreenTest {
 
         rule.onNodeWithContentDescription("Pendolino train 55")
             .assertTextEquals("S 55").assertIsDisplayed()
-        rule.onNodeWithContentDescription("From Helsinki", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("from Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithContentDescription("To Pasila", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("to Pasila", useUnmergedTree = true)
             .assertTextEquals("Pasila").assertIsDisplayed()
     }
 
@@ -156,9 +156,9 @@ class TrainDetailsScreenTest {
 
         rule.onNodeWithContentDescription("Commuter train ABC 123")
             .assertTextEquals("ABC 123").assertIsDisplayed()
-        rule.onNodeWithContentDescription("From Helsinki", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("from Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithContentDescription("To Tikkurila", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("to Tikkurila", useUnmergedTree = true)
             .assertTextEquals("Tikkurila").assertIsDisplayed()
     }
 
@@ -176,13 +176,13 @@ class TrainDetailsScreenTest {
         rule.setThemedContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithContentDescription("D commuter train").assertIsDisplayed()
-        rule.onNodeWithContentDescription("From Helsinki", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("from Helsinki", useUnmergedTree = true)
             .assertTextEquals("Helsinki").assertIsDisplayed()
-        rule.onNodeWithContentDescription("To Tampere", useUnmergedTree = true)
+        rule.onNodeWithContentDescription("to Tampere", useUnmergedTree = true)
             .assertTextEquals("Tampere").assertIsDisplayed()
         rule.onNodeWithSubstring("Pasila")
             .assertTextEquals("Pasila, CANCELLED, CANCELLED")
-            .assertLabelEquals("Pasila, Arrival is cancelled, Departure is cancelled")
+            .assertLabelEquals("Pasila, arrival is cancelled, departure is cancelled")
             .assertIsDisplayed()
     }
 }

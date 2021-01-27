@@ -94,19 +94,25 @@
     <string name="accessibility_label_commuter_train">Commuter train %1$s %2$d</string>
     <string name="accessibility_label_commuter_line">%1$s commuter train</string>
 
-    <string name="accessibility_label_actual_arrival">Arrived at %1$s</string>
-    <string name="accessibility_label_scheduled_arrival">Arrives at %1$s</string>
-    <string name="accessibility_label_estimated_arrival">Estimated time of arrival %1$s</string>
-    <string name="accessibility_label_cancelled_arrival">Arrival is cancelled</string>
+    <!--
+        The content descriptions for arrival and departure times use the first parameter
+        for optional track information and the second parameter for the time.
+        Note: This string format woks at least for the supported languages (en,fi,sv).
+    -->
+    <string name="accessibility_label_actual_arrival">arrived%1$s at %2$s</string>
+    <string name="accessibility_label_scheduled_arrival">arrives%1$s at %2$s</string>
+    <string name="accessibility_label_estimated_arrival">estimated time of arrival%1$s at %2$s</string>
+    <string name="accessibility_label_cancelled_arrival">arrival is cancelled</string>
 
-    <string name="accessibility_label_actual_departure">Departed at %1$s</string>
-    <string name="accessibility_label_scheduled_departure">Departs at %1$s</string>
-    <string name="accessibility_label_estimated_departure">Estimated time of departure %1$s</string>
-    <string name="accessibility_label_cancelled_departure">Departure is cancelled</string>
+    <string name="accessibility_label_actual_departure">departed%1$s at %2$s</string>
+    <string name="accessibility_label_scheduled_departure">departs%1$s at %2$s</string>
+    <string name="accessibility_label_estimated_departure">estimated time of departure%1$s at %2$s</string>
+    <string name="accessibility_label_cancelled_departure">departure is cancelled</string>
 
-    <string name="accessibility_label_from_station">From %1$s</string>
-    <string name="accessibility_label_to_station">To %1$s</string>
-    <string name="accessibility_label_to_track">To track %1$s</string>
+    <string name="accessibility_label_from_station">from %1$s</string>
+    <string name="accessibility_label_to_station">to %1$s</string>
+    <string name="accessibility_label_from_track">from track %1$s</string>
+    <string name="accessibility_label_to_track">to track %1$s</string>
 
     <string name="accessibility_label_search">Search</string>
 

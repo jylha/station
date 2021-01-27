@@ -726,10 +726,10 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                 })
                 Departure(stop.departure, Modifier.constrainAs(departureRef) {
                     start.linkTo(trackRef.end, margin = 8.dp)
-                    end.linkTo(parent.end, margin = 36.dp)
+                    end.linkTo(parent.end, margin = 48.dp)
                     top.linkTo(trackRef.top)
                     bottom.linkTo(trackRef.bottom)
-                })
+                }, includeTrackLabel = stop.arrival == null)
                 if (delayCauses.isNotEmpty()) {
                     ShowDelayCauseAction(
                         onClick = {
@@ -854,13 +854,8 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (track?.isNotBlank() == true) {
-            val label = stringResource(R.string.accessibility_label_to_track, track)
             TrackLabel()
-            Text(
-                track,
-                Modifier.semantics { contentDescription = label },
-                fontWeight = FontWeight.Bold
-            )
+            Text(track, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -887,25 +882,37 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             )
             actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
-                time = { ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Arrival) },
+                time = {
+                    ActualTime(
+                        actualTime, differenceInMinutes, TimetableRow.Type.Arrival, track = track
+                    )
+                },
                 modifier
             )
             estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
-                time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Arrival) },
+                time = {
+                    EstimatedTime(
+                        scheduledTime, estimatedTime, TimetableRow.Type.Arrival, track = track
+                    )
+                },
                 modifier
             )
             else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
-                time = { ScheduledTime(scheduledTime, TimetableRow.Type.Arrival) },
+                time = { ScheduledTime(scheduledTime, TimetableRow.Type.Arrival, track = track) },
                 modifier
             )
         }
     } ?: Box(modifier)
 }
 
-@Composable private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier) {
+@Composable private fun Departure(
+    departure: TimetableRow?, modifier: Modifier = Modifier,
+    includeTrackLabel: Boolean = false
+) {
     departure?.run {
+        val trackLabel = if (includeTrackLabel) track else null
         when {
             cancelled -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
@@ -914,17 +921,31 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             )
             actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
-                time = { ActualTime(actualTime, differenceInMinutes, TimetableRow.Type.Departure) },
+                time = {
+                    ActualTime(
+                        actualTime, differenceInMinutes, TimetableRow.Type.Departure,
+                        track = trackLabel
+                    )
+                },
                 modifier
             )
             estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
-                time = { EstimatedTime(scheduledTime, estimatedTime, TimetableRow.Type.Departure) },
+                time = {
+                    EstimatedTime(
+                        scheduledTime, estimatedTime, TimetableRow.Type.Departure,
+                        track = trackLabel
+                    )
+                },
                 modifier
             )
             else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
-                time = { ScheduledTime(scheduledTime, TimetableRow.Type.Departure) },
+                time = {
+                    ScheduledTime(
+                        scheduledTime, TimetableRow.Type.Departure, track = trackLabel
+                    )
+                },
                 modifier
             )
         }

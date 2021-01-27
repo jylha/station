@@ -73,19 +73,20 @@
     <string name="accessibility_label_commuter_train">Närtåg %1$s %2$d</string>
     <string name="accessibility_label_commuter_line">%1$s närtåg</string>
 
-    <string name="accessibility_label_actual_arrival">Anlände klockan %1$s</string>
-    <string name="accessibility_label_scheduled_arrival">Anländer klockan %1$s</string>
-    <string name="accessibility_label_estimated_arrival">Beräknad ankomsttid klockan %1$s</string>
-    <string name="accessibility_label_cancelled_arrival">Ankomsten ar inställt</string>
+    <string name="accessibility_label_actual_arrival">anlände%1$s klockan %2$s</string>
+    <string name="accessibility_label_scheduled_arrival">anländer%1$s klockan %2$s</string>
+    <string name="accessibility_label_estimated_arrival">beräknad ankomsttid%1$s klockan %2$s</string>
+    <string name="accessibility_label_cancelled_arrival">ankomsten ar inställt</string>
 
-    <string name="accessibility_label_actual_departure">Avgick klockan %1$s</string>
-    <string name="accessibility_label_scheduled_departure">Avgår klockac %1$s</string>
-    <string name="accessibility_label_estimated_departure">Beräknad avgångstid klockan %1$s</string>
-    <string name="accessibility_label_cancelled_departure">Avgången ar inställt</string>
+    <string name="accessibility_label_actual_departure">avgick%1$s klockan %2$s</string>
+    <string name="accessibility_label_scheduled_departure">avgår%1$s klockan %2$s</string>
+    <string name="accessibility_label_estimated_departure">beräknad avgångstid%1$s klockan %2$s</string>
+    <string name="accessibility_label_cancelled_departure">avgången ar inställt</string>
 
-    <string name="accessibility_label_from_station">Från %1$s</string>
-    <string name="accessibility_label_to_station">Till %1$s</string>
-    <string name="accessibility_label_to_track">Till spår %1$s</string>
+    <string name="accessibility_label_from_station">från %1$s</string>
+    <string name="accessibility_label_to_station">till %1$s</string>
+    <string name="accessibility_label_from_track">från spår %1$s</string>
+    <string name="accessibility_label_to_track">till spår %1$s</string>
 
     <string name="accessibility_label_search">Sök</string>
 

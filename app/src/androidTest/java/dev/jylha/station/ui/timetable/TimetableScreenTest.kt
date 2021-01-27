@@ -117,6 +117,12 @@ class TimetableScreenTest {
                 departure(10, "4", at("13:00")),
                 arrival(1, "4", at("13:30"))
             )
+        ),
+        Train(
+            5, "IC", Train.Category.LongDistance, timetable = listOf(
+                departure(1, "1", at("13:30")),
+                arrival(10, "5", at("14:15"))
+            )
         )
     )
 
@@ -138,12 +144,13 @@ class TimetableScreenTest {
             .assert(hasSubstring("TRACK, 2"))
             .assert(hasSubstring("DEPARTS, 12:15"))
             .assertLabelEquals(
-                "Intercity train 1, " +
-                        "From Helsinki, " +
-                        "To Tikkurila, " +
-                        "Arrived at 12:12, " +
-                        "To track 2, " +
-                        "Departs at 12:15"
+                """
+                Intercity train 1
+                from Helsinki
+                to Tikkurila
+                arrived to track 2 at 12:12
+                departs at 12:15
+                """.trimIndent().lines().joinToString(", ")
             )
 
         rule.onNodeWithSubstring("S, 2").assertIsDisplayed()
@@ -152,11 +159,12 @@ class TimetableScreenTest {
             .assert(hasSubstring("TRACK, 1"))
             .assert(hasSubstring("DEPARTS, 12:45"))
             .assertLabelEquals(
-                "Pendolino train 2, " +
-                        "From Pasila, " +
-                        "To Helsinki, " +
-                        "To track 1, " +
-                        "Departs at 12:45"
+                """
+                Pendolino train 2
+                from Pasila
+                to Helsinki
+                departs from track 1 at 12:45
+                """.trimIndent().lines().joinToString(", ")
             )
 
         rule.onNodeWithSubstring("TRACK, 3").assertIsDisplayed()
@@ -165,11 +173,12 @@ class TimetableScreenTest {
             .assert(hasSubstring("ARRIVES, 12:45, 12:48"))
             .assert(hasSubstring("Z"))
             .assertLabelEquals(
-                "Z commuter train, " +
-                        "From Helsinki, " +
-                        "To Pasila, " +
-                        "Estimated time of arrival 12:48, " +
-                        "To track 3"
+                """
+                Z commuter train
+                from Helsinki
+                to Pasila
+                estimated time of arrival to track 3 at 12:48
+                """.trimIndent().lines().joinToString(", ")
             )
 
         rule.onNodeWithSubstring("DEF, 4").assertIsDisplayed()
@@ -178,12 +187,27 @@ class TimetableScreenTest {
             .assert(hasSubstring("TRACK, 4"))
             .assert(hasSubstring("DEPARTS, 13:00"))
             .assertLabelEquals(
-                "Commuter train D E F 4, " +
-                        "From Pasila, " +
-                        "To Helsinki, " +
-                        "To track 4, " +
-                        "Departs at 13:00"
-             )
+                """
+                Commuter train D E F 4
+                from Pasila
+                to Helsinki
+                departs from track 4 at 13:00
+                """.trimIndent().lines().joinToString(", ")
+            )
+
+        rule.onNodeWithSubstring("IC, 5").assertIsDisplayed()
+            .assert(hasSubstring("Helsinki"))
+            .assert(hasSubstring("Pasila"))
+            .assert(hasSubstring("ARRIVES, 14:15"))
+            .assert(hasSubstring("TRACK, 5"))
+            .assertLabelEquals(
+                """
+                Intercity train 5
+                from Helsinki
+                to Pasila
+                arrives to track 5 at 14:15
+                """.trimIndent().lines().joinToString(", ")
+            )
 
     }
 
@@ -196,11 +220,11 @@ class TimetableScreenTest {
         rule.setThemedContent {
             var state by remember(viewState) { mutableStateOf(viewState) }
             TimetableScreen(viewState = state, onEvent = { event: TimetableEvent ->
-                    if (event is TimetableEvent.SelectCategories)
-                        state = state.copy(selectedTrainCategories = event.categories)
-                    onTimetableEvent(event)
-                })
-            }
+                if (event is TimetableEvent.SelectCategories)
+                    state = state.copy(selectedTrainCategories = event.categories)
+                onTimetableEvent(event)
+            })
+        }
 
         rule.onNodeWithText(TEXT_ALL_TRAINS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_COMMUTER_TRAINS).assertIsDisplayed()
