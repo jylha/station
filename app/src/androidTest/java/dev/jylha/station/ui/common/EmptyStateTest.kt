@@ -1,6 +1,5 @@
 package dev.jylha.station.ui.common
 
-
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -13,7 +12,7 @@ class EmptyStateTest {
     @get:Rule val rule = createComposeRule()
 
     @Test fun emptyStateDisplaysMessage() {
-        rule.setThemedContent { EmptyState(text = "Nothing here!") }
+        rule.setThemedContent { EmptyState(message = "Nothing here!") }
         rule.onNodeWithText("Nothing here!").assertIsDisplayed()
     }
 }

@@ -24,10 +24,14 @@ import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
 import dev.jylha.station.ui.theme.StationTheme
 
-/** An empty state composable for displaying empty states in the application. */
+/**
+ * A composable for displaying empty states in the application.
+ * @param message A description for the empty state.
+ * @param modifier Optional modifier for the composable.
+ */
 @Composable
 fun EmptyState(
-    text: String,
+    message: String,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -49,12 +53,13 @@ fun EmptyState(
                 Icon(
                     imageVector = vectorResource(id = R.drawable.magnifying_class),
                     modifier = Modifier.preferredSize(100.dp).align(Alignment.Center),
-                    tint = MaterialTheme.colors.primary.copy(alpha = 0.3f)
+                    tint = MaterialTheme.colors.primary.copy(alpha = 0.3f),
+                    contentDescription = null
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text,
+                message,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
                 style = MaterialTheme.typography.body1.copy(

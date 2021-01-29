@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -257,20 +258,20 @@ fun TimetableScreen(
             val selectStationLabel = stringResource(R.string.label_select_station)
             IconButton(
                 onClick = onSelectStation,
-                modifier = Modifier.semantics { contentDescription = selectStationLabel }
-            ) { Icon(Icons.Rounded.LocationCity) }
+                modifier = Modifier.semantics { contentDescription = selectStationLabel },
+            ) { Icon(Icons.Rounded.LocationCity, contentDescription = null) }
             if (filterSelectionEnabled) {
                 val hideFiltersLabel = stringResource(R.string.label_hide_filters)
                 IconButton(
                     onClick = onHideFilters,
                     modifier = Modifier.semantics { contentDescription = hideFiltersLabel }
-                ) { Icon(Icons.Default.ExpandLess) }
+                ) { Icon(Icons.Default.ExpandLess, contentDescription = null) }
             } else {
                 val showFiltersLabel = stringResource(R.string.label_show_filters)
                 IconButton(
                     onClick = onShowFilters,
                     modifier = Modifier.semantics { contentDescription = showFiltersLabel }
-                ) { Icon(Icons.Default.FilterList) }
+                ) { Icon(Icons.Default.FilterList, contentDescription = null) }
             }
         }
     )
@@ -386,12 +387,12 @@ fun TimetableScreen(
 
 @Composable private fun EmptyTimetable() {
     val message = stringResource(R.string.message_empty_timetable)
-    EmptyState(text = message)
+    EmptyState(message = message)
 }
 
 @Composable private fun NoMatchingTrains() {
     val message = stringResource(R.string.message_no_matching_trains)
-    EmptyState(text = message)
+    EmptyState(message = message)
 }
 
 @Composable private fun Timetable(
@@ -490,7 +491,11 @@ fun TimetableScreen(
             selected = timetableTypes.contains(TimetableRow.Type.Arrival),
             Modifier.weight(1f).semantics { contentDescription = arrivingLabel }
         ) {
-            Icon(vectorResource(R.drawable.ic_arrival), Modifier.size(24.dp))
+            Icon(
+                vectorResource(R.drawable.ic_arrival),
+                contentDescription = null,
+                Modifier.size(24.dp)
+            )
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.timetable_type_arriving))
         }
@@ -502,7 +507,11 @@ fun TimetableScreen(
         ) {
             Text(stringResource(R.string.timetable_type_departing))
             Spacer(modifier = Modifier.width(8.dp))
-            Icon(vectorResource(R.drawable.ic_departure), Modifier.size(24.dp))
+            Icon(
+                vectorResource(R.drawable.ic_departure),
+                contentDescription = null,
+                Modifier.size(24.dp)
+            )
         }
     }
 }
@@ -529,7 +538,7 @@ fun TimetableScreen(
             selected = categories.contains(Category.LongDistance),
             Modifier.weight(1f).semantics { contentDescription = longDistanceLabel }
         ) {
-            Icon(image)
+            Icon(image, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.category_long_distance_trains))
         }
@@ -539,7 +548,7 @@ fun TimetableScreen(
             selected = categories.contains(Category.Commuter),
             Modifier.weight(1f).semantics { contentDescription = commuterLabel }
         ) {
-            Icon(image)
+            Icon(image, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.category_commuter_trains))
         }
@@ -743,7 +752,8 @@ private val expandableStateTransition = transitionDefinition<ExpandableState> {
                             bottom.linkTo(departureRef.bottom)
                         },
                         color = if (delayCauses.isEmpty()) Color.Transparent
-                        else StationTheme.colors.late.copy(alpha = transitionState[expandButtonAlpha])
+                        else StationTheme.colors.late.copy(
+                            alpha = transitionState[expandButtonAlpha])
                     )
                 }
             }
@@ -993,7 +1003,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
                 .semantics { contentDescription = description },
             enabled = enabled
         ) {
-            Icon(Icons.Outlined.Info, tint = color)
+            Icon(Icons.Outlined.Info, contentDescription = null, tint = color)
         }
     }
 }
@@ -1058,7 +1068,7 @@ fun Modifier.heightFraction(fraction: Float): Modifier {
             onClick,
             Modifier.size(48.dp).semantics { contentDescription = description }
         ) {
-            Icon(Icons.Rounded.ExpandLess, tint = color)
+            Icon(Icons.Rounded.ExpandLess, contentDescription = null, tint = color)
         }
     }
 }

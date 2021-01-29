@@ -130,13 +130,13 @@ fun StationScreen(
                             modifier = Modifier.semantics {
                                 contentDescription = selectNearestLabel
                             }
-                        ) { Icon(Icons.Rounded.MyLocation) }
+                        ) { Icon(Icons.Rounded.MyLocation, contentDescription = null) }
                         IconButton(
                             onClick = { searchEnabled = true },
                             modifier = Modifier.semantics {
                                 contentDescription = searchStationLabel
                             }
-                        ) { Icon(Icons.Default.Search) }
+                        ) { Icon(Icons.Default.Search, contentDescription = null) }
                     }
                 )
             }

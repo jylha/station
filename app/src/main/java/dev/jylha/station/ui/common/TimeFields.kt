@@ -131,7 +131,7 @@ import java.util.Locale
         )
         if (scheduledTimeText.isNotBlank() && estimatedTimeText.isNotBlank()) {
             Icon(
-                Icons.Rounded.ArrowRightAlt,
+                Icons.Rounded.ArrowRightAlt, contentDescription = null,
                 Modifier
                     .padding(horizontal = 4.dp, vertical = 0.dp)
                     .preferredSize(16.dp),

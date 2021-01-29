@@ -64,7 +64,7 @@ fun SearchBar(
         ) {
             if (onClose != null) {
                 IconButton(onClick = onClose) {
-                    Icon(Icons.Default.KeyboardBackspace)
+                    Icon(Icons.Default.KeyboardBackspace, contentDescription = null)
                 }
             }
             TextField(

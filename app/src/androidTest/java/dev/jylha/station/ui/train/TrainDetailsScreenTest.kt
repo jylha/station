@@ -36,9 +36,9 @@ class TrainDetailsScreenTest {
 
     @Test fun loadingTrainDetails() {
         val state = TrainDetailsViewState(isLoadingMapper = true)
-        rule.clockTestRule.pauseClock()
+        rule.mainClock.autoAdvance = false
         rule.setThemedContent(darkMode = false) { TrainDetailsScreen(state) }
-        rule.clockTestRule.advanceClock(100)
+        rule.mainClock.advanceTimeBy(100)
 
         rule.onNodeWithText("Retrieving train details.").assertIsDisplayed()
     }

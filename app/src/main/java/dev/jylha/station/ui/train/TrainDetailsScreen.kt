@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -110,21 +111,23 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     SwipeToRefreshLayout(refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
-            ScrollableColumn(
+            LazyColumn(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(20.dp))
-                TrainIdentification(train)
-                Spacer(Modifier.height(16.dp))
-                TrainRoute(
-                    stationName(train.origin()) ?: "",
-                    stationName(train.destination()) ?: "",
-                    Modifier.semantics(mergeDescendants = true) {}
-                )
-                Spacer(Modifier.height(20.dp))
-                Timetable(train)
-                Spacer(Modifier.height(20.dp))
+                item {
+                    Spacer(Modifier.height(20.dp))
+                    TrainIdentification(train)
+                    Spacer(Modifier.height(16.dp))
+                    TrainRoute(
+                        stationName(train.origin()) ?: "",
+                        stationName(train.destination()) ?: "",
+                        Modifier.semantics(mergeDescendants = true) {}
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    Timetable(train)
+                    Spacer(Modifier.height(20.dp))
+                }
             }
         }
     }
@@ -155,8 +158,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            Icons.Rounded.Train,
-            Modifier.size(60.dp)
+            Icons.Rounded.Train, contentDescription = null,
+            Modifier
+                .size(60.dp)
                 .background(MaterialTheme.colors.secondary, CircleShape)
                 .padding(4.dp),
             contentScale = ContentScale.Fit,
@@ -179,8 +183,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            Icons.Rounded.Train,
-            Modifier.size(60.dp)
+            Icons.Rounded.Train, contentDescription = null,
+            Modifier
+                .size(60.dp)
                 .background(color = MaterialTheme.colors.primary, CircleShape)
                 .padding(4.dp),
             contentScale = ContentScale.Fit,
@@ -200,7 +205,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable private fun CommuterTrainIdentification(commuterLineId: String) {
     val label = stringResource(R.string.accessibility_label_commuter_line, commuterLineId)
     Column(
-        Modifier.size(60.dp)
+        Modifier
+            .size(60.dp)
             .background(color = MaterialTheme.colors.primary, CircleShape)
             .semantics { contentDescription = label },
         verticalArrangement = Arrangement.Center
@@ -252,12 +258,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     CommercialStop(
         name = { modifier -> StopName(stationName(origin.stationCode()), modifier) },
         stationIcon = { modifier ->
-            Image(vectorResource(stationIconResId), modifier, colorFilter = colorFilter)
+            Image(vectorResource(stationIconResId), contentDescription = null, modifier,
+                colorFilter = colorFilter)
         },
         departureTime = { modifier -> TimeField(origin.departure, modifier) },
         departureIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), modifier,
+                vectorResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = colorFilter
             )
@@ -286,12 +293,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     CommercialStop(
         name = { modifier -> StopName(stationName(waypoint.stationCode()), modifier) },
         stationIcon = { modifier ->
-            Image(vectorResource(stationIconResId), modifier, colorFilter = arrivedColorFilter)
+            Image(vectorResource(stationIconResId), contentDescription = null, modifier,
+                colorFilter = arrivedColorFilter)
         },
         arrivalTime = { modifier -> TimeField(waypoint.arrival, modifier) },
         arrivalIcon = { modifier ->
             Image(
-                imageVector = vectorResource(R.drawable.line), modifier,
+                vectorResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = arrivedColorFilter
             )
@@ -299,7 +307,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         departureTime = { modifier -> TimeField(waypoint.departure, modifier) },
         departureIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), modifier,
+                vectorResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = ColorFilter.tint(departedIconColor)
             )
@@ -321,11 +329,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     CommercialStop(
         name = { modifier -> StopName(stationName(destination.stationCode()), modifier) },
         stationIcon = { modifier ->
-            Image(vectorResource(stationResId), modifier, colorFilter = iconColorFilter)
+            Image(
+                vectorResource(stationResId), contentDescription = null, modifier,
+                colorFilter = iconColorFilter)
         },
         arrivalIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), modifier,
+                vectorResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = iconColorFilter
             )
@@ -363,7 +373,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     isCurrent: Boolean = false,
     isNext: Boolean = false,
 ) {
-    ConstraintLayout(modifier.fillMaxWidth().semantics(mergeDescendants = true) {}) {
+    ConstraintLayout(
+        modifier
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) {}) {
         val nameRef = createRef()
         val stationIconRef = createRef()
         val arrivalIconRef = createRef()
@@ -435,6 +448,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         if (isCurrent || isNext) {
             Icon(
                 Icons.Rounded.Train,
+                contentDescription = null,
                 Modifier
                     .background(MaterialTheme.colors.secondary, CircleShape)
                     .size(24.dp)

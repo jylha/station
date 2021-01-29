@@ -174,7 +174,7 @@ fun HomeScreen(
     IconButton(
         onClick = onClick,
         modifier.semantics { contentDescription = label },
-    ) { Icon(Icons.Outlined.Info, tint = buttonColor) }
+    ) { Icon(Icons.Outlined.Info, contentDescription = null, tint = buttonColor) }
 }
 
 @Composable private fun Greeting(modifier: Modifier = Modifier) {

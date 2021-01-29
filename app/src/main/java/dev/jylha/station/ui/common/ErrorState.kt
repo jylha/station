@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.common
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,7 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,7 @@ import androidx.compose.runtime.emptyContent
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.ui.theme.StationTheme
@@ -45,15 +47,17 @@ fun ErrorState(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                Icons.Rounded.ReportProblem.copy(defaultHeight = 80.dp, defaultWidth = 80.dp),
-                tint = Color.Red.copy(alpha = 0.6f)
+            Image(
+                imageVector = Icons.Rounded.ReportProblem, contentDescription = null,
+                Modifier.size(80.dp),
+                colorFilter = ColorFilter.tint(Color.Red.copy(alpha = 0.6f))
             )
             Spacer(modifier = Modifier.height(30.dp))
             Text(message, color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f))
         }
         Box(
-            Modifier.align(Alignment.BottomCenter)
+            Modifier
+                .align(Alignment.BottomCenter)
                 .padding(
                     horizontal = 20.dp,
                     vertical = if (portraitOrientation()) 60.dp else 20.dp

@@ -1,7 +1,7 @@
 package dev.jylha.station.testutil
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
@@ -9,7 +9,7 @@ import dev.jylha.station.ui.theme.StationTheme
  * StationTheme with given [darkMode].
  * @receiver Compose test rule.
  */
-fun ComposeTestRule.setThemedContent(
+fun ComposeContentTestRule.setThemedContent(
     darkMode: Boolean = true,
     content: @Composable () -> Unit
 ) {

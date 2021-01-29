@@ -47,7 +47,7 @@ import dev.jylha.station.ui.theme.StationTheme
         val iconRef = createRef()
 
         Icon(
-            imageVector = Icons.Rounded.ArrowRightAlt,
+            imageVector = Icons.Rounded.ArrowRightAlt, contentDescription = null,
             modifier = Modifier.padding(horizontal = 4.dp).constrainAs(iconRef) {
                 centerTo(parent)
             }

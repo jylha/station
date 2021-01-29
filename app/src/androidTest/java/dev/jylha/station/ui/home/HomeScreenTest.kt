@@ -27,13 +27,13 @@ class HomeScreenTest {
 
     @Test fun loadingApplicationSettings() {
         val state = HomeViewState(isLoadingSettings = true)
-        rule.clockTestRule.pauseClock()
+        rule.mainClock.autoAdvance = false
         rule.setThemedContent {
             MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
                 HomeScreen(viewState = state)
             }
         }
-        rule.clockTestRule.advanceClock(500)
+        rule.mainClock.advanceTimeBy(500)
         rule.onNodeWithText(TEXT_LOADING_SETTINGS).assertIsDisplayed()
         rule.onNodeWithContentDescription(DESCRIPTION_ABOUT).assertDoesNotExist()
         rule.onNodeWithSubstring(TEXT_WELCOME).assertDoesNotExist()

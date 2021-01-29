@@ -65,9 +65,9 @@ class TimetableScreenTest {
 
     @Test fun loadingTimetable() {
         val state = TimetableViewState(isLoadingTimetable = true)
-        rule.clockTestRule.pauseClock()
+        rule.mainClock.autoAdvance = false
         rule.setThemedContent { TimetableScreen(viewState = state) }
-        rule.clockTestRule.advanceClock(100)
+        rule.mainClock.advanceTimeBy(100)
 
         rule.onNodeWithText("Retrieving timetable.").assertIsDisplayed()
     }
