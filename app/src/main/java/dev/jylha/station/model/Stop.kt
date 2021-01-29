@@ -4,6 +4,10 @@ import androidx.compose.runtime.Immutable
 import java.lang.IllegalStateException
 import java.time.ZonedDateTime
 
+/**
+ * A data class for a train's stop at a stopping point. The stop consists of a [TimetableRow] for
+ * eiter train's arrival, departure, or them both.
+ */
 @Immutable
 data class Stop(
     val arrival: TimetableRow? = null,
@@ -17,8 +21,11 @@ data class Stop(
     }
 }
 
+/** Checks whether the stop is train's origin. */
 fun Stop.isOrigin(): Boolean = arrival == null
+/** Checks whether the stop is train's destination. */
 fun Stop.isDestination(): Boolean = departure == null
+/** Checks whether the stop is a waypoint. */
 fun Stop.isWaypoint(): Boolean = arrival != null && departure != null
 fun Stop.stationCode(): Int = arrival?.stationCode ?: departure!!.stationCode
 fun Stop.track(): String? = arrival?.track ?: departure?.track
