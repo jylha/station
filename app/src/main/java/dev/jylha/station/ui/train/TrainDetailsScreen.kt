@@ -1,7 +1,6 @@
 package dev.jylha.station.ui.train
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +23,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,7 +71,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(train: Train) {
     val viewModel = viewModel<TrainDetailsViewModel>()
-    onCommit(train) { viewModel.setTrain(train) }
+    LaunchedEffect(train) { viewModel.setTrain(train) }
     val viewState by viewModel.state.collectAsState()
 
     if (train.number == viewState.train?.number) {

@@ -21,8 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,16 +54,19 @@ fun StationScreen(
     selectNearestStation: Boolean = false
 ) {
     val viewModel = viewModel<StationsViewModel>()
-    onActive { viewModel.setSelectionMode(selectNearestStation) }
-    val state by viewModel.state.collectAsState()
+    savedInstanceState(selectNearestStation) {
+        viewModel.setSelectionMode(selectNearestStation)
+        selectNearestStation
+    }
+    val viewState by viewModel.state.collectAsState()
 
     when {
-        selectNearestStation -> SelectNearestStation(state, navigateTo)
-        state.isLoading -> LoadingStations()
+        selectNearestStation -> SelectNearestStation(viewState, navigateTo)
+        viewState.isLoading -> LoadingStations()
         else -> {
             val locationPermission = AmbientLocationPermission.current
             StationsScreen(
-                state,
+                viewState,
                 onSelect = { station ->
                     viewModel.stationSelected(station)
                     navigateTo(Screen.Timetable(station))

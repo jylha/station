@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import dev.jylha.station.R
 import dev.jylha.station.data.stations.LocalizedStationNames
-import dev.jylha.station.model.DelayCause
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.Stop
 import dev.jylha.station.model.TimetableRow
