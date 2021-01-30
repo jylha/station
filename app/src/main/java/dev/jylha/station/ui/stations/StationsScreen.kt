@@ -1,11 +1,11 @@
 package dev.jylha.station.ui.stations
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -181,40 +181,32 @@ fun StationScreen(
     modifier: Modifier,
     searchText: String?
 ) {
-    ScrollableColumn(modifier) {
+    LazyColumn(modifier = modifier) {
         if (searchText.isNullOrBlank() && recentStations.isNotEmpty()) {
-            StationList(recentStations, onSelect, stringResource(R.string.label_recent))
-            Divider()
+            item { StationListLabel(stringResource(R.string.label_recent)) }
+            items(recentStations) { station -> StationListEntry(station, onSelect) }
+            item { Divider() }
         }
-        val labelResId = if (searchText.isNullOrBlank()) R.string.label_all_stations
-        else R.string.label_matching_stations
-        StationList(stations, onSelect, stringResource(labelResId), searchText)
+
+        item {
+            StationListLabel(
+                stringResource(
+                    if (searchText.isNullOrBlank()) R.string.label_all_stations
+                    else R.string.label_matching_stations
+                )
+            )
+        }
+        items(stations) { station -> StationListEntry(station, onSelect, searchText = searchText) }
     }
 }
 
-@Composable private fun StationList(
-    stations: List<Station>,
-    onSelect: (Station) -> Any,
-    label: String? = null,
-    highlightedText: String? = null
-) {
-    Column {
-        if (!label.isNullOrBlank()) {
-            Text(
-                label.toUpperCase(Locale.getDefault()),
-                modifier = Modifier.padding(top = 8.dp, start = 8.dp),
-                style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
-            )
-        }
-        for (station in stations) {
-            StationListEntry(
-                station = station,
-                onSelect = onSelect,
-                searchText = highlightedText
-            )
-        }
-    }
+@Composable private fun StationListLabel(label: String) {
+    Text(
+        label.toUpperCase(Locale.getDefault()),
+        modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+        style = MaterialTheme.typography.caption,
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+    )
 }
 
 @Composable private fun StationListEntry(
