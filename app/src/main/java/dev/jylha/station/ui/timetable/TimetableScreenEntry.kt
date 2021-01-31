@@ -76,8 +76,9 @@ import java.time.ZonedDateTime
 import java.util.Locale
 
 /**
- * Expandable states for an timetable entry. The [Initial] state is same as [Collapsed], but it
- * is used as an initial state to avoid animating transitions when new value is set for the entry.
+ * Expandable states for a timetable entry. The [Initial] state is otherwise the same as the
+ * [Collapsed] state, but it is used as an initial state to avoid animating transitions when
+ * a new train is set to the timetable entry.
  */
 private enum class ExpandableState { Initial, Expanded, Collapsed }
 
@@ -102,7 +103,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     modifier: Modifier = Modifier
 ) {
     val delayCauses = remember(train) { train.delayCauses() }
-    var expandableState by savedInstanceState(train) { ExpandableState.Initial }
+    var expandableState by savedInstanceState(train.number) { ExpandableState.Initial }
     val transition = updateTransition(expandableState)
     val delayCausesShown = remember(transition.isRunning, transition.currentState) {
         transition.isRunning || transition.currentState == ExpandableState.Expanded
@@ -422,14 +423,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
         contentAlignment = Alignment.CenterEnd
     ) {
         val description = stringResource(R.string.accessibility_label_show_delay_causes)
-        IconButton(
-            onClick,
-            Modifier
-                .size(48.dp)
-                .semantics { contentDescription = description },
-            enabled = enabled
-        ) {
-            Icon(Icons.Outlined.Info, contentDescription = null, tint = color)
+        IconButton(onClick, Modifier.size(48.dp), enabled = enabled) {
+            Icon(Icons.Outlined.Info, contentDescription = description, tint = color)
         }
     }
 }
@@ -498,13 +493,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
         contentAlignment = Alignment.Center
     ) {
         val description = stringResource(R.string.accessibility_label_hide_delay_causes)
-        IconButton(
-            onClick,
-            Modifier
-                .size(48.dp)
-                .semantics { contentDescription = description }
-        ) {
-            Icon(Icons.Rounded.ExpandLess, contentDescription = null, tint = color)
+        IconButton(onClick, Modifier.size(48.dp)) {
+            Icon(Icons.Rounded.ExpandLess, contentDescription = description, tint = color)
         }
     }
 }
