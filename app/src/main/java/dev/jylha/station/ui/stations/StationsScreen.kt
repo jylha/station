@@ -128,18 +128,12 @@ fun StationScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.label_select_station)) },
                     actions = {
-                        IconButton(
-                            onClick = onSelectNearest,
-                            modifier = Modifier.semantics {
-                                contentDescription = selectNearestLabel
-                            }
-                        ) { Icon(Icons.Rounded.MyLocation, contentDescription = null) }
-                        IconButton(
-                            onClick = { searchEnabled = true },
-                            modifier = Modifier.semantics {
-                                contentDescription = searchStationLabel
-                            }
-                        ) { Icon(Icons.Default.Search, contentDescription = null) }
+                        IconButton( onClick = onSelectNearest) {
+                            Icon(Icons.Rounded.MyLocation, contentDescription = selectNearestLabel)
+                        }
+                        IconButton( onClick = { searchEnabled = true } ) {
+                            Icon(Icons.Default.Search, contentDescription = searchStationLabel)
+                        }
                     }
                 )
             }

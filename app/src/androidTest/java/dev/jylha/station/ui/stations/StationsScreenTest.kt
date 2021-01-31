@@ -19,6 +19,7 @@ import org.junit.Test
 private const val LABEL_NEAREST_STATION = "Nearest station"
 private const val LABEL_SEARCH_STATION = "Search station"
 private const val LABEL_SEARCH = "Search"
+private const val LABEL_CLOSE_SEARCH = "Close search"
 
 private const val TEXT_RECENT = "RECENT"
 private const val TEXT_ALL_STATIONS = "ALL STATIONS"
@@ -77,6 +78,7 @@ class StationsScreenTest {
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH).assertDoesNotExist()
+        rule.onNodeWithContentDescription(LABEL_CLOSE_SEARCH).assertDoesNotExist()
 
         rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()
@@ -89,6 +91,7 @@ class StationsScreenTest {
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertDoesNotExist()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertDoesNotExist()
         rule.onNodeWithContentDescription(LABEL_SEARCH).assertIsDisplayed()
+        rule.onNodeWithContentDescription(LABEL_CLOSE_SEARCH).assertIsDisplayed()
 
         rule.onNodeWithSubstring("Search station").assertIsDisplayed()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()

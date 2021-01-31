@@ -89,6 +89,7 @@
     <string name="accessibility_label_to_track">raiteelle %1$s</string>
 
     <string name="accessibility_label_search">Etsi</string>
+    <string name="accessibility_label_close_search">Sulje haku</string>
 
     <string name="accessibility_label_show_delay_causes">Näytä viivästymisen syyt</string>
     <string name="accessibility_label_hide_delay_causes">Piilota viivästymisen syyt</string>

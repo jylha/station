@@ -13,9 +13,9 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardBackspace
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -23,11 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jylha.station.R
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
@@ -63,8 +65,9 @@ fun SearchBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (onClose != null) {
+                val closeSearchLabel = stringResource(R.string.accessibility_label_close_search)
                 IconButton(onClick = onClose) {
-                    Icon(Icons.Default.KeyboardBackspace, contentDescription = null)
+                    Icon(Icons.Default.KeyboardBackspace, contentDescription = closeSearchLabel)
                 }
             }
             TextField(
@@ -95,9 +98,7 @@ fun SearchBar(
             )
         }
     }
-    onActive {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(focusRequester) { focusRequester.requestFocus() }
 }
 
 @Preview(showBackground = true, name = "Light SearchBar with placeholder text")

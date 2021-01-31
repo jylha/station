@@ -89,6 +89,7 @@
     <string name="accessibility_label_to_track">till spår %1$s</string>
 
     <string name="accessibility_label_search">Sök</string>
+    <string name="accessibility_label_close_search">Stänga sökning</string>
 
     <string name="accessibility_label_show_delay_causes">Visa fördröjningsorsakerna</string>
     <string name="accessibility_label_hide_delay_causes">Dölj fördröjningsorsakerna</string>
