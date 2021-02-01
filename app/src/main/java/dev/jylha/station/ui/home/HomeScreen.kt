@@ -29,8 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -171,10 +169,9 @@ fun HomeScreen(
 @Composable private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     val buttonColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
     val label = stringResource(R.string.accessibility_label_show_application_info)
-    IconButton(
-        onClick = onClick,
-        modifier.semantics { contentDescription = label },
-    ) { Icon(Icons.Outlined.Info, contentDescription = null, tint = buttonColor) }
+    IconButton(onClick, modifier) {
+        Icon(Icons.Outlined.Info, contentDescription = label, tint = buttonColor)
+    }
 }
 
 @Composable private fun Greeting(modifier: Modifier = Modifier) {
