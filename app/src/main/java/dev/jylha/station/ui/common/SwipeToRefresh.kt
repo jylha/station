@@ -16,6 +16,8 @@
 /*
  * The contents of this file is copied from JetNews sample project.
  * See https://github.com/android/compose-samples/blob/main/JetNews/
+ * Changes:
+ * - PreUpPostDownNestedScrollConnection.onPreFling modified not to consume any velocity.
  */
 
 package dev.jylha.station.ui.common
@@ -123,13 +125,10 @@ private val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScr
 
         override fun onPreFling(available: Velocity): Velocity {
             val toFling = Offset(available.x, available.y).toFloat()
-            return if (toFling < 0) {
+            if (toFling < 0) {
                 performFling(velocity = toFling) {}
-                // since we go to the anchor with tween settling, consume all for the best UX
-                available
-            } else {
-                Velocity.Zero
             }
+            return Velocity.Zero
         }
 
         override fun onPostFling(
