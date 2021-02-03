@@ -16,6 +16,9 @@ interface TrainRepository {
     suspend fun train(number: Int, version: Long? = null): Train?
 
     /** Returns a list of trains stopping at the specified station. */
+    fun trainsAtStation(stationShortCode: String): Flow<List<Train>>
+
+    /** Returns a list of trains stopping at the specified station. */
     fun trainsAtStation(station: Station): Flow<List<Train>>
 
     /** Returns a list of cause categories for train delays. */

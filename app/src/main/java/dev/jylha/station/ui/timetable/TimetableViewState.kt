@@ -43,18 +43,20 @@ fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
         is LoadTimetable.Loading -> copy(
             isLoadingTimetable = true,
             loadingTimetableFailed = false,
-            station = result.station,
+            station = null,
             timetable = emptyList()
         )
         is LoadTimetable.Success -> copy(
             isLoadingTimetable = false,
             loadingTimetableFailed = false,
+            station = result.station,
             timetable = result.timetable
         )
         is LoadTimetable.Error -> copy(
             isLoadingTimetable = false,
             loadingTimetableFailed = true,
             errorMessage = result.message,
+            station = null,
             timetable = emptyList()
         )
 

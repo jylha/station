@@ -17,9 +17,11 @@ data class SettingsUpdated(
 
 /** Results for loading the timetable. */
 sealed class LoadTimetable : TimetableResult() {
-    data class Loading(val station: Station) : LoadTimetable()
+    object Loading : LoadTimetable() {
+        override fun toString(): String = "LoadTimetable.Loading"
+    }
     data class Error(val message: String?) : LoadTimetable()
-    data class Success(val timetable: List<Train>) : LoadTimetable()
+    data class Success(val station: Station, val timetable: List<Train>) : LoadTimetable()
 }
 
 /** Results for reloading the timetable. */

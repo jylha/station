@@ -105,7 +105,7 @@ class TimetableViewModel @Inject constructor(
         eventChannel.consumeAsFlow()
             .flatMapMerge { event ->
                 when (event) {
-                    is TimetableEvent.LoadTimetable -> loadTimetable(event.station)
+                    is TimetableEvent.LoadTimetable -> loadTimetable(event.stationCode)
                     is TimetableEvent.SelectCategories -> setTrainCategories(event.categories)
                     is TimetableEvent.SelectTimetableTypes -> setTimetableTypes(event.types)
                     is TimetableEvent.ReloadTimetable -> reloadTimetable(event.station)
@@ -114,12 +114,13 @@ class TimetableViewModel @Inject constructor(
             .collect { result -> reduceState(result) }
     }
 
-    private fun loadTimetable(station: Station): Flow<TimetableResult> {
+    private fun loadTimetable(stationCode: Int): Flow<TimetableResult> {
         return flow {
-            emit(LoadTimetable.Loading(station))
+            emit(LoadTimetable.Loading)
             try {
-                val trains = trainRepository.trainsAtStation(station).first()
-                emit(LoadTimetable.Success(trains))
+                val station = stationRepository.fetchStation(stationCode)
+                val trains = trainRepository.trainsAtStation(station.shortCode).first()
+                emit(LoadTimetable.Success(station, trains))
             } catch (e: Exception) {
                 emit(LoadTimetable.Error(e.message))
             }
@@ -130,7 +131,7 @@ class TimetableViewModel @Inject constructor(
         return flow {
             emit(ReloadTimetable.Loading)
             try {
-                val trains = trainRepository.trainsAtStation(station).first()
+                val trains = trainRepository.trainsAtStation(station.shortCode).first()
                 emit(ReloadTimetable.Success(trains))
             } catch (e: Exception) {
                 emit(ReloadTimetable.Error(e.message))

@@ -115,8 +115,9 @@ class TimetableViewModelTest {
     @Test fun `handle LoadTimetable event`() = coroutineRule.runBlockingTest {
         val station = Station("Helsinki", "HKI", 1, 10.0, 10.0)
         val trainChannel = Channel<List<Train>>()
-        whenCalled(trainRepository.trainsAtStation(station)).thenReturn(trainChannel.receiveAsFlow())
-        viewModel.offer(TimetableEvent.LoadTimetable(station))
+        whenCalled(stationRepository.fetchStation(station.code)).thenReturn(station)
+        whenCalled(trainRepository.trainsAtStation(station.shortCode)).thenReturn(trainChannel.receiveAsFlow())
+        viewModel.offer(TimetableEvent.LoadTimetable(station.code))
 
         with(viewModel.state.value) {
             assertThat(isLoadingTimetable).isTrue()
@@ -134,8 +135,10 @@ class TimetableViewModelTest {
     @Test fun `handle ReloadTimetable event`() = coroutineRule.runBlockingTest {
         val station = Station("Helsinki", "HKI", 1, 10.0, 10.0)
         val trainChannel = Channel<List<Train>>()
-        whenCalled(trainRepository.trainsAtStation(station)).thenReturn(trainChannel.receiveAsFlow())
-        viewModel.offer(TimetableEvent.LoadTimetable(station))
+        whenCalled(stationRepository.fetchStation(station.code)).thenReturn(station)
+        whenCalled(trainRepository.trainsAtStation(station.shortCode))
+            .thenReturn(trainChannel.receiveAsFlow())
+        viewModel.offer(TimetableEvent.LoadTimetable(station.code))
         trainChannel.send(timetable1)
 
         viewModel.offer(TimetableEvent.ReloadTimetable(station))

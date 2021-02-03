@@ -61,14 +61,18 @@ class StoreBackedTrainRepository @Inject constructor(
         }
     }
 
-    override fun trainsAtStation(station: Station): Flow<List<Train>> {
+    override fun trainsAtStation(stationShortCode: String): Flow<List<Train>>  {
         return flow {
             val trains = trainService.fetchTrainsByCount(
-                station.shortCode,
+                stationShortCode,
                 departed = 1, arrived = 1
             ).toDomainModel()
             emit(trains)
         }.flowOn(Dispatchers.IO)
+    }
+
+    override fun trainsAtStation(station: Station): Flow<List<Train>> {
+        return trainsAtStation(station.shortCode)
     }
 
     override suspend fun causeCategories(): List<CauseCategory> {

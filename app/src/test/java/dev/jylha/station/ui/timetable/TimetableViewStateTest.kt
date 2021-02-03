@@ -36,8 +36,8 @@ class TimetableViewStateTest {
             station = null, isLoadingTimetable = false, timetable = timetable,
             loadingTimetableFailed = true
         )
-        val result = state.reduce(LoadTimetable.Loading(helsinki))
-        assertThat(result.station).isEqualTo(helsinki)
+        val result = state.reduce(LoadTimetable.Loading)
+        assertThat(result.station).isNull()
         assertThat(result.isLoadingTimetable).isTrue()
         assertThat(result.loadingTimetableFailed).isFalse()
         assertThat(result.timetable).isEmpty()
@@ -45,12 +45,12 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with LoadTimetable_Success result`() {
         val state = TimetableViewState(
-            station = helsinki,
+            station = null,
             isLoadingTimetable = true,
             loadingTimetableFailed = true,
             timetable = emptyList()
         )
-        val result = state.reduce(LoadTimetable.Success(timetable))
+        val result = state.reduce(LoadTimetable.Success(helsinki, timetable))
         assertThat(result.station).isEqualTo(helsinki)
         assertThat(result.isLoadingTimetable).isFalse()
         assertThat(result.loadingTimetableFailed).isFalse()
@@ -59,14 +59,14 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with LoadTimetable_Error result`() {
         val state = TimetableViewState(
-            station = helsinki,
+            station = null,
             isLoadingTimetable = true,
             loadingTimetableFailed = false,
             timetable = timetable
         )
         val message = "Oops. Error happened."
         val result = state.reduce(LoadTimetable.Error(message))
-        assertThat(result.station).isEqualTo(helsinki)
+        assertThat(result.station).isEqualTo(null)
         assertThat(result.timetable).isEmpty()
         assertThat(result.isLoadingTimetable).isFalse()
         assertThat(result.loadingTimetableFailed).isTrue()

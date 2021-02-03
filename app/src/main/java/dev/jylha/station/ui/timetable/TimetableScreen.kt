@@ -78,7 +78,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
     val viewModel = viewModel<TimetableViewModel>()
     savedInstanceState(station.code) {
-        viewModel.offer(TimetableEvent.LoadTimetable(station))
+        viewModel.offer(TimetableEvent.LoadTimetable(station.code))
         station.code
     }
     val viewState by viewModel.state.collectAsState()
@@ -88,7 +88,7 @@ fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
         viewModel::offer,
         onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
         onSelectStation = { navigateTo(Screen.SelectStation) },
-        onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(station)) },
+        onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(station.code)) },
     )
 }
 
@@ -392,14 +392,12 @@ fun TimetableScreen(
     }
 
     when {
-        stops.isNotEmpty() -> LazyColumn(
-            modifier, contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 0.dp)
-        ) {
+        stops.isEmpty() -> NoMatchingTrains()
+        else -> LazyColumn(modifier, contentPadding = PaddingValues(8.dp)) {
             items(stops) { (train, stop) ->
-                TimetableEntry(train, stop, onSelect = onSelect, Modifier.padding(bottom = 8.dp))
+                TimetableEntry(train, stop, onSelect, Modifier.padding(bottom = 8.dp))
             }
         }
-        else -> NoMatchingTrains()
     }
 }
 
