@@ -37,14 +37,22 @@ class TrainDetailsViewModel @Inject constructor(
         }
     }
 
-    /** Set a [train] for the train details view. */
-    fun setTrain(train: Train) {
+    /** Set a [Train] for the train details view. */
+    fun setTrain(trainNumber: Int) {
         viewModelScope.launch {
-            reduceState(LoadTrainDetails.Success(train))
+            reduceState(LoadTrainDetails.Loading)
+            try {
+                trainRepository.train(trainNumber)?.let { train ->
+                    reduceState(LoadTrainDetails.Success(train))
+                } ?: throw IllegalStateException("Train not found")
+
+            } catch (e: Exception) {
+                reduceState(LoadTrainDetails.Error(e.message))
+            }
         }
     }
 
-    /** Reload [train] details. */
+    /** Reload [Train] details. */
     fun reload(train: Train) {
         viewModelScope.launch {
             reduceState(ReloadTrainDetails.Loading)

@@ -23,10 +23,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -68,22 +68,27 @@ import dev.jylha.station.ui.theme.StationTheme
 import java.time.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+/**
+ * Train details screen composable. Displays details about trains progress on its route.
+ * @param trainNumber The train number identifying the train.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
-@Composable fun TrainDetailsScreen(train: Train) {
+@Composable fun TrainDetailsScreen(trainNumber: Int) {
     val viewModel = viewModel<TrainDetailsViewModel>()
-    LaunchedEffect(train) { viewModel.setTrain(train) }
+    savedInstanceState(trainNumber) {
+        viewModel.setTrain(trainNumber)
+        trainNumber
+    }
     val viewState by viewModel.state.collectAsState()
 
-    if (train.number == viewState.train?.number) {
-        TrainDetailsScreen(viewState,
-            onReload = { viewModel.reload(train) }
-        )
-    }
+    TrainDetailsScreen(viewState,
+        onReload = { train -> viewModel.reload(train) }
+    )
 }
 
 @Composable fun TrainDetailsScreen(
     state: TrainDetailsViewState,
-    onReload: () -> Unit = {},
+    onReload: (Train) -> Unit = {},
 ) {
     StationNameProvider(state.nameMapper) {
         when {
@@ -91,7 +96,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
             state.train != null -> TrainDetails(
                 state.train,
                 state.isReloading,
-                onRefresh = onReload
+                onRefresh = { onReload(state.train) }
             )
         }
     }
@@ -330,7 +335,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         stationIcon = { modifier ->
             Image(
                 vectorResource(stationResId), contentDescription = null, modifier,
-                colorFilter = iconColorFilter)
+                colorFilter = iconColorFilter
+            )
         },
         arrivalIcon = { modifier ->
             Image(

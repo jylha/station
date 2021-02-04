@@ -84,7 +84,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun TimetableScreen(
     stationCode: Int,
     onNavigateToStations: () -> Unit,
-    onNavigateToTrainDetails: (Train) -> Unit,
+    onNavigateToTrainDetails: (Int) -> Unit,
 ) {
     val viewModel = viewModel<TimetableViewModel>()
     savedInstanceState(stationCode) {
@@ -96,7 +96,7 @@ fun TimetableScreen(
     TimetableScreen(
         viewState,
         viewModel::offer,
-        onTrainSelected = onNavigateToTrainDetails,
+        onTrainSelected = { train -> onNavigateToTrainDetails(train.number) },
         onSelectStation = onNavigateToStations,
         onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(stationCode)) },
     )

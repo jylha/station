@@ -52,7 +52,8 @@ class TrainDetailsViewModelTest {
 
     @Test fun `set train`() = runBlockingTest {
         val train = Train(1, "A", Train.Category.LongDistance)
-        viewModel.setTrain(train)
+        whenCalled(trainRepository.train(train.number)).thenReturn(train)
+        viewModel.setTrain(train.number)
         val result = viewModel.state.value
         val excepted = TrainDetailsViewState(
             isLoadingTrain = false,

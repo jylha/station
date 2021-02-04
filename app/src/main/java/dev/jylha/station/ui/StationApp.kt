@@ -51,9 +51,10 @@ fun StationAppContent(
                 )
                 is Screen.Timetable -> TimetableScreen(stationCode,
                     onNavigateToStations = { navigateTo(Screen.SelectStation) },
-                    onNavigateToTrainDetails = { train -> navigateTo(Screen.TrainDetails(train)) }
+                    onNavigateToTrainDetails = { trainNumber ->
+                        navigateTo(Screen.TrainDetails(trainNumber)) }
                 )
-                is Screen.TrainDetails -> TrainDetailsScreen(train)
+                is Screen.TrainDetails -> TrainDetailsScreen(trainNumber)
             }
         }
     }
