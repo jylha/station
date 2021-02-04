@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
-import dev.jylha.station.ui.Screen
 import dev.jylha.station.ui.common.AmbientLocationPermission
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.Loading
@@ -47,10 +46,24 @@ import dev.jylha.station.util.findAllMatches
 import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+/**
+ * Stations screen composable. Stations screen displays a list of stations to select from,
+ * displays recently selected stations, and enables searching for a station by its name.
+ * In addition, it handles the selection of nearest station and displays progress indicators
+ * when fetching device location or list of stations.
+ *
+ * @param onNavigateToTimetable A callback function to navigate to the timetable screen of the
+ * specified station.
+ * @param onNavigateToNearestStation A callback function to navigate to the timetable screen
+ * of the nearest station.
+ * @param selectNearestStation `true` for selecting the nearest station, `false` for displaying
+ * the list of train stations.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun StationScreen(
-    navigateTo: (Screen) -> Unit,
+    onNavigateToTimetable: (Int) -> Unit,
+    onNavigateToNearestStation: () -> Unit,
     selectNearestStation: Boolean = false
 ) {
     val viewModel = viewModel<StationsViewModel>()
@@ -61,7 +74,7 @@ fun StationScreen(
     val viewState by viewModel.state.collectAsState()
 
     when {
-        selectNearestStation -> SelectNearestStation(viewState, navigateTo)
+        selectNearestStation -> SelectNearestStation(viewState, onNavigateToTimetable)
         viewState.isLoading -> LoadingStations()
         else -> {
             val locationPermission = AmbientLocationPermission.current
@@ -69,11 +82,11 @@ fun StationScreen(
                 viewState,
                 onSelect = { station ->
                     viewModel.stationSelected(station)
-                    navigateTo(Screen.Timetable(station))
+                    onNavigateToTimetable(station.code)
                 },
                 onSelectNearest = {
                     withPermission(locationPermission) { granted ->
-                        if (granted) navigateTo(Screen.SelectNearest)
+                        if (granted) onNavigateToNearestStation()
                     }
                 }
             )
@@ -81,9 +94,12 @@ fun StationScreen(
     }
 }
 
-@Composable fun SelectNearestStation(state: StationsViewState, navigateTo: (Screen) -> Unit) {
+@Composable fun SelectNearestStation(
+    state: StationsViewState,
+    onNavigateToTimetable: (Int) -> Unit
+) {
     when {
-        state.nearestStation != null -> navigateTo(Screen.Timetable(state.nearestStation))
+        state.nearestStation != null -> onNavigateToTimetable(state.nearestStation.code)
         state.isFetchingLocation -> FetchingLocation()
         state.isLoading -> LoadingStations()
     }
@@ -128,10 +144,10 @@ fun StationScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.label_select_station)) },
                     actions = {
-                        IconButton( onClick = onSelectNearest) {
+                        IconButton(onClick = onSelectNearest) {
                             Icon(Icons.Rounded.MyLocation, contentDescription = selectNearestLabel)
                         }
-                        IconButton( onClick = { searchEnabled = true } ) {
+                        IconButton(onClick = { searchEnabled = true }) {
                             Icon(Icons.Default.Search, contentDescription = searchStationLabel)
                         }
                     }

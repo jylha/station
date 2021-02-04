@@ -4,7 +4,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import dev.jylha.station.model.Station
 import dev.jylha.station.model.Train
 
 sealed class Screen(val title: String) {
@@ -12,7 +11,7 @@ sealed class Screen(val title: String) {
     object About : Screen("About")
     object SelectStation : Screen("Select Station")
     object SelectNearest : Screen("Select Nearest Station")
-    data class Timetable(val station: Station) : Screen("Timetable")
+    data class Timetable(val stationCode: Int) : Screen("Timetable")
     data class TrainDetails(val train: Train) : Screen("Train Info")
 }
 

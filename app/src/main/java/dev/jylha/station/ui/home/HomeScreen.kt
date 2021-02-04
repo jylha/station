@@ -36,8 +36,6 @@ import androidx.compose.ui.viewinterop.viewModel
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import dev.jylha.station.R
-import dev.jylha.station.model.Station
-import dev.jylha.station.ui.Screen
 import dev.jylha.station.ui.common.AmbientLocationPermission
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.landscapeOrientation
@@ -45,20 +43,32 @@ import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.withPermission
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+/**
+ * Home screen composable.
+ * @param onNavigateToStations A callback function to navigate to the stations screen.
+ * @param onNavigateToNearestStation A callback function to navigate to the timetable screen
+ * of the nearest station.
+ * @param onNavigateToTimetable A callback function to navigate to the timetable screen of
+ * specified station.
+ * @param onNavigateToAbout A callback function to navigate to the about screen.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun HomeScreen(
-    navigateTo: (Screen) -> Unit
+    onNavigateToStations: () -> Unit,
+    onNavigateToNearestStation: () -> Unit,
+    onNavigateToTimetable: (stationCode: Int) -> Unit,
+    onNavigateToAbout: () -> Unit,
 ) {
     val viewModel = viewModel<HomeViewModel>()
     val viewState by viewModel.state.collectAsState()
 
     HomeScreen(
         viewState,
-        onSelectStation = { navigateTo(Screen.SelectStation) },
-        onSelectNearestStation = { navigateTo(Screen.SelectNearest) },
-        onShowTimetable = { station: Station -> navigateTo(Screen.Timetable(station)) },
-        onAbout = { navigateTo(Screen.About) }
+        onSelectStation = onNavigateToStations,
+        onSelectNearestStation = onNavigateToNearestStation,
+        onShowTimetable = onNavigateToTimetable,
+        onAbout = onNavigateToAbout
     )
 }
 
@@ -66,7 +76,7 @@ fun HomeScreen(
     viewState: HomeViewState,
     onSelectStation: () -> Unit = {},
     onSelectNearestStation: () -> Unit = {},
-    onShowTimetable: (Station) -> Unit = {},
+    onShowTimetable: (stationCode: Int) -> Unit = {},
     onAbout: () -> Unit = {},
 ) {
     Box(
@@ -79,7 +89,7 @@ fun HomeScreen(
         when {
             viewState.isLoadingSettings -> LoadingSettings()
             viewState.isLoadingStation -> LoadingStation()
-            viewState.station != null -> onShowTimetable(viewState.station)
+            viewState.station != null -> onShowTimetable(viewState.station.code)
             else -> WelcomeCard(
                 onSelectStation = onSelectStation,
                 onShowNearestStation = {

@@ -23,14 +23,38 @@ fun StationApp(
 fun StationAppContent(
     navigationViewModel: NavigationViewModel
 ) {
+    val navigateTo = navigationViewModel::navigateTo
     Surface(color = MaterialTheme.colors.background) {
-        when (val screen = navigationViewModel.screen) {
-            is Screen.Home -> HomeScreen(navigationViewModel::navigateTo)
-            is Screen.About -> AboutScreen()
-            is Screen.SelectStation -> StationScreen(navigationViewModel::navigateTo)
-            is Screen.SelectNearest -> StationScreen(navigationViewModel::navigateTo, true)
-            is Screen.Timetable -> TimetableScreen(screen.station, navigationViewModel::navigateTo)
-            is Screen.TrainDetails -> TrainDetailsScreen(screen.train)
+        with(navigationViewModel.screen) {
+            when (this) {
+                is Screen.Home -> HomeScreen(
+                    onNavigateToStations = { navigateTo(Screen.SelectStation) },
+                    onNavigateToNearestStation = { navigateTo(Screen.SelectNearest) },
+                    onNavigateToTimetable = { stationCode ->
+                        navigateTo(Screen.Timetable(stationCode))
+                    },
+                    onNavigateToAbout = { navigateTo(Screen.About) }
+                )
+                is Screen.About -> AboutScreen()
+                is Screen.SelectStation -> StationScreen(
+                    onNavigateToTimetable = { stationCode ->
+                        navigateTo(Screen.Timetable(stationCode))
+                    },
+                    onNavigateToNearestStation = { navigateTo(Screen.SelectNearest) },
+                )
+                is Screen.SelectNearest -> StationScreen(
+                    onNavigateToTimetable = { stationCode ->
+                        navigateTo(Screen.Timetable(stationCode))
+                    },
+                    onNavigateToNearestStation = { navigateTo(Screen.SelectNearest) },
+                    selectNearestStation = true
+                )
+                is Screen.Timetable -> TimetableScreen(stationCode,
+                    onNavigateToStations = { navigateTo(Screen.SelectStation) },
+                    onNavigateToTrainDetails = { train -> navigateTo(Screen.TrainDetails(train)) }
+                )
+                is Screen.TrainDetails -> TrainDetailsScreen(train)
+            }
         }
     }
 }

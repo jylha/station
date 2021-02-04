@@ -60,7 +60,6 @@ import dev.jylha.station.model.departure
 import dev.jylha.station.model.departureAfter
 import dev.jylha.station.model.stopsAt
 import dev.jylha.station.model.timeOfNextEvent
-import dev.jylha.station.ui.Screen
 import dev.jylha.station.ui.common.CauseCategoriesProvider
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.ErrorState
@@ -73,22 +72,33 @@ import dev.jylha.station.ui.theme.StationTheme
 import java.time.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+/**
+ * Timetable screen composable. Timetable screen displays the timetable for the
+ * specified station.
+ * @param stationCode The UIC code specifying the station.
+ * @param onNavigateToStations A callback function to navigate to stations list.
+ * @param onNavigateToTrainDetails A callback function to navigate to train details.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun TimetableScreen(station: Station, navigateTo: (Screen) -> Unit) {
+fun TimetableScreen(
+    stationCode: Int,
+    onNavigateToStations: () -> Unit,
+    onNavigateToTrainDetails: (Train) -> Unit,
+) {
     val viewModel = viewModel<TimetableViewModel>()
-    savedInstanceState(station.code) {
-        viewModel.offer(TimetableEvent.LoadTimetable(station.code))
-        station.code
+    savedInstanceState(stationCode) {
+        viewModel.offer(TimetableEvent.LoadTimetable(stationCode))
+        stationCode
     }
     val viewState by viewModel.state.collectAsState()
 
     TimetableScreen(
         viewState,
         viewModel::offer,
-        onTrainSelected = { train -> navigateTo(Screen.TrainDetails(train)) },
-        onSelectStation = { navigateTo(Screen.SelectStation) },
-        onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(station.code)) },
+        onTrainSelected = onNavigateToTrainDetails,
+        onSelectStation = onNavigateToStations,
+        onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(stationCode)) },
     )
 }
 
