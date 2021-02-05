@@ -70,11 +70,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Train details screen composable. Displays details about trains progress on its route.
+ *
+ * @param viewModel View model for the train details scsreen.
  * @param trainNumber The train number identifying the train.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-@Composable fun TrainDetailsScreen(trainNumber: Int) {
-    val viewModel = viewModel<TrainDetailsViewModel>()
+@Composable fun TrainDetailsScreen(viewModel: TrainDetailsViewModel, trainNumber: Int) {
     savedInstanceState(trainNumber) {
         viewModel.setTrain(trainNumber)
         trainNumber

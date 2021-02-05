@@ -33,7 +33,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
 import dev.jylha.station.ui.common.AmbientLocationPermission
@@ -52,6 +51,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * In addition, it handles the selection of nearest station and displays progress indicators
  * when fetching device location or list of stations.
  *
+ * @param viewModel View model for the stations screen.
  * @param onNavigateToTimetable A callback function to navigate to the timetable screen of the
  * specified station.
  * @param onNavigateToNearestStation A callback function to navigate to the timetable screen
@@ -61,12 +61,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun StationScreen(
+fun StationsScreen(
+    viewModel: StationsViewModel,
     onNavigateToTimetable: (Int) -> Unit,
     onNavigateToNearestStation: () -> Unit,
     selectNearestStation: Boolean = false
 ) {
-    val viewModel = viewModel<StationsViewModel>()
     savedInstanceState(selectNearestStation) {
         viewModel.setSelectionMode(selectNearestStation)
         selectNearestStation

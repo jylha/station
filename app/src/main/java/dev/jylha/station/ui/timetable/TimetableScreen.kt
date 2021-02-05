@@ -75,6 +75,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 /**
  * Timetable screen composable. Timetable screen displays the timetable for the
  * specified station.
+ *
+ * @param viewModel View model for the timetable screen.
  * @param stationCode The UIC code specifying the station.
  * @param onNavigateToStations A callback function to navigate to stations list.
  * @param onNavigateToTrainDetails A callback function to navigate to train details.
@@ -82,11 +84,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun TimetableScreen(
+    viewModel: TimetableViewModel,
     stationCode: Int,
     onNavigateToStations: () -> Unit,
     onNavigateToTrainDetails: (Int) -> Unit,
 ) {
-    val viewModel = viewModel<TimetableViewModel>()
     savedInstanceState(stationCode) {
         viewModel.offer(TimetableEvent.LoadTimetable(stationCode))
         stationCode

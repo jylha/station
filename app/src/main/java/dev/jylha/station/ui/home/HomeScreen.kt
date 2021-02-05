@@ -32,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.viewinterop.viewModel
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import dev.jylha.station.R
@@ -55,12 +54,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel,
     onNavigateToStations: () -> Unit,
     onNavigateToNearestStation: () -> Unit,
     onNavigateToTimetable: (stationCode: Int) -> Unit,
     onNavigateToAbout: () -> Unit,
 ) {
-    val viewModel = viewModel<HomeViewModel>()
     val viewState by viewModel.state.collectAsState()
 
     HomeScreen(
