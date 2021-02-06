@@ -67,37 +67,41 @@ android {
         exclude "META-INF/licenses/ASM"
         exclude "META-INF/LGPL2.1"
     }
+
+    lintOptions {
+        baseline file("lint-baseline.xml")
+    }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.coroutines}"
     implementation "androidx.activity:activity-ktx:${versions.activity}"
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
+    implementation "androidx.compose.foundation:foundation-layout:${versions.compose}"
+    implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
+    implementation "androidx.compose.material:material:${versions.compose}"
+    implementation "androidx.compose.ui:ui-tooling:${versions.compose}"
     implementation "androidx.core:core-ktx:${versions.core}"
+    implementation "androidx.datastore:datastore-preferences-core:${versions.datastore}"
+    implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
     implementation "androidx.fragment:fragment-ktx:${versions.fragment}"
+    implementation "androidx.hilt:hilt-navigation:${versions.hilt_navigation}"
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
-    implementation "com.google.android.gms:play-services-location:17.1.0"
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation "androidx.compose.foundation:foundation-layout:${versions.compose}"
-    implementation "androidx.compose.material:material:${versions.compose}"
-    implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
-    implementation "androidx.compose.ui:ui-tooling:${versions.compose}"
-    implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
-    implementation "androidx.datastore:datastore-preferences-core:${versions.datastore}"
     implementation "androidx.navigation:navigation-compose:${versions.navigation_compose}"
-    implementation "androidx.hilt:hilt-navigation:${versions.hilt_navigation}"
-    implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.room:room-ktx:${versions.room}"
+    implementation "androidx.room:room-runtime:${versions.room}"
     implementation "com.airbnb.android:lottie:${versions.lottie}"
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
-    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+    implementation "com.google.android.gms:play-services-location:17.1.0"
+    implementation "com.google.android.material:material:${versions.material}"
     implementation "com.google.dagger:hilt-android:${versions.hilt}"
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation "com.jakewharton.timber:timber:4.7.1"
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.coroutines}"
 
     kapt "com.google.dagger:hilt-android-compiler:${versions.hilt}"
     kapt "androidx.hilt:hilt-compiler:${versions.hilt_navigation}"
