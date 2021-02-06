@@ -23,9 +23,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onBackPressed() {
-        //if (!navigationViewModel.navigateBack())
-            super.onBackPressed()
-    }
 }
