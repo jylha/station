@@ -35,8 +35,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import dev.jylha.station.R
-import dev.jylha.station.ui.common.AmbientLocationPermission
 import dev.jylha.station.ui.common.Loading
+import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.landscapeOrientation
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.withPermission
@@ -84,7 +84,7 @@ fun HomeScreen(
             else MaterialTheme.colors.background
         )
     ) {
-        val locationPermission = AmbientLocationPermission.current
+        val locationPermission = LocalLocationPermission.current
         when {
             viewState.isLoadingSettings -> LoadingSettings()
             viewState.isLoadingStation -> LoadingStation()

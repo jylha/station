@@ -2,14 +2,13 @@ package dev.jylha.station.ui.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onNodeWithText
+import dev.jylha.station.testutil.onNodeWithSubstring
 import dev.jylha.station.testutil.setThemedContent
-import dev.jylha.station.ui.common.AmbientLocationPermission
+import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.Permission
 import org.junit.Rule
 import org.junit.Test
@@ -20,7 +19,6 @@ private const val TEXT_SELECT_STATION = "Select station"
 private const val TEXT_NEAREST_STATION = "Nearest station"
 private const val DESCRIPTION_ABOUT = "Show information about the application"
 
-@OptIn(ExperimentalTestApi::class)
 class HomeScreenTest {
 
     @get:Rule val rule = createComposeRule()
@@ -63,7 +61,7 @@ class HomeScreenTest {
     content: @Composable () -> Unit
 ) {
     val permission = MockLocationPermission(isGranted, grantRequest)
-    Providers(AmbientLocationPermission provides permission) {
+    Providers(LocalLocationPermission provides permission) {
         content()
     }
 }

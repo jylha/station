@@ -1,24 +1,22 @@
 package dev.jylha.station.ui.train
 
-import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertLabelEquals
 import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onNodeWithText
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
 import dev.jylha.station.testutil.at
+import dev.jylha.station.testutil.hasSubstring
+import dev.jylha.station.testutil.onNodeWithSubstring
 import dev.jylha.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 
-@OptIn(ExperimentalTestApi::class)
 class TrainDetailsScreenTest {
 
     @get:Rule val rule = createComposeRule()
@@ -104,21 +102,21 @@ class TrainDetailsScreenTest {
             .assertTextEquals("Tampere").assertIsDisplayed()
 
         rule.onNodeWithText("Helsinki, 12:24").assertIsDisplayed()
-            .assertLabelEquals("Helsinki, departed at 12:24")
+            .assertContentDescriptionEquals("Helsinki, departed at 12:24")
 
         rule.onNode(hasSubstring("Pasila"))
             .assertTextEquals("Pasila, 12:29, +1, 12:32, +2")
-            .assertLabelEquals("Pasila, arrived at 12:29, departed at 12:32")
+            .assertContentDescriptionEquals("Pasila, arrived at 12:29, departed at 12:32")
             .assertIsDisplayed()
 
         rule.onNode(hasSubstring("Tikkurila"))
             .assertTextEquals("Tikkurila, 12:38, -1, 12:41")
-            .assertLabelEquals("Tikkurila, arrived at 12:38, departed at 12:41")
+            .assertContentDescriptionEquals("Tikkurila, arrived at 12:38, departed at 12:41")
             .assertIsDisplayed()
 
         rule.onNode(hasSubstring("Tampere") and hasSubstring("13:"))
             .assertTextEquals("Tampere, 13:58, 13:56")
-            .assertLabelEquals("Tampere, estimated time of arrival at 13:56")
+            .assertContentDescriptionEquals("Tampere, estimated time of arrival at 13:56")
             .assertIsDisplayed()
     }
 
@@ -182,7 +180,7 @@ class TrainDetailsScreenTest {
             .assertTextEquals("Tampere").assertIsDisplayed()
         rule.onNodeWithSubstring("Pasila")
             .assertTextEquals("Pasila, CANCELLED, CANCELLED")
-            .assertLabelEquals("Pasila, arrival is cancelled, departure is cancelled")
+            .assertContentDescriptionEquals("Pasila, arrival is cancelled, departure is cancelled")
             .assertIsDisplayed()
     }
 }

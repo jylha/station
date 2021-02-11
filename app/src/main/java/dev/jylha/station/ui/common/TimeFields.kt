@@ -20,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -65,7 +65,7 @@ import java.util.Locale
     modifier: Modifier = Modifier,
     track: String? = null,
 ) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val trackText = trackString(track, type)
     val scheduledTimeText by produceLocalTime(scheduledTime)
     val description = remember(type, trackText, scheduledTimeText) {
@@ -103,7 +103,7 @@ import java.util.Locale
     modifier: Modifier = Modifier,
     track: String? = null
 ) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val trackText = trackString(track, type)
     val localTimes by produceLocalTimes(scheduledTime, estimatedTime)
     val (scheduledTimeText, estimatedTimeText) = localTimes
@@ -161,7 +161,7 @@ import java.util.Locale
     modifier: Modifier = Modifier,
     track: String? = null
 ) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val trackText = trackString(track, type)
     val actualTimeText by produceLocalTime(actualTime)
     val description = remember(type, trackText, actualTimeText) {

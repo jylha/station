@@ -1,8 +1,8 @@
 package dev.jylha.station.ui
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.setContent
 import dev.jylha.station.ui.common.LocationPermission
 import dev.jylha.station.ui.common.LocationPermissionProvider
 import dagger.hilt.android.AndroidEntryPoint

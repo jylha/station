@@ -9,8 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ConstraintLayout
-import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,19 +28,22 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.ExpandLess
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import dev.jylha.station.R
 import dev.jylha.station.data.stations.LocalizedStationNames
 import dev.jylha.station.model.DelayCause
@@ -103,7 +104,9 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     modifier: Modifier = Modifier
 ) {
     val delayCauses = remember(train) { train.delayCauses() }
-    var expandableState by savedInstanceState(train.number) { ExpandableState.Initial }
+    var expandableState by rememberSaveable(train.number) {
+        mutableStateOf(ExpandableState.Initial)
+    }
     val transition = updateTransition(expandableState)
     val delayCausesShown = remember(transition.isRunning, transition.currentState) {
         transition.isRunning || transition.currentState == ExpandableState.Expanded
@@ -298,7 +301,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
 }
 
 @Composable private fun TrackLabel() {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val label = remember {
         context.getString(R.string.label_track).toUpperCase(Locale.getDefault())
     }
@@ -556,11 +559,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
 
 @Composable
 private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? = null) {
-    Box(
-        modifier
-            .fillMaxSize()
-            .background(color ?: Color.Transparent)
-    )
+    Box(modifier.fillMaxSize().background(color ?: Color.Transparent))
 }
 
 @Preview(name = "TimetableEntry - Dark", group = "TimetableEntry")

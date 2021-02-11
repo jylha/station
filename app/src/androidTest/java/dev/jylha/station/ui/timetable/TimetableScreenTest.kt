@@ -4,14 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertLabelEquals
-import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithSubstring
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.jylha.station.data.stations.LocalizedStationNames
@@ -27,6 +24,8 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
+import dev.jylha.station.testutil.hasSubstring
+import dev.jylha.station.testutil.onNodeWithSubstring
 import org.junit.Rule
 import org.junit.Test
 
@@ -52,7 +51,6 @@ private const val TEXT_DEPARTING_TRAINS = "Departing trains"
 private const val TEXT_COMMUTER_TRAINS = "Commuter trains"
 private const val TEXT_LONG_DISTANCE_TRAINS = "Long-distance trains"
 
-@OptIn(ExperimentalTestApi::class)
 class TimetableScreenTest {
 
     @get:Rule val rule = createComposeRule()
@@ -143,7 +141,7 @@ class TimetableScreenTest {
             .assert(hasSubstring("ARRIVED, 12:12, +2"))
             .assert(hasSubstring("TRACK, 2"))
             .assert(hasSubstring("DEPARTS, 12:15"))
-            .assertLabelEquals(
+            .assertContentDescriptionEquals(
                 """
                 Intercity train 1
                 from Helsinki
@@ -158,7 +156,7 @@ class TimetableScreenTest {
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("TRACK, 1"))
             .assert(hasSubstring("DEPARTS, 12:45"))
-            .assertLabelEquals(
+            .assertContentDescriptionEquals(
                 """
                 Pendolino train 2
                 from Pasila
@@ -172,7 +170,7 @@ class TimetableScreenTest {
             .assert(hasSubstring("Pasila"))
             .assert(hasSubstring("ARRIVES, 12:45, 12:48"))
             .assert(hasSubstring("Z"))
-            .assertLabelEquals(
+            .assertContentDescriptionEquals(
                 """
                 Z commuter train
                 from Helsinki
@@ -186,7 +184,7 @@ class TimetableScreenTest {
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("TRACK, 4"))
             .assert(hasSubstring("DEPARTS, 13:00"))
-            .assertLabelEquals(
+            .assertContentDescriptionEquals(
                 """
                 Commuter train D E F 4
                 from Pasila
@@ -200,7 +198,7 @@ class TimetableScreenTest {
             .assert(hasSubstring("Pasila"))
             .assert(hasSubstring("ARRIVES, 14:15"))
             .assert(hasSubstring("TRACK, 5"))
-            .assertLabelEquals(
+            .assertContentDescriptionEquals(
                 """
                 Intercity train 5
                 from Helsinki
@@ -238,9 +236,11 @@ class TimetableScreenTest {
         rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
         rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
 
-        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertLabelEquals(LABEL_SHOW_LONG_DISTANCE_TRAINS)
+        rule.onNodeWithText(TEXT_LONG_DISTANCE)
+            .assertContentDescriptionEquals(LABEL_SHOW_LONG_DISTANCE_TRAINS)
             .assertIsDisplayed()
-        rule.onNodeWithText(TEXT_COMMUTER).assertLabelEquals(LABEL_HIDE_COMMUTER_TRAINS)
+        rule.onNodeWithText(TEXT_COMMUTER)
+            .assertContentDescriptionEquals(LABEL_HIDE_COMMUTER_TRAINS)
             .assertIsDisplayed()
 
         // Change train categories to long-distance trains by hiding commuter trains
@@ -248,8 +248,10 @@ class TimetableScreenTest {
 
         rule.onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertIsDisplayed()
         rule.onNodeWithText(TEXT_COMMUTER_TRAINS).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_LONG_DISTANCE).assertLabelEquals(LABEL_HIDE_LONG_DISTANCE_TRAINS)
-        rule.onNodeWithText(TEXT_COMMUTER).assertLabelEquals(LABEL_SHOW_COMMUTER_TRAINS)
+        rule.onNodeWithText(TEXT_LONG_DISTANCE)
+            .assertContentDescriptionEquals(LABEL_HIDE_LONG_DISTANCE_TRAINS)
+        rule.onNodeWithText(TEXT_COMMUTER)
+            .assertContentDescriptionEquals(LABEL_SHOW_COMMUTER_TRAINS)
 
         argumentCaptor<TimetableEvent>().apply {
             verify(onTimetableEvent, times(1)).invoke(capture())
@@ -311,16 +313,20 @@ class TimetableScreenTest {
 
         rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_DEPARTING).assertLabelEquals(LABEL_SHOW_DEPARTING_TRAINS)
+        rule.onNodeWithText(TEXT_DEPARTING)
+            .assertContentDescriptionEquals(LABEL_SHOW_DEPARTING_TRAINS)
             .assertIsDisplayed()
-        rule.onNodeWithText(TEXT_ARRIVING).assertLabelEquals(LABEL_HIDE_ARRIVING_TRAINS)
+        rule.onNodeWithText(TEXT_ARRIVING)
+            .assertContentDescriptionEquals(LABEL_HIDE_ARRIVING_TRAINS)
             .assertIsDisplayed()
 
         // Change timetable type type to departing trains by hiding arriving trains.
         rule.onNodeWithText(TEXT_ARRIVING).performClick()
 
-        rule.onNodeWithText(TEXT_DEPARTING).assertLabelEquals(LABEL_HIDE_DEPARTING_TRAINS)
-        rule.onNodeWithText(TEXT_ARRIVING).assertLabelEquals(LABEL_SHOW_ARRIVING_TRAINS)
+        rule.onNodeWithText(TEXT_DEPARTING)
+            .assertContentDescriptionEquals(LABEL_HIDE_DEPARTING_TRAINS)
+        rule.onNodeWithText(TEXT_ARRIVING)
+            .assertContentDescriptionEquals(LABEL_SHOW_ARRIVING_TRAINS)
         rule.onNodeWithText(TEXT_ARRIVING_TRAINS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_DEPARTING_TRAINS).assertIsDisplayed()
         rule.onNodeWithSubstring("ABC, 1").assertExists()

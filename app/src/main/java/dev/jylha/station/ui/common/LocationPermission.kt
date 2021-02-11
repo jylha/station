@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.app.ActivityCompat
 
 /**
@@ -18,12 +18,12 @@ import androidx.core.app.ActivityCompat
     locationPermission: LocationPermission,
     content: @Composable () -> Unit
 ) {
-    Providers(AmbientLocationPermission provides locationPermission) {
+    Providers(LocalLocationPermission provides locationPermission) {
         content()
     }
 }
 
-val AmbientLocationPermission = staticAmbientOf<Permission> {
+val LocalLocationPermission = staticCompositionLocalOf<Permission> {
     error("LocationPermission is not set.")
 }
 

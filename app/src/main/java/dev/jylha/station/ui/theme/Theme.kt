@@ -7,7 +7,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Providers
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
@@ -72,10 +72,10 @@ fun StationTheme(
 /** An object for getting access to StationColorPalette. */
 object StationTheme {
     val colors: StationColorPalette
-        @Composable get() = AmbientStationColorPalette.current
+        @Composable get() = LocalStationColorPalette.current
 }
 
-private val AmbientStationColorPalette = staticAmbientOf<StationColorPalette> {
+private val LocalStationColorPalette = staticCompositionLocalOf<StationColorPalette> {
     error("StationColorPalette is not set.")
 }
 
@@ -84,7 +84,7 @@ fun ProvideStationColors(
     colorPalette: StationColorPalette,
     content: @Composable () -> Unit
 ) {
-    Providers(AmbientStationColorPalette provides colorPalette) {
+    Providers(LocalStationColorPalette provides colorPalette) {
         content()
     }
 }

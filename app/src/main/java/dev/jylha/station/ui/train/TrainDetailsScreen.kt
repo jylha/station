@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ConstraintLayout
-import androidx.compose.foundation.layout.Dimension
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,21 +24,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import androidx.compose.ui.zIndex
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import dev.jylha.station.R
 import dev.jylha.station.model.Stop
 import dev.jylha.station.model.Train
@@ -71,33 +70,30 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 /**
  * Train details screen composable. Displays details about trains progress on its route.
  *
- * @param viewModel View model for the train details scsreen.
+ * @param viewModel View model for the train details screen.
  * @param trainNumber The train number identifying the train.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(viewModel: TrainDetailsViewModel, trainNumber: Int) {
-    savedInstanceState(trainNumber) {
+    rememberSaveable(trainNumber) {
         viewModel.setTrain(trainNumber)
         trainNumber
     }
     val viewState by viewModel.state.collectAsState()
-
-    TrainDetailsScreen(viewState,
-        onReload = { train -> viewModel.reload(train) }
-    )
+    TrainDetailsScreen(viewState, onReload = { train -> viewModel.reload(train) })
 }
 
 @Composable fun TrainDetailsScreen(
-    state: TrainDetailsViewState,
+    viewState: TrainDetailsViewState,
     onReload: (Train) -> Unit = {},
 ) {
-    StationNameProvider(state.nameMapper) {
+    StationNameProvider(viewState.nameMapper) {
         when {
-            state.isLoading -> LoadingTrainDetails()
-            state.train != null -> TrainDetails(
-                state.train,
-                state.isReloading,
-                onRefresh = { onReload(state.train) }
+            viewState.isLoading -> LoadingTrainDetails()
+            viewState.train != null -> TrainDetails(
+                viewState.train,
+                viewState.isReloading,
+                onRefresh = { onReload(viewState.train) }
             )
         }
     }
@@ -263,13 +259,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     CommercialStop(
         name = { modifier -> StopName(stationName(origin.stationCode()), modifier) },
         stationIcon = { modifier ->
-            Image(vectorResource(stationIconResId), contentDescription = null, modifier,
+            Image(painterResource(stationIconResId), contentDescription = null, modifier,
                 colorFilter = colorFilter)
         },
         departureTime = { modifier -> TimeField(origin.departure, modifier) },
         departureIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), contentDescription = null, modifier,
+                painterResource(R.drawable.line) , contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = colorFilter
             )
@@ -298,13 +294,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     CommercialStop(
         name = { modifier -> StopName(stationName(waypoint.stationCode()), modifier) },
         stationIcon = { modifier ->
-            Image(vectorResource(stationIconResId), contentDescription = null, modifier,
+            Image(painterResource(stationIconResId), contentDescription = null, modifier,
                 colorFilter = arrivedColorFilter)
         },
         arrivalTime = { modifier -> TimeField(waypoint.arrival, modifier) },
         arrivalIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), contentDescription = null, modifier,
+                painterResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = arrivedColorFilter
             )
@@ -312,7 +308,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         departureTime = { modifier -> TimeField(waypoint.departure, modifier) },
         departureIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), contentDescription = null, modifier,
+                painterResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = ColorFilter.tint(departedIconColor)
             )
@@ -335,13 +331,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
         name = { modifier -> StopName(stationName(destination.stationCode()), modifier) },
         stationIcon = { modifier ->
             Image(
-                vectorResource(stationResId), contentDescription = null, modifier,
+                painterResource(stationResId), contentDescription = null, modifier,
                 colorFilter = iconColorFilter
             )
         },
         arrivalIcon = { modifier ->
             Image(
-                vectorResource(R.drawable.line), contentDescription = null, modifier,
+                painterResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = iconColorFilter
             )

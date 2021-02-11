@@ -34,7 +34,7 @@ import dev.jylha.station.ui.theme.StationTheme
 fun ErrorState(
     message: String,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit = emptyContent()
+    content: @Composable () -> Unit = {}
 ) {
     Box(
         modifier

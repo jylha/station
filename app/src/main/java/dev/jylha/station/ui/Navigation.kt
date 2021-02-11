@@ -1,10 +1,10 @@
 package dev.jylha.station.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -118,4 +118,4 @@ fun StationAppNavigation() {
 @Composable
 private inline fun <reified T : ViewModel> viewModel(
     backStackEntry: NavBackStackEntry, key: String? = null
-): T = viewModel(T::class.java, key, HiltViewModelFactory(AmbientContext.current, backStackEntry))
+): T = viewModel(T::class.java, key, HiltViewModelFactory(LocalContext.current, backStackEntry))

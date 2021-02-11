@@ -35,18 +35,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import dev.jylha.station.R
 import dev.jylha.station.data.stations.LocalizedStationNames
 import dev.jylha.station.model.Station
@@ -89,7 +88,7 @@ fun TimetableScreen(
     onNavigateToStations: () -> Unit,
     onNavigateToTrainDetails: (Int) -> Unit,
 ) {
-    savedInstanceState(stationCode) {
+    rememberSaveable(stationCode) {
         viewModel.offer(TimetableEvent.LoadTimetable(stationCode))
         stationCode
     }
@@ -157,7 +156,7 @@ fun TimetableScreen(
     onSelectStation: () -> Unit,
     onTrainSelected: (Train) -> Unit
 ) {
-    var filterSelectionEnabled by savedInstanceState { false }
+    var filterSelectionEnabled by rememberSaveable { mutableStateOf(false) }
 
     val timetableTypeSelected: (TimetableRow.Type) -> Unit = { type ->
         val updatedTypes =
@@ -465,7 +464,7 @@ fun TimetableScreen(
             Modifier.weight(1f).semantics { contentDescription = arrivingLabel }
         ) {
             Icon(
-                vectorResource(R.drawable.ic_arrival),
+                painterResource(R.drawable.ic_arrival),
                 contentDescription = null,
                 Modifier.size(24.dp)
             )
@@ -481,7 +480,7 @@ fun TimetableScreen(
             Text(stringResource(R.string.timetable_type_departing))
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
-                vectorResource(R.drawable.ic_departure),
+                painterResource(R.drawable.ic_departure),
                 contentDescription = null,
                 Modifier.size(24.dp)
             )
@@ -609,7 +608,7 @@ private fun PreviewTimetable() {
         )
     )
 
-    val mapper = LocalizedStationNames.from(listOf(helsinki, turku), AmbientContext.current)
+    val mapper = LocalizedStationNames.from(listOf(helsinki, turku), LocalContext.current)
     StationTheme(darkTheme = true) {
         StationNameProvider(mapper) {
             TimetableScreenContent(helsinki, trains, Modifier, {},

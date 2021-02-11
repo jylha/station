@@ -12,9 +12,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.Text
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.runtime.Composable
@@ -22,7 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,9 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
-import dev.jylha.station.ui.common.AmbientLocationPermission
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.Loading
+import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.SearchBar
 import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.util.filterWhen
@@ -67,7 +67,7 @@ fun StationsScreen(
     onNavigateToNearestStation: () -> Unit,
     selectNearestStation: Boolean = false
 ) {
-    savedInstanceState(selectNearestStation) {
+    rememberSaveable(selectNearestStation) {
         viewModel.setSelectionMode(selectNearestStation)
         selectNearestStation
     }
@@ -77,7 +77,7 @@ fun StationsScreen(
         selectNearestStation -> SelectNearestStation(viewState, onNavigateToTimetable)
         viewState.isLoading -> LoadingStations()
         else -> {
-            val locationPermission = AmbientLocationPermission.current
+            val locationPermission = LocalLocationPermission.current
             StationsScreen(
                 viewState,
                 onSelect = { station ->

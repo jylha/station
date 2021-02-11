@@ -3,6 +3,7 @@ package dev.jylha.station.ui.common
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -24,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -70,12 +72,14 @@ fun SearchBar(
                     Icon(Icons.Default.KeyboardBackspace, contentDescription = closeSearchLabel)
                 }
             }
+            lateinit var keyboardController: SoftwareKeyboardController
             TextField(
                 value = text,
                 onValueChange = onValueChanged,
                 label = { if (!active) Text(placeholderText) },
                 placeholder = { Text(placeholderText) },
                 onTextInputStarted = { controller ->
+                    keyboardController = controller
                     active = true
                     controller.showSoftwareKeyboard()
                 },
@@ -89,12 +93,12 @@ fun SearchBar(
                     imeAction = ImeAction.Done
                 ),
                 maxLines = 1,
-                onImeActionPerformed = { action, controller ->
-                    if (action == ImeAction.Done) {
-                        controller?.hideSoftwareKeyboard()
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController.hideSoftwareKeyboard()
                         onClose?.invoke()
                     }
-                }
+                )
             )
         }
     }

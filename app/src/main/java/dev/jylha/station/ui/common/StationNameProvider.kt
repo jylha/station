@@ -2,11 +2,11 @@ package dev.jylha.station.ui.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import dev.jylha.station.data.stations.StationNameMapper
 
 /**
- * Provider component that provides the StationNameMapper for the AmbientStationNameMapper.
+ * Provider component that provides an instance of [StationNameMapper].
  * @param stationNameMapper A station name mapper that provides localised station names.
  * @param content The composable content that can access the provided [StationNameMapper].
  */
@@ -16,7 +16,7 @@ fun StationNameProvider(
     content: @Composable () -> Unit
 ) {
     val mapper = stationNameMapper ?: StationNameMapper { null }
-    Providers(AmbientStationNameMapper provides mapper) {
+    Providers(LocalStationNameMapper provides mapper) {
         content()
     }
 }
@@ -28,13 +28,13 @@ fun StationNameProvider(
 fun stationName(stationCode: Int?): String? {
     return when (stationCode) {
         null -> null
-        else -> AmbientStationNameMapper.current.stationName(stationCode)
+        else -> LocalStationNameMapper.current.stationName(stationCode)
     }
 }
 
 /**
  * Ambient to provide [StationNameMapper] instance to allow accessing localised station names.
  */
-private val AmbientStationNameMapper = staticAmbientOf<StationNameMapper> {
+private val LocalStationNameMapper = staticCompositionLocalOf<StationNameMapper> {
     error("StationNameMapper in not provided.")
 }

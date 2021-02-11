@@ -1,9 +1,9 @@
 package dev.jylha.station.ui.about
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasSubstring
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import dev.jylha.station.testutil.hasSubstring
 import dev.jylha.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test

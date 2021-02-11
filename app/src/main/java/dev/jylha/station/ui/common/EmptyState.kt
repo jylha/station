@@ -17,7 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,7 +51,7 @@ fun EmptyState(
                     )
             ) {
                 Icon(
-                    imageVector = vectorResource(id = R.drawable.magnifying_class),
+                    painterResource(id = R.drawable.magnifying_class),
                     modifier = Modifier.preferredSize(100.dp).align(Alignment.Center),
                     tint = MaterialTheme.colors.primary.copy(alpha = 0.3f),
                     contentDescription = null
