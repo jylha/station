@@ -38,7 +38,6 @@ import androidx.compose.ui.gesture.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.gesture.nestedscroll.NestedScrollSource
 import androidx.compose.ui.gesture.nestedscroll.nestedScroll
 import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
-import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity

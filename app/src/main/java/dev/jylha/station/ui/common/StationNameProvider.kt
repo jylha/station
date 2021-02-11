@@ -22,7 +22,7 @@ fun StationNameProvider(
 }
 
 /**
- * Returns the localised station name for the specified [stationCode] from AmbientStationNameMapper.
+ * Returns the localised station name for the specified [stationCode] from LocalStationNameMapper.
  */
 @Composable
 fun stationName(stationCode: Int?): String? {
@@ -33,7 +33,7 @@ fun stationName(stationCode: Int?): String? {
 }
 
 /**
- * Ambient to provide [StationNameMapper] instance to allow accessing localised station names.
+ * Composition local [StationNameMapper] instance to allow accessing localised station names.
  */
 private val LocalStationNameMapper = staticCompositionLocalOf<StationNameMapper> {
     error("StationNameMapper in not provided.")
