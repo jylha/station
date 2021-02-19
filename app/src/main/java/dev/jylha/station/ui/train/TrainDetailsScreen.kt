@@ -68,7 +68,7 @@ import java.time.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
- * Train details screen composable. Displays details about trains progress on its route.
+ * Train details screen composable. Displays details about train's progress on its route.
  *
  * @param viewModel View model for the train details screen.
  * @param trainNumber The train number identifying the train.

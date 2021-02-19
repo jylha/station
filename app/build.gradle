@@ -87,7 +87,6 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
     implementation "androidx.fragment:fragment-ktx:${versions.fragment}"
     implementation "androidx.hilt:hilt-navigation:${versions.hilt_navigation}"
-    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle_compose}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
     implementation "androidx.navigation:navigation-compose:${versions.navigation_compose}"
