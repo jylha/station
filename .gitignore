@@ -43,17 +43,17 @@ captures/
 
 # IntelliJ
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
 .idea/assetWizardSettings.xml
-.idea/dictionaries
-.idea/libraries/
 .idea/caches/
-.idea/modules.xml
 .idea/deploymentTargetDropDown.xml
-# Comment next line if keeping position of elements in Navigation Editor is relevant for you
+.idea/dictionaries
+.idea/gradle.xml
+.idea/libraries/
+.idea/misc.xml
+.idea/modules.xml
 .idea/navEditor.xml
+.idea/tasks.xml
+.idea/workspace.xml
 
 # Keystore properties
 keystore.properties
