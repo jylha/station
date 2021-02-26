@@ -5,8 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
@@ -84,7 +84,7 @@ fun ProvideStationColors(
     colorPalette: StationColorPalette,
     content: @Composable () -> Unit
 ) {
-    Providers(LocalStationColorPalette provides colorPalette) {
+    CompositionLocalProvider(LocalStationColorPalette provides colorPalette) {
         content()
     }
 }

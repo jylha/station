@@ -1,7 +1,7 @@
 package dev.jylha.station.ui.common
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
@@ -21,7 +21,7 @@ import dev.jylha.station.model.DelayCause
     val categories = remember(causeCategories) {
         causeCategories ?: CauseCategories(emptyList(), emptyList(), emptyList())
     }
-    Providers(LocalCauseCategories provides categories) {
+    CompositionLocalProvider(LocalCauseCategories provides categories) {
         content()
     }
 }

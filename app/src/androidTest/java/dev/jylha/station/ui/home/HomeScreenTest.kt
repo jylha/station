@@ -1,7 +1,7 @@
 package dev.jylha.station.ui.home
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -61,7 +61,7 @@ class HomeScreenTest {
     content: @Composable () -> Unit
 ) {
     val permission = MockLocationPermission(isGranted, grantRequest)
-    Providers(LocalLocationPermission provides permission) {
+    CompositionLocalProvider(LocalLocationPermission provides permission) {
         content()
     }
 }

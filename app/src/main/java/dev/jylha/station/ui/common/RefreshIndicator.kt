@@ -1,7 +1,7 @@
 package dev.jylha.station.ui.common
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
@@ -16,7 +16,7 @@ fun RefreshIndicator() {
     Surface(elevation = 10.dp, shape = CircleShape) {
         CircularProgressIndicator(
             modifier = Modifier
-                .preferredSize(36.dp)
+                .size(36.dp)
                 .padding(4.dp)
         )
     }

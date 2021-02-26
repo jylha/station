@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -44,7 +44,7 @@ fun EmptyState(
         ) {
             Box(
                 Modifier
-                    .preferredSize(140.dp)
+                    .size(140.dp)
                     .background(
                         MaterialTheme.colors.primary.copy(alpha = 0.1f),
                         RoundedCornerShape(70.dp)
@@ -52,7 +52,7 @@ fun EmptyState(
             ) {
                 Icon(
                     painterResource(id = R.drawable.magnifying_class),
-                    modifier = Modifier.preferredSize(100.dp).align(Alignment.Center),
+                    modifier = Modifier.size(100.dp).align(Alignment.Center),
                     tint = MaterialTheme.colors.primary.copy(alpha = 0.3f),
                     contentDescription = null
                 )

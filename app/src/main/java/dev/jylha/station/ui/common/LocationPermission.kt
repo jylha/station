@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.app.ActivityCompat
 
@@ -18,7 +18,7 @@ import androidx.core.app.ActivityCompat
     locationPermission: LocationPermission,
     content: @Composable () -> Unit
 ) {
-    Providers(LocalLocationPermission provides locationPermission) {
+    CompositionLocalProvider(LocalLocationPermission provides locationPermission) {
         content()
     }
 }

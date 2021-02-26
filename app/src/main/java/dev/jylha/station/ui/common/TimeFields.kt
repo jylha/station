@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -132,9 +132,7 @@ import java.util.Locale
         if (scheduledTimeText.isNotBlank() && estimatedTimeText.isNotBlank()) {
             Icon(
                 Icons.Rounded.ArrowRightAlt, contentDescription = null,
-                Modifier
-                    .padding(horizontal = 4.dp, vertical = 0.dp)
-                    .preferredSize(16.dp),
+                Modifier.padding(horizontal = 4.dp, vertical = 0.dp).size(16.dp),
                 tint = StationTheme.colors.delayed
             )
             Text(

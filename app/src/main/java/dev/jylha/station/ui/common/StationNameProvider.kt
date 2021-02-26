@@ -1,7 +1,7 @@
 package dev.jylha.station.ui.common
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import dev.jylha.station.data.stations.StationNameMapper
 
@@ -16,7 +16,7 @@ fun StationNameProvider(
     content: @Composable () -> Unit
 ) {
     val mapper = stationNameMapper ?: StationNameMapper { null }
-    Providers(LocalStationNameMapper provides mapper) {
+    CompositionLocalProvider(LocalStationNameMapper provides mapper) {
         content()
     }
 }
