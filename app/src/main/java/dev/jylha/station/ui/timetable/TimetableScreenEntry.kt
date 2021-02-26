@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -141,7 +142,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
 
     TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, stop)) {
         Column {
-            ConstraintLayout(Modifier.fillMaxWidth()) {
+            ConstraintLayout(Modifier.requiredHeight(72.dp).fillMaxWidth()) {
                 val identificationRef = createRef()
                 val routeRef = createRef()
                 val showDelayRef = createRef()
@@ -164,21 +165,18 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                         width = Dimension.fillToConstraints
                     }
                 )
+                TrainTrack(stop.track(), Modifier.constrainAs(trackRef) {
+                    centerHorizontallyTo(parent)
+                    bottom.linkTo(parent.bottom, margin = 2.dp)
+                })
                 Arrival(stop.arrival, Modifier.constrainAs(arrivalRef) {
                     start.linkTo(identificationRef.end, margin = 8.dp)
                     end.linkTo(trackRef.start, margin = 8.dp)
-                    top.linkTo(trackRef.top)
                     bottom.linkTo(trackRef.bottom)
-                })
-                TrainTrack(stop.track(), Modifier.constrainAs(trackRef) {
-                    centerHorizontallyTo(parent)
-                    top.linkTo(routeRef.bottom, margin = 4.dp)
-                    bottom.linkTo(parent.bottom)
                 })
                 Departure(stop.departure, Modifier.constrainAs(departureRef) {
                     start.linkTo(trackRef.end, margin = 8.dp)
                     end.linkTo(parent.end, margin = 48.dp)
-                    top.linkTo(trackRef.top)
                     bottom.linkTo(trackRef.bottom)
                 }, includeTrackLabel = stop.arrival == null)
                 if (delayCauses.isNotEmpty()) {
@@ -187,8 +185,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                         enabled = expandableState != ExpandableState.Expanded,
                         Modifier.constrainAs(showDelayRef) {
                             end.linkTo(parent.end)
-                            top.linkTo(departureRef.top)
-                            bottom.linkTo(departureRef.bottom)
+                            bottom.linkTo(parent.bottom)
                         },
                         color = if (delayCauses.isEmpty()) Color.Transparent
                         else StationTheme.colors.late.copy(

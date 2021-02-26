@@ -1,34 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="../../../../../layout/compose-model-1613757126851.xml" value="0.2088607594936709" />
-        <entry key="../../../../../layout/compose-model-1614334066938.xml" value="0.1" />
-        <entry key="../../../../../layout/compose-model-1614334133525.xml" value="0.1" />
-        <entry key="../../../../../layout/compose-model-1614334533497.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614334576166.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614334611903.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614334902066.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614334960047.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614334984604.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335000330.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335017949.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335035281.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335097242.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335128602.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335141915.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335682073.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335753283.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614335814259.xml" value="0.5" />
-        <entry key="../../../../../layout/compose-model-1614336271473.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614336593663.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614336605899.xml" value="0.10185185185185185" />
-        <entry key="../../../../../layout/compose-model-1614336609305.xml" value="0.5" />
-        <entry key="../../../../../layout/compose-model-1614337814986.xml" value="0.6370370370370371" />
-      </map>
-    </option>
-  </component>
   <component name="EntryPointsManager">
     <list size="2">
       <item index="0" class="java.lang.String" itemvalue="dagger.Binds" />
