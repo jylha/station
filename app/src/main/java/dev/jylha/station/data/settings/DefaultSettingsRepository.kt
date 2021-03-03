@@ -1,16 +1,20 @@
 package dev.jylha.station.data.settings
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore("preferences")
 
 class DefaultSettingsRepository @Inject constructor(
     @ApplicationContext private val context: Context
@@ -22,7 +26,7 @@ class DefaultSettingsRepository @Inject constructor(
     private val trainCategoriesKey = stringSetPreferencesKey("trainCategories")
     private val timetableTypesKey = stringSetPreferencesKey("timetableTypes")
 
-    private val dataStore = context.createDataStore("preferences")
+    private val dataStore = context.dataStore
 
     override fun station(): Flow<Int?> {
         return dataStore.data.map { preferences -> preferences[currentStationKey] }
