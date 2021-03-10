@@ -37,6 +37,7 @@ class DefaultLocationService @Inject constructor(
                     }
                 }
             }
+            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
             client.requestLocationUpdates(locationRequest, locationCallback, null).await()
             awaitClose { client.removeLocationUpdates(locationCallback) }
         }
