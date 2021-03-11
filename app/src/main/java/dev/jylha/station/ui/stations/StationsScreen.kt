@@ -187,26 +187,34 @@ fun StationsScreen(
 @Composable private fun StationSelection(
     stations: List<Station>,
     recentStations: List<Station>,
-    onSelect: (Station) -> Any,
+    onSelect: (Station) -> Unit,
     modifier: Modifier,
-    searchText: String?
+    searchText: String
 ) {
     LazyColumn(modifier = modifier) {
-        if (searchText.isNullOrBlank() && recentStations.isNotEmpty()) {
+        if (searchText.isBlank() && recentStations.isNotEmpty()) {
             item { StationListLabel(stringResource(R.string.label_recent)) }
-            items(recentStations) { station -> StationListEntry(station, onSelect) }
+            items(recentStations) { station ->
+                StationListEntry(station.name, onSelect = { onSelect(station) })
+            }
             item { Divider() }
         }
 
         item {
             StationListLabel(
                 stringResource(
-                    if (searchText.isNullOrBlank()) R.string.label_all_stations
+                    if (searchText.isBlank()) R.string.label_all_stations
                     else R.string.label_matching_stations
                 )
             )
         }
-        items(stations) { station -> StationListEntry(station, onSelect, searchText = searchText) }
+        items(stations) { station ->
+            StationListEntry(
+                stationName = station.name,
+                onSelect = { onSelect(station) },
+                searchText = searchText
+            )
+        }
     }
 }
 
@@ -220,18 +228,18 @@ fun StationsScreen(
 }
 
 @Composable private fun StationListEntry(
-    station: Station,
-    onSelect: (Station) -> Any,
+    stationName: String,
+    onSelect: () -> Unit,
     modifier: Modifier = Modifier,
-    searchText: String? = null
+    searchText: String = ""
 ) {
-    val textColor = if (searchText.isNullOrBlank()) MaterialTheme.colors.onBackground else
+    val textColor = if (searchText.isBlank()) MaterialTheme.colors.onBackground else
         MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
     val highlightedTextColor = MaterialTheme.colors.onBackground
-    val name = remember(station.name, searchText) {
-        with(AnnotatedString.Builder(station.name)) {
-            if (!searchText.isNullOrBlank()) {
-                station.name.findAllMatches(searchText).forEach { (startIndex, endIndex) ->
+    val name = remember(stationName, searchText) {
+        with(AnnotatedString.Builder(stationName)) {
+            if (searchText.isNotBlank()) {
+                stationName.findAllMatches(searchText).forEach { (startIndex, endIndex) ->
                     addStyle(
                         SpanStyle(highlightedTextColor, fontWeight = FontWeight.Bold),
                         startIndex,
@@ -247,7 +255,7 @@ fun StationsScreen(
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = { onSelect(station) })
+            .clickable(onClick = onSelect)
             .padding(horizontal = 8.dp, vertical = 10.dp)
     ) {
         Text(name, style = MaterialTheme.typography.body1, color = textColor)

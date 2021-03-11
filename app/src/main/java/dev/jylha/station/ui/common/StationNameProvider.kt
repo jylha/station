@@ -2,6 +2,7 @@ package dev.jylha.station.ui.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import dev.jylha.station.data.stations.StationNameMapper
 
@@ -24,8 +25,8 @@ fun StationNameProvider(
 /**
  * Returns the localised station name for the specified [stationCode] from LocalStationNameMapper.
  */
-@Composable
-fun stationName(stationCode: Int?): String? {
+@ReadOnlyComposable
+@Composable fun stationName(stationCode: Int?): String? {
     return when (stationCode) {
         null -> null
         else -> LocalStationNameMapper.current.stationName(stationCode)

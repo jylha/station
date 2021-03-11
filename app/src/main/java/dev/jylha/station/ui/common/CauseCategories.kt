@@ -2,6 +2,7 @@ package dev.jylha.station.ui.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
@@ -27,6 +28,7 @@ import dev.jylha.station.model.DelayCause
 }
 
 /** Returns a passenger friendly name for given [delayCause] in preferred language. */
+@ReadOnlyComposable
 @Composable fun causeName(delayCause: DelayCause): String {
     val categories = LocalCauseCategories.current
     val localeList = LocalConfiguration.current.locales
