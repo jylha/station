@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -109,31 +110,50 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {},
 ) {
+    val stops = remember(train) { train.commercialStops() }
+    val currentStop = remember(train) { train.currentCommercialStop() }
+    val currentStopIndex = remember(stops, currentStop) { stops.indexOf(currentStop) }
+    val nextStopIndex = remember(currentStop) {
+        if (currentStop?.isDeparted() == true) currentStopIndex + 1 else -1
+    }
+
     SwipeToRefreshLayout(refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                contentPadding = PaddingValues(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                item {
-                    Spacer(Modifier.height(20.dp))
-                    TrainIdentification(train)
-                    Spacer(Modifier.height(16.dp))
-                    TrainRoute(
-                        stationName(train.origin()) ?: "",
-                        stationName(train.destination()) ?: "",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .semantics(mergeDescendants = true) {}
-                    )
-                    Spacer(Modifier.height(20.dp))
-                    Timetable(train)
-                    Spacer(Modifier.height(20.dp))
+                item { TrainDetailsHeading(train) }
+
+                stops.forEachIndexed { index, stop ->
+                    val isCurrent = index == currentStopIndex && stop.isNotDeparted()
+                    val isNext = index == nextStopIndex
+                    val isPassed = index < currentStopIndex
+                    item {
+                        when {
+                            stop.isOrigin() -> TrainOrigin(train, stop, isCurrent, isPassed)
+                            stop.isWaypoint() -> TrainWaypoint(stop, isCurrent, isNext, isPassed)
+                            stop.isDestination() -> TrainDestination(stop, isCurrent, isNext)
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable private fun TrainDetailsHeading(train: Train) {
+    TrainIdentification(train)
+    Spacer(Modifier.height(16.dp))
+    TrainRoute(
+        stationName(train.origin()) ?: "",
+        stationName(train.destination()) ?: "",
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) {}
+    )
+    Spacer(Modifier.height(16.dp))
 }
 
 @Composable private fun TrainIdentification(train: Train) {
@@ -222,27 +242,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     }
 }
 
-@Composable private fun Timetable(train: Train) {
-    val stops = remember(train) { train.commercialStops() }
-    val currentStop = remember(train) { train.currentCommercialStop() }
-    val currentStopIndex = remember(stops, currentStop) { stops.indexOf(currentStop) }
-    val nextStopIndex = remember(currentStop) {
-        if (currentStop?.isDeparted() == true) currentStopIndex + 1 else -1
-    }
-    Column {
-        stops.forEachIndexed { index, stop ->
-            val isCurrent = index == currentStopIndex && stop.isNotDeparted()
-            val isNext = index == nextStopIndex
-            val isPassed = index < currentStopIndex
-            when {
-                stop.isOrigin() -> TrainOrigin(train, stop, isCurrent, isPassed)
-                stop.isWaypoint() -> TrainWaypoint(stop, isCurrent, isNext, isPassed)
-                stop.isDestination() -> TrainDestination(stop, isCurrent, isNext)
-            }
-        }
-    }
-}
-
 @Composable private fun TrainOrigin(
     train: Train,
     origin: Stop,
@@ -261,13 +260,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     CommercialStop(
         name = { modifier -> StopName(stationName(origin.stationCode()), modifier) },
         stationIcon = { modifier ->
-            Image(painterResource(stationIconResId), contentDescription = null, modifier,
-                colorFilter = colorFilter)
+            Image(
+                painterResource(stationIconResId), contentDescription = null, modifier,
+                colorFilter = colorFilter
+            )
         },
         departureTime = { modifier -> TimeField(origin.departure, modifier) },
         departureIcon = { modifier ->
             Image(
-                painterResource(R.drawable.line) , contentDescription = null, modifier,
+                painterResource(R.drawable.line), contentDescription = null, modifier,
                 contentScale = ContentScale.FillBounds,
                 colorFilter = colorFilter
             )
@@ -296,8 +297,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
     CommercialStop(
         name = { modifier -> StopName(stationName(waypoint.stationCode()), modifier) },
         stationIcon = { modifier ->
-            Image(painterResource(stationIconResId), contentDescription = null, modifier,
-                colorFilter = arrivedColorFilter)
+            Image(
+                painterResource(stationIconResId), contentDescription = null, modifier,
+                colorFilter = arrivedColorFilter
+            )
         },
         arrivalTime = { modifier -> TimeField(waypoint.arrival, modifier) },
         arrivalIcon = { modifier ->
