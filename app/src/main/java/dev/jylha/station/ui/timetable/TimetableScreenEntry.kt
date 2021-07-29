@@ -109,7 +109,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     var expandableState by rememberSaveable(train.number, saver = stateSaver()) {
         mutableStateOf(ExpandableState.Initial)
     }
-    val transition = updateTransition(expandableState)
+    val transition = updateTransition(expandableState, label = "Entry state")
     val delayCausesShown = remember(transition.isRunning, transition.currentState) {
         transition.isRunning || transition.currentState == ExpandableState.Expanded
     }
@@ -301,7 +301,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
 @Composable private fun TrackLabel() {
     val context = LocalContext.current
     val label = remember {
-        context.getString(R.string.label_track).toUpperCase(Locale.getDefault())
+        context.getString(R.string.label_track).uppercase()
     }
     Text(
         text = label,
@@ -392,7 +392,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
 
 @Composable private fun TimeLabel(label: String, modifier: Modifier = Modifier) {
     Text(
-        text = label.toUpperCase(Locale.getDefault()),
+        text = label.uppercase(Locale.getDefault()),
         modifier = modifier,
         style = MaterialTheme.typography.caption,
         color = Color.Gray

@@ -81,15 +81,14 @@ dependencies {
     implementation "androidx.compose.foundation:foundation-layout:${versions.compose}"
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
     implementation "androidx.compose.material:material:${versions.compose}"
-    implementation "androidx.compose.ui:ui-tooling:${versions.compose}"
-    implementation "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout_compose}"
+    //implementation "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
+    implementation "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout}"
     implementation "androidx.core:core-ktx:${versions.core}"
     implementation "androidx.datastore:datastore-preferences-core:${versions.datastore}"
     implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
-    implementation "androidx.fragment:fragment-ktx:${versions.fragment}"
     implementation "androidx.hilt:hilt-navigation:${versions.hilt_navigation}"
+    implementation "androidx.hilt:hilt-navigation-compose:${versions.hilt_navigation_compose}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle_compose}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
     implementation "androidx.navigation:navigation-compose:${versions.navigation_compose}"
     implementation "androidx.room:room-ktx:${versions.room}"
     implementation "androidx.room:room-runtime:${versions.room}"
@@ -106,6 +105,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.coroutines}"
 
+    //debugImplementation "androidx.compose.ui:ui-tooling:${versions.compose}"
+    implementation "androidx.compose.ui:ui-tooling:1.0.0-beta09"
+
     kapt "com.google.dagger:hilt-android-compiler:${versions.hilt}"
     kapt "androidx.hilt:hilt-compiler:${versions.hilt_navigation}"
     kapt "androidx.room:room-compiler:${versions.room}"
@@ -116,11 +118,10 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation "com.google.truth:truth:${versions.truth}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
-    androidTestImplementation "androidx.compose.ui:ui-test:${versions.compose}"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:${versions.compose}"
 }
 

@@ -1,17 +1,11 @@
 package dev.jylha.station.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.HiltViewModelFactory
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.popUpTo
 import androidx.navigation.compose.rememberNavController
 import dev.jylha.station.ui.about.AboutScreen
 import dev.jylha.station.ui.home.HomeScreen
@@ -67,9 +61,9 @@ fun StationAppNavigation() {
     }
 
     NavHost(navController, startDestination = Screen.Home.route) {
-        composable(Screen.Home.route) { navBackStackEntry ->
+        composable(Screen.Home.route) { backStackEntry ->
             HomeScreen(
-                viewModel = viewModel(navBackStackEntry),
+                viewModel = hiltViewModel(backStackEntry),
                 onNavigateToStations = { navigateToStations() },
                 onNavigateToNearestStation = { navigateToNearestStation() },
                 onNavigateToTimetable = { stationCode -> navigateToTimetable(stationCode) },
@@ -79,14 +73,14 @@ fun StationAppNavigation() {
         composable(Screen.About.route) { AboutScreen() }
         composable(Screen.Stations.route) { backStackEntry ->
             StationsScreen(
-                viewModel(backStackEntry),
+                hiltViewModel(backStackEntry),
                 onNavigateToTimetable = { stationCode -> navigateToTimetable(stationCode) },
                 onNavigateToNearestStation = { navigateToNearestStation() },
             )
         }
         composable(Screen.NearestStation.route) { backStackEntry ->
             StationsScreen(
-                viewModel(backStackEntry),
+                hiltViewModel(backStackEntry),
                 onNavigateToTimetable = { stationCode -> navigateToTimetable(stationCode) },
                 onNavigateToNearestStation = { navigateToNearestStation() },
                 selectNearestStation = true,
@@ -97,7 +91,7 @@ fun StationAppNavigation() {
             arguments = listOf(navArgument(Screen.Timetable.argName) { type = NavType.IntType })
         ) { backStackEntry ->
             TimetableScreen(
-                viewModel(backStackEntry),
+                hiltViewModel(backStackEntry),
                 stationCode = backStackEntry.arguments?.getInt(Screen.Timetable.argName) ?: 0,
                 onNavigateToStations = { navigateTo(Screen.Stations) },
                 onNavigateToTrainDetails = { trainNumber -> navigateToTrainDetails(trainNumber) },
@@ -108,14 +102,9 @@ fun StationAppNavigation() {
             arguments = listOf(navArgument(Screen.TrainDetails.argName) { type = NavType.IntType })
         ) { backStackEntry ->
             TrainDetailsScreen(
-                viewModel(backStackEntry),
+                hiltViewModel(backStackEntry),
                 trainNumber = backStackEntry.arguments?.getInt(Screen.TrainDetails.argName) ?: 0
             )
         }
     }
 }
-
-@Composable
-private inline fun <reified T : ViewModel> viewModel(
-    backStackEntry: NavBackStackEntry, key: String? = null
-): T = viewModel(T::class.java, key, HiltViewModelFactory(LocalContext.current, backStackEntry))

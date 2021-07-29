@@ -38,8 +38,10 @@ import dev.jylha.station.ui.theme.StationTheme
     textStyle: TextStyle = MaterialTheme.typography.subtitle1,
     fontWeight: FontWeight = FontWeight.Bold,
 ) {
-    val fromStation = stringResource(R.string.accessibility_label_from_station, origin)
-    val toStation = stringResource(R.string.accessibility_label_to_station, destination)
+    val trainOriginDescription =
+        stringResource(R.string.accessibility_label_from_station, origin)
+    val trainDestinationDescription =
+        stringResource(R.string.accessibility_label_to_station, destination)
 
     ConstraintLayout(modifier) {
         val originRef = createRef()
@@ -58,11 +60,12 @@ import dev.jylha.station.ui.theme.StationTheme
             fontWeight = fontWeight,
             textAlign = TextAlign.End,
             modifier = Modifier
-                .semantics { contentDescription = fromStation }
+                .semantics { contentDescription = trainOriginDescription }
                 .constrainAs(originRef) {
                     linkTo(top = parent.top, bottom = parent.bottom)
-                    linkTo(start = parent.start, end = iconRef.start, bias = 1f)
-                    width = Dimension.preferredWrapContent
+                    linkTo(start = parent.start, end = iconRef.start)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.preferredWrapContent
                 }
         )
         Text(
@@ -71,11 +74,12 @@ import dev.jylha.station.ui.theme.StationTheme
             fontWeight = fontWeight,
             textAlign = TextAlign.Start,
             modifier = Modifier
-                .semantics { contentDescription = toStation }
+                .semantics { contentDescription = trainDestinationDescription }
                 .constrainAs(destinationRef) {
                     linkTo(top = parent.top, bottom = parent.bottom)
-                    linkTo(start = iconRef.end, end = parent.end, bias = 0f)
-                    width = Dimension.preferredWrapContent
+                    linkTo(start = iconRef.end, end = parent.end)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.preferredWrapContent
                 }
         )
     }

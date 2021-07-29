@@ -1,8 +1,11 @@
 package dev.jylha.station.ui.train
 
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasContentDescriptionExactly
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -95,28 +98,37 @@ class TrainDetailsScreenTest {
         rule.setThemedContent { TrainDetailsScreen(state) }
 
         rule.onNodeWithContentDescription("Intercity train 10")
-            .assertTextEquals("IC 10").assertIsDisplayed()
+            .assertTextEquals("IC 10")
+            .assertIsDisplayed()
+
         rule.onNodeWithContentDescription("from Helsinki", useUnmergedTree = true)
-            .assertTextEquals("Helsinki").assertIsDisplayed()
+            .assertTextEquals("Helsinki")
+            .assertIsDisplayed()
+
         rule.onNodeWithContentDescription("to Tampere", useUnmergedTree = true)
-            .assertTextEquals("Tampere").assertIsDisplayed()
-
-        rule.onNodeWithText("Helsinki, 12:24").assertIsDisplayed()
-            .assertContentDescriptionEquals("Helsinki, departed at 12:24")
-
-        rule.onNode(hasSubstring("Pasila"))
-            .assertTextEquals("Pasila, 12:29, +1, 12:32, +2")
-            .assertContentDescriptionEquals("Pasila, arrived at 12:29, departed at 12:32")
+            .assertTextEquals("Tampere")
             .assertIsDisplayed()
 
-        rule.onNode(hasSubstring("Tikkurila"))
-            .assertTextEquals("Tikkurila, 12:38, -1, 12:41")
-            .assertContentDescriptionEquals("Tikkurila, arrived at 12:38, departed at 12:41")
+        rule.onNode(hasContentDescriptionExactly("Helsinki", "departed at 12:24"))
+            .assert(hasSubstring("Helsinki, 12:24"))
             .assertIsDisplayed()
 
-        rule.onNode(hasSubstring("Tampere") and hasSubstring("13:"))
-            .assertTextEquals("Tampere, 13:58, 13:56")
-            .assertContentDescriptionEquals("Tampere, estimated time of arrival at 13:56")
+        rule.onNode(hasContentDescriptionExactly("Pasila", "arrived at 12:29", "departed at 12:32"))
+            .assert(hasSubstring("Pasila, 12:29, +1, 12:32, +2"))
+            .assertIsDisplayed()
+
+        rule.onNode(
+            hasContentDescriptionExactly(
+                "Tikkurila",
+                "arrived at 12:38",
+                "departed at 12:41"
+            )
+        )
+            .assert(hasSubstring("Tikkurila, 12:38, -1, 12:41"))
+            .assertIsDisplayed()
+
+        rule.onNode(hasContentDescriptionExactly("Tampere", "estimated time of arrival at 13:56"))
+            .assert(hasSubstring("Tampere, 13:58, 13:56"))
             .assertIsDisplayed()
     }
 
@@ -179,8 +191,12 @@ class TrainDetailsScreenTest {
         rule.onNodeWithContentDescription("to Tampere", useUnmergedTree = true)
             .assertTextEquals("Tampere").assertIsDisplayed()
         rule.onNodeWithSubstring("Pasila")
-            .assertTextEquals("Pasila, CANCELLED, CANCELLED")
-            .assertContentDescriptionEquals("Pasila, arrival is cancelled, departure is cancelled")
+            .assert(hasSubstring("Pasila, CANCELLED, CANCELLED"))
+            .assertContentDescriptionEquals(
+                "Pasila",
+                "arrival is cancelled",
+                "departure is cancelled"
+            )
             .assertIsDisplayed()
     }
 }

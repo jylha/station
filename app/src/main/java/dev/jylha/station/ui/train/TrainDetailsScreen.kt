@@ -123,7 +123,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
                     TrainRoute(
                         stationName(train.origin()) ?: "",
                         stationName(train.destination()) ?: "",
-                        Modifier.semantics(mergeDescendants = true) {}
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .semantics(mergeDescendants = true) {}
                     )
                     Spacer(Modifier.height(20.dp))
                     Timetable(train)

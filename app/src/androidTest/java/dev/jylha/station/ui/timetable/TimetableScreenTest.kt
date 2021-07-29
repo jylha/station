@@ -135,76 +135,68 @@ class TimetableScreenTest {
         rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
 
-        rule.onNodeWithSubstring("IC, 1").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Intercity train 1").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("Tikkurila"))
             .assert(hasSubstring("ARRIVED, 12:12, +2"))
             .assert(hasSubstring("TRACK, 2"))
             .assert(hasSubstring("DEPARTS, 12:15"))
             .assertContentDescriptionEquals(
-                """
-                Intercity train 1
-                from Helsinki
-                to Tikkurila
-                arrived to track 2 at 12:12
-                departs at 12:15
-                """.trimIndent().lines().joinToString(", ")
+                "Intercity train 1",
+                "from Helsinki",
+                "to Tikkurila",
+                "arrived to track 2 at 12:12",
+                "departs at 12:15",
             )
 
-        rule.onNodeWithSubstring("S, 2").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Pendolino train 2").assertIsDisplayed()
+            .assert(hasSubstring("S, 2"))
             .assert(hasSubstring("Pasila"))
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("TRACK, 1"))
             .assert(hasSubstring("DEPARTS, 12:45"))
             .assertContentDescriptionEquals(
-                """
-                Pendolino train 2
-                from Pasila
-                to Helsinki
-                departs from track 1 at 12:45
-                """.trimIndent().lines().joinToString(", ")
+                "Pendolino train 2",
+                "from Pasila",
+                "to Helsinki",
+                "departs from track 1 at 12:45"
             )
 
-        rule.onNodeWithSubstring("TRACK, 3").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Z commuter train").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("Pasila"))
             .assert(hasSubstring("ARRIVES, 12:45, 12:48"))
             .assert(hasSubstring("Z"))
             .assertContentDescriptionEquals(
-                """
-                Z commuter train
-                from Helsinki
-                to Pasila
-                estimated time of arrival to track 3 at 12:48
-                """.trimIndent().lines().joinToString(", ")
+                "Z commuter train",
+                "from Helsinki",
+                "to Pasila",
+                "estimated time of arrival to track 3 at 12:48"
             )
 
-        rule.onNodeWithSubstring("DEF, 4").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Commuter train D E F 4").assertIsDisplayed()
+            .assert(hasSubstring("DEF, 4"))
             .assert(hasSubstring("Pasila"))
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("TRACK, 4"))
             .assert(hasSubstring("DEPARTS, 13:00"))
             .assertContentDescriptionEquals(
-                """
-                Commuter train D E F 4
-                from Pasila
-                to Helsinki
-                departs from track 4 at 13:00
-                """.trimIndent().lines().joinToString(", ")
+                "Commuter train D E F 4",
+                "from Pasila",
+                "to Helsinki",
+                "departs from track 4 at 13:00",
             )
 
-        rule.onNodeWithSubstring("IC, 5").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Intercity train 5").assertIsDisplayed()
             .assert(hasSubstring("Helsinki"))
             .assert(hasSubstring("Pasila"))
             .assert(hasSubstring("ARRIVES, 14:15"))
             .assert(hasSubstring("TRACK, 5"))
             .assertContentDescriptionEquals(
-                """
-                Intercity train 5
-                from Helsinki
-                to Pasila
-                arrives to track 5 at 14:15
-                """.trimIndent().lines().joinToString(", ")
+                "Intercity train 5",
+                "from Helsinki",
+                "to Pasila",
+                "arrives to track 5 at 14:15",
             )
 
     }
