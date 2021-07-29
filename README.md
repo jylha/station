@@ -7,10 +7,7 @@ The application is a native Android application implemented with Kotlin. The
 application architecture is based on reactive programming model and the reactive
 streams are implemented with Kotlin Coroutines. 
 
-The application UI is implemented completely with Jetpack Compose, the Android's
-modern declarative UI toolkit, which is still in its alpha release. Using
-Jetpack Compose requires the latest canary release of Android Studio.
-
+The application UI is implemented completely with Jetpack Compose.
 ## Features
 
 The application contains five screens:
