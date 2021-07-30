@@ -80,9 +80,9 @@ import java.time.ZonedDateTime
     departureDate: String,
     trainNumber: Int
 ) {
-    rememberSaveable(trainNumber) {
+    rememberSaveable(departureDate, trainNumber) {
         viewModel.setTrain(departureDate, trainNumber)
-        trainNumber
+        Pair(departureDate, trainNumber)
     }
     val viewState by viewModel.state.collectAsState()
     TrainDetailsScreen(viewState, onReload = { train -> viewModel.reload(train) })
