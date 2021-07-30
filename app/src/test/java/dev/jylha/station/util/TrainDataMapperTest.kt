@@ -10,6 +10,7 @@ class TrainDataMapperTest {
 
     private val entity = TrainNetworkEntity(
         number = 0,
+        departureDate = "2020-05-20",
         type = "",
         category = "Commuter",
         commuterLineId = null,
@@ -77,6 +78,14 @@ class TrainDataMapperTest {
         val dto = entity.copy(cancelled = true)
         val result = dto.toDomainModel()
         assertThat(result?.isCancelled).isTrue()
+    }
+
+    @Test fun `train departure date is mapped correctly into domain model`() {
+        val dto = entity.copy(departureDate = "2020-02-20")
+        val result = dto.toDomainModel()
+        assertThat(result?.departureDate?.year).isEqualTo(2020)
+        assertThat(result?.departureDate?.monthValue).isEqualTo(2)
+        assertThat(result?.departureDate?.dayOfMonth).isEqualTo(20)
     }
 
     @Test fun `version is mapped correctly into domain model`() {

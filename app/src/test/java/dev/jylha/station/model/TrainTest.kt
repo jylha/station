@@ -295,12 +295,18 @@ class TrainTest {
     }
 
     private val longDistanceTrain = Train(1, "IC", Train.Category.LongDistance)
-    private val commuterTrain = Train(2, "L", Train.Category.Commuter, commuterLineId = "A")
 
     @Test fun `isLongDistanceTrain() returns true for a long-distance train`() {
         val result = longDistanceTrain.isLongDistanceTrain()
         assertThat(result).isTrue()
     }
+
+    @Test fun `isCommuterTrain() returns false for a long-distance train`() {
+        val result = longDistanceTrain.isCommuterTrain()
+        assertThat(result).isFalse()
+    }
+
+    private val commuterTrain = Train(2, "L", Train.Category.Commuter, commuterLineId = "A")
 
     @Test fun `isLongDistanceTrain() returns false for a commuter train`() {
         val result = commuterTrain.isLongDistanceTrain()
@@ -312,8 +318,4 @@ class TrainTest {
         assertThat(result).isTrue()
     }
 
-    @Test fun `isCommuterTrain() returns false for a long-distance train`() {
-        val result = longDistanceTrain.isCommuterTrain()
-        assertThat(result).isFalse()
-    }
 }

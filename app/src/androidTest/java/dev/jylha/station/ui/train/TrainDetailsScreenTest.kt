@@ -3,7 +3,6 @@ package dev.jylha.station.ui.train
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasContentDescriptionExactly
 import androidx.compose.ui.test.junit4.createComposeRule

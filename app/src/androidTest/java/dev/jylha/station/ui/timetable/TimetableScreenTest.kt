@@ -11,6 +11,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import dev.jylha.station.data.stations.LocalizedStationNames
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow
@@ -18,14 +23,9 @@ import dev.jylha.station.model.Train
 import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
 import dev.jylha.station.testutil.at
-import dev.jylha.station.testutil.setThemedContent
-import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import dev.jylha.station.testutil.hasSubstring
 import dev.jylha.station.testutil.onNodeWithSubstring
+import dev.jylha.station.testutil.setThemedContent
 import org.junit.Rule
 import org.junit.Test
 

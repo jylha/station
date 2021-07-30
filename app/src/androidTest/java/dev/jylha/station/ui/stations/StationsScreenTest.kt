@@ -106,7 +106,6 @@ class StationsScreenTest {
             .onParent().onChildren()[2].assertTextEquals("Helsinki Airport")
 
         rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("a")
-        rule.waitForIdle()
 
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()

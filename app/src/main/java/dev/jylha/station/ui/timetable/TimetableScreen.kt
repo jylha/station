@@ -69,7 +69,9 @@ import dev.jylha.station.ui.common.SwipeToRefreshLayout
 import dev.jylha.station.ui.common.stateSaver
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
+import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -87,7 +89,7 @@ fun TimetableScreen(
     viewModel: TimetableViewModel,
     stationCode: Int,
     onNavigateToStations: () -> Unit,
-    onNavigateToTrainDetails: (Int) -> Unit,
+    onNavigateToTrainDetails: (String, Int) -> Unit,
 ) {
     rememberSaveable(stationCode) {
         viewModel.offer(TimetableEvent.LoadTimetable(stationCode))
@@ -98,7 +100,10 @@ fun TimetableScreen(
     TimetableScreen(
         viewState,
         viewModel::offer,
-        onTrainSelected = { train -> onNavigateToTrainDetails(train.number) },
+        onTrainSelected = { train ->
+            val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            onNavigateToTrainDetails(departureDate, train.number)
+        },
         onSelectStation = onNavigateToStations,
         onRetry = { viewModel.offer(TimetableEvent.LoadTimetable(stationCode)) },
     )
@@ -588,21 +593,22 @@ private fun PreviewTimetable() {
         name = "Turku Central Station", shortCode = "TKU", code = 130,
         longitude = 1.0, latitude = 1.0
     )
+    val date = LocalDate.parse("2020-01-01")
     val trains = listOf(
         Train(
-            1, "S", Category.LongDistance, timetable = listOf(
+            1, "S", Category.LongDistance, departureDate = date, timetable = listOf(
                 departure(1, "1", ZonedDateTime.parse("2020-01-01T09:30Z")),
                 arrival(130, "2", ZonedDateTime.parse("2020-01-01T10:30Z"))
             )
         ),
         Train(
-            2, "HDM", Category.LongDistance, timetable = listOf(
+            2, "HDM", Category.LongDistance, departureDate = date, timetable = listOf(
                 departure(130, "3", ZonedDateTime.parse("2020-01-01T09:30Z")),
                 arrival(1, "4", ZonedDateTime.parse("2020-01-01T10:30Z"))
             )
         ),
         Train(
-            3, "IC", Category.LongDistance, timetable = listOf(
+            3, "IC", Category.LongDistance, departureDate = date, timetable = listOf(
                 departure(130, "4", ZonedDateTime.parse("2020-01-01T09:45Z"), cancelled = true),
                 arrival(1, "3", ZonedDateTime.parse("2020-01-01T10:50Z"), cancelled = true),
             )

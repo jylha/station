@@ -1,12 +1,12 @@
 package dev.jylha.station.ui.timetable
 
+import com.google.common.truth.Truth.assertThat
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.model.CauseCategories
 import dev.jylha.station.model.CauseCategory
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
-import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 

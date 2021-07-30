@@ -11,6 +11,7 @@ import dev.jylha.station.model.Station
 import dev.jylha.station.model.Train
 import dev.jylha.station.util.toCacheEntity
 import dev.jylha.station.util.toDomainModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /** Train repository that uses Store in orchestrating the data fetching and storing. */
 class StoreBackedTrainRepository @Inject constructor(
@@ -55,13 +55,19 @@ class StoreBackedTrainRepository @Inject constructor(
         )
     ).build()
 
-    override suspend fun train(number: Int, version: Long?): Train? {
+    override suspend fun train(departureDate: String, number: Int, version: Long?): Train? {
         return withContext(Dispatchers.IO) {
-            trainService.fetchTrain(number, version).firstOrNull()?.toDomainModel()
+            trainService.fetchTrain(departureDate, number, version).firstOrNull()?.toDomainModel()
         }
     }
 
-    override fun trainsAtStation(stationShortCode: String): Flow<List<Train>>  {
+    override suspend fun latestTrain(number: Int, version: Long?): Train? {
+        return withContext(Dispatchers.IO) {
+            trainService.fetchLatestTrain(number, version).firstOrNull()?.toDomainModel()
+        }
+    }
+
+    override fun trainsAtStation(stationShortCode: String): Flow<List<Train>> {
         return flow {
             val trains = trainService.fetchTrainsByCount(
                 stationShortCode,

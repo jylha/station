@@ -1,8 +1,8 @@
 package dev.jylha.station.ui.train
 
+import com.google.common.truth.Truth.assertThat
 import dev.jylha.station.data.stations.LocalizedStationNames
 import dev.jylha.station.model.Train
-import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 
@@ -55,6 +55,7 @@ class TrainDetailsViewStateTest {
         val result = state.reduce(ReloadTrainDetails.Error(null))
         assertThat(result.isReloading).isFalse()
     }
+
     @Test fun `Reduce state with LoadNameMapper_Loading result`() {
         val state = TrainDetailsViewState.initial()
         val result = state.reduce(LoadNameMapper.Loading)

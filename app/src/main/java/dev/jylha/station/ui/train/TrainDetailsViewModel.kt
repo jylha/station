@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jylha.station.data.stations.StationRepository
 import dev.jylha.station.data.trains.TrainRepository
 import dev.jylha.station.model.Train
+import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,11 +39,11 @@ class TrainDetailsViewModel @Inject constructor(
     }
 
     /** Set a [Train] for the train details view. */
-    fun setTrain(trainNumber: Int) {
+    fun setTrain(departureDate: String, trainNumber: Int) {
         viewModelScope.launch {
             reduceState(LoadTrainDetails.Loading)
             try {
-                trainRepository.train(trainNumber)?.let { train ->
+                trainRepository.train(departureDate, trainNumber)?.let { train ->
                     reduceState(LoadTrainDetails.Success(train))
                 } ?: throw IllegalStateException("Train not found")
 
@@ -57,7 +58,8 @@ class TrainDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             reduceState(ReloadTrainDetails.Loading)
             try {
-                val reloaded = trainRepository.train(train.number, train.version)
+                val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                val reloaded = trainRepository.train(departureDate, train.number, train.version)
                 reduceState(ReloadTrainDetails.Success(reloaded ?: train))
             } catch (e: Exception) {
                 reduceState(ReloadTrainDetails.Error(e.message))

@@ -7,6 +7,9 @@ data class TrainNetworkEntity(
     @SerializedName("trainNumber")
     val number: Int,
 
+    @SerializedName("departureDate")
+    val departureDate: String,
+
     @SerializedName("trainType")
     val type: String,
 

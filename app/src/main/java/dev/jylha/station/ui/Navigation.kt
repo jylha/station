@@ -2,7 +2,9 @@ package dev.jylha.station.ui
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
+import androidx.navigation.compose.NamedNavArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
@@ -21,13 +23,36 @@ private sealed class Screen(val route: String) {
     object NearestStation : Screen("nearest_station")
 
     object Timetable : Screen("timetable/{stationCode}") {
+        private const val STATION_CODE = "stationCode"
+
         fun route(stationCode: Int) = "timetable/$stationCode"
-        const val argName = "stationCode"
+
+        val arguments: List<NamedNavArgument> = listOf(
+            navArgument(STATION_CODE) { type = NavType.IntType }
+        )
+
+        fun stationCode(backStackEntry: NavBackStackEntry): Int {
+            return backStackEntry.arguments?.getInt(STATION_CODE) ?: 0
+        }
     }
 
-    object TrainDetails : Screen("train_details/{trainNumber}") {
-        fun route(trainNumber: Int) = "train_details/$trainNumber"
-        const val argName = "trainNumber"
+    object TrainDetails : Screen("train_details/{departureDate}/{trainNumber}") {
+        private const val DEPARTURE_DATE = "departureDate"
+        private const val TRAIN_NUMBER = "trainNumber"
+
+        fun route(departureDate: String, trainNumber: Int): String =
+            "train_details/$departureDate/$trainNumber"
+
+        val arguments = listOf(
+            navArgument(DEPARTURE_DATE) { type = NavType.StringType },
+            navArgument(TRAIN_NUMBER) { type = NavType.IntType }
+        )
+
+        fun departureDate(backStackEntry: NavBackStackEntry): String =
+            backStackEntry.arguments?.getString(DEPARTURE_DATE) ?: ""
+
+        fun trainNumber(backStackEntry: NavBackStackEntry): Int =
+            backStackEntry.arguments?.getInt(TRAIN_NUMBER) ?: 0
     }
 }
 
@@ -56,8 +81,8 @@ fun StationAppNavigation() {
             popUpTo(Screen.NearestStation.route) { inclusive = true }
         }
     }
-    val navigateToTrainDetails = { trainNumber: Int ->
-        navController.navigate(Screen.TrainDetails.route(trainNumber))
+    val navigateToTrainDetails = { departureDate: String, trainNumber: Int ->
+        navController.navigate(Screen.TrainDetails.route(departureDate, trainNumber))
     }
 
     NavHost(navController, startDestination = Screen.Home.route) {
@@ -86,24 +111,21 @@ fun StationAppNavigation() {
                 selectNearestStation = true,
             )
         }
-        composable(
-            Screen.Timetable.route,
-            arguments = listOf(navArgument(Screen.Timetable.argName) { type = NavType.IntType })
-        ) { backStackEntry ->
+        composable(Screen.Timetable.route, Screen.Timetable.arguments) { backStackEntry ->
             TimetableScreen(
                 hiltViewModel(backStackEntry),
-                stationCode = backStackEntry.arguments?.getInt(Screen.Timetable.argName) ?: 0,
+                stationCode = Screen.Timetable.stationCode(backStackEntry),
                 onNavigateToStations = { navigateTo(Screen.Stations) },
-                onNavigateToTrainDetails = { trainNumber -> navigateToTrainDetails(trainNumber) },
+                onNavigateToTrainDetails = { departureDate, trainNumber ->
+                    navigateToTrainDetails(departureDate, trainNumber)
+                },
             )
         }
-        composable(
-            Screen.TrainDetails.route,
-            arguments = listOf(navArgument(Screen.TrainDetails.argName) { type = NavType.IntType })
-        ) { backStackEntry ->
+        composable(Screen.TrainDetails.route, Screen.TrainDetails.arguments) { backStackEntry ->
             TrainDetailsScreen(
                 hiltViewModel(backStackEntry),
-                trainNumber = backStackEntry.arguments?.getInt(Screen.TrainDetails.argName) ?: 0
+                departureDate = Screen.TrainDetails.departureDate(backStackEntry),
+                trainNumber = Screen.TrainDetails.trainNumber(backStackEntry)
             )
         }
     }

@@ -6,6 +6,7 @@ import dev.jylha.station.data.trains.TrainRepository
 import dev.jylha.station.model.Train
 import dev.jylha.station.testutil.MainCoroutineScopeRule
 import com.google.common.truth.Truth.assertThat
+import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -52,8 +53,9 @@ class TrainDetailsViewModelTest {
 
     @Test fun `set train`() = runBlockingTest {
         val train = Train(1, "A", Train.Category.LongDistance)
-        whenCalled(trainRepository.train(train.number)).thenReturn(train)
-        viewModel.setTrain(train.number)
+        val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        whenCalled(trainRepository.train(departureDate, train.number)).thenReturn(train)
+        viewModel.setTrain(departureDate, train.number)
         val result = viewModel.state.value
         val excepted = TrainDetailsViewState(
             isLoadingTrain = false,
@@ -68,7 +70,8 @@ class TrainDetailsViewModelTest {
     @Test fun `reload train details`() = runBlockingTest {
         val train = Train(1, "A", Train.Category.LongDistance, isRunning = false, version = 100)
         val updated = Train(1, "A", Train.Category.LongDistance, isRunning = true, version = 200)
-        whenCalled(trainRepository.train(1, 100)).thenReturn(updated)
+        val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        whenCalled(trainRepository.train(departureDate, 1, 100)).thenReturn(updated)
         viewModel.reload(train)
         val result = viewModel.state.value
         val expected = TrainDetailsViewState(

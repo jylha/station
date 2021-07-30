@@ -65,6 +65,7 @@ import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
+import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -72,12 +73,17 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Train details screen composable. Displays details about train's progress on its route.
  *
  * @param viewModel View model for the train details screen.
+ * @param departureDate The date of train's departure.
  * @param trainNumber The train number identifying the train.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-@Composable fun TrainDetailsScreen(viewModel: TrainDetailsViewModel, trainNumber: Int) {
+@Composable fun TrainDetailsScreen(
+    viewModel: TrainDetailsViewModel,
+    departureDate: String,
+    trainNumber: Int
+) {
     rememberSaveable(trainNumber) {
-        viewModel.setTrain(trainNumber)
+        viewModel.setTrain(departureDate, trainNumber)
         trainNumber
     }
     val viewState by viewModel.state.collectAsState()
@@ -478,7 +484,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Preview(name = "TrainDetailsScreen", showBackground = true)
 @Composable private fun PreviewTrainDetails() {
     val train = Train(
-        5, "IC", Train.Category.LongDistance, timetable = listOf(
+        5, "IC", Train.Category.LongDistance, departureDate = LocalDate.parse("2020-01-01"),
+        timetable = listOf(
             departure(
                 1, "2", ZonedDateTime.parse("2020-01-01T09:30Z"),
                 actualTime = ZonedDateTime.parse("2020-01-01T09:31Z"),

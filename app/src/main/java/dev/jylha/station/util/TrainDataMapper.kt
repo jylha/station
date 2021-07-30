@@ -4,7 +4,7 @@ import dev.jylha.station.data.trains.network.TrainNetworkEntity
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.Train.Category.Commuter
 import dev.jylha.station.model.Train.Category.LongDistance
-
+import java.time.LocalDate
 
 /**
  * Maps a list of train network data transfer objects into domain model at the same time
@@ -28,6 +28,7 @@ fun TrainNetworkEntity.toDomainModel(): Train? {
             isRunning = runningCurrently,
             isCancelled = cancelled,
             version = version,
+            departureDate = LocalDate.parse(departureDate),
             timetable = timetable.map { row -> row.toDomainModel() }
         )
     } catch (e: IllegalArgumentException) {

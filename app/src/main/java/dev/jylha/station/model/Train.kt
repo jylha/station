@@ -3,6 +3,7 @@ package dev.jylha.station.model
 import androidx.compose.runtime.Immutable
 import dev.jylha.station.model.TimetableRow.Type.Arrival
 import dev.jylha.station.model.TimetableRow.Type.Departure
+import java.time.LocalDate
 
 /**
  * Domain Model for train information.
@@ -13,6 +14,7 @@ import dev.jylha.station.model.TimetableRow.Type.Departure
  * @param isRunning Indicates whether train is currently running.
  * @param isCancelled Indicates whether train is cancelled.
  * @param version The number of version where the train data has last been changed.
+ * @param departureDate Train's departure date.
  * @param timetable Train's timetable.
  */
 @Immutable
@@ -23,6 +25,7 @@ data class Train(
     val commuterLineId: String? = null,
     val isRunning: Boolean = true,
     val isCancelled: Boolean = false,
+    val departureDate: LocalDate = LocalDate.now(),
     val version: Long = 0,
     val timetable: List<TimetableRow> = emptyList()
 ) {
