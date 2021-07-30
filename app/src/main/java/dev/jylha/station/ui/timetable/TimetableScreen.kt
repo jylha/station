@@ -72,7 +72,6 @@ import dev.jylha.station.ui.theme.StationTheme
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Timetable screen composable. Timetable screen displays the timetable for the
@@ -83,7 +82,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * @param onNavigateToStations A callback function to navigate to stations list.
  * @param onNavigateToTrainDetails A callback function to navigate to train details.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun TimetableScreen(
     viewModel: TimetableViewModel,

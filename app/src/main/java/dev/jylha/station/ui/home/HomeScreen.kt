@@ -40,7 +40,6 @@ import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.landscapeOrientation
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.withPermission
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Home screen composable.
@@ -51,7 +50,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * specified station.
  * @param onNavigateToAbout A callback function to navigate to the about screen.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,

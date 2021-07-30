@@ -201,7 +201,7 @@ import java.util.Locale
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
-    val label = stringResource(R.string.label_cancelled).toUpperCase(Locale.getDefault())
+    val label = stringResource(R.string.label_cancelled).uppercase()
     val accessibilityLabel = when (type) {
         TimetableRow.Type.Arrival -> stringResource(R.string.accessibility_label_cancelled_arrival)
         else -> stringResource(R.string.accessibility_label_cancelled_departure)

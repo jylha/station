@@ -42,8 +42,6 @@ import dev.jylha.station.ui.common.SearchBar
 import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.util.filterWhen
 import dev.jylha.station.util.findAllMatches
-import java.util.Locale
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Stations screen composable. Stations screen displays a list of stations to select from,
@@ -59,7 +57,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * @param selectNearestStation `true` for selecting the nearest station, `false` for displaying
  * the list of train stations.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun StationsScreen(
     viewModel: StationsViewModel,
@@ -220,7 +217,7 @@ fun StationsScreen(
 
 @Composable private fun StationListLabel(label: String) {
     Text(
-        label.toUpperCase(Locale.getDefault()),
+        label.uppercase(),
         modifier = Modifier.padding(top = 8.dp, start = 8.dp),
         style = MaterialTheme.typography.caption,
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)

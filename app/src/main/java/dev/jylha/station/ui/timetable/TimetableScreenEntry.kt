@@ -392,7 +392,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
 
 @Composable private fun TimeLabel(label: String, modifier: Modifier = Modifier) {
     Text(
-        text = label.uppercase(Locale.getDefault()),
+        text = label.uppercase(),
         modifier = modifier,
         style = MaterialTheme.typography.caption,
         color = Color.Gray
@@ -454,7 +454,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
             Column(Modifier.weight(1f)) {
                 val delayCausesLabel = stringResource(R.string.label_delay_causes)
                 Text(
-                    delayCausesLabel.toUpperCase(Locale.getDefault()),
+                    delayCausesLabel.uppercase(),
                     Modifier.semantics { contentDescription = delayCausesLabel },
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
                     style = MaterialTheme.typography.caption

@@ -67,7 +67,6 @@ import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Train details screen composable. Displays details about train's progress on its route.
@@ -76,7 +75,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * @param departureDate The date of train's departure.
  * @param trainNumber The train number identifying the train.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @Composable fun TrainDetailsScreen(
     viewModel: TrainDetailsViewModel,
     departureDate: String,
