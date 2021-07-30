@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import javax.inject.Inject
 
 private const val SKIP_HOME_SCREEN_ENABLED: Boolean = false
 
@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
     private val stationRepository: StationRepository
 ) : ViewModel() {
     private val mutex = Mutex()
-    private val _state = MutableStateFlow(HomeViewState.initial())
+    private val _state = MutableStateFlow(HomeViewState.initial)
 
     /** View model state. */
     val state: StateFlow<HomeViewState> = _state.asStateFlow()

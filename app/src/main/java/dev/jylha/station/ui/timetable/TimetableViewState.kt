@@ -1,6 +1,7 @@
 package dev.jylha.station.ui.timetable
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.model.CauseCategories
 import dev.jylha.station.model.Station
@@ -29,73 +30,73 @@ data class TimetableViewState(
     val causeCategories: CauseCategories? = null,
 ) {
     val isLoading: Boolean
-        get() = isLoadingTimetable || isLoadingStationNames
+        @Stable get() = isLoadingTimetable || isLoadingStationNames
+
+    /** Reduce timetable state with given [TimetableResult]. */
+    fun reduce(result: TimetableResult): TimetableViewState {
+        Timber.d("TimetableViewState.reduce(result = $result)")
+        return when (result) {
+            is LoadTimetable.Loading -> copy(
+                isLoadingTimetable = true,
+                loadingTimetableFailed = false,
+                station = null,
+                timetable = emptyList()
+            )
+            is LoadTimetable.Success -> copy(
+                isLoadingTimetable = false,
+                loadingTimetableFailed = false,
+                station = result.station,
+                timetable = result.timetable
+            )
+            is LoadTimetable.Error -> copy(
+                isLoadingTimetable = false,
+                loadingTimetableFailed = true,
+                errorMessage = result.message,
+                station = null,
+                timetable = emptyList()
+            )
+
+            is SettingsUpdated -> copy(
+                selectedTrainCategories = result.trainCategories ?: selectedTrainCategories,
+                selectedTimetableTypes = result.timetableTypes ?: selectedTimetableTypes
+            )
+
+            LoadStationNames.Loading -> copy(
+                isLoadingStationNames = true,
+                stationNameMapper = null
+            )
+            is LoadStationNames.Error -> copy(
+                isLoadingStationNames = false,
+                errorMessage = result.message
+            )
+            is LoadStationNames.Success -> copy(
+                isLoadingStationNames = false,
+                stationNameMapper = result.stationNameMapper
+            )
+
+            ReloadTimetable.Loading -> copy(isReloadingTimetable = true)
+            is ReloadTimetable.Error -> copy(
+                isReloadingTimetable = false,
+                errorMessage = result.message
+            )
+            is ReloadTimetable.Success -> copy(
+                isReloadingTimetable = false,
+                timetable = result.trains
+            )
+
+            LoadCauseCategories.Loading -> copy(isLoadingCauseCategories = true)
+            is LoadCauseCategories.Error -> copy(
+                isLoadingCauseCategories = false,
+                errorMessage = result.message
+            )
+            is LoadCauseCategories.Success -> copy(
+                isLoadingCauseCategories = false,
+                causeCategories = result.categories
+            )
+        }
+    }
 
     companion object {
-        fun initial() = TimetableViewState(isLoadingTimetable = true)
-    }
-}
-
-/** Reduce timetable state with given [TimetableResult]. */
-fun TimetableViewState.reduce(result: TimetableResult): TimetableViewState {
-    Timber.d("TimetableViewState.reduce(result = $result)")
-    return when (result) {
-        is LoadTimetable.Loading -> copy(
-            isLoadingTimetable = true,
-            loadingTimetableFailed = false,
-            station = null,
-            timetable = emptyList()
-        )
-        is LoadTimetable.Success -> copy(
-            isLoadingTimetable = false,
-            loadingTimetableFailed = false,
-            station = result.station,
-            timetable = result.timetable
-        )
-        is LoadTimetable.Error -> copy(
-            isLoadingTimetable = false,
-            loadingTimetableFailed = true,
-            errorMessage = result.message,
-            station = null,
-            timetable = emptyList()
-        )
-
-        is SettingsUpdated -> copy(
-            selectedTrainCategories = result.trainCategories ?: selectedTrainCategories,
-            selectedTimetableTypes = result.timetableTypes ?: selectedTimetableTypes
-        )
-
-        LoadStationNames.Loading -> copy(
-            isLoadingStationNames = true,
-            stationNameMapper = null
-        )
-        is LoadStationNames.Error -> copy(
-            isLoadingStationNames = false,
-            errorMessage = result.message
-        )
-        is LoadStationNames.Success -> copy(
-            isLoadingStationNames = false,
-            stationNameMapper = result.stationNameMapper
-        )
-
-        ReloadTimetable.Loading -> copy(isReloadingTimetable = true)
-        is ReloadTimetable.Error -> copy(
-            isReloadingTimetable = false,
-            errorMessage = result.message
-        )
-        is ReloadTimetable.Success -> copy(
-            isReloadingTimetable = false,
-            timetable = result.trains
-        )
-
-        LoadCauseCategories.Loading -> copy(isLoadingCauseCategories = true)
-        is LoadCauseCategories.Error -> copy(
-            isLoadingCauseCategories = false,
-            errorMessage = result.message
-        )
-        is LoadCauseCategories.Success -> copy(
-            isLoadingCauseCategories = false,
-            causeCategories = result.categories
-        )
+        val initial = TimetableViewState(isLoadingTimetable = true)
     }
 }

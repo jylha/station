@@ -1,6 +1,7 @@
 package dev.jylha.station.ui.train
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.model.Train
 
@@ -13,29 +14,25 @@ data class TrainDetailsViewState constructor(
     val nameMapper: StationNameMapper? = null,
 ) {
     val isLoading: Boolean
-        get() = isLoadingTrain || isLoadingMapper
+        @Stable get() = isLoadingTrain || isLoadingMapper
 
-    companion object {
-        fun initial(): TrainDetailsViewState {
-            return TrainDetailsViewState(
-                nameMapper = null
-            )
+    fun reduce(result: TrainDetailsResult): TrainDetailsViewState {
+        return when (result) {
+            LoadTrainDetails.Loading -> copy(isLoadingTrain = true)
+            is LoadTrainDetails.Success -> copy(train = result.train, isLoadingTrain = false)
+            is LoadTrainDetails.Error -> copy(isLoadingTrain = false)
+
+            ReloadTrainDetails.Loading -> copy(isReloading = true)
+            is ReloadTrainDetails.Success -> copy(isReloading = false, train = result.train)
+            is ReloadTrainDetails.Error -> copy(isReloading = false)
+
+            LoadNameMapper.Loading -> copy(isLoadingMapper = true)
+            is LoadNameMapper.Success -> copy(nameMapper = result.mapper, isLoadingMapper = false)
+            is LoadNameMapper.Error -> copy(isLoadingMapper = false)
         }
     }
-}
 
-fun TrainDetailsViewState.reduce(result: TrainDetailsResult): TrainDetailsViewState {
-    return when (result) {
-        LoadTrainDetails.Loading -> copy(isLoadingTrain = true)
-        is LoadTrainDetails.Success -> copy(train = result.train, isLoadingTrain = false)
-        is LoadTrainDetails.Error -> copy(isLoadingTrain = false)
-
-        ReloadTrainDetails.Loading -> copy(isReloading = true)
-        is ReloadTrainDetails.Success -> copy(isReloading = false, train = result.train)
-        is ReloadTrainDetails.Error -> copy(isReloading = false)
-
-        LoadNameMapper.Loading -> copy(isLoadingMapper = true)
-        is LoadNameMapper.Success -> copy(nameMapper = result.mapper, isLoadingMapper = false)
-        is LoadNameMapper.Error -> copy(isLoadingMapper = false)
+    companion object {
+        val initial: TrainDetailsViewState = TrainDetailsViewState(nameMapper = null)
     }
 }

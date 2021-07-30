@@ -25,7 +25,7 @@ class StationsViewModel @Inject constructor(
     private val locationService: LocationService,
 ) : ViewModel() {
     private val mutex = Mutex()
-    private val _state = MutableStateFlow(StationsViewState.initial())
+    private val _state = MutableStateFlow(StationsViewState())
 
     /** A flow of view states. */
     val state: StateFlow<StationsViewState> = _state.asStateFlow()

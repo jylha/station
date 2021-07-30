@@ -2,6 +2,7 @@ package dev.jylha.station.ui.stations
 
 import android.location.Location
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.data.stations.renameAndSort
 import dev.jylha.station.model.Station
@@ -21,12 +22,8 @@ data class StationsViewState(
     val nearestStation: Station? = null,
     val errorMessage: String? = null,
 ) {
-    companion object {
-        fun initial(): StationsViewState = StationsViewState()
-    }
-
     val isLoading: Boolean
-        get() = isLoadingStations || isLoadingNameMapper
+        @Stable get() = isLoadingStations || isLoadingNameMapper
 
     fun reduce(result: StationsResult): StationsViewState {
         return when (result) {
@@ -93,6 +90,10 @@ data class StationsViewState(
                 nearestStation = null
             )
         }
+    }
+
+    companion object {
+        val initial: StationsViewState = StationsViewState()
     }
 }
 

@@ -7,13 +7,13 @@ import dev.jylha.station.data.stations.StationRepository
 import dev.jylha.station.data.trains.TrainRepository
 import dev.jylha.station.model.Train
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import javax.inject.Inject
 
 @HiltViewModel
 class TrainDetailsViewModel @Inject constructor(
@@ -21,7 +21,7 @@ class TrainDetailsViewModel @Inject constructor(
     private val stationRepository: StationRepository
 ) : ViewModel() {
     private val mutex = Mutex()
-    private val _state = MutableStateFlow(TrainDetailsViewState.initial())
+    private val _state = MutableStateFlow(TrainDetailsViewState.initial)
 
     /** View model state. */
     val state: StateFlow<TrainDetailsViewState> = _state.asStateFlow()

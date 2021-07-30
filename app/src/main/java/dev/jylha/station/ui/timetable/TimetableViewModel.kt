@@ -41,7 +41,7 @@ class TimetableViewModel @Inject constructor(
 ) : ViewModel() {
     private val eventChannel = Channel<TimetableEvent>(Channel.UNLIMITED)
     private val mutex = Mutex()
-    private val _state = MutableStateFlow(TimetableViewState.initial())
+    private val _state = MutableStateFlow(TimetableViewState.initial)
 
     /** View model state. */
     val state: StateFlow<TimetableViewState> = _state.asStateFlow()
