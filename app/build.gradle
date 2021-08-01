@@ -76,7 +76,6 @@ android {
 
 dependencies {
     implementation "androidx.activity:activity-compose:${versions.activity}"
-    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
     implementation "androidx.compose.foundation:foundation-layout:${versions.compose}"
     implementation "androidx.compose.material:material:${versions.compose}"
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
