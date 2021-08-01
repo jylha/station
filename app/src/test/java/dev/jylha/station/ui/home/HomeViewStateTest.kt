@@ -7,7 +7,7 @@ import org.junit.Test
 class HomeViewStateTest {
 
     @Test fun `initial state`() {
-        val result = HomeViewState.initial()
+        val result = HomeViewState.initial
         assertThat(result.isLoadingSettings).isFalse()
         assertThat(result.isLoadingStation).isFalse()
         assertThat(result.isLoading).isFalse()

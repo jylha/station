@@ -5,18 +5,17 @@ import dev.jylha.station.data.stations.LocalizedStationNames
 import dev.jylha.station.model.Train
 import org.junit.Test
 
-
 class TrainDetailsViewStateTest {
 
     @Test fun `Initial state`() {
-        val result = TrainDetailsViewState.initial()
+        val result = TrainDetailsViewState.initial
         assertThat(result.isLoading).isFalse()
         assertThat(result.nameMapper).isNull()
         assertThat(result.train).isNull()
     }
 
     @Test fun `Reduce state with LoadTrainDetail_Loading result`() {
-        val state = TrainDetailsViewState.initial()
+        val state = TrainDetailsViewState.initial
         val result = state.reduce(LoadTrainDetails.Loading)
         assertThat(result.isLoading).isTrue()
     }
@@ -57,7 +56,7 @@ class TrainDetailsViewStateTest {
     }
 
     @Test fun `Reduce state with LoadNameMapper_Loading result`() {
-        val state = TrainDetailsViewState.initial()
+        val state = TrainDetailsViewState.initial
         val result = state.reduce(LoadNameMapper.Loading)
         assertThat(result.isLoading).isTrue()
     }
