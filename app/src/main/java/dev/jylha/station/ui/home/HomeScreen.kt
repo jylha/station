@@ -1,6 +1,5 @@
 package dev.jylha.station.ui.home
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,9 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import dev.jylha.station.R
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.LocalLocationPermission
@@ -213,15 +212,8 @@ fun HomeScreen(
 }
 
 @Composable private fun WelcomeAnimation(modifier: Modifier = Modifier) {
-    AndroidView(
-        { context: Context ->
-            val view = LottieAnimationView(context)
-            view.setAnimation(R.raw.train_animation)
-            view.repeatCount = 0
-            view.repeatMode = LottieDrawable.RESTART
-            view.playAnimation()
-            view
-        },
-        modifier,
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.train_animation)
     )
+    LottieAnimation(composition, modifier)
 }
