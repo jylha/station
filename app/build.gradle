@@ -75,6 +75,7 @@ android {
 }
 
 dependencies {
+    implementation "com.google.accompanist:accompanist-swiperefresh:${versions.accompanist}"
     implementation "androidx.activity:activity-compose:${versions.activity}"
     implementation "androidx.compose.foundation:foundation-layout:${versions.compose}"
     implementation "androidx.compose.material:material:${versions.compose}"

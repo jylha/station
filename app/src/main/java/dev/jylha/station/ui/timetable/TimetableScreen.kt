@@ -46,6 +46,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.jylha.station.R
 import dev.jylha.station.data.stations.LocalizedStationNames
 import dev.jylha.station.model.Station
@@ -63,9 +66,7 @@ import dev.jylha.station.ui.common.CauseCategoriesProvider
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.ErrorState
 import dev.jylha.station.ui.common.Loading
-import dev.jylha.station.ui.common.RefreshIndicator
 import dev.jylha.station.ui.common.StationNameProvider
-import dev.jylha.station.ui.common.SwipeToRefreshLayout
 import dev.jylha.station.ui.common.stateSaver
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
@@ -346,7 +347,14 @@ fun TimetableScreen(
                     selectedTrainCategories, trainCategorySelected
                 )
             }
-            SwipeToRefreshLayout(refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
+
+            val swipeRefreshState = rememberSwipeRefreshState(refreshing)
+            SwipeRefresh(swipeRefreshState, onRefresh,
+                indicator = { state, trigger ->
+                    SwipeRefreshIndicator(
+                        state, trigger, contentColor = MaterialTheme.colors.primary
+                    )
+                }
             ) {
                 when {
                     trains.isEmpty() -> EmptyTimetable()

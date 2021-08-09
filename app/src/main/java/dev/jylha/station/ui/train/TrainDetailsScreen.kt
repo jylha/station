@@ -41,6 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.jylha.station.R
 import dev.jylha.station.model.Stop
 import dev.jylha.station.model.Train
@@ -57,9 +61,7 @@ import dev.jylha.station.model.isReached
 import dev.jylha.station.model.isWaypoint
 import dev.jylha.station.model.stationCode
 import dev.jylha.station.ui.common.Loading
-import dev.jylha.station.ui.common.RefreshIndicator
 import dev.jylha.station.ui.common.StationNameProvider
-import dev.jylha.station.ui.common.SwipeToRefreshLayout
 import dev.jylha.station.ui.common.TimeField
 import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.portraitOrientation
@@ -121,7 +123,13 @@ import java.time.ZonedDateTime
         if (currentStop?.isDeparted() == true) currentStopIndex + 1 else -1
     }
 
-    SwipeToRefreshLayout(refreshing, onRefresh, refreshIndicator = { RefreshIndicator() }
+    val swipeRefreshState = rememberSwipeRefreshState(refreshing)
+    SwipeRefresh(swipeRefreshState, onRefresh,
+        indicator = { state, trigger ->
+            SwipeRefreshIndicator(
+                state, trigger, contentColor = MaterialTheme.colors.primary
+            )
+        }
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
