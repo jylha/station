@@ -1,6 +1,7 @@
 package dev.jylha.station.model
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import java.lang.IllegalStateException
 import java.time.ZonedDateTime
 
@@ -19,41 +20,60 @@ data class Stop(
         require(departure == null || departure.type == TimetableRow.Type.Departure)
         require(arrival == null || departure == null || arrival.stationCode == departure.stationCode)
     }
-}
 
-/** Checks whether the stop is train's origin. */
-fun Stop.isOrigin(): Boolean = arrival == null
-/** Checks whether the stop is train's destination. */
-fun Stop.isDestination(): Boolean = departure == null
-/** Checks whether the stop is a waypoint. */
-fun Stop.isWaypoint(): Boolean = arrival != null && departure != null
-fun Stop.stationCode(): Int = arrival?.stationCode ?: departure!!.stationCode
-fun Stop.track(): String? = arrival?.track ?: departure?.track
+    /** Checks whether the stop is train's origin. */
+    @Stable
+    fun isOrigin(): Boolean = arrival == null
 
-fun Stop.isNotReached(): Boolean = arrival != null && arrival.actualTime == null
-fun Stop.isReached(): Boolean = arrival == null || arrival.actualTime != null
-fun Stop.isNotDeparted(): Boolean = departure != null && departure.actualTime == null
-fun Stop.isDeparted(): Boolean = departure?.actualTime != null
+    /** Checks whether the stop is train's destination. */
+    @Stable
+    fun isDestination(): Boolean = departure == null
 
-/**
- * Returns the time of the next scheduled event on the stop, or the most recent event, if there
- * are no more scheduled events. */
-fun Stop.timeOfNextEvent(): ZonedDateTime {
-    return when {
-        departure?.actualTime != null -> departure.actualTime
-        departure != null && (arrival == null || arrival.actualTime != null) -> departure.scheduledTime
-        arrival?.actualTime != null -> arrival.actualTime
-        arrival != null -> arrival.scheduledTime
-        else -> throw IllegalStateException()
+    /** Checks whether the stop is a waypoint. */
+    @Stable
+    fun isWaypoint(): Boolean = arrival != null && departure != null
+
+    @Stable
+    fun stationCode(): Int = arrival?.stationCode ?: departure!!.stationCode
+
+    @Stable
+    fun track(): String? = arrival?.track ?: departure?.track
+
+    @Stable
+    fun isNotReached(): Boolean = arrival != null && arrival.actualTime == null
+
+    @Stable
+    fun isReached(): Boolean = arrival == null || arrival.actualTime != null
+
+    @Stable
+    fun isNotDeparted(): Boolean = departure != null && departure.actualTime == null
+
+    @Stable
+    fun isDeparted(): Boolean = departure?.actualTime != null
+
+    /**
+     * Returns the time of the next scheduled event on the stop, or the most recent event, if there
+     * are no more scheduled events. */
+    @Stable
+    fun timeOfNextEvent(): ZonedDateTime {
+        return when {
+            departure?.actualTime != null -> departure.actualTime
+            departure != null && (arrival == null || arrival.actualTime != null) -> departure.scheduledTime
+            arrival?.actualTime != null -> arrival.actualTime
+            arrival != null -> arrival.scheduledTime
+            else -> throw IllegalStateException()
+        }
     }
-}
 
-/** Checks whether the train either has not yet arrived to the stop or arrived after given time. */
-fun Stop.arrivalAfter(time: ZonedDateTime): Boolean {
-    return arrival?.run { actualTime?.isAfter(time) ?: true } ?: false
-}
+    /** Checks whether the train either has not yet arrived to the stop or arrived after given time. */
+    @Stable
+    fun arrivalAfter(time: ZonedDateTime): Boolean {
+        return arrival?.run { actualTime?.isAfter(time) ?: true } ?: false
+    }
 
-/** Checks whether the train has either not yet departed from the stop or departed after given time. */
-fun Stop.departureAfter(time: ZonedDateTime): Boolean {
-    return departure?.run { actualTime?.isAfter(time) ?: true } ?: false
+    /** Checks whether the train has either not yet departed from the stop or departed after given time. */
+    @Stable
+    fun departureAfter(time: ZonedDateTime): Boolean {
+        return departure?.run { actualTime?.isAfter(time) ?: true } ?: false
+    }
 }

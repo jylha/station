@@ -57,11 +57,7 @@ import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.Train.Category
 import dev.jylha.station.model.arrival
-import dev.jylha.station.model.arrivalAfter
 import dev.jylha.station.model.departure
-import dev.jylha.station.model.departureAfter
-import dev.jylha.station.model.stopsAt
-import dev.jylha.station.model.timeOfNextEvent
 import dev.jylha.station.ui.common.CauseCategoriesProvider
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.ErrorState

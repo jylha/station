@@ -1,6 +1,7 @@
 package dev.jylha.station.model
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import dev.jylha.station.model.TimetableRow.Type.Arrival
 import dev.jylha.station.model.TimetableRow.Type.Departure
 import java.time.LocalDate
@@ -37,104 +38,119 @@ data class Train(
         override fun toString(): String = name
     }
 
+    /** Returns whether train is a long-distance train. */
+    @Stable
+    fun isLongDistanceTrain(): Boolean {
+        return category == Category.LongDistance
+    }
+
+    /** Returns whether train is a commuter train. */
+    @Stable
+    fun isCommuterTrain(): Boolean {
+        return category == Category.Commuter
+    }
+
     /** Returns the UIC code for the train's origin station. */
+    @Stable
     fun origin(): Int? {
         return timetable.firstOrNull()?.stationCode
     }
 
     /** Returns the UIC code for the train's destination station. */
+    @Stable
     fun destination(): Int? {
         return timetable.lastOrNull()?.stationCode
     }
 
     /** Returns the track for the given [stationCode]. */
+    @Stable
     fun track(stationCode: Int): String? {
         return timetable.firstOrNull { it.stationCode == stationCode }?.track
     }
 
     /** Checks whether train is marked ready on origin station. */
+    @Stable
     fun isReady(): Boolean {
         return timetable.firstOrNull()?.markedReady == true
     }
 
     /** Checks whether train is not yet marked ready on origin station. */
+    @Stable
     fun isNotReady(): Boolean = !isReady()
 
     /** Checks whether train has reached its destination. */
+    @Stable
     fun hasReachedDestination(): Boolean {
         return timetable.lastOrNull()?.actualTime != null
     }
 
     /** Checks whether the specified station is train's origin. */
+    @Stable
     fun isOrigin(stationCode: Int): Boolean {
         return timetable.firstOrNull()?.stationCode == stationCode
     }
 
     /** Checks whether the specified station is train's destination. */
+    @Stable
     fun isDestination(stationCode: Int): Boolean {
         return timetable.lastOrNull()?.stationCode == stationCode
     }
 
     override fun toString(): String = "Train(number=$number, type=$type, category=$category, ...)"
-}
 
-/** Returns all train's stops. */
-fun Train.stops(): List<Stop> {
-    val stops = mutableListOf<Stop>()
+    /** Returns all train's stops. */
+    @Stable
+    fun stops(): List<Stop> {
+        val stops = mutableListOf<Stop>()
 
-    if (timetable.firstOrNull()?.type == Departure) {
-        stops += Stop(departure = timetable.first())
-    }
+        if (timetable.firstOrNull()?.type == Departure) {
+            stops += Stop(departure = timetable.first())
+        }
 
-    if (timetable.size > 2) {
-        timetable
-            .subList(1, timetable.lastIndex)
-            .windowed(2, 2, false) { (first, last) ->
-                if (first.type == Arrival && last.type == Departure && first.stationCode == last.stationCode) {
-                    stops += Stop(first, last)
+        if (timetable.size > 2) {
+            timetable
+                .subList(1, timetable.lastIndex)
+                .windowed(2, 2, false) { (first, last) ->
+                    if (first.type == Arrival && last.type == Departure && first.stationCode == last.stationCode) {
+                        stops += Stop(first, last)
+                    }
                 }
-            }
+        }
+
+        if (timetable.lastOrNull()?.type == Arrival) {
+            stops += Stop(timetable.last())
+        }
+        return stops
     }
 
-    if (timetable.lastOrNull()?.type == Arrival) {
-        stops += Stop(timetable.last())
+    /** Returns train's commercial stops. */
+    @Stable
+    fun commercialStops(): List<Stop> {
+        return stops().filter { (arrival, departure) ->
+            (arrival != null && arrival.trainStopping && arrival.commercialStop == true) ||
+                    (departure != null && departure.trainStopping && departure.commercialStop == true)
+        }
     }
-    return stops
-}
 
-/** Returns train's commercial stops. */
-fun Train.commercialStops(): List<Stop> {
-    return stops().filter { (arrival, departure) ->
-        (arrival != null && arrival.trainStopping && arrival.commercialStop == true) ||
-                (departure != null && departure.trainStopping && departure.commercialStop == true)
+    /** Returns the trains current commercial stop. */
+    @Stable
+    fun currentCommercialStop(): Stop? {
+        return commercialStops().findLast { (arrival, departure) ->
+            arrival?.actualTime != null || departure?.actualTime != null || departure?.markedReady == true
+        }
     }
-}
 
-/** Returns the trains current commercial stop. */
-fun Train.currentCommercialStop(): Stop? {
-    return commercialStops().findLast { (arrival, departure) ->
-        arrival?.actualTime != null || departure?.actualTime != null || departure?.markedReady == true
+    /** Returns train's stops at the specified station. */
+    @Stable
+    fun stopsAt(stationCode: Int): List<Stop> {
+        return stops().filter { stop -> stop.stationCode() == stationCode }
     }
-}
 
-/** Returns train's stops at the specified station. */
-fun Train.stopsAt(stationCode: Int): List<Stop> {
-    return stops().filter { stop -> stop.stationCode() == stationCode }
-}
-
-/** Returns the causes for train's delay. */
-fun Train.delayCauses(): List<DelayCause> {
-    return timetable.map { it.causes }
-        .fold(emptySet<DelayCause>()) { set, causes -> set + causes }
-        .toList()
-}
-
-/** Returns whether train is a long-distance train. */
-fun Train.isLongDistanceTrain(): Boolean {
-    return category == Train.Category.LongDistance
-}
-
-/** Returns whether train is a commuter train. */
-fun Train.isCommuterTrain(): Boolean {
-    return category == Train.Category.Commuter
+    /** Returns the causes for train's delay. */
+    @Stable
+    fun delayCauses(): List<DelayCause> {
+        return timetable.map { it.causes }
+            .fold(emptySet<DelayCause>()) { set, causes -> set + causes }
+            .toList()
+    }
 }

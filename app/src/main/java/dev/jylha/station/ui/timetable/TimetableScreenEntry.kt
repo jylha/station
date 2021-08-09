@@ -53,15 +53,7 @@ import dev.jylha.station.model.Stop
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.arrival
-import dev.jylha.station.model.delayCauses
 import dev.jylha.station.model.departure
-import dev.jylha.station.model.isDeparted
-import dev.jylha.station.model.isLongDistanceTrain
-import dev.jylha.station.model.isNotDeparted
-import dev.jylha.station.model.isNotReached
-import dev.jylha.station.model.isReached
-import dev.jylha.station.model.stopsAt
-import dev.jylha.station.model.track
 import dev.jylha.station.ui.common.ActualTime
 import dev.jylha.station.ui.common.CancelledTime
 import dev.jylha.station.ui.common.CauseCategoriesProvider
@@ -76,7 +68,6 @@ import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.insertSpaces
 import java.time.ZonedDateTime
-import java.util.Locale
 
 /**
  * Expandable states for a timetable entry. The [Initial] state is otherwise the same as the
