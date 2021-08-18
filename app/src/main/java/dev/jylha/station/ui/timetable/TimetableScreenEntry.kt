@@ -63,7 +63,6 @@ import dev.jylha.station.ui.common.StationNameProvider
 import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.causeName
 import dev.jylha.station.ui.common.heightFraction
-import dev.jylha.station.ui.common.stateSaver
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.insertSpaces
@@ -97,7 +96,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     modifier: Modifier = Modifier
 ) {
     val delayCauses = remember(train) { train.delayCauses() }
-    var expandableState by rememberSaveable(train.number, saver = stateSaver()) {
+    var expandableState by rememberSaveable(train.number, stop) {
         mutableStateOf(ExpandableState.Initial)
     }
     val transition = updateTransition(expandableState, label = "Entry state")

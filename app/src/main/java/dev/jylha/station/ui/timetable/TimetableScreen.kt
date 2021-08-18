@@ -63,7 +63,6 @@ import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.ErrorState
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.StationNameProvider
-import dev.jylha.station.ui.common.stateSaver
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import java.time.LocalDate
@@ -157,7 +156,7 @@ fun TimetableScreen(
     onSelectStation: () -> Unit,
     onTrainSelected: (Train) -> Unit
 ) {
-    var filterSelectionEnabled by rememberSaveable(saver = stateSaver()) { mutableStateOf(false) }
+    var filterSelectionEnabled by rememberSaveable { mutableStateOf(false) }
 
     val timetableTypeSelected: (TimetableRow.Type) -> Unit = { type ->
         val updatedTypes =
