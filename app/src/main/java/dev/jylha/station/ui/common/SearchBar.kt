@@ -78,7 +78,7 @@ fun SearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
-                placeholder = { Text(placeholderText) },
+                placeholder = { Text(placeholderText, color = MaterialTheme.colors.onPrimary) },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     keyboardType = KeyboardType.Text,
