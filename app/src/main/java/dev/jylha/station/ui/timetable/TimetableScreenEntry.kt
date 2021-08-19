@@ -8,9 +8,10 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.ExpandLess
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +37,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -42,6 +46,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -65,6 +70,8 @@ import dev.jylha.station.ui.common.causeName
 import dev.jylha.station.ui.common.heightFraction
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
+import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
+import dev.jylha.station.ui.timetable.ExpandableState.Initial
 import dev.jylha.station.util.insertSpaces
 import java.time.ZonedDateTime
 
@@ -490,7 +497,9 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun statusColor(train: Train, stop: Stop): Color? {
+@ReadOnlyComposable
+@Composable
+private fun statusColor(train: Train, stop: Stop): Color? {
     return when {
         train.hasReachedDestination() -> StationTheme.colors.trainReachedDestination
         train.isNotReady() -> StationTheme.colors.trainIsNotReady
@@ -505,7 +514,9 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     indicatorColor: Color? = null,
-    content: @Composable () -> Unit
+    indicatorWidth: Dp = 8.dp,
+    contentPadding: PaddingValues = PaddingValues(8.dp),
+    content: @Composable BoxScope.() -> Unit
 ) {
     Surface(
         modifier
@@ -514,40 +525,20 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
         elevation = 2.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
-        ConstraintLayout {
-            val indicatorRef = createRef()
-            val contentRef = createRef()
-            val contentMargin = 8.dp
-
-            StatusIndicatorStripe(
-                Modifier.constrainAs(indicatorRef) {
-                    start.linkTo(parent.start)
-                    end.linkTo(contentRef.start)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    width = Dimension.value(8.dp)
-                    height = Dimension.fillToConstraints
-                },
-                color = indicatorColor
-            )
-            Box(
-                Modifier.constrainAs(contentRef) {
-                    start.linkTo(indicatorRef.end, contentMargin)
-                    top.linkTo(parent.top, contentMargin)
-                    bottom.linkTo(parent.bottom, contentMargin)
-                    end.linkTo(parent.end, contentMargin)
-                    width = Dimension.fillToConstraints
+        Box(
+            modifier = Modifier
+                .drawWithCache {
+                    val indicatorSize = Size(indicatorWidth.toPx(), size.height)
+                    onDrawBehind {
+                        if (indicatorColor != null)
+                            drawRect(indicatorColor, size = indicatorSize)
+                    }
                 }
-            ) {
-                content()
-            }
-        }
+                .padding(start = indicatorWidth)
+                .padding(contentPadding),
+            content = content
+        )
     }
-}
-
-@Composable
-private fun StatusIndicatorStripe(modifier: Modifier = Modifier, color: Color? = null) {
-    Box(modifier.fillMaxSize().background(color ?: Color.Transparent))
 }
 
 @Preview(name = "TimetableEntry - Dark", group = "TimetableEntry")

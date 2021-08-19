@@ -7,6 +7,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
@@ -72,7 +73,9 @@ fun StationTheme(
 /** An object for getting access to StationColorPalette. */
 object StationTheme {
     val colors: StationColorPalette
-        @Composable get() = LocalStationColorPalette.current
+        @ReadOnlyComposable
+        @Composable
+        get() = LocalStationColorPalette.current
 }
 
 private val LocalStationColorPalette = staticCompositionLocalOf<StationColorPalette> {
