@@ -1,5 +1,6 @@
 package dev.jylha.station.ui
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
@@ -8,7 +9,7 @@ import androidx.navigation.compose.NamedNavArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dev.jylha.station.ui.about.AboutScreen
 import dev.jylha.station.ui.home.HomeScreen
 import dev.jylha.station.ui.stations.StationsScreen
@@ -60,9 +61,11 @@ private sealed class Screen(val route: String) {
  * Station app navigation composable. The composable defines the navigation graph for the
  * application.
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun StationAppNavigation() {
-    val navController = rememberNavController()
+    val navController = rememberAnimatedNavController()
+
     val navigateTo = { screen: Screen ->
         navController.navigate(screen.route)
     }

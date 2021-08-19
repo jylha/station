@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -96,7 +97,9 @@ fun StationsScreen(
     onNavigateToTimetable: (Int) -> Unit
 ) {
     when {
-        state.nearestStation != null -> onNavigateToTimetable(state.nearestStation.code)
+        state.nearestStation != null -> LaunchedEffect(state.nearestStation.code) {
+            onNavigateToTimetable(state.nearestStation.code)
+        }
         state.isFetchingLocation -> FetchingLocation()
         state.isLoading -> LoadingStations()
     }
