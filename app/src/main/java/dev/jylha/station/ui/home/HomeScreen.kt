@@ -22,6 +22,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -69,7 +70,7 @@ fun HomeScreen(
 }
 
 @Composable fun HomeScreen(
-    viewState: HomeViewState,
+    state: HomeViewState,
     onSelectStation: () -> Unit = {},
     onSelectNearestStation: () -> Unit = {},
     onShowTimetable: (stationCode: Int) -> Unit = {},
@@ -83,9 +84,11 @@ fun HomeScreen(
     ) {
         val locationPermission = LocalLocationPermission.current
         when {
-            viewState.isLoadingSettings -> LoadingSettings()
-            viewState.isLoadingStation -> LoadingStation()
-            viewState.station != null -> onShowTimetable(viewState.station.code)
+            state.isLoadingSettings -> LoadingSettings()
+            state.isLoadingStation -> LoadingStation()
+            state.station != null -> LaunchedEffect(state.station.code) {
+                onShowTimetable(state.station.code)
+            }
             else -> WelcomeCard(
                 onSelectStation = onSelectStation,
                 onShowNearestStation = {

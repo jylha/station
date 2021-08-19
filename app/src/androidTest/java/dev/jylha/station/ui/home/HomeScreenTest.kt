@@ -28,7 +28,7 @@ class HomeScreenTest {
         rule.mainClock.autoAdvance = false
         rule.setThemedContent {
             MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
-                HomeScreen(viewState = state)
+                HomeScreen(state)
             }
         }
         rule.mainClock.advanceTimeBy(500)
@@ -43,7 +43,7 @@ class HomeScreenTest {
         val state = HomeViewState(isLoadingSettings = false)
         rule.setThemedContent(darkMode = false) {
             MockLocationPermissionProvider(isGranted = true, grantRequest = true) {
-                HomeScreen(viewState = state)
+                HomeScreen(state)
             }
         }
         rule.onNodeWithText(TEXT_LOADING_SETTINGS).assertDoesNotExist()

@@ -70,8 +70,6 @@ import dev.jylha.station.ui.common.causeName
 import dev.jylha.station.ui.common.heightFraction
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
-import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
-import dev.jylha.station.ui.timetable.ExpandableState.Initial
 import dev.jylha.station.util.insertSpaces
 import java.time.ZonedDateTime
 

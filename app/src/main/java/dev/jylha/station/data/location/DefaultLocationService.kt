@@ -33,7 +33,7 @@ class DefaultLocationService @Inject constructor(
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(result: LocationResult?) {
                     result?.locations?.forEach { location ->
-                        runCatching { offer(location) }
+                        runCatching { this@channelFlow.trySend(location).isSuccess }
                     }
                 }
             }

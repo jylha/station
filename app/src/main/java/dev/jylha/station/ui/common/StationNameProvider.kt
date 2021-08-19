@@ -26,7 +26,8 @@ fun StationNameProvider(
  * Returns the localised station name for the specified [stationCode] from LocalStationNameMapper.
  */
 @ReadOnlyComposable
-@Composable fun stationName(stationCode: Int?): String? {
+@Composable
+fun stationName(stationCode: Int?): String? {
     return when (stationCode) {
         null -> null
         else -> LocalStationNameMapper.current.stationName(stationCode)

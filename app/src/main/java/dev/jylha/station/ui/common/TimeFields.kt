@@ -32,7 +32,6 @@ import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.toLocalTimeString
 import java.time.ZonedDateTime
-import java.util.Locale
 
 /**
  * Composable for displaying time field for arrival or departure.

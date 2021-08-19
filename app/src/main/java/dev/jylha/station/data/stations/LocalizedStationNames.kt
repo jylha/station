@@ -20,9 +20,9 @@ class LocalizedStationNames private constructor(
             stations: List<Station>,
             localizedNames: Map<Int, String> = emptyMap()
         ): LocalizedStationNames {
-            val mapping = stations
-                .map { station -> station.code to (localizedNames[station.code] ?: station.name) }
-                .toMap()
+            val mapping = stations.associate { station ->
+                station.code to (localizedNames[station.code] ?: station.name)
+            }
             return LocalizedStationNames(mapping)
         }
 
