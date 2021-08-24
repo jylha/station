@@ -64,7 +64,7 @@ class TimetableScreenTest {
     @Test fun loadingTimetable() {
         val state = TimetableViewState(isLoadingTimetable = true)
         rule.mainClock.autoAdvance = false
-        rule.setThemedContent { TimetableScreen(viewState = state) }
+        rule.setThemedContent { TimetableScreen(viewState = state, stationCode = pasila.code) }
         rule.mainClock.advanceTimeBy(100)
 
         rule.onNodeWithText("Retrieving timetable.").assertIsDisplayed()
@@ -72,7 +72,7 @@ class TimetableScreenTest {
 
     @Test fun emptyTimetable() {
         val state = TimetableViewState(station = pasila, stationNameMapper = testStationMapper)
-        rule.setThemedContent { TimetableScreen(viewState = state) }
+        rule.setThemedContent { TimetableScreen(viewState = state, stationCode = pasila.code) }
 
         rule.onNodeWithText("Pasila").assertIsDisplayed()
         rule.onNodeWithText(TEXT_ALL_TRAINS).assertIsDisplayed()
@@ -128,7 +128,7 @@ class TimetableScreenTest {
         val state = TimetableViewState(
             station = pasila, timetable = trains, stationNameMapper = testStationMapper
         )
-        rule.setThemedContent { TimetableScreen(viewState = state) }
+        rule.setThemedContent { TimetableScreen(viewState = state, stationCode = pasila.code) }
 
         rule.onNodeWithText(TEXT_ALL_TRAINS).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SELECT_STATION).assertIsDisplayed()
@@ -209,11 +209,13 @@ class TimetableScreenTest {
         val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
         rule.setThemedContent {
             var state by remember(viewState) { mutableStateOf(viewState) }
-            TimetableScreen(viewState = state, onEvent = { event: TimetableEvent ->
-                if (event is TimetableEvent.SelectCategories)
-                    state = state.copy(selectedTrainCategories = event.categories)
-                onTimetableEvent(event)
-            })
+            TimetableScreen(viewState = state, stationCode = helsinki.code,
+                onEvent = { event: TimetableEvent ->
+                    if (event is TimetableEvent.SelectCategories)
+                        state = state.copy(selectedTrainCategories = event.categories)
+                    onTimetableEvent(event)
+                }
+            )
         }
 
         rule.onNodeWithText(TEXT_ALL_TRAINS).assertDoesNotExist()
@@ -283,7 +285,7 @@ class TimetableScreenTest {
         val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
         rule.setThemedContent {
             var state by remember(viewState) { mutableStateOf(viewState) }
-            TimetableScreen(viewState = state, onEvent = { event: TimetableEvent ->
+            TimetableScreen(viewState = state,  pasila.code, onEvent = { event: TimetableEvent ->
                 if (event is TimetableEvent.SelectTimetableTypes)
                     state = state.copy(selectedTimetableTypes = event.types)
                 onTimetableEvent(event)
