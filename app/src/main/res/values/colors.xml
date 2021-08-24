@@ -3,7 +3,8 @@
     <color name="red">#D32F2F</color>
     <color name="black">#FF000000</color>
     <color name="gray">#FF505050</color>
+    <color name="gray_dark">#FF121212</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="blue">#ff005DB8</color>
-    <color name="blue_light">#ff1976D2</color>
+    <color name="blue">#FF005DB8</color>
+    <color name="blue_light">#FF1976D2</color>
 </resources>

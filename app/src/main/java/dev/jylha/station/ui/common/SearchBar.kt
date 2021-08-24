@@ -103,9 +103,7 @@ fun SearchBar(
 
 @Preview(showBackground = true, name = "Light SearchBar with placeholder text")
 @Composable private fun PreviewLightSearchBar() {
-    StationTheme {
-        SearchBar(text = "", onValueChanged = {}, placeholderText = "Search")
-    }
+    SearchBar(text = "", onValueChanged = {}, placeholderText = "Search")
 }
 
 @Preview(showBackground = true, name = "Dark SearchBar with search text")

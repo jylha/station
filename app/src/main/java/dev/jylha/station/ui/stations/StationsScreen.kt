@@ -2,6 +2,7 @@ package dev.jylha.station.ui.stations
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +13,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -191,29 +193,31 @@ fun StationsScreen(
     modifier: Modifier,
     searchText: String
 ) {
-    LazyColumn(modifier = modifier) {
-        if (searchText.isBlank() && recentStations.isNotEmpty()) {
-            item { StationListLabel(stringResource(R.string.label_recent)) }
-            items(recentStations) { station ->
-                StationListEntry(station.name, onSelect = { onSelect(station) })
+    Surface(modifier) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            if (searchText.isBlank() && recentStations.isNotEmpty()) {
+                item { StationListLabel(stringResource(R.string.label_recent)) }
+                items(recentStations) { station ->
+                    StationListEntry(station.name, onSelect = { onSelect(station) })
+                }
+                item { Divider() }
             }
-            item { Divider() }
-        }
 
-        item {
-            StationListLabel(
-                stringResource(
-                    if (searchText.isBlank()) R.string.label_all_stations
-                    else R.string.label_matching_stations
+            item {
+                StationListLabel(
+                    stringResource(
+                        if (searchText.isBlank()) R.string.label_all_stations
+                        else R.string.label_matching_stations
+                    )
                 )
-            )
-        }
-        items(stations) { station ->
-            StationListEntry(
-                stationName = station.name,
-                onSelect = { onSelect(station) },
-                searchText = searchText
-            )
+            }
+            items(stations) { station ->
+                StationListEntry(
+                    stationName = station.name,
+                    onSelect = { onSelect(station) },
+                    searchText = searchText
+                )
+            }
         }
     }
 }
