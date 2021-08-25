@@ -87,6 +87,7 @@ class StationsScreenTest {
             .onParent().onChildren()[3].assertTextEquals("Helsinki Airport")
 
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).performClick()
+        rule.waitForIdle()
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertDoesNotExist()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertDoesNotExist()
@@ -98,6 +99,7 @@ class StationsScreenTest {
         rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()
 
         rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("h")
+        rule.waitForIdle()
 
         rule.onNodeWithSubstring("Search station").assertDoesNotExist()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
@@ -106,6 +108,7 @@ class StationsScreenTest {
             .onParent().onChildren()[2].assertTextEquals("Helsinki Airport")
 
         rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("a")
+        rule.waitForIdle()
 
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()

@@ -10,10 +10,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,16 +31,15 @@ fun AboutScreen() {
     val informationSourceText = stringResource(R.string.text_information_source)
     val trainAnimationCreditText = stringResource(R.string.text_train_animation_credit)
 
+    val surfaceColor = MaterialTheme.colors.primarySurface
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+        .compositeOver(surfaceColor)
     val textStyle = MaterialTheme.typography.body1.copy(
         lineHeight = MaterialTheme.typography.body1.fontSize * 1.5
     )
     Card(
         Modifier
-            .background(
-                if (MaterialTheme.colors.isLight) MaterialTheme.colors.primary
-                else MaterialTheme.colors.background
-            )
+            .background(surfaceColor)
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
             .fillMaxSize()

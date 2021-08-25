@@ -151,10 +151,7 @@ fun HomeScreen(
                     Introduction()
                 }
                 ButtonContainer(Modifier.padding(20.dp)) {
-                    Button(
-                        onSelectStation,
-                        Modifier.width(180.dp)
-                    ) {
+                    Button(onSelectStation, Modifier.width(180.dp)) {
                         Text(
                             text = stringResource(R.string.label_select_station),
                             modifier = Modifier.fillMaxWidth(),

@@ -98,12 +98,14 @@ fun StationsScreen(
     state: StationsViewState,
     onNavigateToTimetable: (Int) -> Unit
 ) {
-    when {
-        state.nearestStation != null -> LaunchedEffect(state.nearestStation.code) {
-            onNavigateToTimetable(state.nearestStation.code)
+    Surface(Modifier.fillMaxSize()) {
+        when {
+            state.nearestStation != null -> LaunchedEffect(state.nearestStation.code) {
+                onNavigateToTimetable(state.nearestStation.code)
+            }
+            state.isFetchingLocation -> FetchingLocation()
+            state.isLoading -> LoadingStations()
         }
-        state.isFetchingLocation -> FetchingLocation()
-        state.isLoading -> LoadingStations()
     }
 }
 

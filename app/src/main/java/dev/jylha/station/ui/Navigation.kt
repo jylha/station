@@ -1,14 +1,17 @@
 package dev.jylha.station.ui
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NamedNavArgument
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dev.jylha.station.ui.about.AboutScreen
 import dev.jylha.station.ui.home.HomeScreen
@@ -88,7 +91,11 @@ fun StationAppNavigation() {
         navController.navigate(Screen.TrainDetails.route(departureDate, trainNumber))
     }
 
-    NavHost(navController, startDestination = Screen.Home.route) {
+    AnimatedNavHost(
+        navController, startDestination = Screen.Home.route,
+        enterTransition = { _, _ -> fadeIn(1f, snap()) },
+        exitTransition = { _, _ -> fadeOut(0f, snap()) }
+    ) {
         composable(Screen.Home.route) { backStackEntry ->
             HomeScreen(
                 viewModel = hiltViewModel(backStackEntry),
