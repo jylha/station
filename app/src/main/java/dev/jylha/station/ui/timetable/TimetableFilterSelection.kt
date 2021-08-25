@@ -1,11 +1,13 @@
 package dev.jylha.station.ui.timetable
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,7 +35,12 @@ import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train.Category
 import dev.jylha.station.ui.theme.StationTheme
 
-
+/**
+ * Timetable filters selection displays selection buttons for selecting the timetable type
+ * and train categories. The states are given with [timetableTypes] and [categories] parameters
+ * and the filter selection component notifies of changes by calling the [onTimetableTypesChanged]
+ * and [onCategoriesChanged] functions respectively.
+ */
 @Composable
 fun TimetableFilterSelection(
     timetableTypes: Set<TimetableRow.Type>,
@@ -43,10 +50,23 @@ fun TimetableFilterSelection(
     modifier: Modifier = Modifier
 ) {
     Surface(modifier.fillMaxWidth(), elevation = 2.dp) {
-        Column(Modifier.padding(8.dp)) {
-            TimetableTypeSelection(timetableTypes, onTimetableTypesChanged)
-            Spacer(modifier = Modifier.height(8.dp))
-            CategorySelection(categories, onCategoriesChanged)
+        BoxWithConstraints(Modifier.padding(8.dp)) {
+            if (maxWidth > 700.dp) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TimetableTypeSelection(timetableTypes, onTimetableTypesChanged,
+                        Modifier.weight(1f))
+                    CategorySelection(categories, onCategoriesChanged, Modifier.weight(1f))
+                }
+            } else {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TimetableTypeSelection(timetableTypes, onTimetableTypesChanged)
+                    CategorySelection(categories, onCategoriesChanged)
+                }
+            }
         }
     }
 }
@@ -93,7 +113,7 @@ private fun TimetableTypeSelection(
                 Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.timetable_type_arriving))
+            Text(stringResource(R.string.timetable_type_arriving), maxLines = 1)
         }
         Spacer(modifier = Modifier.width(8.dp))
         SelectionButton(
@@ -101,7 +121,7 @@ private fun TimetableTypeSelection(
             selected = timetableTypes.contains(TimetableRow.Type.Departure),
             Modifier.weight(1f).semantics { contentDescription = departingLabel }
         ) {
-            Text(stringResource(R.string.timetable_type_departing))
+            Text(stringResource(R.string.timetable_type_departing), maxLines = 1)
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 painterResource(R.drawable.ic_departure),
@@ -151,7 +171,7 @@ private fun CategorySelection(
         ) {
             Icon(image, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.category_long_distance_trains))
+            Text(stringResource(R.string.category_long_distance_trains), maxLines = 1)
         }
         Spacer(Modifier.width(8.dp))
         SelectionButton(
@@ -161,7 +181,7 @@ private fun CategorySelection(
         ) {
             Icon(image, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.category_commuter_trains))
+            Text(stringResource(R.string.category_commuter_trains), maxLines = 1)
         }
     }
 }
@@ -191,7 +211,8 @@ private fun CategorySelection(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.Gray,
             contentColor = MaterialTheme.colors.onPrimary
-        )
+        ),
+        contentPadding = PaddingValues(8.dp)
     ) { content() }
 }
 
@@ -212,6 +233,7 @@ private fun CategorySelection(
             backgroundColor = Color.Transparent,
             contentColor = color,
         ),
+        contentPadding = PaddingValues(8.dp)
     ) { content() }
 }
 
@@ -226,12 +248,24 @@ private fun PreviewLightFilterSelection() {
     }
 }
 
-@Preview(name = "TimetableFilterSelection - dark", "Filter selection")
+@Preview(name = "TimetableFilterSelection - dark", "Filter selection", widthDp = 700)
 @Composable
 private fun PreviewDarkFilterSelection() {
     StationTheme(darkTheme = true) {
         TimetableFilterSelection(
             setOf(TimetableRow.Type.Arrival), {},
             setOf(Category.LongDistance), {})
+    }
+}
+
+
+@Preview(name = "TimetableFilterSelection - wide", "Filter selection", widthDp = 720)
+@Composable
+private fun PreviewWideFilterSelection() {
+    StationTheme(darkTheme = true) {
+        TimetableFilterSelection(
+            setOf(TimetableRow.Type.Arrival), {},
+            setOf(Category.LongDistance), {},
+        )
     }
 }

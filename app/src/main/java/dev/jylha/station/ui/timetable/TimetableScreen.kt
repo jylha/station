@@ -99,7 +99,7 @@ fun TimetableScreen(
     onSelectStation: () -> Unit = {},
     onRetry: () -> Unit = {},
 ) {
-    var showTimetableFilters by remember { mutableStateOf(false) }
+    var showTimetableFilters by rememberSaveable { mutableStateOf(false) }
 
     StationNameProvider(viewState.stationNameMapper) {
         Scaffold(
