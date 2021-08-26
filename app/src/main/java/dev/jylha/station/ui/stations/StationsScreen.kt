@@ -73,50 +73,29 @@ fun StationsScreen(
     }
     val viewState by viewModel.state.collectAsState()
 
-    when {
-        selectNearestStation -> SelectNearestStation(viewState, onNavigateToTimetable)
-        viewState.isLoading -> LoadingStations()
-        else -> {
-            val locationPermission = LocalLocationPermission.current
-            StationsScreen(
-                viewState,
-                onSelect = { station ->
-                    viewModel.stationSelected(station)
-                    onNavigateToTimetable(station.code)
-                },
-                onSelectNearest = {
-                    withPermission(locationPermission) { granted ->
-                        if (granted) onNavigateToNearestStation()
-                    }
-                }
-            )
-        }
-    }
-}
-
-@Composable fun SelectNearestStation(
-    state: StationsViewState,
-    onNavigateToTimetable: (Int) -> Unit
-) {
-    Surface(Modifier.fillMaxSize()) {
-        when {
-            state.nearestStation != null -> LaunchedEffect(state.nearestStation.code) {
-                onNavigateToTimetable(state.nearestStation.code)
+    val locationPermission = LocalLocationPermission.current
+    StationsScreen(
+        viewState,
+        onSelect = { station ->
+            viewModel.stationSelected(station)
+            onNavigateToTimetable(station.code)
+        },
+        onSelectNearest = {
+            withPermission(locationPermission) { granted ->
+                if (granted) onNavigateToNearestStation()
             }
-            state.isFetchingLocation -> FetchingLocation()
-            state.isLoading -> LoadingStations()
         }
-    }
+    )
 }
 
 @Composable fun StationsScreen(
-    state: StationsViewState,
+    viewState: StationsViewState,
     onSelect: (Station) -> Unit,
     onSelectNearest: () -> Unit = {},
 ) {
-    val stations = state.stations
-    val recentStations = remember(stations, state.recentStations) {
-        state.recentStations.mapNotNull { stationCode ->
+    val stations = viewState.stations
+    val recentStations = remember(stations, viewState.recentStations) {
+        viewState.recentStations.mapNotNull { stationCode ->
             stations.firstOrNull { station -> station.code == stationCode }
         }
     }
@@ -146,13 +125,25 @@ fun StationsScreen(
                 )
             } else {
                 TopAppBar(
-                    title = { Text(stringResource(R.string.label_select_station)) },
-                    actions = {
-                        IconButton(onClick = onSelectNearest) {
-                            Icon(Icons.Rounded.MyLocation, contentDescription = selectNearestLabel)
+                    title = {
+                        if (!viewState.selectNearest) {
+                            Text(stringResource(R.string.label_select_station))
                         }
-                        IconButton(onClick = { searchEnabled = true }) {
-                            Icon(Icons.Default.Search, contentDescription = searchStationLabel)
+                    },
+                    actions = {
+                        if (!viewState.selectNearest) {
+                            IconButton(onClick = onSelectNearest) {
+                                Icon(
+                                    Icons.Rounded.MyLocation,
+                                    contentDescription = selectNearestLabel
+                                )
+                            }
+                            IconButton(onClick = { searchEnabled = true }) {
+                                Icon(
+                                    Icons.Default.Search,
+                                    contentDescription = searchStationLabel
+                                )
+                            }
                         }
                     }
                 )
@@ -161,6 +152,11 @@ fun StationsScreen(
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         when {
+            viewState.nearestStation != null -> LaunchedEffect(viewState.nearestStation.code) {
+                onSelect(viewState.nearestStation)
+            }
+            viewState.isFetchingLocation -> FetchingLocation()
+            viewState.isLoading -> LoadingStations()
             filteredStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationSelection(
                 filteredStations,

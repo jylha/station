@@ -34,7 +34,7 @@ class StationsScreenTest {
         val state = StationsViewState(
             stations = listOf(station("Helsinki", 1), station("Pasila", 2)),
         )
-        rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
+        rule.setThemedContent { StationsScreen(viewState = state, onSelect = {}) }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
@@ -51,7 +51,7 @@ class StationsScreenTest {
             stations = listOf(station("Helsinki", 1), station("Pasila", 2)),
             recentStations = listOf(1)
         )
-        rule.setThemedContent(darkMode = false) { StationsScreen(state = state, onSelect = {}) }
+        rule.setThemedContent(darkMode = false) { StationsScreen(viewState = state, onSelect = {}) }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
@@ -73,7 +73,7 @@ class StationsScreenTest {
                 station("Helsinki Airport", 3)
             )
         )
-        rule.setThemedContent { StationsScreen(state = state, onSelect = {}) }
+        rule.setThemedContent { StationsScreen(viewState = state, onSelect = {}) }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
