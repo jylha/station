@@ -1,16 +1,14 @@
 package dev.jylha.station.ui.about
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +29,10 @@ fun AboutScreen() {
     val informationSourceText = stringResource(R.string.text_information_source)
     val trainAnimationCreditText = stringResource(R.string.text_train_animation_credit)
 
-    val surfaceColor = MaterialTheme.colors.primarySurface
+    val backgroundColor = with(MaterialTheme.colors) {
+        if (isLight) primary else background
+    }
+    val surfaceColor = MaterialTheme.colors.surface
     val contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
         .compositeOver(surfaceColor)
     val textStyle = MaterialTheme.typography.body1.copy(
@@ -39,27 +40,28 @@ fun AboutScreen() {
     )
     Card(
         Modifier
-            .background(surfaceColor)
+            .background(backgroundColor)
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
-            .fillMaxSize()
+            .fillMaxSize(),
+        backgroundColor = surfaceColor,
+        contentColor = contentColor,
     ) {
         Column(
             Modifier.padding(
                 horizontal = 20.dp,
                 vertical = if (portraitOrientation()) 40.dp else 20.dp
             ),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(aboutLabel, style = MaterialTheme.typography.h5)
-            Spacer(Modifier.height(16.dp))
             Text(
                 "$informationSourceLabel $informationSourceText",
                 color = contentColor,
                 textAlign = TextAlign.Center,
                 style = textStyle
             )
-            Spacer(Modifier.height(16.dp))
             Text(
                 trainAnimationCreditText,
                 color = contentColor,

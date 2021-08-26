@@ -2,6 +2,7 @@
 <project version="4">
   <component name="JavaProjectCodeInsightSettings">
     <excluded-names>
+      <name>android.graphics.Color</name>
       <name>android.view.Surface</name>
       <name>java.lang.reflect.Modifier</name>
       <name>java.nio.file.WatchEvent.Modifier</name>

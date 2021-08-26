@@ -2,6 +2,7 @@ package dev.jylha.station.ui
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
@@ -96,7 +97,25 @@ fun StationAppNavigation() {
         enterTransition = { _, _ -> fadeIn(1f, snap()) },
         exitTransition = { _, _ -> fadeOut(0f, snap()) }
     ) {
-        composable(Screen.Home.route) { backStackEntry ->
+        composable(
+            Screen.Home.route,
+            enterTransition = { _, _ ->
+                fadeIn(animationSpec = tween(600))
+            },
+            exitTransition = { _, target ->
+                if (target.destination.route == Screen.About.route)
+                    fadeOut(animationSpec = tween(200, 400))
+                else
+                    fadeOut(animationSpec = tween(600))
+            },
+            popEnterTransition = { initial, _ ->
+                if (initial.destination.route == Screen.About.route)
+                    fadeIn(animationSpec = tween(400))
+                else
+                    fadeIn(1f, animationSpec = snap())
+            },
+            popExitTransition = null, // Use default
+        ) { backStackEntry ->
             HomeScreen(
                 viewModel = hiltViewModel(backStackEntry),
                 onNavigateToStations = { navigateToStations() },
@@ -105,7 +124,16 @@ fun StationAppNavigation() {
                 onNavigateToAbout = { navigateTo(Screen.About) },
             )
         }
-        composable(Screen.About.route) { AboutScreen() }
+        composable(
+            Screen.About.route,
+            enterTransition = { _, _ ->
+                fadeIn(animationSpec = tween(600))
+            },
+            exitTransition = { _, _ ->
+                fadeOut(animationSpec = tween(400, 200))
+            },
+            popEnterTransition = null,
+        ) { AboutScreen() }
         composable(Screen.Stations.route) { backStackEntry ->
             StationsScreen(
                 hiltViewModel(backStackEntry),

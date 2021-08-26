@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -28,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -155,15 +155,16 @@ fun HomeScreen(
                         Text(
                             text = stringResource(R.string.label_select_station),
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button
                         )
                     }
-                    Spacer(Modifier.size(16.dp))
                     Button(onShowNearestStation, Modifier.width(180.dp)) {
                         Text(
                             text = stringResource(R.string.label_nearest_station),
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button
                         )
                     }
                 }
@@ -173,7 +174,9 @@ fun HomeScreen(
 }
 
 @Composable private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val buttonColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+    val buttonColor = with(MaterialTheme.colors) {
+        (if (isLight) primary else onSurface).copy(alpha = 0.8f).compositeOver(surface)
+    }
     val label = stringResource(R.string.accessibility_label_show_application_info)
     IconButton(onClick, modifier) {
         Icon(Icons.Outlined.Info, contentDescription = label, tint = buttonColor)
@@ -181,13 +184,15 @@ fun HomeScreen(
 }
 
 @Composable private fun Greeting(modifier: Modifier = Modifier) {
-    val greetingText = stringResource(id = R.string.label_welcome)
-    Text(greetingText, modifier, style = MaterialTheme.typography.h4)
+    val color = MaterialTheme.colors.onSurface
+    val text = stringResource(id = R.string.label_welcome)
+    Text(text, modifier, color, style = MaterialTheme.typography.h4)
 }
 
 @Composable private fun Introduction(modifier: Modifier = Modifier) {
     val introductionText = stringResource(id = R.string.text_introduction)
     val color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
+        .compositeOver(MaterialTheme.colors.surface)
     Text(
         introductionText, modifier, textAlign = TextAlign.Center, color = color,
         style = MaterialTheme.typography.body1.copy(
@@ -201,11 +206,11 @@ fun HomeScreen(
     content: @Composable () -> Unit
 ) {
     if (landscapeOrientation()) {
-        Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier, Arrangement.spacedBy(16.dp), Alignment.CenterVertically) {
             content()
         }
     } else {
-        Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier, Arrangement.spacedBy(16.dp), Alignment.CenterHorizontally) {
             content()
         }
     }
