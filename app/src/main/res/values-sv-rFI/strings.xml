@@ -25,8 +25,6 @@
     </string>
     <string name="message_loading_train_details">Hämtar tågdetaljer.</string>
 
-
-    <string name="title_timetable">Tidtabell</string>
     <string name="subtitle_all_trains">Alla tåg</string>
     <string name="subtitle_long_distance_trains">Fjärrtåg</string>
     <string name="subtitle_commuter_trains">Närtåg</string>

@@ -26,7 +26,6 @@
     </string>
     <string name="message_loading_train_details">Haetaan junan tietoja.</string>
 
-    <string name="title_timetable">Aikataulu</string>
     <string name="subtitle_all_trains">Kaikki junat</string>
     <string name="subtitle_long_distance_trains">Kaukojunat</string>
     <string name="subtitle_commuter_trains">Lähijunat</string>

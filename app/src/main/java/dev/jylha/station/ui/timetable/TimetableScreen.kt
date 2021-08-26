@@ -2,6 +2,8 @@ package dev.jylha.station.ui.timetable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -131,6 +133,7 @@ fun TimetableScreen(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable private fun TimetableTopAppBar(
     stationName: String?,
     selectedTimetableTypes: Set<TimetableRow.Type>,
@@ -143,9 +146,11 @@ fun TimetableScreen(
 ) {
     TopAppBar(
         title = {
-            Column(modifier) {
-                TopAppBarTitle(stationName)
-                TopAppBarSubtitle(selectedTimetableTypes, selectedTrainCategories)
+            AnimatedVisibility(stationName != null, enter = fadeIn(), exit = fadeOut()) {
+                Column(modifier) {
+                    TopAppBarTitle(stationName ?: "")
+                    TopAppBarSubtitle(selectedTimetableTypes, selectedTrainCategories)
+                }
             }
         },
         actions = {
@@ -169,9 +174,8 @@ fun TimetableScreen(
 }
 
 /** A title displaying the station name. */
-@Composable private fun TopAppBarTitle(stationName: String?, modifier: Modifier = Modifier) {
-    val titleText = stationName ?: stringResource(id = R.string.title_timetable)
-    Text(titleText, modifier)
+@Composable private fun TopAppBarTitle(stationName: String, modifier: Modifier = Modifier) {
+    Text(stationName, modifier)
 }
 
 /** A subtitle displaying the selected categories. */

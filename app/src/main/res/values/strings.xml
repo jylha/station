@@ -47,7 +47,6 @@
 
     <string name="message_loading_train_details">Retrieving train details.</string>
 
-    <string name="title_timetable">Timetable</string>
     <string name="subtitle_all_trains">All trains</string>
     <string name="subtitle_long_distance_trains">Long-distance trains</string>
     <string name="subtitle_commuter_trains">Commuter trains</string>
