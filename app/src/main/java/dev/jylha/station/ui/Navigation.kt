@@ -100,19 +100,19 @@ fun StationAppNavigation() {
         composable(
             Screen.Home.route,
             enterTransition = { _, _ ->
-                fadeIn(animationSpec = tween(600))
+                fadeIn(0f, tween(600))
             },
             exitTransition = { _, target ->
                 if (target.destination.route == Screen.About.route)
-                    fadeOut(animationSpec = tween(200, 400))
+                    fadeOut(0f, tween(200, 400))
                 else
-                    fadeOut(animationSpec = tween(600))
+                    fadeOut(0f, tween(600))
             },
             popEnterTransition = { initial, _ ->
                 if (initial.destination.route == Screen.About.route)
-                    fadeIn(animationSpec = tween(400))
+                    fadeIn(0f, tween(400))
                 else
-                    fadeIn(1f, animationSpec = snap())
+                    fadeIn(1f, snap())
             },
             popExitTransition = null, // Use default
         ) { backStackEntry ->
