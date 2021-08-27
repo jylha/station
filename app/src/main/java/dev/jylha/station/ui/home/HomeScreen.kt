@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -62,19 +59,19 @@ fun HomeScreen(
 
     HomeScreen(
         viewState,
-        onSelectStation = onNavigateToStations,
-        onSelectNearestStation = onNavigateToNearestStation,
+        onShowStationSelection = onNavigateToStations,
+        onShowNearestStation = onNavigateToNearestStation,
         onShowTimetable = onNavigateToTimetable,
-        onAbout = onNavigateToAbout
+        onShowInfo = onNavigateToAbout
     )
 }
 
 @Composable fun HomeScreen(
     state: HomeViewState,
-    onSelectStation: () -> Unit = {},
-    onSelectNearestStation: () -> Unit = {},
+    onShowStationSelection: () -> Unit = {},
+    onShowNearestStation: () -> Unit = {},
     onShowTimetable: (stationCode: Int) -> Unit = {},
-    onAbout: () -> Unit = {},
+    onShowInfo: () -> Unit = {},
 ) {
     Box(
         Modifier.background(
@@ -90,14 +87,15 @@ fun HomeScreen(
                 onShowTimetable(state.station.code)
             }
             else -> WelcomeCard(
-                onSelectStation = onSelectStation,
+                onShowStationSelection = onShowStationSelection,
                 onShowNearestStation = {
                     withPermission(locationPermission) { granted ->
-                        if (granted) onSelectNearestStation()
-                        else onSelectStation()
+                        if (granted) onShowNearestStation()
+                        else onShowStationSelection()
                     }
                 },
-                onAbout = onAbout
+                onShowInfo = onShowInfo,
+                modifier = Modifier.padding(8.dp)
             )
         }
     }
@@ -106,7 +104,8 @@ fun HomeScreen(
 @Composable private fun LoadingSettings() {
     Loading(
         message = stringResource(R.string.message_loading_settings),
-        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f),
+        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f)
+            .compositeOver(MaterialTheme.colors.surface),
         indicatorColor = MaterialTheme.colors.onPrimary
     )
 }
@@ -114,44 +113,44 @@ fun HomeScreen(
 @Composable private fun LoadingStation() {
     Loading(
         message = stringResource(R.string.message_loading_timetable),
-        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f),
+        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f)
+            .compositeOver(MaterialTheme.colors.surface),
         indicatorColor = MaterialTheme.colors.onPrimary
     )
 }
 
 @Composable private fun WelcomeCard(
-    onSelectStation: () -> Unit = {},
-    onShowNearestStation: () -> Unit = {},
-    onAbout: () -> Unit = {},
+    onShowStationSelection: () -> Unit,
+    onShowNearestStation: () -> Unit,
+    onShowInfo: () -> Unit,
+    modifier: Modifier,
 ) {
     Card(
-        Modifier
-            .padding(8.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        shape = RoundedCornerShape(16.dp),
     ) {
         Box {
             WelcomeAnimation(Modifier.width(400.dp).align(Alignment.Center))
-            AboutButton(onClick = onAbout, Modifier.align(Alignment.TopEnd))
+            AboutButton(onClick = onShowInfo, Modifier.align(Alignment.TopEnd))
             Column(
                 Modifier
                     .padding(
                         horizontal = 20.dp,
-                        vertical = if (portraitOrientation()) 40.dp else 20.dp
+                        vertical = if (portraitOrientation()) 60.dp else 20.dp
                     )
                     .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Greeting()
-                    Spacer(Modifier.height(16.dp))
                     Introduction()
                 }
-                ButtonContainer(Modifier.padding(20.dp)) {
-                    Button(onSelectStation, Modifier.width(180.dp)) {
+                ButtonContainer {
+                    Button(onShowStationSelection, Modifier.width(180.dp)) {
                         Text(
                             text = stringResource(R.string.label_select_station),
                             modifier = Modifier.fillMaxWidth(),
@@ -190,14 +189,13 @@ fun HomeScreen(
 }
 
 @Composable private fun Introduction(modifier: Modifier = Modifier) {
-    val introductionText = stringResource(id = R.string.text_introduction)
+    val text = stringResource(id = R.string.text_introduction)
     val color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
         .compositeOver(MaterialTheme.colors.surface)
     Text(
-        introductionText, modifier, textAlign = TextAlign.Center, color = color,
-        style = MaterialTheme.typography.body1.copy(
-            lineHeight = MaterialTheme.typography.body1.fontSize * 1.5
-        )
+        text, modifier, color, textAlign = TextAlign.Center,
+        lineHeight = MaterialTheme.typography.body1.fontSize * 1.5,
+        style = MaterialTheme.typography.body1
     )
 }
 
