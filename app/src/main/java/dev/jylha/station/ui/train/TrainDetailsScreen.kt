@@ -3,7 +3,6 @@ package dev.jylha.station.ui.train
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -121,21 +122,30 @@ import java.time.ZonedDateTime
         }
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
+            val routeBehindColor = MaterialTheme.colors.primary
+            val routeAheadColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+                .compositeOver(MaterialTheme.colors.background)
+
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item { TrainDetailsHeading(train) }
-
                 stops.forEachIndexed { index, stop ->
                     val isCurrent = index == currentStopIndex && stop.isNotDeparted()
                     val isNext = index == nextStopIndex
                     val isPassed = index < currentStopIndex
                     item {
                         when {
-                            stop.isOrigin() -> TrainOrigin(train, stop, isCurrent, isPassed)
-                            stop.isWaypoint() -> TrainWaypoint(stop, isCurrent, isNext, isPassed)
-                            stop.isDestination() -> TrainDestination(stop, isCurrent, isNext)
+                            stop.isOrigin() -> TrainOrigin(
+                                train, stop, isCurrent, isPassed, routeBehindColor, routeAheadColor
+                            )
+                            stop.isWaypoint() -> TrainWaypoint(
+                                stop, isCurrent, isNext, isPassed, routeBehindColor, routeAheadColor
+                            )
+                            stop.isDestination() -> TrainDestination(
+                                stop, isCurrent, isNext, routeBehindColor, routeAheadColor
+                            )
                         }
                     }
                 }
@@ -144,17 +154,21 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable private fun TrainDetailsHeading(train: Train) {
-    TrainIdentification(train)
-    Spacer(Modifier.height(16.dp))
-    TrainRoute(
-        stationName(train.origin()) ?: "",
-        stationName(train.destination()) ?: "",
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics(mergeDescendants = true) {}
-    )
-    Spacer(Modifier.height(16.dp))
+@Composable private fun TrainDetailsHeading(train: Train, modifier: Modifier = Modifier) {
+    Column(
+        modifier.padding(16.dp).fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TrainIdentification(train)
+        TrainRoute(
+            stationName(train.origin()) ?: "",
+            stationName(train.destination()) ?: "",
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) {}
+        )
+    }
 }
 
 @Composable private fun TrainIdentification(train: Train) {
@@ -244,18 +258,13 @@ import java.time.ZonedDateTime
 }
 
 @Composable private fun TrainOrigin(
-    train: Train,
-    origin: Stop,
-    isCurrent: Boolean,
-    isPassed: Boolean
+    train: Train, origin: Stop, isCurrent: Boolean, isPassed: Boolean,
+    routeBehindColor: Color, routeAheadColor: Color,
 ) {
     val stationIconResId = if (train.isReady() || origin.isDeparted())
         R.drawable.origin_closed else R.drawable.origin_open
-    val color = if (origin.isDeparted() || isPassed) {
-        MaterialTheme.colors.primaryVariant
-    } else {
-        MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
-    }
+    val color = if (origin.isDeparted() || isPassed)
+        routeBehindColor else routeAheadColor
     val colorFilter = ColorFilter.tint(color)
 
     CommercialStop(
@@ -279,19 +288,17 @@ import java.time.ZonedDateTime
 }
 
 @Composable private fun TrainWaypoint(
-    waypoint: Stop,
-    isCurrent: Boolean,
-    isNext: Boolean,
-    isPassed: Boolean
+    waypoint: Stop, isCurrent: Boolean, isNext: Boolean, isPassed: Boolean,
+    routeBehindColor: Color, routeAheadColor: Color,
 ) {
     val stationIconResId = if (waypoint.isReached() || waypoint.isDeparted())
         R.drawable.waypoint_closed else R.drawable.waypoint_open
 
     val arrivedIconColor = if (waypoint.isReached() || waypoint.isDeparted() || isPassed)
-        MaterialTheme.colors.primaryVariant else MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+        routeBehindColor else routeAheadColor
 
     val departedIconColor = if (waypoint.isDeparted() || isPassed)
-        MaterialTheme.colors.primaryVariant else MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+        routeBehindColor else routeAheadColor
 
     val arrivedColorFilter = ColorFilter.tint(arrivedIconColor)
 
@@ -324,11 +331,14 @@ import java.time.ZonedDateTime
     )
 }
 
-@Composable private fun TrainDestination(destination: Stop, isCurrent: Boolean, isNext: Boolean) {
+@Composable private fun TrainDestination(
+    destination: Stop, isCurrent: Boolean, isNext: Boolean,
+    routeBehindColor: Color, routeAheadColor: Color
+) {
     val (stationResId, iconColor) = if (destination.isReached()) {
-        Pair(R.drawable.destination_closed, MaterialTheme.colors.primaryVariant)
+        Pair(R.drawable.destination_closed, routeBehindColor)
     } else {
-        Pair(R.drawable.destination_open, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
+        Pair(R.drawable.destination_open, routeAheadColor)
     }
 
     val iconColorFilter = ColorFilter.tint(iconColor)
@@ -374,9 +384,9 @@ import java.time.ZonedDateTime
     name: @Composable (modifier: Modifier) -> Unit,
     stationIcon: @Composable (modifier: Modifier) -> Unit,
     modifier: Modifier = Modifier,
-    arrivalIcon: (@Composable (modifier: Modifier) -> Unit) = { Box(modifier) },
+    arrivalIcon: (@Composable (modifier: Modifier) -> Unit) = { Spacer(modifier) },
     arrivalTime: (@Composable (modifier: Modifier) -> Unit)? = null,
-    departureIcon: (@Composable (modifier: Modifier) -> Unit) = { Box(modifier) },
+    departureIcon: (@Composable (modifier: Modifier) -> Unit) = { Spacer(modifier) },
     departureTime: (@Composable (modifier: Modifier) -> Unit)? = null,
     isCurrent: Boolean = false,
     isNext: Boolean = false,

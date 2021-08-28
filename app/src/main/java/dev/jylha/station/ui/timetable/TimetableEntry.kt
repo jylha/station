@@ -37,9 +37,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -179,14 +181,14 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                     ShowDelayCauseAction(
                         onClick = { expandableState = ExpandableState.Expanded },
                         enabled = expandableState != ExpandableState.Expanded,
-                        Modifier.constrainAs(showDelayRef) {
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
+                        modifier = Modifier
+                            .constrainAs(showDelayRef) {
+                                end.linkTo(parent.end)
+                                bottom.linkTo(parent.bottom)
+                            }
+                            .alpha(buttonAlpha),
                         color = if (delayCauses.isEmpty()) Color.Transparent
-                        else StationTheme.colors.late.copy(
-                            alpha = buttonAlpha
-                        )
+                        else StationTheme.colors.late
                     )
                 }
             }
@@ -194,8 +196,9 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 DelayCauses(
                     delayCauses,
                     onClose = { expandableState = ExpandableState.Collapsed },
-                    alpha = contentAlpha,
-                    Modifier.heightFraction(contentHeightFraction)
+                    modifier = Modifier
+                        .heightFraction(contentHeightFraction)
+                        .alpha(contentAlpha)
                 )
             }
         }
@@ -257,6 +260,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
  * Note: When the label includes train's type, spaces are inserted between the letters to make
  * the accessibility system read out each letter instead of interpreting the type as a word.
  */
+@ReadOnlyComposable
 @Composable private fun trainIdentificationAccessibilityLabel(train: Train): String {
     return train.run {
         if (isLongDistanceTrain()) {
@@ -428,18 +432,21 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
 @Composable private fun DelayCauses(
     delayCauses: List<DelayCause>,
     onClose: () -> Unit,
-    alpha: Float,
     modifier: Modifier = Modifier
 ) {
     val delayCauseNames = delayCauses.map { cause -> causeName(cause) }.distinct()
-    val contentColor = MaterialTheme.colors.onSurface.copy(alpha = alpha)
+    val contentColor = MaterialTheme.colors.onSurface
+    val labelColor = contentColor.copy(alpha = 0.7f)
+        .compositeOver(MaterialTheme.colors.surface)
+    val dividerColor = contentColor.copy(alpha = 0.5f)
+        .compositeOver(MaterialTheme.colors.surface)
 
     Column(
         modifier
             .fillMaxWidth()
             .padding(top = 8.dp)
     ) {
-        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f * alpha))
+        Divider(color = dividerColor)
         Row(
             Modifier
                 .fillMaxWidth()
@@ -451,7 +458,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 Text(
                     delayCausesLabel.uppercase(),
                     Modifier.semantics { contentDescription = delayCausesLabel },
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f * alpha),
+                    color = labelColor,
                     style = MaterialTheme.typography.caption
                 )
                 delayCauseNames.forEach { causeName -> DelayCauseName(causeName, contentColor) }

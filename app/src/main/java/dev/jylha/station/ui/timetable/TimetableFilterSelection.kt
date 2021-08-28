@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -222,8 +223,10 @@ private fun CategorySelection(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val color = if (selected) MaterialTheme.colors.primaryVariant.copy(alpha = 0.9f)
-    else Color.Gray.copy(alpha = 0.7f)
+    val color = with (MaterialTheme.colors) {
+        if (selected) primaryVariant.copy(alpha = 0.9f).compositeOver(surface)
+        else Color.Gray.copy(alpha = 0.7f).compositeOver(surface)
+    }
 
     OutlinedButton(
         onClick,

@@ -1,7 +1,10 @@
 package dev.jylha.station.ui.stations
 
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onChildren
@@ -32,7 +35,10 @@ class StationsScreenTest {
 
     @Test fun displayListOfStations() {
         val state = StationsViewState(
-            stations = listOf(station("Helsinki", 1), station("Pasila", 2)),
+            stations = listOf(
+                station("Helsinki", 1),
+                station("Pasila", 2)
+            ),
         )
         rule.setThemedContent { StationsScreen(viewState = state, onSelect = {}) }
 
@@ -48,7 +54,10 @@ class StationsScreenTest {
 
     @Test fun displayListOfRecentStations() {
         val state = StationsViewState(
-            stations = listOf(station("Helsinki", 1), station("Pasila", 2)),
+            stations = listOf(
+                station("Helsinki", 1),
+                station("Pasila", 2)
+            ),
             recentStations = listOf(1)
         )
         rule.setThemedContent(darkMode = false) { StationsScreen(viewState = state, onSelect = {}) }
@@ -87,7 +96,6 @@ class StationsScreenTest {
             .onParent().onChildren()[3].assertTextEquals("Helsinki Airport")
 
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).performClick()
-        rule.waitForIdle()
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertDoesNotExist()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertDoesNotExist()
@@ -99,7 +107,7 @@ class StationsScreenTest {
         rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()
 
         rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("h")
-        rule.waitForIdle()
+        rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).assert(hasText("h"))
 
         rule.onNodeWithSubstring("Search station").assertDoesNotExist()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
@@ -107,8 +115,8 @@ class StationsScreenTest {
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
             .onParent().onChildren()[2].assertTextEquals("Helsinki Airport")
 
-        rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("a")
-        rule.waitForIdle()
+        rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("ha")
+        rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).assert(hasText("ha"))
 
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertDoesNotExist()

@@ -149,7 +149,10 @@ fun StationAppNavigation() {
                 selectNearestStation = true,
             )
         }
-        composable(Screen.Timetable.route, Screen.Timetable.arguments) { backStackEntry ->
+        composable(
+            Screen.Timetable.route, Screen.Timetable.arguments,
+            popEnterTransition = { _, _ -> fadeIn(0f, tween(600)) },
+        ) { backStackEntry ->
             TimetableScreen(
                 hiltViewModel(backStackEntry),
                 stationCode = Screen.Timetable.stationCode(backStackEntry),
@@ -159,7 +162,10 @@ fun StationAppNavigation() {
                 },
             )
         }
-        composable(Screen.TrainDetails.route, Screen.TrainDetails.arguments) { backStackEntry ->
+        composable(
+            Screen.TrainDetails.route, Screen.TrainDetails.arguments,
+            enterTransition = { _, _ -> fadeIn(0f, tween(600)) },
+        ) { backStackEntry ->
             TrainDetailsScreen(
                 hiltViewModel(backStackEntry),
                 departureDate = Screen.TrainDetails.departureDate(backStackEntry),

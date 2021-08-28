@@ -93,18 +93,18 @@ fun StationsScreen(
     onSelect: (Station) -> Unit,
     onSelectNearest: () -> Unit = {},
 ) {
-    val stations = viewState.stations
-    val recentStations = remember(stations, viewState.recentStations) {
+    val allStations = viewState.stations
+    val recentStations = remember(allStations, viewState.recentStations) {
         viewState.recentStations.mapNotNull { stationCode ->
-            stations.firstOrNull { station -> station.code == stationCode }
+            allStations.firstOrNull { station -> station.code == stationCode }
         }
     }
 
     var searchEnabled by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
 
-    val filteredStations = remember(searchEnabled, searchText, stations) {
-        stations.filterWhen(searchEnabled) { station ->
+    val matchingStations = remember(searchEnabled, searchText, allStations) {
+        allStations.filterWhen(searchEnabled) { station ->
             station.name.contains(searchText, ignoreCase = true)
         }
     }
@@ -157,9 +157,9 @@ fun StationsScreen(
             }
             viewState.isFetchingLocation -> FetchingLocation()
             viewState.isLoading -> LoadingStations()
-            filteredStations.isEmpty() -> NoMatchingStations(modifier)
+            matchingStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationSelection(
-                filteredStations,
+                matchingStations,
                 recentStations,
                 onSelect = onSelect,
                 modifier,
