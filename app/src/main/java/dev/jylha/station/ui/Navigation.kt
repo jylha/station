@@ -115,9 +115,9 @@ fun StationAppNavigation() {
                     fadeIn(1f, snap())
             },
             popExitTransition = null, // Use default
-        ) { backStackEntry ->
+        ) {
             HomeScreen(
-                viewModel = hiltViewModel(backStackEntry),
+                viewModel = hiltViewModel(),
                 onNavigateToStations = { navigateToStations() },
                 onNavigateToNearestStation = { navigateToNearestStation() },
                 onNavigateToTimetable = { stationCode -> navigateToTimetable(stationCode) },
@@ -134,16 +134,16 @@ fun StationAppNavigation() {
             },
             popEnterTransition = null,
         ) { AboutScreen() }
-        composable(Screen.Stations.route) { backStackEntry ->
+        composable(Screen.Stations.route) {
             StationsScreen(
-                hiltViewModel(backStackEntry),
+                viewModel = hiltViewModel(),
                 onNavigateToTimetable = { stationCode -> navigateToTimetable(stationCode) },
                 onNavigateToNearestStation = { navigateToNearestStation() },
             )
         }
-        composable(Screen.NearestStation.route) { backStackEntry ->
+        composable(Screen.NearestStation.route) {
             StationsScreen(
-                hiltViewModel(backStackEntry),
+                viewModel = hiltViewModel(),
                 onNavigateToTimetable = { stationCode -> navigateToTimetable(stationCode) },
                 onNavigateToNearestStation = { navigateToNearestStation() },
                 selectNearestStation = true,
@@ -154,9 +154,9 @@ fun StationAppNavigation() {
             popEnterTransition = { _, _ -> fadeIn(0f, tween(600)) },
         ) { backStackEntry ->
             TimetableScreen(
-                hiltViewModel(backStackEntry),
+                viewModel = hiltViewModel(),
                 stationCode = Screen.Timetable.stationCode(backStackEntry),
-                onNavigateToStations = { navigateTo(Screen.Stations) },
+                onNavigateToStations = { navigateToStations() },
                 onNavigateToTrainDetails = { departureDate, trainNumber ->
                     navigateToTrainDetails(departureDate, trainNumber)
                 },
@@ -167,7 +167,7 @@ fun StationAppNavigation() {
             enterTransition = { _, _ -> fadeIn(0f, tween(600)) },
         ) { backStackEntry ->
             TrainDetailsScreen(
-                hiltViewModel(backStackEntry),
+                viewModel = hiltViewModel(),
                 departureDate = Screen.TrainDetails.departureDate(backStackEntry),
                 trainNumber = Screen.TrainDetails.trainNumber(backStackEntry)
             )
