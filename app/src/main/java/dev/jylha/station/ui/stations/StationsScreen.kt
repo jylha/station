@@ -29,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.imePadding
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
 import dev.jylha.station.ui.common.EmptyState
@@ -100,8 +102,8 @@ fun StationsScreen(
         }
     }
 
-    var searchEnabled by remember { mutableStateOf(false) }
-    var searchText by remember { mutableStateOf("") }
+    var searchEnabled by rememberSaveable { mutableStateOf(false) }
+    var searchText by rememberSaveable { mutableStateOf("") }
 
     val matchingStations = remember(searchEnabled, searchText, allStations) {
         allStations.filterWhen(searchEnabled) { station ->
@@ -150,7 +152,7 @@ fun StationsScreen(
             }
         }
     ) { innerPadding ->
-        val modifier = Modifier.padding(innerPadding)
+        val modifier = Modifier.padding(innerPadding).imePadding()
         when {
             viewState.nearestStation != null -> LaunchedEffect(viewState.nearestStation.code) {
                 onSelect(viewState.nearestStation)
@@ -159,8 +161,8 @@ fun StationsScreen(
             viewState.isLoading -> LoadingStations()
             matchingStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationSelection(
-                matchingStations,
-                recentStations,
+                stations = matchingStations,
+                recentStations = recentStations,
                 onSelect = onSelect,
                 modifier,
                 searchText
@@ -235,9 +237,10 @@ fun StationsScreen(
     modifier: Modifier = Modifier,
     searchText: String = ""
 ) {
-    val textColor = if (searchText.isBlank()) MaterialTheme.colors.onBackground else
-        MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
-    val highlightedTextColor = MaterialTheme.colors.onBackground
+    val textColor = if (searchText.isBlank()) MaterialTheme.colors.onSurface else
+        MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+            .compositeOver(MaterialTheme.colors.surface)
+    val highlightedTextColor = MaterialTheme.colors.onSurface
     val name = remember(stationName, searchText) {
         with(AnnotatedString.Builder(stationName)) {
             if (searchText.isNotBlank()) {
