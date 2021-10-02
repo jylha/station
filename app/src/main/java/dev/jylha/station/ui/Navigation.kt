@@ -7,10 +7,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
-import androidx.navigation.compose.NamedNavArgument
-import androidx.navigation.compose.navArgument
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -94,25 +94,29 @@ fun StationAppNavigation() {
 
     AnimatedNavHost(
         navController, startDestination = Screen.Home.route,
-        enterTransition = { _, _ -> fadeIn(1f, snap()) },
-        exitTransition = { _, _ -> fadeOut(0f, snap()) }
+        enterTransition = { _, _ ->
+            fadeIn(initialAlpha = 1f, animationSpec = snap())
+        },
+        exitTransition = { _, _ ->
+            fadeOut(targetAlpha = 0f, animationSpec = snap())
+        }
     ) {
         composable(
             Screen.Home.route,
             enterTransition = { _, _ ->
-                fadeIn(0f, tween(600))
+                fadeIn(initialAlpha = 0f, animationSpec = tween(600))
             },
             exitTransition = { _, target ->
                 if (target.destination.route == Screen.About.route)
-                    fadeOut(0f, tween(200, 400))
+                    fadeOut(targetAlpha = 0f, animationSpec = tween(200, 400))
                 else
-                    fadeOut(0f, tween(600))
+                    fadeOut(targetAlpha = 0f, animationSpec = tween(600))
             },
             popEnterTransition = { initial, _ ->
                 if (initial.destination.route == Screen.About.route)
-                    fadeIn(0f, tween(400))
+                    fadeIn(initialAlpha = 0f, animationSpec = tween(400))
                 else
-                    fadeIn(1f, snap())
+                    fadeIn(initialAlpha = 1f, animationSpec = snap())
             },
             popExitTransition = null, // Use default
         ) {
@@ -151,7 +155,9 @@ fun StationAppNavigation() {
         }
         composable(
             Screen.Timetable.route, Screen.Timetable.arguments,
-            popEnterTransition = { _, _ -> fadeIn(0f, tween(600)) },
+            popEnterTransition = { _, _ ->
+                fadeIn(initialAlpha = 0f, animationSpec = tween(600))
+            },
         ) { backStackEntry ->
             TimetableScreen(
                 viewModel = hiltViewModel(),
@@ -164,7 +170,9 @@ fun StationAppNavigation() {
         }
         composable(
             Screen.TrainDetails.route, Screen.TrainDetails.arguments,
-            enterTransition = { _, _ -> fadeIn(0f, tween(600)) },
+            enterTransition = { _, _ ->
+                fadeIn(initialAlpha = 0f, animationSpec = tween(600))
+            },
         ) { backStackEntry ->
             TrainDetailsScreen(
                 viewModel = hiltViewModel(),
