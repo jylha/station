@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.common
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
@@ -85,20 +86,11 @@ import dev.jylha.station.ui.theme.StationTheme
     }
 }
 
-@Preview(name = "Light theme", showBackground = true)
+@Preview(name = "Train route - light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Train route - dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun PreviewLightTrainRoute() {
-    StationTheme(darkTheme = false) {
-        Surface(Modifier.fillMaxWidth()) {
-            TrainRoute(origin = "Origin", destination = "Destination")
-        }
-    }
-}
-
-@Preview(name = "Dark theme", showBackground = true)
-@Composable
-private fun PreviewDarkTrainRoute() {
-    StationTheme(darkTheme = true) {
+private fun PreviewTrainRoute() {
+    StationTheme {
         Surface(Modifier.fillMaxWidth()) {
             TrainRoute(origin = "Origin", destination = "Destination")
         }

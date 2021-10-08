@@ -9,6 +9,7 @@
       <name>java.time.format.TextStyle</name>
       <name>java.util.concurrent.Flow</name>
       <name>org.intellij.lang.annotations.Flow</name>
+      <name>org.w3c.dom.Text</name>
     </excluded-names>
   </component>
 </project>

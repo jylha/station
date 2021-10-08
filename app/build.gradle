@@ -79,7 +79,7 @@ dependencies {
     implementation "androidx.compose.foundation:foundation-layout:${versions.compose}"
     implementation "androidx.compose.material:material:${versions.compose}"
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
-    implementation "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
+    implementation "androidx.compose.ui:ui-tooling:${versions.compose}"
     implementation "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout}"
     implementation "androidx.datastore:datastore-preferences-core:${versions.datastore}"
     implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
@@ -104,8 +104,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.coroutines}"
-
-    debugImplementation "androidx.compose.ui:ui-tooling:${versions.compose}"
 
     kapt "com.google.dagger:hilt-android-compiler:${versions.hilt}"
     kapt "androidx.hilt:hilt-compiler:${versions.hilt_navigation}"
