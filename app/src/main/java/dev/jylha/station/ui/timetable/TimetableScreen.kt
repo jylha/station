@@ -1,7 +1,7 @@
 package dev.jylha.station.ui.timetable
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
@@ -133,8 +133,8 @@ fun TimetableScreen(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable private fun TimetableTopAppBar(
+@Composable
+private fun TimetableTopAppBar(
     stationName: String?,
     selectedTimetableTypes: Set<TimetableRow.Type>,
     selectedTrainCategories: Set<Category>,
@@ -220,7 +220,6 @@ fun TimetableScreen(
     Text(subtitleText, modifier, style = MaterialTheme.typography.caption)
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable private fun TimetableScreenContent(
     viewState: TimetableViewState,
     showTimetableFilters: Boolean,
@@ -371,7 +370,8 @@ fun TimetableScreen(
     }
 }
 
-@Preview(showBackground = true, name = "Timetable")
+@Preview(name = "Timetable - light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Timetable - dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewTimetable() {
     val helsinki = Station(
@@ -405,7 +405,7 @@ private fun PreviewTimetable() {
     )
 
     val mapper = LocalizedStationNames.from(listOf(helsinki, turku), LocalContext.current)
-    StationTheme(darkTheme = true) {
+    StationTheme {
         StationNameProvider(mapper) {
             Surface(color = MaterialTheme.colors.background) {
                 Timetable(
