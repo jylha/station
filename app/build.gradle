@@ -85,7 +85,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
     implementation "androidx.hilt:hilt-navigation:${versions.hilt_navigation}"
     implementation "androidx.hilt:hilt-navigation-compose:${versions.hilt_navigation_compose}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle_compose}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle}"
     implementation "androidx.navigation:navigation-compose:${versions.navigation_compose}"
     implementation "androidx.room:room-ktx:${versions.room}"
     implementation "androidx.room:room-runtime:${versions.room}"
