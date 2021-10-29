@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.timetable
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -56,8 +57,9 @@ fun TimetableFilterSelection(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    TimetableTypeSelection(timetableTypes, onTimetableTypesChanged,
-                        Modifier.weight(1f))
+                    TimetableTypeSelection(
+                        timetableTypes, onTimetableTypesChanged, Modifier.weight(1f)
+                    )
                     CategorySelection(categories, onCategoriesChanged, Modifier.weight(1f))
                 }
             } else {
@@ -223,7 +225,7 @@ private fun CategorySelection(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val color = with (MaterialTheme.colors) {
+    val color = with(MaterialTheme.colors) {
         if (selected) primaryVariant.copy(alpha = 0.9f).compositeOver(surface)
         else Color.Gray.copy(alpha = 0.7f).compositeOver(surface)
     }
@@ -240,32 +242,23 @@ private fun CategorySelection(
     ) { content() }
 }
 
-@Preview(name = "TimetableFilterSelection - light", "Filter selection")
+@Preview(
+    name = "TimetableFilterSelection - light",
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "TimetableFilterSelection - dark, width=700",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    widthDp = 700
+)
+@Preview(
+    name = "TimetableFilterSelection - dark, width=720",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    widthDp = 720
+)
 @Composable
-private fun PreviewLightFilterSelection() {
-    StationTheme(darkTheme = false) {
-        TimetableFilterSelection(
-            setOf(TimetableRow.Type.Arrival), {},
-            setOf(Category.LongDistance), {}
-        )
-    }
-}
-
-@Preview(name = "TimetableFilterSelection - dark", "Filter selection", widthDp = 700)
-@Composable
-private fun PreviewDarkFilterSelection() {
-    StationTheme(darkTheme = true) {
-        TimetableFilterSelection(
-            setOf(TimetableRow.Type.Arrival), {},
-            setOf(Category.LongDistance), {})
-    }
-}
-
-
-@Preview(name = "TimetableFilterSelection - wide", "Filter selection", widthDp = 720)
-@Composable
-private fun PreviewWideFilterSelection() {
-    StationTheme(darkTheme = true) {
+private fun PreviewTimetableFilterSelection() {
+    StationTheme {
         TimetableFilterSelection(
             setOf(TimetableRow.Type.Arrival), {},
             setOf(Category.LongDistance), {},
