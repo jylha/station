@@ -230,7 +230,6 @@ fun StationsScreen(
                             stationName = station.name,
                             onSelect = { onSelect(station) },
                             modifier = Modifier
-                                .padding(start = 16.dp)
                                 .then(
                                     if (index == 0) {
                                         Modifier.requiredHeight(Dp.Hairline)
@@ -310,4 +309,4 @@ fun StationsScreen(
     }
 }
 
-val StickyLetterColumnWidth = 24.dp
+val StickyLetterColumnWidth = 32.dp
