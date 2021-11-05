@@ -1,6 +1,5 @@
 package dev.jylha.station.ui.stations
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
@@ -70,8 +69,10 @@ class StationsScreenTest {
             .onParent().onChildren()[0].assertTextEquals(TEXT_RECENT)
             .onParent().onChildren()[1].assertTextEquals("Helsinki")
             .onParent().onChildren()[2].assertTextEquals(TEXT_ALL_STATIONS)
-            .onParent().onChildren()[3].assertTextEquals("Helsinki")
-            .onParent().onChildren()[4].assertTextEquals("Pasila")
+            .onParent().onChildren()[3].assertTextEquals("H")
+            .onParent().onChildren()[4].assertTextEquals("Helsinki")
+            .onParent().onChildren()[5].assertTextEquals("P")
+            .onParent().onChildren()[6].assertTextEquals("Pasila")
     }
 
     @Test fun searchForStation() {
@@ -91,9 +92,12 @@ class StationsScreenTest {
 
         rule.onNodeWithText(TEXT_SELECT_STATION).assertIsDisplayed()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertIsDisplayed()
-            .onParent().onChildren()[1].assertTextEquals("Helsinki")
-            .onParent().onChildren()[2].assertTextEquals("Pasila")
+            .onParent().onChildren()[1].assertTextEquals("H")
+            .onParent().onChildren()[2].assertTextEquals("Helsinki")
             .onParent().onChildren()[3].assertTextEquals("Helsinki Airport")
+            .onParent().onChildren()[4].assertTextEquals("P")
+            .onParent().onChildren()[5].assertTextEquals("Pasila")
+
 
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).performClick()
 
@@ -112,8 +116,9 @@ class StationsScreenTest {
         rule.onNodeWithSubstring("Search station").assertDoesNotExist()
         rule.onNodeWithText(TEXT_ALL_STATIONS).assertDoesNotExist()
         rule.onNodeWithText(TEXT_MATCHING_STATIONS).assertIsDisplayed()
-            .onParent().onChildren()[1].assertTextEquals("Helsinki")
-            .onParent().onChildren()[2].assertTextEquals("Helsinki Airport")
+            .onParent().onChildren()[1].assertTextEquals("H")
+            .onParent().onChildren()[2].assertTextEquals("Helsinki")
+            .onParent().onChildren()[3].assertTextEquals("Helsinki Airport")
 
         rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).performTextInput("ha")
         rule.onNodeWithContentDescription(LABEL_SEARCH).onChildAt(1).assert(hasText("ha"))

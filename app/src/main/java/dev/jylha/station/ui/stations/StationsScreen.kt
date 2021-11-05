@@ -1,12 +1,18 @@
 package dev.jylha.station.ui.stations
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -27,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
@@ -36,6 +43,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.imePadding
 import dev.jylha.station.R
@@ -160,7 +168,7 @@ fun StationsScreen(
             viewState.isFetchingLocation -> FetchingLocation()
             viewState.isLoading -> LoadingStations()
             matchingStations.isEmpty() -> NoMatchingStations(modifier)
-            else -> StationSelection(
+            else -> StationSelectionList(
                 stations = matchingStations,
                 recentStations = recentStations,
                 onSelect = onSelect,
@@ -186,7 +194,8 @@ fun StationsScreen(
     EmptyState(message, modifier)
 }
 
-@Composable private fun StationSelection(
+@OptIn(ExperimentalFoundationApi::class)
+@Composable private fun StationSelectionList(
     stations: List<Station>,
     recentStations: List<Station>,
     onSelect: (Station) -> Unit,
@@ -194,7 +203,7 @@ fun StationsScreen(
     searchText: String
 ) {
     Surface(modifier) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
             if (searchText.isBlank() && recentStations.isNotEmpty()) {
                 item { StationListLabel(stringResource(R.string.label_recent)) }
                 items(recentStations) { station ->
@@ -211,13 +220,32 @@ fun StationsScreen(
                     )
                 )
             }
-            items(stations) { station ->
-                StationListEntry(
-                    stationName = station.name,
-                    onSelect = { onSelect(station) },
-                    searchText = searchText
-                )
-            }
+
+            stations
+                .groupBy { station -> station.name.first() }
+                .forEach { (letter, group) ->
+                    stickyHeader { StationListStickyLetter(letter) }
+                    itemsIndexed(group) { index, station ->
+                        StationListEntry(
+                            stationName = station.name,
+                            onSelect = { onSelect(station) },
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .then(
+                                    if (index == 0) {
+                                        Modifier.requiredHeight(Dp.Hairline)
+                                            .wrapContentHeight(
+                                                align = Alignment.Bottom,
+                                                unbounded = true
+                                            )
+                                    } else {
+                                        Modifier
+                                    }
+                                ),
+                            searchText = searchText
+                        )
+                    }
+                }
         }
     }
 }
@@ -226,9 +254,24 @@ fun StationsScreen(
     Text(
         label.uppercase(),
         modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
         style = MaterialTheme.typography.caption,
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
     )
+}
+
+@Composable private fun StationListStickyLetter(letter: Char) {
+    Box(
+        modifier = Modifier.requiredWidth(StickyLetterColumnWidth),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = letter.toString().uppercase(),
+            modifier = Modifier.padding(vertical = 10.dp),
+            color = MaterialTheme.colors.primary,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.body1,
+        )
+    }
 }
 
 @Composable private fun StationListEntry(
@@ -258,7 +301,7 @@ fun StationsScreen(
     Box(
         modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .padding(start = StickyLetterColumnWidth)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = onSelect)
             .padding(horizontal = 8.dp, vertical = 10.dp)
@@ -266,3 +309,5 @@ fun StationsScreen(
         Text(name, style = MaterialTheme.typography.body1, color = textColor)
     }
 }
+
+val StickyLetterColumnWidth = 24.dp
