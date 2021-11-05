@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.stations
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.imePadding
@@ -53,6 +57,7 @@ import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.SearchBar
 import dev.jylha.station.ui.common.withPermission
+import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.filterWhen
 import dev.jylha.station.util.findAllMatches
 
@@ -101,7 +106,7 @@ fun StationsScreen(
 @Composable fun StationsScreen(
     viewState: StationsViewState,
     onSelect: (Station) -> Unit,
-    onSelectNearest: () -> Unit = {},
+    onSelectNearest: () -> Unit,
 ) {
     val allStations = viewState.stations
     val recentStations = remember(allStations, viewState.recentStations) {
@@ -310,3 +315,34 @@ fun StationsScreen(
 }
 
 val StickyLetterColumnWidth = 32.dp
+
+@Preview(group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(group = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewStationsScreen(
+    @PreviewParameter(StationsViewStateProvider::class) state: StationsViewState
+) {
+    StationTheme {
+        StationsScreen(state, onSelect = {}, onSelectNearest = {})
+    }
+}
+
+internal class StationsViewStateProvider : PreviewParameterProvider<StationsViewState> {
+    companion object {
+
+        private val stations = listOf(
+            Station("Hanko", "HNK", 1, 1.0, 1.0),
+            Station("Helsinki", "HKI", 2, 1.0, 1.0),
+            Station("Hämeenlinna", "HL", 3, 1.0, 1.0),
+            Station("Pasila", "PSL", 4, 1.0, 1.0),
+        )
+
+        private val parameters: List<StationsViewState> = listOf(
+            StationsViewState(stations = stations),
+            StationsViewState(stations = stations, recentStations = listOf(2, 4)),
+        )
+    }
+
+    override val count: Int = parameters.size
+    override val values: Sequence<StationsViewState> = parameters.asSequence()
+}

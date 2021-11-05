@@ -93,7 +93,7 @@ data class StationsViewState(
     }
 
     companion object {
-        val initial: StationsViewState = StationsViewState()
+        val Initial: StationsViewState = StationsViewState()
     }
 }
 

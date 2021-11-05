@@ -8,7 +8,7 @@ import org.junit.Test
 class StationsViewStateTest {
 
     @Test fun `initial state`() {
-        val result = StationsViewState.initial
+        val result = StationsViewState.Initial
         assertThat(result.stations).isEmpty()
         assertThat(result.recentStations).isEmpty()
         assertThat(result.isLoading).isFalse()
@@ -16,7 +16,7 @@ class StationsViewStateTest {
     }
 
     @Test fun `reduce state with RecentStationsUpdated result`() {
-        val state = StationsViewState.initial
+        val state = StationsViewState.Initial
         val stations = listOf(1, 2, 3)
         val result = state.reduce(RecentStationsUpdated(stations))
         assertThat(result.stations).isEmpty()
@@ -24,7 +24,7 @@ class StationsViewStateTest {
     }
 
     @Test fun `reduce state with LoadNameMapper_Loading result`() {
-        val state = StationsViewState.initial
+        val state = StationsViewState.Initial
         val result = state.reduce(LoadNameMapper.Loading)
         assertThat(result.isLoading).isTrue()
     }
@@ -32,7 +32,7 @@ class StationsViewStateTest {
     @Test fun `reduce state with LoadNameMapper_Success result`() {
         val stations = listOf(Station.of("first", 1), Station.of("second", 2))
         val state =
-            StationsViewState.initial.copy(stations = stations, isLoadingNameMapper = true)
+            StationsViewState.Initial.copy(stations = stations, isLoadingNameMapper = true)
         val mapper = LocalizedStationNames.from(stations, mapOf(2 to "last"))
         val result = state.reduce(LoadNameMapper.Success(mapper))
         assertThat(result.nameMapper).isEqualTo(mapper)
@@ -59,20 +59,20 @@ class StationsViewStateTest {
     }
 
     @Test fun `reduce state with LoadStations_Loading result`() {
-        val state = StationsViewState.initial
+        val state = StationsViewState.Initial
         val result = state.reduce(LoadStations.Loading)
         assertThat(result.isLoading).isTrue()
     }
 
     @Test fun `reduce state with LoadStations_Reloading result`() {
-        val state = StationsViewState.initial
+        val state = StationsViewState.Initial
         val result = state.reduce(LoadStations.Reloading)
         assertThat(result.isLoading).isFalse()
         assertThat(result.isReloadingStations).isTrue()
     }
 
     @Test fun `reduce state with LoadStations_NoNewData result while reloading`() {
-        val state = StationsViewState.initial.copy(isReloadingStations = true)
+        val state = StationsViewState.Initial.copy(isReloadingStations = true)
         val result = state.reduce(LoadStations.NoNewData)
         assertThat(result.isReloadingStations).isFalse()
     }
@@ -94,7 +94,7 @@ class StationsViewStateTest {
 
     @Test fun `reduce state with LoadStations_Success result`() {
         val newStations = listOf(Station.of("A", 1), Station.of("B", 2))
-        val state = StationsViewState.initial.copy(isLoadingStations = true)
+        val state = StationsViewState.Initial.copy(isLoadingStations = true)
         assertThat(state.isLoading).isTrue()
         val result = state.reduce(LoadStations.Success(newStations))
         assertThat(result.isLoading).isFalse()
@@ -104,7 +104,7 @@ class StationsViewStateTest {
     @Test fun `reduce state with LoadStations_Success result when nameMapper is present`() {
         val newStations = listOf(Station.of("A", 1), Station.of("B", 2))
         val mapper = LocalizedStationNames.from(newStations, mapOf(1 to "C"))
-        val state = StationsViewState.initial.copy(nameMapper = mapper)
+        val state = StationsViewState.Initial.copy(nameMapper = mapper)
         val result = state.reduce(LoadStations.Success(newStations))
         assertThat(result.stations).hasSize(2)
         assertThat(result.stations[0].name).isEqualTo("B")
@@ -114,13 +114,13 @@ class StationsViewStateTest {
     }
 
     @Test fun `reduce state with LoadStations_NoNewData result`() {
-        val state = StationsViewState.initial.copy(isLoadingStations = true)
+        val state = StationsViewState.Initial.copy(isLoadingStations = true)
         val result = state.reduce(LoadStations.NoNewData)
         assertThat(result.isLoading).isFalse()
     }
 
     @Test fun `reduce state with LoadStations_Error result`() {
-        val state = StationsViewState.initial
+        val state = StationsViewState.Initial
         val result = state.reduce(LoadStations.Error("Oops!"))
         assertThat(result.isLoading).isFalse()
         assertThat(result.errorMessage).isEqualTo("Oops!")
