@@ -39,7 +39,9 @@ class StationsScreenTest {
                 station("Pasila", 2)
             ),
         )
-        rule.setThemedContent { StationsScreen(viewState = state, onSelect = {}) }
+        rule.setThemedContent {
+            StationsScreen(viewState = state, onSelect = {}, onSelectNearest = {})
+        }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
@@ -59,7 +61,9 @@ class StationsScreenTest {
             ),
             recentStations = listOf(1)
         )
-        rule.setThemedContent(darkMode = false) { StationsScreen(viewState = state, onSelect = {}) }
+        rule.setThemedContent(darkMode = false) {
+            StationsScreen(viewState = state, onSelect = {}, onSelectNearest = {})
+        }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
@@ -83,7 +87,9 @@ class StationsScreenTest {
                 station("Helsinki Airport", 3)
             )
         )
-        rule.setThemedContent { StationsScreen(viewState = state, onSelect = {}) }
+        rule.setThemedContent {
+            StationsScreen(viewState = state, onSelect = {}, onSelectNearest = {})
+        }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
         rule.onNodeWithContentDescription(LABEL_SEARCH_STATION).assertIsDisplayed()
