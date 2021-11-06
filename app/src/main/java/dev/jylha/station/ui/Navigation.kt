@@ -94,29 +94,23 @@ fun StationAppNavigation() {
 
     AnimatedNavHost(
         navController, startDestination = Screen.Home.route,
-        enterTransition = { _, _ ->
-            fadeIn(initialAlpha = 1f, animationSpec = snap())
-        },
-        exitTransition = { _, _ ->
-            fadeOut(targetAlpha = 0f, animationSpec = snap())
-        }
+        enterTransition = { showImmediately() },
+        exitTransition = { hideImmediately() }
     ) {
         composable(
             Screen.Home.route,
-            enterTransition = { _, _ ->
-                fadeIn(initialAlpha = 0f, animationSpec = tween(600))
-            },
-            exitTransition = { _, target ->
-                if (target.destination.route == Screen.About.route)
-                    fadeOut(targetAlpha = 0f, animationSpec = tween(200, 400))
+            enterTransition = { fadeIn(animationSpec = tween(600)) },
+            exitTransition = {
+                if (targetState.destination.route == Screen.About.route)
+                    fadeOut(animationSpec = tween(200, 400))
                 else
-                    fadeOut(targetAlpha = 0f, animationSpec = tween(600))
+                    fadeOut(animationSpec = tween(600))
             },
-            popEnterTransition = { initial, _ ->
-                if (initial.destination.route == Screen.About.route)
-                    fadeIn(initialAlpha = 0f, animationSpec = tween(400))
+            popEnterTransition = {
+                if (initialState.destination.route == Screen.About.route)
+                    fadeIn(animationSpec = tween(400))
                 else
-                    fadeIn(initialAlpha = 1f, animationSpec = snap())
+                    showImmediately()
             },
             popExitTransition = null, // Use default
         ) {
@@ -130,12 +124,8 @@ fun StationAppNavigation() {
         }
         composable(
             Screen.About.route,
-            enterTransition = { _, _ ->
-                fadeIn(animationSpec = tween(600))
-            },
-            exitTransition = { _, _ ->
-                fadeOut(animationSpec = tween(400, 200))
-            },
+            enterTransition = { fadeIn(animationSpec = tween(600)) },
+            exitTransition = { fadeOut(animationSpec = tween(400, 200)) },
             popEnterTransition = null,
         ) { AboutScreen() }
         composable(Screen.Stations.route) {
@@ -155,9 +145,7 @@ fun StationAppNavigation() {
         }
         composable(
             Screen.Timetable.route, Screen.Timetable.arguments,
-            popEnterTransition = { _, _ ->
-                fadeIn(initialAlpha = 0f, animationSpec = tween(600))
-            },
+            popEnterTransition = { fadeIn(animationSpec = tween(600)) },
         ) { backStackEntry ->
             TimetableScreen(
                 viewModel = hiltViewModel(),
@@ -170,9 +158,7 @@ fun StationAppNavigation() {
         }
         composable(
             Screen.TrainDetails.route, Screen.TrainDetails.arguments,
-            enterTransition = { _, _ ->
-                fadeIn(initialAlpha = 0f, animationSpec = tween(600))
-            },
+            enterTransition = { fadeIn(animationSpec = tween(600)) },
         ) { backStackEntry ->
             TrainDetailsScreen(
                 viewModel = hiltViewModel(),
@@ -182,3 +168,6 @@ fun StationAppNavigation() {
         }
     }
 }
+
+private fun showImmediately() = fadeIn(initialAlpha = 1f, animationSpec = snap())
+private fun hideImmediately() = fadeOut(targetAlpha = 0f, animationSpec = snap())
