@@ -58,6 +58,7 @@ import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.SearchBar
 import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.ui.theme.StationTheme
+import dev.jylha.station.ui.util.thenIf
 import dev.jylha.station.util.filterWhen
 import dev.jylha.station.util.findAllMatches
 
@@ -234,18 +235,10 @@ fun StationsScreen(
                         StationListEntry(
                             stationName = station.name,
                             onSelect = { onSelect(station) },
-                            modifier = Modifier
-                                .then(
-                                    if (index == 0) {
-                                        Modifier.requiredHeight(Dp.Hairline)
-                                            .wrapContentHeight(
-                                                align = Alignment.Bottom,
-                                                unbounded = true
-                                            )
-                                    } else {
-                                        Modifier
-                                    }
-                                ),
+                            modifier = Modifier.thenIf(index == 0) {
+                                this.requiredHeight(Dp.Hairline)
+                                    .wrapContentHeight(align = Alignment.Bottom, unbounded = true)
+                            },
                             searchText = searchText
                         )
                     }
