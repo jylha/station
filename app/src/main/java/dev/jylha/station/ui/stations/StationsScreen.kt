@@ -1,26 +1,10 @@
 package dev.jylha.station.ui.stations
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -34,21 +18,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.imePadding
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
@@ -58,9 +34,7 @@ import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.SearchBar
 import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.ui.theme.StationTheme
-import dev.jylha.station.ui.util.thenIf
 import dev.jylha.station.util.filterWhen
-import dev.jylha.station.util.findAllMatches
 
 /**
  * Stations screen composable. Stations screen displays a list of stations to select from,
@@ -174,9 +148,9 @@ fun StationsScreen(
             viewState.isFetchingLocation -> FetchingLocation()
             viewState.isLoading -> LoadingStations()
             matchingStations.isEmpty() -> NoMatchingStations(modifier)
-            else -> StationSelectionList(
-                stations = matchingStations,
+            else -> StationList(
                 recentStations = recentStations,
+                stations = matchingStations,
                 onSelect = onSelect,
                 modifier,
                 searchText
@@ -199,115 +173,6 @@ fun StationsScreen(
     val message = stringResource(R.string.message_no_matching_stations)
     EmptyState(message, modifier)
 }
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable private fun StationSelectionList(
-    stations: List<Station>,
-    recentStations: List<Station>,
-    onSelect: (Station) -> Unit,
-    modifier: Modifier,
-    searchText: String
-) {
-    Surface(modifier) {
-        LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(8.dp)) {
-            if (searchText.isBlank() && recentStations.isNotEmpty()) {
-                item { StationListLabel(stringResource(R.string.label_recent)) }
-                items(recentStations) { station ->
-                    StationListEntry(station.name, onSelect = { onSelect(station) })
-                }
-                item { Divider() }
-            }
-
-            item {
-                StationListLabel(
-                    stringResource(
-                        if (searchText.isBlank()) R.string.label_all_stations
-                        else R.string.label_matching_stations
-                    )
-                )
-            }
-
-            stations
-                .groupBy { station -> station.name.first() }
-                .forEach { (letter, group) ->
-                    stickyHeader { StationListStickyLetter(letter) }
-                    itemsIndexed(group) { index, station ->
-                        StationListEntry(
-                            stationName = station.name,
-                            onSelect = { onSelect(station) },
-                            modifier = Modifier.thenIf(index == 0) {
-                                this.requiredHeight(Dp.Hairline)
-                                    .wrapContentHeight(align = Alignment.Bottom, unbounded = true)
-                            },
-                            searchText = searchText
-                        )
-                    }
-                }
-        }
-    }
-}
-
-@Composable private fun StationListLabel(label: String) {
-    Text(
-        label.uppercase(),
-        modifier = Modifier.padding(top = 8.dp, start = 8.dp),
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
-        style = MaterialTheme.typography.caption,
-    )
-}
-
-@Composable private fun StationListStickyLetter(letter: Char) {
-    Box(
-        modifier = Modifier.requiredWidth(StickyLetterColumnWidth),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = letter.toString().uppercase(),
-            modifier = Modifier.padding(vertical = 10.dp),
-            color = MaterialTheme.colors.primary,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.body1,
-        )
-    }
-}
-
-@Composable private fun StationListEntry(
-    stationName: String,
-    onSelect: () -> Unit,
-    modifier: Modifier = Modifier,
-    searchText: String = ""
-) {
-    val textColor = if (searchText.isBlank()) MaterialTheme.colors.onSurface else
-        MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-            .compositeOver(MaterialTheme.colors.surface)
-    val highlightedTextColor = MaterialTheme.colors.onSurface
-    val name = remember(stationName, searchText) {
-        with(AnnotatedString.Builder(stationName)) {
-            if (searchText.isNotBlank()) {
-                stationName.findAllMatches(searchText).forEach { (startIndex, endIndex) ->
-                    addStyle(
-                        SpanStyle(highlightedTextColor, fontWeight = FontWeight.Bold),
-                        startIndex,
-                        endIndex
-                    )
-                }
-            }
-            toAnnotatedString()
-        }
-    }
-    Box(
-        modifier
-            .fillMaxWidth()
-            .padding(start = StickyLetterColumnWidth)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onSelect)
-            .padding(horizontal = 8.dp, vertical = 10.dp)
-    ) {
-        Text(name, style = MaterialTheme.typography.body1, color = textColor)
-    }
-}
-
-val StickyLetterColumnWidth = 32.dp
 
 @Preview(group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(group = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
