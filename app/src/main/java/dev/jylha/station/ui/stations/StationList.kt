@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -148,25 +149,11 @@ private fun StationListEntry(
     modifier: Modifier = Modifier,
     searchText: String = ""
 ) {
-    val textColor = if (searchText.isBlank())
-        MaterialTheme.colors.onSurface.compositeOver(MaterialTheme.colors.surface) else
-        MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-            .compositeOver(MaterialTheme.colors.surface)
-    val highlightedTextColor = MaterialTheme.colors.onSurface
-    val name = remember(stationName, searchText) {
-        with(AnnotatedString.Builder(stationName)) {
-            if (searchText.isNotBlank()) {
-                stationName.findAllMatches(searchText).forEach { (startIndex, endIndex) ->
-                    addStyle(
-                        SpanStyle(highlightedTextColor, fontWeight = FontWeight.Bold),
-                        startIndex,
-                        endIndex
-                    )
-                }
-            }
-            toAnnotatedString()
-        }
-    }
+    val surfaceColor = MaterialTheme.colors.surface
+    val highlightColor = MaterialTheme.colors.onSurface.compositeOver(surfaceColor)
+    val dimmedColor = highlightColor.copy(alpha = 0.7f).compositeOver(surfaceColor)
+    val textColor = if (searchText.isBlank()) highlightColor else dimmedColor
+    val text = rememberHighlightedText(stationName, searchText, highlightColor)
     Box(
         modifier
             .fillMaxWidth()
@@ -175,7 +162,27 @@ private fun StationListEntry(
             .clickable(onClick = onSelect)
             .padding(horizontal = 8.dp, vertical = 10.dp)
     ) {
-        Text(name, style = MaterialTheme.typography.body1, color = textColor)
+        Text(text, style = MaterialTheme.typography.body1, color = textColor)
+    }
+}
+
+@Composable
+private fun rememberHighlightedText(
+    text: String,
+    highlightedText: String,
+    highlightedTextColor: Color
+) = remember(text, highlightedText, highlightedTextColor) {
+    with(AnnotatedString.Builder(text)) {
+        if (highlightedText.isNotBlank()) {
+            text.findAllMatches(highlightedText).forEach { (startIndex, endIndex) ->
+                addStyle(
+                    SpanStyle(highlightedTextColor, fontWeight = FontWeight.Bold),
+                    startIndex,
+                    endIndex
+                )
+            }
+        }
+        toAnnotatedString()
     }
 }
 
