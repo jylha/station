@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
-import dev.jylha.station.ui.util.thenIf
+import dev.jylha.station.ui.util.applyIf
 import dev.jylha.station.util.findAllMatches
 
 /**
@@ -80,13 +80,31 @@ fun StationList(
             stations
                 .groupBy { station -> station.name.first() }
                 .forEach { (letter, group) ->
+                    // Add the first station in each group both above and below the sticky header
+                    // to make it it look like it appears and disappear properly when scrolling
+                    // the list. Both of the items are aligned with the sticky header.
+
+                    item {
+                        val station = group.first()
+                        StationListEntry(
+                            stationName = station.name,
+                            onSelect = { onSelect(station) },
+                            modifier = Modifier
+                                .requiredHeight(Dp.Hairline)
+                                .wrapContentHeight(align = Alignment.Top, unbounded = true),
+                            searchText = searchText
+                        )
+                    }
+
                     stickyHeader { StationListStickyLetter(letter) }
+
                     itemsIndexed(group) { index, station ->
                         StationListEntry(
                             stationName = station.name,
                             onSelect = { onSelect(station) },
-                            modifier = Modifier.thenIf(index == 0) {
-                                this.requiredHeight(Dp.Hairline)
+                            modifier = Modifier.applyIf(index == 0) {
+                                Modifier
+                                    .requiredHeight(Dp.Hairline)
                                     .wrapContentHeight(align = Alignment.Bottom, unbounded = true)
                             },
                             searchText = searchText
@@ -130,7 +148,8 @@ private fun StationListEntry(
     modifier: Modifier = Modifier,
     searchText: String = ""
 ) {
-    val textColor = if (searchText.isBlank()) MaterialTheme.colors.onSurface else
+    val textColor = if (searchText.isBlank())
+        MaterialTheme.colors.onSurface.compositeOver(MaterialTheme.colors.surface) else
         MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
             .compositeOver(MaterialTheme.colors.surface)
     val highlightedTextColor = MaterialTheme.colors.onSurface
@@ -160,4 +179,4 @@ private fun StationListEntry(
     }
 }
 
-val StickyLetterColumnWidth = 32.dp
+private val StickyLetterColumnWidth = 32.dp
