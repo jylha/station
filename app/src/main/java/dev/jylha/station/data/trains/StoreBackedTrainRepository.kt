@@ -69,9 +69,15 @@ class StoreBackedTrainRepository @Inject constructor(
 
     override fun trainsAtStation(stationShortCode: String): Flow<List<Train>> {
         return flow {
-            val trains = trainService.fetchTrainsByCount(
-                stationShortCode, departed = 1, arrived = 1
+            val longDistanceTrains = trainService.fetchTrainsByCount(
+                stationShortCode, departed = 1, arrived = 1,
+                trainCategories = Train.Category.LongDistance.name
             )
+            val commuterTrains = trainService.fetchTrainsByCount(
+                stationShortCode, departed = 1, arrived = 1,
+                trainCategories = Train.Category.Commuter.name
+            )
+            val trains = (longDistanceTrains + commuterTrains)
                 .filter { train -> train.type != "MV" }
                 .toDomainModel()
             emit(trains)
