@@ -1,6 +1,7 @@
 package dev.jylha.station.ui.stations
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -158,6 +159,7 @@ private fun StationListEntry(
         modifier
             .fillMaxWidth()
             .padding(start = StickyLetterColumnWidth)
+            .background(surfaceColor)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = onSelect)
             .padding(horizontal = 8.dp, vertical = 10.dp)
