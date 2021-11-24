@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.home
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -37,6 +39,7 @@ import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.landscapeOrientation
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.withPermission
+import dev.jylha.station.ui.theme.StationTheme
 
 /**
  * Home screen composable.
@@ -74,10 +77,7 @@ fun HomeScreen(
     onShowInfo: () -> Unit = {},
 ) {
     Box(
-        Modifier.background(
-            if (MaterialTheme.colors.isLight) MaterialTheme.colors.primary
-            else MaterialTheme.colors.background
-        )
+        Modifier.background(with(MaterialTheme.colors) { if (isLight) primary else background })
     ) {
         val locationPermission = LocalLocationPermission.current
         when {
@@ -219,4 +219,13 @@ fun HomeScreen(
         LottieCompositionSpec.RawRes(R.raw.train_animation)
     )
     LottieAnimation(composition, modifier)
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun PreviewHomeScreen() {
+    StationTheme {
+        HomeScreen(state = HomeViewState.Initial)
+    }
 }

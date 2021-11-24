@@ -23,14 +23,20 @@ import androidx.core.app.ActivityCompat
     }
 }
 
-val LocalLocationPermission = staticCompositionLocalOf<Permission> {
-    error("LocationPermission is not set.")
-}
+val LocalLocationPermission =
+    staticCompositionLocalOf<Permission> { PermissionNotGranted }
 
 /** Interface for checking and requesting a permission. */
 interface Permission {
     fun isGranted(): Boolean
     fun request(onResult: (Boolean) -> Unit)
+}
+
+private val PermissionNotGranted = object : Permission {
+    override fun isGranted(): Boolean = false
+    override fun request(onResult: (Boolean) -> Unit) {
+        onResult(false)
+    }
 }
 
 /**

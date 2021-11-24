@@ -1,8 +1,8 @@
 package dev.jylha.station.ui.home
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import dev.jylha.station.model.Station
-import javax.annotation.concurrent.Immutable
 
 @Immutable
 data class HomeViewState(
@@ -27,6 +27,6 @@ data class HomeViewState(
     }
 
     companion object {
-        val initial: HomeViewState = HomeViewState()
+        val Initial: HomeViewState = HomeViewState()
     }
 }

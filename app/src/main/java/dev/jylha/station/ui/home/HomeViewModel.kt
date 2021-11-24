@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
     private val stationRepository: StationRepository
 ) : ViewModel() {
     private val mutex = Mutex()
-    private val _state = MutableStateFlow(HomeViewState.initial)
+    private val _state = MutableStateFlow(HomeViewState.Initial)
 
     /** View model state. */
     val state: StateFlow<HomeViewState> = _state.asStateFlow()

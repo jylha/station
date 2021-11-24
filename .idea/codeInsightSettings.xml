@@ -8,6 +8,7 @@
       <name>java.nio.file.WatchEvent.Modifier</name>
       <name>java.time.format.TextStyle</name>
       <name>java.util.concurrent.Flow</name>
+      <name>javax.annotation.concurrent.Immutable</name>
       <name>org.intellij.lang.annotations.Flow</name>
       <name>org.w3c.dom.Text</name>
     </excluded-names>
