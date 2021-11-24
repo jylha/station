@@ -1,7 +1,7 @@
 def versions = [:]
-versions.accompanist = '0.21.3-beta'
+versions.accompanist = '0.21.2-beta'
 versions.activity = '1.4.0'
-versions.compose = '1.1.0-beta03'
+versions.compose = '1.1.0-beta02'
 versions.constraintlayout = '1.0.0-rc01'
 versions.coroutines = '1.5.2'
 versions.datastore = '1.0.0'
