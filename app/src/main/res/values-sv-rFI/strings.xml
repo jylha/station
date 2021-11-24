@@ -10,6 +10,7 @@
 
     <string name="label_about_application">Om den här applikationen</string>
     <string name="label_information_source">Trafikinformationskälla:</string>
+    <string name="label_oss_licenses">Licenser</string>
 
     <string name="message_loading_settings">Hämtar inställningar.</string>>
     <string name="message_loading_stations">Hämtar stationer.</string>

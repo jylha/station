@@ -13,7 +13,7 @@ class AboutScreenTest {
     @get:Rule val rule = createComposeRule()
 
     @Test fun aboutScreen() {
-        rule.setThemedContent { AboutScreen() }
+        rule.setThemedContent { AboutScreen(onNavigateToOssLicenses = {}) }
 
         rule.onNodeWithText("About the application").assertIsDisplayed()
         rule.onNode(
@@ -21,5 +21,6 @@ class AboutScreenTest {
                     hasSubstring("Traffic Management Finland / digitraffic.fi, license CC 4.0 BY")
         ).assertIsDisplayed()
         rule.onNode(hasSubstring("Train animation by")).assertIsDisplayed()
+        rule.onNode(hasSubstring("Open source licenses")).assertIsDisplayed()
     }
 }

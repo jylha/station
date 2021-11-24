@@ -16,6 +16,7 @@
         Train animation by Léa Poisson on LottieFiles:
         https://lottiefiles.com/11580-winter-train
     </string>
+    <string name="label_oss_licenses">Open source licenses</string>
 
     <!-- The message shown when loading application settings. -->
     <string name="message_loading_settings">Retrieving application settings.</string>

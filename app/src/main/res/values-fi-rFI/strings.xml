@@ -11,6 +11,7 @@
 
     <string name="label_about_application">Tietoja sovelluksesta</string>
     <string name="label_information_source">Liikennetietojen lähde:</string>
+    <string name="label_oss_licenses">Lisenssit</string>
 
     <string name="message_loading_settings">Haetaan asetuksia.</string>
     <string name="message_loading_stations">Haetaan asemia.</string>

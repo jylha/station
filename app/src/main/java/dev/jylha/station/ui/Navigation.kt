@@ -1,11 +1,16 @@
 package dev.jylha.station.ui
 
+import android.content.Intent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
@@ -14,6 +19,8 @@ import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import dev.jylha.station.R
 import dev.jylha.station.ui.about.AboutScreen
 import dev.jylha.station.ui.home.HomeScreen
 import dev.jylha.station.ui.stations.StationsScreen
@@ -69,6 +76,8 @@ private sealed class Screen(val route: String) {
 @Composable
 fun StationAppNavigation() {
     val navController = rememberAnimatedNavController()
+    val context = LocalContext.current
+    val ossLicensesTitle = stringResource(id = R.string.label_oss_licenses)
 
     val navigateTo = { screen: Screen ->
         navController.navigate(screen.route)
@@ -92,10 +101,16 @@ fun StationAppNavigation() {
         navController.navigate(Screen.TrainDetails.route(departureDate, trainNumber))
     }
 
+    val navigateToOssLicenses = {
+        OssLicensesMenuActivity.setActivityTitle(ossLicensesTitle)
+        val intent = Intent(context, OssLicensesMenuActivity::class.java)
+        ContextCompat.startActivity(context, intent, null)
+    }
+
     AnimatedNavHost(
         navController, startDestination = Screen.Home.route,
-        enterTransition = { showImmediately() },
-        exitTransition = { hideImmediately() }
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None }
     ) {
         composable(
             Screen.Home.route,
@@ -110,14 +125,14 @@ fun StationAppNavigation() {
                 if (initialState.destination.route == Screen.About.route)
                     fadeIn(animationSpec = tween(400))
                 else
-                    showImmediately()
+                    EnterTransition.None
             },
             popExitTransition = null, // Use default
         ) {
             HomeScreen(
                 viewModel = hiltViewModel(),
-                onNavigateToStations = { navigateToStations() },
-                onNavigateToNearestStation = { navigateToNearestStation() },
+                onNavigateToStations = navigateToStations,
+                onNavigateToNearestStation = navigateToNearestStation,
                 onNavigateToTimetable = { stationCode -> navigateToTimetable(stationCode) },
                 onNavigateToAbout = { navigateTo(Screen.About) },
             )
@@ -127,7 +142,11 @@ fun StationAppNavigation() {
             enterTransition = { fadeIn(animationSpec = tween(600)) },
             exitTransition = { fadeOut(animationSpec = tween(400, 200)) },
             popEnterTransition = null,
-        ) { AboutScreen() }
+        ) {
+            AboutScreen(
+                onNavigateToOssLicenses = navigateToOssLicenses
+            )
+        }
         composable(Screen.Stations.route) {
             StationsScreen(
                 viewModel = hiltViewModel(),
@@ -168,6 +187,3 @@ fun StationAppNavigation() {
         }
     }
 }
-
-private fun showImmediately() = fadeIn(initialAlpha = 1f, animationSpec = snap())
-private fun hideImmediately() = fadeOut(targetAlpha = 0f, animationSpec = snap())
