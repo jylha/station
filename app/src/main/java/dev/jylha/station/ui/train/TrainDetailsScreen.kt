@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.train
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -486,8 +487,10 @@ import java.time.ZonedDateTime
     }
 }
 
-@Preview(name = "TrainDetailsScreen", showBackground = true)
-@Composable private fun PreviewTrainDetails() {
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewTrainDetails() {
     val train = Train(
         5, "IC", Train.Category.LongDistance, departureDate = LocalDate.parse("2020-01-01"),
         timetable = listOf(
