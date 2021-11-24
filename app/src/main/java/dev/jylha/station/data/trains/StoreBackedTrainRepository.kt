@@ -13,8 +13,6 @@ import dev.jylha.station.util.toCacheEntity
 import dev.jylha.station.util.toDomainModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -27,7 +25,6 @@ class StoreBackedTrainRepository @Inject constructor(
     private val stationDatabase: StationDatabase
 ) : TrainRepository {
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private val categoryStore = StoreBuilder.from(
         fetcher = Fetcher.of { level: Int ->
             withContext(Dispatchers.IO) {

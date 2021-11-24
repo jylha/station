@@ -14,8 +14,6 @@ import dev.jylha.station.util.toCacheEntity
 import dev.jylha.station.util.toDomainModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -37,7 +35,6 @@ class StoreBackedStationRepository @Inject constructor(
     private val mutex = Mutex()
     private lateinit var stationNameMapper: StationNameMapper
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private val store = StoreBuilder
         .from<Int, List<Station>, List<Station>>(
             fetcher = Fetcher.of { _ ->
