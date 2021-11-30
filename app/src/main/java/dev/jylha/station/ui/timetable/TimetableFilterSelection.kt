@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -51,8 +53,8 @@ fun TimetableFilterSelection(
     onCategoriesChanged: (Set<Category>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(modifier.fillMaxWidth(), elevation = 2.dp) {
-        BoxWithConstraints(Modifier.padding(8.dp)) {
+    Surface(elevation = 2.dp) {
+        BoxWithConstraints(modifier.padding(8.dp)) {
             if (maxWidth > 700.dp) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -73,6 +75,10 @@ fun TimetableFilterSelection(
         }
     }
 }
+
+private val SelectionButtonContentPadding = 10.dp
+private val SelectionButtonIconSize = 24.dp
+private val SelectionButtonHeight = SelectionButtonContentPadding * 2 + SelectionButtonIconSize
 
 @Composable
 private fun TimetableTypeSelection(
@@ -108,12 +114,14 @@ private fun TimetableTypeSelection(
         SelectionButton(
             onClick = { timetableTypeSelected(TimetableRow.Type.Arrival) },
             selected = timetableTypes.contains(TimetableRow.Type.Arrival),
-            Modifier.weight(1f).semantics { contentDescription = arrivingLabel }
+            modifier = Modifier
+                .weight(1f)
+                .semantics { contentDescription = arrivingLabel }
         ) {
             Icon(
                 painterResource(R.drawable.ic_arrival),
                 contentDescription = null,
-                Modifier.size(24.dp)
+                Modifier.size(SelectionButtonIconSize)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.timetable_type_arriving), maxLines = 1)
@@ -122,14 +130,16 @@ private fun TimetableTypeSelection(
         SelectionButton(
             onClick = { timetableTypeSelected(TimetableRow.Type.Departure) },
             selected = timetableTypes.contains(TimetableRow.Type.Departure),
-            Modifier.weight(1f).semantics { contentDescription = departingLabel }
+            modifier = Modifier
+                .weight(1f)
+                .semantics { contentDescription = departingLabel }
         ) {
             Text(stringResource(R.string.timetable_type_departing), maxLines = 1)
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 painterResource(R.drawable.ic_departure),
                 contentDescription = null,
-                Modifier.size(24.dp)
+                Modifier.size(SelectionButtonIconSize)
             )
         }
     }
@@ -172,7 +182,7 @@ private fun CategorySelection(
             selected = categories.contains(Category.LongDistance),
             Modifier.weight(1f).semantics { contentDescription = longDistanceLabel }
         ) {
-            Icon(image, contentDescription = null)
+            Icon(image, contentDescription = null, Modifier.size(SelectionButtonIconSize))
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.category_long_distance_trains), maxLines = 1)
         }
@@ -182,7 +192,7 @@ private fun CategorySelection(
             selected = categories.contains(Category.Commuter),
             Modifier.weight(1f).semantics { contentDescription = commuterLabel }
         ) {
-            Icon(image, contentDescription = null)
+            Icon(image, contentDescription = null, Modifier.size(SelectionButtonIconSize))
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.category_commuter_trains), maxLines = 1)
         }
@@ -193,12 +203,14 @@ private fun CategorySelection(
     onClick: () -> Unit,
     selected: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable RowScope.() -> Unit
 ) {
+    val selectionButtonModifier = modifier
+        .sizeIn(minHeight = SelectionButtonHeight, maxHeight = SelectionButtonHeight)
     if (MaterialTheme.colors.isLight) {
-        LightSelectionButton(onClick, selected, modifier, content)
+        LightSelectionButton(onClick, selected, selectionButtonModifier, content)
     } else {
-        DarkSelectionButton(onClick, selected, modifier, content)
+        DarkSelectionButton(onClick, selected, selectionButtonModifier, content)
     }
 }
 
@@ -206,7 +218,7 @@ private fun CategorySelection(
     onClick: () -> Unit,
     selected: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable RowScope.() -> Unit
 ) {
     Button(
         onClick,
@@ -215,15 +227,16 @@ private fun CategorySelection(
             backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.Gray,
             contentColor = MaterialTheme.colors.onPrimary
         ),
-        contentPadding = PaddingValues(8.dp)
-    ) { content() }
+        contentPadding = PaddingValues(SelectionButtonContentPadding),
+        content = content
+    )
 }
 
 @Composable private fun DarkSelectionButton(
     onClick: () -> Unit,
     selected: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable RowScope.() -> Unit
 ) {
     val color = with(MaterialTheme.colors) {
         if (selected) primaryVariant.copy(alpha = 0.9f).compositeOver(surface)
@@ -238,8 +251,9 @@ private fun CategorySelection(
             backgroundColor = Color.Transparent,
             contentColor = color,
         ),
-        contentPadding = PaddingValues(8.dp)
-    ) { content() }
+        contentPadding = PaddingValues(SelectionButtonContentPadding),
+        content = content
+    )
 }
 
 @Preview(
