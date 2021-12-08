@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +20,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -150,7 +154,11 @@ fun HomeScreen(
                     Introduction()
                 }
                 ButtonContainer {
-                    Button(onShowStationSelection, Modifier.width(180.dp)) {
+                    HomeScreenButton(onShowStationSelection) {
+                        Icon(
+                            Icons.Default.LocationCity,
+                            contentDescription = null
+                        )
                         Text(
                             text = stringResource(R.string.label_select_station),
                             modifier = Modifier.fillMaxWidth(),
@@ -158,7 +166,11 @@ fun HomeScreen(
                             style = MaterialTheme.typography.button
                         )
                     }
-                    Button(onShowNearestStation, Modifier.width(180.dp)) {
+                    HomeScreenButton(onShowNearestStation) {
+                        Icon(
+                            Icons.Default.MyLocation,
+                            contentDescription = null
+                        )
                         Text(
                             text = stringResource(R.string.label_nearest_station),
                             modifier = Modifier.fillMaxWidth(),
@@ -170,6 +182,16 @@ fun HomeScreen(
             }
         }
     }
+}
+
+@Composable
+private fun HomeScreenButton(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
+    Button(
+        onClick,
+        modifier = Modifier.width(200.dp).heightIn(48.dp),
+        shape = RoundedCornerShape(50),
+        content = content,
+    )
 }
 
 @Composable private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
