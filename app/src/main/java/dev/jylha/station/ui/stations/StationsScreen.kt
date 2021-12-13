@@ -98,46 +98,21 @@ fun StationsScreen(
             station.name.contains(searchText, ignoreCase = true)
         }
     }
-
-    val searchLabel = stringResource(R.string.accessibility_label_search)
-    val selectNearestLabel = stringResource(R.string.label_nearest_station)
-    val searchStationLabel = stringResource(R.string.label_search_station)
+    val setSearchState: (Boolean) -> Unit = { enabled ->
+        searchText = ""
+        searchEnabled = enabled
+    }
 
     Scaffold(
         topBar = {
-            if (searchEnabled) {
-                SearchBar(
-                    text = searchText,
-                    placeholderText = searchStationLabel,
-                    modifier = Modifier.semantics { contentDescription = searchLabel },
-                    onValueChanged = { value -> searchText = value },
-                    onClose = { searchEnabled = false; searchText = "" }
-                )
-            } else {
-                TopAppBar(
-                    title = {
-                        if (!viewState.selectNearest) {
-                            Text(stringResource(R.string.label_select_station))
-                        }
-                    },
-                    actions = {
-                        if (!viewState.selectNearest) {
-                            IconButton(onClick = onSelectNearest) {
-                                Icon(
-                                    Icons.Rounded.MyLocation,
-                                    contentDescription = selectNearestLabel
-                                )
-                            }
-                            IconButton(onClick = { searchEnabled = true }) {
-                                Icon(
-                                    Icons.Default.Search,
-                                    contentDescription = searchStationLabel
-                                )
-                            }
-                        }
-                    }
-                )
-            }
+            StationsListTopAppBar(
+                searchEnabled,
+                onSearchEnabled = setSearchState,
+                searchText,
+                onSearchTextChanged = { text -> searchText = text },
+                showContent = !viewState.selectNearest,
+                onSelectNearest,
+            )
         }
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding).imePadding()
@@ -151,11 +126,56 @@ fun StationsScreen(
             else -> StationList(
                 recentStations = recentStations,
                 stations = matchingStations,
-                onSelect = onSelect,
+                onSelect = { station -> setSearchState(false); onSelect(station) },
                 modifier,
                 searchText
             )
         }
+    }
+}
+
+@Composable
+private fun StationsListTopAppBar(
+    searchEnabled: Boolean,
+    onSearchEnabled: (Boolean) -> Unit,
+    searchText: String,
+    onSearchTextChanged: (String) -> Unit,
+    showContent: Boolean,
+    onSelectNearest: () -> Unit,
+) {
+    val searchLabel = stringResource(R.string.accessibility_label_search)
+    val searchStationLabel = stringResource(R.string.label_search_station)
+
+    if (searchEnabled) {
+        SearchBar(
+            text = searchText,
+            placeholderText = searchStationLabel,
+            modifier = Modifier.semantics { contentDescription = searchLabel },
+            onValueChanged = onSearchTextChanged,
+            onClose = { onSearchEnabled(false) }
+        )
+    } else {
+        TopAppBar(
+            title = {
+                if (showContent) Text(stringResource(R.string.label_select_station))
+            },
+            actions = {
+                if (showContent) {
+                    IconButton(onClick = onSelectNearest) {
+                        Icon(
+                            Icons.Rounded.MyLocation,
+                            contentDescription = stringResource(R.string.label_nearest_station)
+                        )
+                    }
+                    IconButton(onClick = { onSearchEnabled(true) }) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = searchStationLabel
+                        )
+                    }
+                }
+            }
+        )
     }
 }
 
