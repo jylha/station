@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.common
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,6 +52,10 @@ fun SearchBar(
     val (textColor, surfaceColor) = with(MaterialTheme.colors) {
         if (isLight) Pair(onPrimary, primary) else Pair(onSurface, surface)
     }
+    val indicatorColor = with(MaterialTheme.colors) {
+        if (isLight) onPrimary else primaryVariant
+    }
+
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 
@@ -91,9 +96,13 @@ fun SearchBar(
                     },
                 ),
                 singleLine = true,
+                maxLines = 1,
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = textColor,
-                    backgroundColor = Color.Transparent
+                    cursorColor = indicatorColor,
+                    backgroundColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = indicatorColor,
                 )
             )
         }
@@ -101,14 +110,18 @@ fun SearchBar(
     LaunchedEffect(focusRequester) { focusRequester.requestFocus() }
 }
 
-@Preview(showBackground = true, name = "Light SearchBar with placeholder text")
-@Composable private fun PreviewLightSearchBar() {
-    SearchBar(text = "", onValueChanged = {}, placeholderText = "Search")
+@Preview(name = "SearchBar with placeholder text", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "SearchBar with placeholder text", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable private fun PreviewSearchBarWithPlaceholderText() {
+    StationTheme {
+        SearchBar(text = "", onValueChanged = {}, placeholderText = "Placeholder text")
+    }
 }
 
-@Preview(showBackground = true, name = "Dark SearchBar with search text")
-@Composable private fun PreviewDarkSearchBar() {
-    StationTheme(darkTheme = true) {
-        SearchBar(text = "Helsinki", onValueChanged = {})
+@Preview(name = "SearchBar with search text", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "SearchBar with search text", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable private fun PreviewSearchBarWithInputText() {
+    StationTheme {
+        SearchBar(text = "Input text", onValueChanged = {})
     }
 }
