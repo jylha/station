@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.common
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -67,18 +68,11 @@ fun ErrorState(
     }
 }
 
-@Preview
+@Preview(name = "Error - light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Error - dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun LightPreviewError() {
-    StationTheme(darkTheme = false) {
-        ErrorState("Oops. Something went wrong.")
-    }
-}
-
-@Preview
-@Composable
-private fun DarkPreviewError() {
-    StationTheme(darkTheme = true) {
+private fun PreviewError() {
+    StationTheme {
         ErrorState("Oops. Something went wrong.")
     }
 }
