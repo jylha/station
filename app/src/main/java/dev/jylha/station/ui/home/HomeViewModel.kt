@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 private const val SKIP_HOME_SCREEN_ENABLED: Boolean = false
 
@@ -21,7 +20,6 @@ class HomeViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {
-    private val mutex = Mutex()
     private val _state = MutableStateFlow(HomeViewState.Initial)
 
     /** View model state. */
@@ -50,8 +48,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun reduceState(result: HomeViewResult) {
-        mutex.withLock { _state.value = _state.value.reduce(result) }
+    private fun reduceState(result: HomeViewResult) {
+        _state.update { state -> state.reduce(result) }
     }
 }
 

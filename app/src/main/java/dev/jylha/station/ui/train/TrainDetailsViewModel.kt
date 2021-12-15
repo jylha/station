@@ -11,16 +11,14 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 @HiltViewModel
 class TrainDetailsViewModel @Inject constructor(
     private val trainRepository: TrainRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {
-    private val mutex = Mutex()
     private val _state = MutableStateFlow(TrainDetailsViewState.initial)
 
     /** View model state. */
@@ -67,7 +65,7 @@ class TrainDetailsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun reduceState(result: TrainDetailsResult) {
-        mutex.withLock { _state.value = _state.value.reduce(result) }
+    private fun reduceState(result: TrainDetailsResult) {
+        _state.update { state -> state.reduce(result) }
     }
 }

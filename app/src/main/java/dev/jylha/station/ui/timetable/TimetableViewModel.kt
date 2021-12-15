@@ -26,10 +26,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 @OptIn(FlowPreview::class)
@@ -40,7 +39,6 @@ class TimetableViewModel @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val eventChannel = Channel<TimetableEvent>(Channel.UNLIMITED)
-    private val mutex = Mutex()
     private val _state = MutableStateFlow(TimetableViewState.initial)
 
     /** View model state. */
@@ -151,7 +149,7 @@ class TimetableViewModel @Inject constructor(
         }
     }
 
-    private suspend fun reduceState(result: TimetableResult) {
-        mutex.withLock { _state.value = _state.value.reduce(result) }
+    private fun reduceState(result: TimetableResult) {
+        _state.update { state -> state.reduce(result) }
     }
 }
