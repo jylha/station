@@ -74,6 +74,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
     implementation "androidx.compose.ui:ui-tooling:${versions.compose}"
     implementation "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout}"
+    implementation "androidx.core:core-splashscreen:${versions.splashscreen}"
     implementation "androidx.datastore:datastore-preferences-core:${versions.datastore}"
     implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
     implementation "androidx.hilt:hilt-navigation:${versions.hilt_navigation}"
