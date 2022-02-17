@@ -17,7 +17,6 @@
         android:theme="@style/Theme.Station">
         <activity
             android:name=".ui.MainActivity"
-            android:label=" "
             android:theme="@style/Theme.App.Starting"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
