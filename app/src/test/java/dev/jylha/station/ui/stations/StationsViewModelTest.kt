@@ -3,18 +3,20 @@ package dev.jylha.station.ui.stations
 import android.location.Location
 import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
-import dev.jylha.station.data.location.LocationService
+import com.google.common.truth.Truth.assertThat
+import dev.jylha.station.testutil.CoroutineScopeRule
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.data.stations.StationRepository
+import dev.jylha.station.domain.GetLocationUseCase
 import dev.jylha.station.model.Station
-import dev.jylha.station.testutil.MainCoroutineScopeRule
-import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,11 +31,21 @@ import org.mockito.Mockito.`when` as whenCalled
 @RunWith(MockitoJUnitRunner::class)
 class StationsViewModelTest {
 
-    @get:Rule val coroutineRule: MainCoroutineScopeRule = MainCoroutineScopeRule()
+    private val dispatcher = StandardTestDispatcher()
+    @get:Rule val coroutineRule = CoroutineScopeRule(dispatcher)
 
     @Mock private lateinit var stationRepository: StationRepository
     @Mock private lateinit var settingsRepository: SettingsRepository
-    @Mock private lateinit var locationService: LocationService
+
+    private val fakeLocation = object : GetLocationUseCase {
+        override suspend fun invoke(): Location {
+            delay(100)
+            val location = mock(Location::class.java)
+            whenCalled(location.latitude).thenReturn(60.0)
+            whenCalled(location.longitude).thenReturn(70.0)
+            return location
+        }
+    }
 
     private lateinit var viewModel: StationsViewModel
 
@@ -47,7 +59,7 @@ class StationsViewModelTest {
         Station("Helsinki", "HKI", 1, 50.0, 50.0)
     )
 
-    @Before fun setup() = coroutineRule.runBlockingTest {
+    @Before fun setup() = runTest(dispatcher) {
         whenCalled(stationRepository.getStationNameMapper()).thenReturn(testMapper)
         whenCalled(stationRepository.fetchStations()).thenReturn(
             flowOf(
@@ -56,10 +68,10 @@ class StationsViewModelTest {
         )
         whenCalled(settingsRepository.recentStations()).thenReturn(flowOf(emptyList()))
 
-        viewModel = StationsViewModel(stationRepository, settingsRepository, locationService)
+        viewModel = StationsViewModel(stationRepository, settingsRepository, fakeLocation)
     }
 
-    @Test fun `initialize view model`() = coroutineRule.runBlockingTest {
+    @Test fun `initialize view model`() = runTest(dispatcher) {
         val expected = StationsViewState(
             stations = testStations,
             recentStations = emptyList(),
@@ -78,10 +90,9 @@ class StationsViewModelTest {
         assertThat(result).isEqualTo(expected)
     }
 
-    @Test fun `select nearest station`() = coroutineRule.runBlockingTest {
-        val locationChannel = Channel<Location>()
-        whenCalled(locationService.currentLocation()).thenReturn(locationChannel.consumeAsFlow())
+    @Test fun `select nearest station`() = runTest(dispatcher) {
         viewModel.setSelectionMode(selectNearestStation = true)
+        advanceTimeBy(10)
 
         with(viewModel.state.value) {
             assertThat(selectNearest).isTrue()
@@ -90,10 +101,7 @@ class StationsViewModelTest {
             assertThat(longitude).isNull()
         }
 
-        val location = mock(Location::class.java)
-        whenCalled(location.latitude).thenReturn(60.0)
-        whenCalled(location.longitude).thenReturn(70.0)
-        locationChannel.send(location)
+        advanceTimeBy(100)
 
         with(viewModel.state.value) {
             assertThat(isFetchingLocation).isFalse()
@@ -102,16 +110,16 @@ class StationsViewModelTest {
         }
     }
 
-    @Test fun `set selected station`() = coroutineRule.runBlockingTest {
+    @Test fun `set selected station`() = runTest(dispatcher) {
         val station = testStations.first()
         viewModel.stationSelected(station)
+        advanceUntilIdle()
         verify(settingsRepository).setStation(station.code)
     }
 
-    @Test fun `change mode back to selecting station from list`() {
-        val locationChannel = Channel<Location>()
-        whenCalled(locationService.currentLocation()).thenReturn(locationChannel.consumeAsFlow())
+    @Test fun `change mode back to selecting station from list`() = runTest(dispatcher) {
         viewModel.setSelectionMode(selectNearestStation = true)
+        advanceTimeBy(50)
 
         with(viewModel.state.value) {
             assertThat(selectNearest).isTrue()
@@ -121,6 +129,7 @@ class StationsViewModelTest {
         }
 
         viewModel.setSelectionMode(selectNearestStation = false)
+        advanceTimeBy(10)
 
         with(viewModel.state.value) {
             assertThat(selectNearest).isFalse()

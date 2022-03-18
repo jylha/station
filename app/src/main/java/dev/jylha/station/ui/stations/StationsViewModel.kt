@@ -4,28 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jylha.station.data.location.LocationService
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationRepository
+import dev.jylha.station.domain.GetLocationUseCase
 import dev.jylha.station.model.Station
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlinx.coroutines.flow.update
 
+/** A view model for the [StationsScreen]. */
 @HiltViewModel
 class StationsViewModel @Inject constructor(
     private val stationRepository: StationRepository,
     private val settingsRepository: SettingsRepository,
-    private val locationService: LocationService,
+    private val getLocation: GetLocationUseCase,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(StationsViewState())
 
-    /** A flow of view states. */
+    private val _state = MutableStateFlow(StationsViewState())
     val state: StateFlow<StationsViewState> = _state.asStateFlow()
 
     init {
@@ -83,7 +81,7 @@ class StationsViewModel @Inject constructor(
         viewModelScope.launch {
             reduceState(FetchLocation.Fetching)
             try {
-                val location = locationService.currentLocation().first()
+                val location = getLocation()
                 reduceState(FetchLocation.Success(location.latitude, location.longitude))
             } catch (e: Exception) {
                 reduceState(FetchLocation.Error(e.message))

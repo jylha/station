@@ -1,18 +1,20 @@
 package dev.jylha.station.di
 
-import dev.jylha.station.data.location.FusedLocationService
-import dev.jylha.station.data.location.LocationService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.jylha.station.domain.DefaultGetLocationUseCase
+import dev.jylha.station.domain.GetLocationUseCase
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class LocationModule {
+abstract class UseCaseModule {
 
     @Singleton
     @Binds
-    abstract fun bind(service: FusedLocationService): LocationService
+    abstract fun bindGetLocationUseCase(useCse: DefaultGetLocationUseCase): GetLocationUseCase
 }
+
