@@ -1,0 +1,6 @@
+def buildConfig = [
+        'compileSdk': 32,
+        'minSdk'    : 26,
+        'targetSdk' : 32,
+]
+ext.buildConfig = buildConfig
