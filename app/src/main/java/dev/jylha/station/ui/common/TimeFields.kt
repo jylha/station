@@ -31,7 +31,6 @@ import dev.jylha.station.R
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.toLocalTimeString
-import java.time.ZonedDateTime
 
 /**
  * Composable for displaying time field for arrival or departure.
@@ -43,10 +42,20 @@ import java.time.ZonedDateTime
         when {
             cancelled -> CancelledTime(type = timetableRow.type, modifier)
             actualTime != null ->
-                ActualTime(actualTime, differenceInMinutes, timetableRow.type, modifier)
+                ActualTime(
+                    actualTime.toImmutable(),
+                    differenceInMinutes,
+                    timetableRow.type,
+                    modifier
+                )
             estimatedTime != null && differenceInMinutes != 0 ->
-                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type, modifier)
-            else -> ScheduledTime(scheduledTime, timetableRow.type, modifier)
+                EstimatedTime(
+                    scheduledTime.toImmutable(),
+                    estimatedTime.toImmutable(),
+                    timetableRow.type,
+                    modifier
+                )
+            else -> ScheduledTime(scheduledTime.toImmutable(), timetableRow.type, modifier)
         }
     } ?: Box(modifier)
 }
@@ -59,7 +68,7 @@ import java.time.ZonedDateTime
  * @param track Track name that will be included in the content description.
  */
 @Composable fun ScheduledTime(
-    scheduledTime: ZonedDateTime,
+    scheduledTime: ImmutableTime,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
     track: String? = null,
@@ -96,8 +105,8 @@ import java.time.ZonedDateTime
  * @param track Track name that will be included in the content description.
  */
 @Composable fun EstimatedTime(
-    scheduledTime: ZonedDateTime,
-    estimatedTime: ZonedDateTime,
+    scheduledTime: ImmutableTime,
+    estimatedTime: ImmutableTime,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
     track: String? = null
@@ -152,7 +161,7 @@ import java.time.ZonedDateTime
  * @param track Track name that will be included in the content description.
  */
 @Composable fun ActualTime(
-    actualTime: ZonedDateTime,
+    actualTime: ImmutableTime,
     differenceInMinutes: Int,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
@@ -230,17 +239,17 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable private fun produceLocalTime(time: ZonedDateTime): State<String> {
+@Composable private fun produceLocalTime(time: ImmutableTime): State<String> {
     return produceState("", time) {
-        value = time.toLocalTimeString()
+        value = time().toLocalTimeString()
     }
 }
 
 @Composable private fun produceLocalTimes(
-    time1: ZonedDateTime,
-    time2: ZonedDateTime
+    time1: ImmutableTime,
+    time2: ImmutableTime
 ): State<Pair<String, String>> {
     return produceState(Pair("", ""), time1, time2) {
-        value = Pair(time1.toLocalTimeString(), time2.toLocalTimeString())
+        value = Pair(time1().toLocalTimeString(), time2().toLocalTimeString())
     }
 }

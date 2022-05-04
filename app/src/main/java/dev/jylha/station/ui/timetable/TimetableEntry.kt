@@ -71,6 +71,7 @@ import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.causeName
 import dev.jylha.station.ui.common.heightFraction
 import dev.jylha.station.ui.common.stationName
+import dev.jylha.station.ui.common.toImmutable
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.insertSpaces
 import java.time.ZonedDateTime
@@ -321,7 +322,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
                 time = {
                     ActualTime(
-                        actualTime, differenceInMinutes, TimetableRow.Type.Arrival, track = track
+                        actualTime.toImmutable(), differenceInMinutes, TimetableRow.Type.Arrival, track = track
                     )
                 },
                 modifier
@@ -330,14 +331,23 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = {
                     EstimatedTime(
-                        scheduledTime, estimatedTime, TimetableRow.Type.Arrival, track = track
+                        scheduledTime.toImmutable(),
+                        estimatedTime.toImmutable(),
+                        TimetableRow.Type.Arrival,
+                        track = track
                     )
                 },
                 modifier
             )
             else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
-                time = { ScheduledTime(scheduledTime, TimetableRow.Type.Arrival, track = track) },
+                time = {
+                    ScheduledTime(
+                        scheduledTime.toImmutable(),
+                        TimetableRow.Type.Arrival,
+                        track = track
+                    )
+                },
                 modifier
             )
         }
@@ -360,7 +370,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
                 time = {
                     ActualTime(
-                        actualTime, differenceInMinutes, TimetableRow.Type.Departure,
+                        actualTime.toImmutable(), differenceInMinutes, TimetableRow.Type.Departure,
                         track = trackLabel
                     )
                 },
@@ -370,7 +380,9 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
                     EstimatedTime(
-                        scheduledTime, estimatedTime, TimetableRow.Type.Departure,
+                        scheduledTime.toImmutable(),
+                        estimatedTime.toImmutable(),
+                        TimetableRow.Type.Departure,
                         track = trackLabel
                     )
                 },
@@ -380,7 +392,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
                     ScheduledTime(
-                        scheduledTime, TimetableRow.Type.Departure, track = trackLabel
+                        scheduledTime.toImmutable(), TimetableRow.Type.Departure, track = trackLabel
                     )
                 },
                 modifier
