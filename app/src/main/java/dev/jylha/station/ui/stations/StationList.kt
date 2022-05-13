@@ -57,6 +57,10 @@ fun StationList(
     modifier: Modifier,
     searchText: String = ""
 ) {
+    val groups = remember(stations) {
+        stations.groupBy { station -> station.name.first() }
+    }
+
     Surface(modifier) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -79,40 +83,38 @@ fun StationList(
                 )
             }
 
-            stations
-                .groupBy { station -> station.name.first() }
-                .forEach { (letter, group) ->
-                    // Add the first station in each group both above and below the sticky header
-                    // to make it it look like it appears and disappear properly when scrolling
-                    // the list. Both of the items are aligned with the sticky header.
+            groups.forEach { (letter, group) ->
+                // Add the first station in each group both above and below the sticky header
+                // to make it it look like it appears and disappear properly when scrolling
+                // the list. Both of the items are aligned with the sticky header.
 
-                    item {
-                        val station = group.first()
-                        StationListEntry(
-                            stationName = station.name,
-                            onSelect = { onSelect(station) },
-                            modifier = Modifier
-                                .requiredHeight(Dp.Hairline)
-                                .wrapContentHeight(align = Alignment.Top, unbounded = true),
-                            searchText = searchText
-                        )
-                    }
-
-                    stickyHeader { StationListStickyLetter(letter) }
-
-                    itemsIndexed(group) { index, station ->
-                        StationListEntry(
-                            stationName = station.name,
-                            onSelect = { onSelect(station) },
-                            modifier = Modifier.applyIf(index == 0) {
-                                Modifier
-                                    .requiredHeight(Dp.Hairline)
-                                    .wrapContentHeight(align = Alignment.Bottom, unbounded = true)
-                            },
-                            searchText = searchText
-                        )
-                    }
+                item {
+                    val station = group.first()
+                    StationListEntry(
+                        stationName = station.name,
+                        onSelect = { onSelect(station) },
+                        modifier = Modifier
+                            .requiredHeight(Dp.Hairline)
+                            .wrapContentHeight(align = Alignment.Top, unbounded = true),
+                        searchText = searchText
+                    )
                 }
+
+                stickyHeader { StationListStickyLetter(letter) }
+
+                itemsIndexed(group) { index, station ->
+                    StationListEntry(
+                        stationName = station.name,
+                        onSelect = { onSelect(station) },
+                        modifier = Modifier.applyIf(index == 0) {
+                            Modifier
+                                .requiredHeight(Dp.Hairline)
+                                .wrapContentHeight(align = Alignment.Bottom, unbounded = true)
+                        },
+                        searchText = searchText
+                    )
+                }
+            }
         }
     }
 }
