@@ -4,11 +4,13 @@ import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.data.stations.StationRepository
 import dev.jylha.station.data.trains.TrainRepository
 import dev.jylha.station.model.Train
-import dev.jylha.station.testutil.MainCoroutineScopeRule
 import com.google.common.truth.Truth.assertThat
+import dev.jylha.station.testutil.CoroutineScopeRule
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,7 +23,8 @@ import org.mockito.Mockito.`when` as whenCalled
 @RunWith(MockitoJUnitRunner::class)
 class TrainDetailsViewModelTest {
 
-    @get:Rule val coroutineScopeRule: MainCoroutineScopeRule = MainCoroutineScopeRule()
+    private val dispatcher = StandardTestDispatcher()
+    @get:Rule val coroutineRule = CoroutineScopeRule(dispatcher)
 
     @Mock private lateinit var trainRepository: TrainRepository
     @Mock private lateinit var stationRepository: StationRepository
@@ -34,12 +37,12 @@ class TrainDetailsViewModelTest {
         }
     }
 
-    @Before fun setup() = runBlockingTest {
+    @Before fun setup() = runTest(dispatcher) {
         whenCalled(stationRepository.getStationNameMapper()).thenReturn(testMapper)
         viewModel = TrainDetailsViewModel(trainRepository, stationRepository)
     }
 
-    @Test fun `initialize view model`() {
+    @Test fun `initialize view model`() = runTest(dispatcher) {
         val result = viewModel.state.value
         val excepted = TrainDetailsViewState(
             isLoadingTrain = false,
@@ -51,11 +54,13 @@ class TrainDetailsViewModelTest {
         assertThat(result).isEqualTo(excepted)
     }
 
-    @Test fun `set train`() = runBlockingTest {
+    @Test fun `set train`() = runTest(dispatcher) {
         val train = Train(1, "A", Train.Category.LongDistance)
         val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
         whenCalled(trainRepository.train(departureDate, train.number)).thenReturn(train)
         viewModel.setTrain(departureDate, train.number)
+        advanceUntilIdle()
+
         val result = viewModel.state.value
         val excepted = TrainDetailsViewState(
             isLoadingTrain = false,
@@ -67,12 +72,14 @@ class TrainDetailsViewModelTest {
         assertThat(result).isEqualTo(excepted)
     }
 
-    @Test fun `reload train details`() = runBlockingTest {
+    @Test fun `reload train details`() = runTest(dispatcher) {
         val train = Train(1, "A", Train.Category.LongDistance, isRunning = false, version = 100)
         val updated = Train(1, "A", Train.Category.LongDistance, isRunning = true, version = 200)
         val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
         whenCalled(trainRepository.train(departureDate, 1, 100)).thenReturn(updated)
         viewModel.reload(train)
+        advanceUntilIdle()
+
         val result = viewModel.state.value
         val expected = TrainDetailsViewState(
             isLoadingTrain = false,
