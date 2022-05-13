@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--tests &quot;dev.jylha.station.*&quot;" />
+      <option name="scriptParameters" value="" />
       <option name="taskDescriptions">
         <list />
       </option>
@@ -12,6 +12,8 @@
         <list>
           <option value=":app:cleanTestDebugUnitTest" />
           <option value=":app:testDebugUnitTest" />
+          <option value="--tests" />
+          <option value="&quot;dev.jylha.station.*&quot;" />
         </list>
       </option>
       <option name="vmOptions" value="" />
