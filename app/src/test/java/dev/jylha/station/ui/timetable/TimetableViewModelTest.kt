@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.timetable
 
+import com.google.common.truth.Truth.assertThat
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.data.stations.StationRepository
@@ -8,13 +9,13 @@ import dev.jylha.station.model.CauseCategories
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
-import dev.jylha.station.testutil.MainCoroutineScopeRule
-import com.google.common.truth.Truth.assertThat
+import dev.jylha.station.testutil.CoroutineScopeRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +29,8 @@ import org.mockito.Mockito.`when` as whenCalled
 @RunWith(MockitoJUnitRunner::class)
 class TimetableViewModelTest {
 
-    @get:Rule val coroutineRule: MainCoroutineScopeRule = MainCoroutineScopeRule()
+    private val dispatcher = UnconfinedTestDispatcher()
+    @get:Rule val coroutineRule = CoroutineScopeRule(dispatcher)
 
     @Mock private lateinit var trainRepository: TrainRepository
     @Mock private lateinit var stationRepository: StationRepository
@@ -61,7 +63,7 @@ class TimetableViewModelTest {
         setOf(Train.Category.LongDistance, Train.Category.Commuter)
     )
 
-    @Before fun setup() = coroutineRule.runBlockingTest {
+    @Before fun setup() = runTest(dispatcher) {
         whenCalled(trainRepository.causeCategories()).thenReturn(emptyList())
         whenCalled(trainRepository.detailedCauseCategories()).thenReturn(emptyList())
         whenCalled(trainRepository.thirdLevelCauseCategories()).thenReturn(emptyList())
@@ -73,12 +75,11 @@ class TimetableViewModelTest {
             trainRepository,
             stationRepository,
             settingsRepository,
-            coroutineRule.dispatcher
+            dispatcher
         )
     }
 
-    @Test fun `initial state`() = coroutineRule.runBlockingTest {
-        setup()
+    @Test fun `initial state`() = runTest(dispatcher) {
         val expected = TimetableViewState(
             isLoadingTimetable = true,
             stationNameMapper = testMapper,
@@ -88,31 +89,31 @@ class TimetableViewModelTest {
         assertThat(result).isEqualTo(expected)
     }
 
-    @Test fun `timetable type is changed to Arrival`() = coroutineRule.runBlockingTest {
+    @Test fun `timetable type is changed to Arrival`() = runTest(dispatcher) {
         timetableTypeFlow.value = setOf(TimetableRow.Type.Arrival)
         val result = viewModel.state.value
         assertThat(result.selectedTimetableTypes).isEqualTo(setOf(TimetableRow.Type.Arrival))
     }
 
-    @Test fun `timetable type is changed to Departure`() = coroutineRule.runBlockingTest {
+    @Test fun `timetable type is changed to Departure`() = runTest(dispatcher) {
         timetableTypeFlow.value = setOf(TimetableRow.Type.Departure)
         val result = viewModel.state.value
         assertThat(result.selectedTimetableTypes).isEqualTo(setOf(TimetableRow.Type.Departure))
     }
 
-    @Test fun `train category is changed to LongDistance`() = coroutineRule.runBlockingTest {
+    @Test fun `train category is changed to LongDistance`() = runTest(dispatcher) {
         trainCategoryFlow.value = setOf(Train.Category.LongDistance)
         val result = viewModel.state.value
         assertThat(result.selectedTrainCategories).isEqualTo(setOf(Train.Category.LongDistance))
     }
 
-    @Test fun `train category is changed to Commuter`() = coroutineRule.runBlockingTest {
+    @Test fun `train category is changed to Commuter`() = runTest(dispatcher) {
         trainCategoryFlow.value = setOf(Train.Category.Commuter)
         val result = viewModel.state.value
         assertThat(result.selectedTrainCategories).isEqualTo(setOf(Train.Category.Commuter))
     }
 
-    @Test fun `handle LoadTimetable event`() = coroutineRule.runBlockingTest {
+    @Test fun `handle LoadTimetable event`() = runTest(dispatcher) {
         val station = Station("Helsinki", "HKI", 1, 10.0, 10.0)
         val trainChannel = Channel<List<Train>>()
         whenCalled(stationRepository.fetchStation(station.code)).thenReturn(station)
@@ -132,7 +133,7 @@ class TimetableViewModelTest {
         }
     }
 
-    @Test fun `handle ReloadTimetable event`() = coroutineRule.runBlockingTest {
+    @Test fun `handle ReloadTimetable event`() = runTest(dispatcher) {
         val station = Station("Helsinki", "HKI", 1, 10.0, 10.0)
         val trainChannel = Channel<List<Train>>()
         whenCalled(stationRepository.fetchStation(station.code)).thenReturn(station)
@@ -157,12 +158,12 @@ class TimetableViewModelTest {
         }
     }
 
-    @Test fun `handle SelectCategories event`() = coroutineRule.runBlockingTest {
+    @Test fun `handle SelectCategories event`() = runTest(dispatcher) {
         viewModel.offer(TimetableEvent.SelectCategories(setOf(Train.Category.Commuter)))
         verify(settingsRepository).setTrainCategories(setOf(Train.Category.Commuter))
     }
 
-    @Test fun `handle SelectTimetableTypes event`() = coroutineRule.runBlockingTest {
+    @Test fun `handle SelectTimetableTypes event`() = runTest(dispatcher) {
         viewModel.offer(TimetableEvent.SelectTimetableTypes(setOf(TimetableRow.Type.Departure)))
         verify(settingsRepository).setTimetableTypes(setOf(TimetableRow.Type.Departure))
     }
