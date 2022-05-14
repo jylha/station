@@ -46,6 +46,12 @@ android {
         debug {
             applicationIdSuffix ".debug"
         }
+        benchmark {
+            initWith buildTypes.release
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            debuggable false
+        }
     }
 
     compileOptions {
