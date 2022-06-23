@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
+import dev.jylha.station.ui.LocalePreviews
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.theme.StationTheme
 
@@ -95,10 +96,10 @@ fun AboutScreen(
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@LocalePreviews
 @Composable
-private fun PreviewAboutScreen() {
+private fun AboutScreenPreview() {
     StationTheme {
         AboutScreen(onNavigateToOssLicenses = {})
     }

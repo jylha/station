@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.timetable
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.snap
@@ -61,6 +62,7 @@ import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
+import dev.jylha.station.ui.LocalePreviews
 import dev.jylha.station.ui.common.ActualTime
 import dev.jylha.station.ui.common.CancelledTime
 import dev.jylha.station.ui.common.CauseCategoriesProvider
@@ -322,7 +324,10 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
                 time = {
                     ActualTime(
-                        actualTime.toImmutable(), differenceInMinutes, TimetableRow.Type.Arrival, track = track
+                        actualTime.toImmutable(),
+                        differenceInMinutes,
+                        TimetableRow.Type.Arrival,
+                        track = track
                     )
                 },
                 modifier
@@ -558,21 +563,11 @@ private fun statusColor(train: Train, stop: Stop): Color? {
     }
 }
 
-@Preview(name = "TimetableEntry - Dark", group = "TimetableEntry")
-@Composable private fun PreviewDarkTimetableEntry() {
-    StationTheme(darkTheme = true) {
-        PreviewTimetableEntry()
-    }
-}
 
-@Preview(name = "TimetableEntry - Light", group = "TimetableEntry")
-@Composable private fun PreviewLightTimetableEntry() {
-    StationTheme(darkTheme = false) {
-        PreviewTimetableEntry()
-    }
-}
-
-@Composable private fun PreviewTimetableEntry() {
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@LocalePreviews
+@Composable
+private fun TimetableEntryPreview() {
     val origin = Station(
         true, Station.Type.Station, "Here", "H",
         123, "FI", 100.0, 50.0
@@ -599,9 +594,13 @@ private fun statusColor(train: Train, stop: Stop): Color? {
     )
     val stop = train.stopsAt(555).first()
 
-    CauseCategoriesProvider(causeCategories = null) {
-        StationNameProvider(LocalizedStationNames.from(listOf(origin, somewhere, destination))) {
-            TimetableEntry(train, stop, {})
+    StationTheme {
+        CauseCategoriesProvider(causeCategories = null) {
+            StationNameProvider(
+                LocalizedStationNames.from(listOf(origin, somewhere, destination))
+            ) {
+                TimetableEntry(train, stop, {})
+            }
         }
     }
 }
