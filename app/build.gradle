@@ -98,7 +98,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets:${versions.accompanist}"
     implementation "com.google.accompanist:accompanist-navigation-animation:${versions.accompanist}"
     implementation "com.google.accompanist:accompanist-swiperefresh:${versions.accompanist}"
-    implementation 'com.google.android.gms:play-services-location:19.0.1'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
     implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
     implementation "com.google.android.material:material:${versions.material}"
     implementation "com.google.dagger:hilt-android:${versions.hilt}"
