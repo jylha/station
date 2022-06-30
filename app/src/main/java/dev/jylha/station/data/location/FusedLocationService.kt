@@ -8,6 +8,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
@@ -33,7 +34,7 @@ class FusedLocationService @Inject constructor(
     override fun locationUpdates(): Flow<Location> {
         return channelFlow {
             val locationRequest = LocationRequest.create()
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
             locationRequest.maxWaitTime = 1000
 
             val locationCallback = object : LocationCallback() {
