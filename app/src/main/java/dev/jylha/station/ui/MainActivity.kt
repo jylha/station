@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jylha.station.ui.common.LocationPermission
 import dev.jylha.station.ui.common.LocationPermissionProvider
@@ -21,9 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LocationPermissionProvider(locationPermission) {
                 StationTheme {
-                    ProvideWindowInsets {
-                        StationAppNavigation()
-                    }
+                    StationAppNavigation()
                 }
             }
         }

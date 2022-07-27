@@ -95,7 +95,6 @@ dependencies {
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "com.airbnb.android:lottie-compose:${versions.lottie}"
     implementation "com.dropbox.mobile.store:store4:${versions.store}"
-    implementation "com.google.accompanist:accompanist-insets:${versions.accompanist}"
     implementation "com.google.accompanist:accompanist-navigation-animation:${versions.accompanist}"
     implementation "com.google.accompanist:accompanist-swiperefresh:${versions.accompanist}"
     implementation 'com.google.android.gms:play-services-location:20.0.0'

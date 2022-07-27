@@ -1,6 +1,7 @@
 package dev.jylha.station.ui.stations
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -25,7 +26,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.google.accompanist.insets.imePadding
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
 import dev.jylha.station.ui.common.EmptyState
@@ -78,7 +78,8 @@ fun StationsScreen(
     )
 }
 
-@Composable fun StationsScreen(
+@Composable
+fun StationsScreen(
     viewState: StationsViewState,
     onSelect: (Station) -> Unit,
     onSelectNearest: () -> Unit,
@@ -179,17 +180,20 @@ private fun StationsListTopAppBar(
     }
 }
 
-@Composable private fun LoadingStations(modifier: Modifier = Modifier) {
+@Composable
+private fun LoadingStations(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_loading_stations)
     Loading(message, modifier)
 }
 
-@Composable private fun FetchingLocation(modifier: Modifier = Modifier) {
+@Composable
+private fun FetchingLocation(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_retrieving_location)
     Loading(message, modifier)
 }
 
-@Composable private fun NoMatchingStations(modifier: Modifier = Modifier) {
+@Composable
+private fun NoMatchingStations(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_no_matching_stations)
     EmptyState(message, modifier)
 }
