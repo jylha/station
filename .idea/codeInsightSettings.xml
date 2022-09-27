@@ -3,8 +3,13 @@
   <component name="JavaProjectCodeInsightSettings">
     <excluded-names>
       <name>android.graphics.Color</name>
+      <name>android.graphics.drawable.Icon</name>
       <name>android.media.VolumeShaper.Configuration</name>
       <name>android.view.Surface</name>
+      <name>androidx.compose.ui.input.pointer.PointerIconDefaults.Text</name>
+      <name>androidx.compose.ui.semantics.SemanticsProperties.Text</name>
+      <name>androidx.compose.ui.text.input.KeyboardType.Companion.Text</name>
+      <name>androidx.room.util.TableInfo.Column</name>
       <name>androidx.sqlite.db.SupportSQLiteOpenHelper.Configuration</name>
       <name>java.lang.reflect.Modifier</name>
       <name>java.nio.file.WatchEvent.Modifier</name>
