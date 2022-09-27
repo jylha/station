@@ -312,7 +312,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     )
 }
 
-@Composable private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
+@Composable
+private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
     arrival?.run {
         when {
             cancelled -> LabeledTimeField(
@@ -359,8 +360,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     } ?: Box(modifier)
 }
 
-@Composable private fun Departure(
-    departure: TimetableRow?, modifier: Modifier = Modifier,
+@Composable
+private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier,
     includeTrackLabel: Boolean = false
 ) {
     departure?.run {
@@ -406,7 +407,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     } ?: Box(modifier)
 }
 
-@Composable private fun TimeLabel(label: String, modifier: Modifier = Modifier) {
+@Composable
+private fun TimeLabel(label: String, modifier: Modifier = Modifier) {
     Text(
         text = label.uppercase(),
         modifier = modifier,
@@ -415,7 +417,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     )
 }
 
-@Composable private fun LabeledTimeField(
+@Composable
+private fun LabeledTimeField(
     label: @Composable () -> Unit,
     time: @Composable () -> Unit,
     modifier: Modifier = Modifier,
@@ -429,7 +432,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun ShowDelayCauseAction(
+@Composable
+private fun ShowDelayCauseAction(
     onClick: () -> Unit,
     enabled: Boolean,
     modifier: Modifier = Modifier,
@@ -446,7 +450,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun DelayCauses(
+@Composable
+private fun DelayCauses(
     delayCauses: List<DelayCause>,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
@@ -489,7 +494,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun DelayCauseName(
+@Composable
+private fun DelayCauseName(
     causeName: String,
     color: Color,
     modifier: Modifier = Modifier
@@ -503,7 +509,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     )
 }
 
-@Composable private fun HideDelayCauseAction(
+@Composable
+private fun HideDelayCauseAction(
     onClick: () -> Unit,
     color: Color,
     modifier: Modifier = Modifier
@@ -532,7 +539,8 @@ private fun statusColor(train: Train, stop: Stop): Color? {
     }
 }
 
-@Composable private fun TimetableEntryBubble(
+@Composable
+private fun TimetableEntryBubble(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     indicatorColor: Color? = null,

@@ -1,8 +1,6 @@
 package dev.jylha.station.ui.timetable
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,17 +9,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.rounded.LocationCity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -89,6 +80,17 @@ fun TimetableScreen(
     )
 }
 
+/**
+ * Timetable screen.
+ *
+ * @param state A UI state of the timetable screen.
+ * @param stationCode The UIC code of a train station.
+ * @param modifier An optional modifier applied to the screen.
+ * @param onEvent Called to handle a timetable event.
+ * @param onRetry Called to navigate to a train details screen.
+ * @param onSelectStation Called to navigate to the station list screen.
+ * @param onRetry Called to reload the timetable.
+ */
 @Composable
 fun TimetableScreen(
     state: TimetableViewState,
@@ -99,7 +101,7 @@ fun TimetableScreen(
     onSelectStation: () -> Unit = {},
     onRetry: () -> Unit = {},
 ) {
-    var showTimetableFilters by rememberSaveable { mutableStateOf(false) }
+    var filtersVisible by rememberSaveable { mutableStateOf(false) }
 
     StationNameProvider(state.stationNameMapper) {
         Scaffold(
@@ -109,22 +111,22 @@ fun TimetableScreen(
                     stationName = stationName(stationCode = stationCode),
                     selectedTimetableTypes = state.selectedTimetableTypes,
                     selectedTrainCategories = state.selectedTrainCategories,
-                    filterSelectionEnabled = showTimetableFilters,
-                    onShowFilters = { showTimetableFilters = true },
-                    onHideFilters = { showTimetableFilters = false },
+                    filterSelectionEnabled = filtersVisible,
+                    onShowFilters = remember { { filtersVisible = true } },
+                    onHideFilters = remember { { filtersVisible = false } },
                     onSelectStation = onSelectStation
                 )
             }
         ) { paddingValues ->
             CauseCategoriesProvider(state.causeCategories) {
                 TimetableScreenContent(
-                    state,
-                    showTimetableFilters,
-                    onEvent,
-                    onRetry,
-                    onTrainSelected,
-                    onSelectStation,
-                    Modifier.padding(paddingValues)
+                    state = state,
+                    timetablesFiltersVisible = filtersVisible,
+                    onEvent = onEvent,
+                    onRetry = onRetry,
+                    onTrainSelected = onTrainSelected,
+                    onSelectStation = onSelectStation,
+                    modifier = Modifier.padding(paddingValues)
                 )
             }
         }
@@ -132,138 +134,44 @@ fun TimetableScreen(
 }
 
 @Composable
-private fun TimetableTopAppBar(
-    stationName: String?,
-    selectedTimetableTypes: TimetableTypes,
-    selectedTrainCategories: TrainCategories,
-    filterSelectionEnabled: Boolean,
-    onShowFilters: () -> Unit,
-    onHideFilters: () -> Unit,
-    onSelectStation: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TopAppBar(
-        title = {
-            AnimatedVisibility(stationName != null, enter = fadeIn(), exit = fadeOut()) {
-                Column(modifier) {
-                    TopAppBarTitle(stationName ?: "")
-                    TopAppBarSubtitle(selectedTimetableTypes, selectedTrainCategories)
-                }
-            }
-        },
-        actions = {
-            val selectStationLabel = stringResource(R.string.label_select_station)
-            IconButton(onClick = onSelectStation) {
-                Icon(Icons.Rounded.LocationCity, contentDescription = selectStationLabel)
-            }
-            if (filterSelectionEnabled) {
-                val hideFiltersLabel = stringResource(R.string.label_hide_filters)
-                IconButton(onClick = onHideFilters) {
-                    Icon(Icons.Default.ExpandLess, contentDescription = hideFiltersLabel)
-                }
-            } else {
-                val showFiltersLabel = stringResource(R.string.label_show_filters)
-                IconButton(onClick = onShowFilters) {
-                    Icon(Icons.Default.FilterList, contentDescription = showFiltersLabel)
-                }
-            }
-        }
-    )
-}
-
-/** A title displaying the station name. */
-@Composable
-private fun TopAppBarTitle(stationName: String, modifier: Modifier = Modifier) {
-    Text(stationName, modifier)
-}
-
-/** A subtitle displaying the selected categories. */
-@Composable
-private fun TopAppBarSubtitle(
-    timetableTypes: TimetableTypes,
-    trainCategories: TrainCategories,
-    modifier: Modifier = Modifier
-) {
-    val subtitleText = if (trainCategories.size == 1) {
-        if (trainCategories.contains(Category.LongDistance)) {
-            if (timetableTypes.size == 1) {
-                if (timetableTypes.contains(TimetableRow.Type.Arrival)) {
-                    stringResource(id = R.string.subtitle_arriving_long_distance_trains)
-                } else {
-                    stringResource(id = R.string.subtitle_departing_long_distance_trains)
-                }
-            } else {
-                stringResource(id = R.string.subtitle_long_distance_trains)
-            }
-        } else {
-            if (timetableTypes.size == 1) {
-                if (timetableTypes.contains(TimetableRow.Type.Arrival)) {
-                    stringResource(id = R.string.subtitle_arriving_commuter_trains)
-                } else {
-                    stringResource(id = R.string.subtitle_departing_commuter_trains)
-                }
-            } else {
-                stringResource(id = R.string.subtitle_commuter_trains)
-            }
-        }
-    } else {
-        if (timetableTypes.size == 1) {
-            if (timetableTypes.contains(TimetableRow.Type.Arrival)) {
-                stringResource(id = R.string.subtitle_arriving_trains)
-            } else {
-                stringResource(id = R.string.subtitle_departing_trains)
-            }
-        } else {
-            stringResource(id = R.string.subtitle_all_trains)
-        }
-    }
-    Text(subtitleText, modifier, style = MaterialTheme.typography.caption)
-}
-
-@Composable
 private fun TimetableScreenContent(
     state: TimetableViewState,
-    showTimetableFilters: Boolean,
+    timetablesFiltersVisible: Boolean,
     onEvent: (TimetableEvent) -> Unit,
     onRetry: () -> Unit,
     onTrainSelected: (Train) -> Unit,
     onSelectStation: () -> Unit,
     modifier: Modifier,
 ) {
-    Surface(
-        modifier = modifier,
-        color = MaterialTheme.colors.background,
-    ) {
-        Column(Modifier.fillMaxSize()) {
-            AnimatedVisibility(showTimetableFilters) {
-                TimetableFilterSelection(
-                    timetableTypes = state.selectedTimetableTypes,
-                    onTimetableTypesChanged = { timetableTypes ->
-                        onEvent(TimetableEvent.SelectTimetableTypes(timetableTypes))
-                    },
-                    trainCategories = state.selectedTrainCategories,
-                    onTrainCategoriesChanged = { categories ->
-                        onEvent(TimetableEvent.SelectCategories(categories))
-                    }
-                )
-            }
-            when {
-                state.isLoadingTimetable -> LoadingTimetable()
-                state.loadingTimetableFailed -> LoadingTimetableFailed(onRetry)
-                state.station != null -> Timetable(
-                    station = state.station,
-                    trains = Trains(state.timetable),
-                    timetableTypes = state.selectedTimetableTypes,
-                    trainCategories = state.selectedTrainCategories,
-                    onTrainSelected = onTrainSelected,
-                    refreshing = state.isReloadingTimetable,
-                    onRefresh = { onEvent(TimetableEvent.ReloadTimetable(state.station)) }
-                )
+    Column(modifier.fillMaxSize()) {
+        AnimatedVisibility(timetablesFiltersVisible) {
+            TimetableFilterSelection(
+                timetableTypes = state.selectedTimetableTypes,
+                onTimetableTypesChanged = { timetableTypes ->
+                    onEvent(TimetableEvent.SelectTimetableTypes(timetableTypes))
+                },
+                trainCategories = state.selectedTrainCategories,
+                onTrainCategoriesChanged = { categories ->
+                    onEvent(TimetableEvent.SelectCategories(categories))
+                }
+            )
+        }
+        when {
+            state.isLoadingTimetable -> LoadingTimetable()
+            state.loadingTimetableFailed -> LoadingTimetableFailed(onRetry)
+            state.station != null -> Timetable(
+                station = state.station,
+                trains = Trains(state.timetable),
+                timetableTypes = state.selectedTimetableTypes,
+                trainCategories = state.selectedTrainCategories,
+                onTrainSelected = onTrainSelected,
+                refreshing = state.isReloadingTimetable,
+                onRefresh = { onEvent(TimetableEvent.ReloadTimetable(state.station)) }
+            )
 
-                else -> ErrorState("Oops. Something went wrong.") {
-                    Button(onClick = onSelectStation) {
-                        Text(stringResource(R.string.label_select_station))
-                    }
+            else -> ErrorState("Oops. Something went wrong.") {
+                Button(onClick = onSelectStation) {
+                    Text(stringResource(R.string.label_select_station))
                 }
             }
         }
