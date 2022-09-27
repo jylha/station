@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.timetable
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,7 @@ import dev.jylha.station.model.CauseCategories
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
@@ -19,19 +21,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import kotlinx.coroutines.flow.update
 
+/**
+ * A view model for the [TimetableScreen].
+ *
+ * @param trainRepository A repository of trains.
+ * @param stationRepository A repository of train stations.
+ * @param settingsRepository A repository of application settings.
+ * @param dispatcher Coroutine dispatcher.
+ */
+@Stable
 @HiltViewModel
-@OptIn(FlowPreview::class)
 class TimetableViewModel @Inject constructor(
     private val trainRepository: TrainRepository,
     private val stationRepository: StationRepository,
@@ -99,6 +107,7 @@ class TimetableViewModel @Inject constructor(
         }
     }
 
+    @OptIn(FlowPreview::class)
     private suspend fun handleEvents() {
         eventChannel.consumeAsFlow()
             .flatMapMerge { event ->

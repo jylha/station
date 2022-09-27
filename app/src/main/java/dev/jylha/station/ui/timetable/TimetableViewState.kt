@@ -10,7 +10,9 @@ import dev.jylha.station.model.Train
 import timber.log.Timber
 
 /**
- * The state of timetable screen.
+ * A UI state for the [TimetableScreen].
+ *
+ * @property isLoadingTimetable Whether timetable is being loaded.
  */
 @Immutable
 data class TimetableViewState(
@@ -19,10 +21,10 @@ data class TimetableViewState(
     val isReloadingTimetable: Boolean = false,
     val station: Station? = null,
     val timetable: List<Train> = emptyList(),
-    val selectedTrainCategories: Set<Train.Category> =
-        setOf(Train.Category.LongDistance, Train.Category.Commuter),
-    val selectedTimetableTypes: Set<TimetableRow.Type> =
-        setOf(TimetableRow.Type.Arrival, TimetableRow.Type.Departure),
+    val selectedTrainCategories: TrainCategories =
+        TrainCategories(Train.Category.LongDistance, Train.Category.Commuter),
+    val selectedTimetableTypes: TimetableTypes =
+        TimetableTypes(TimetableRow.Type.Arrival, TimetableRow.Type.Departure),
     val errorMessage: String? = null,
     val isLoadingStationNames: Boolean = false,
     val stationNameMapper: StationNameMapper? = null,
@@ -42,12 +44,14 @@ data class TimetableViewState(
                 station = null,
                 timetable = emptyList()
             )
+
             is LoadTimetable.Success -> copy(
                 isLoadingTimetable = false,
                 loadingTimetableFailed = false,
                 station = result.station,
                 timetable = result.timetable
             )
+
             is LoadTimetable.Error -> copy(
                 isLoadingTimetable = false,
                 loadingTimetableFailed = true,
@@ -57,18 +61,22 @@ data class TimetableViewState(
             )
 
             is SettingsUpdated -> copy(
-                selectedTrainCategories = result.trainCategories ?: selectedTrainCategories,
-                selectedTimetableTypes = result.timetableTypes ?: selectedTimetableTypes
+                selectedTrainCategories = if (result.trainCategories != null)
+                    TrainCategories(result.trainCategories) else selectedTrainCategories,
+                selectedTimetableTypes = if (result.timetableTypes != null)
+                    TimetableTypes(result.timetableTypes) else selectedTimetableTypes
             )
 
             LoadStationNames.Loading -> copy(
                 isLoadingStationNames = true,
                 stationNameMapper = null
             )
+
             is LoadStationNames.Error -> copy(
                 isLoadingStationNames = false,
                 errorMessage = result.message
             )
+
             is LoadStationNames.Success -> copy(
                 isLoadingStationNames = false,
                 stationNameMapper = result.stationNameMapper
@@ -79,6 +87,7 @@ data class TimetableViewState(
                 isReloadingTimetable = false,
                 errorMessage = result.message
             )
+
             is ReloadTimetable.Success -> copy(
                 isReloadingTimetable = false,
                 timetable = result.trains
@@ -89,6 +98,7 @@ data class TimetableViewState(
                 isLoadingCauseCategories = false,
                 errorMessage = result.message
             )
+
             is LoadCauseCategories.Success -> copy(
                 isLoadingCauseCategories = false,
                 causeCategories = result.categories

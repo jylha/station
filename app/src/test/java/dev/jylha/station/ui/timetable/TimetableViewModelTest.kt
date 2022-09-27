@@ -159,12 +159,12 @@ class TimetableViewModelTest {
     }
 
     @Test fun `handle SelectCategories event`() = runTest(dispatcher) {
-        viewModel.offer(TimetableEvent.SelectCategories(setOf(Train.Category.Commuter)))
-        verify(settingsRepository).setTrainCategories(setOf(Train.Category.Commuter))
+        viewModel.offer(TimetableEvent.SelectCategories(TrainCategories(Train.Category.Commuter)))
+        verify(settingsRepository).setTrainCategories(TrainCategories(Train.Category.Commuter))
     }
 
     @Test fun `handle SelectTimetableTypes event`() = runTest(dispatcher) {
-        viewModel.offer(TimetableEvent.SelectTimetableTypes(setOf(TimetableRow.Type.Departure)))
-        verify(settingsRepository).setTimetableTypes(setOf(TimetableRow.Type.Departure))
+        viewModel.offer(TimetableEvent.SelectTimetableTypes(TimetableTypes(TimetableRow.Type.Departure)))
+        verify(settingsRepository).setTimetableTypes(TimetableTypes(TimetableRow.Type.Departure))
     }
 }

@@ -76,9 +76,7 @@ class TimetableViewStateTest {
     @Test fun `reduce state with SettingsUpdated result`() {
         val state = TimetableViewState()
         val result = state.reduce(
-            SettingsUpdated(
-                setOf(Train.Category.Commuter), setOf(TimetableRow.Type.Arrival)
-            )
+            SettingsUpdated(setOf(Train.Category.Commuter), setOf(TimetableRow.Type.Arrival))
         )
         assertThat(result.selectedTimetableTypes).containsExactly(TimetableRow.Type.Arrival)
         assertThat(result.selectedTrainCategories).containsExactly(Train.Category.Commuter)
@@ -86,13 +84,11 @@ class TimetableViewStateTest {
 
     @Test fun `reduce state with SettingsUpdated result containing only train category`() {
         val state = TimetableViewState(
-            selectedTrainCategories = setOf(Train.Category.Commuter),
-            selectedTimetableTypes = setOf(TimetableRow.Type.Arrival)
+            selectedTrainCategories = TrainCategories(Train.Category.Commuter),
+            selectedTimetableTypes = TimetableTypes(TimetableRow.Type.Arrival)
         )
         val result = state.reduce(
-            SettingsUpdated(
-                setOf(Train.Category.LongDistance), null
-            )
+            SettingsUpdated(setOf(Train.Category.LongDistance), null)
         )
         assertThat(result.selectedTimetableTypes).containsExactly(TimetableRow.Type.Arrival)
         assertThat(result.selectedTrainCategories).containsExactly(Train.Category.LongDistance)

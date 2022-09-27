@@ -41,16 +41,16 @@ import dev.jylha.station.ui.theme.StationTheme
 
 /**
  * Timetable filters selection displays selection buttons for selecting the timetable type
- * and train categories. The states are given with [timetableTypes] and [categories] parameters
+ * and train categories. The states are given with [timetableTypes] and [trainCategories] parameters
  * and the filter selection component notifies of changes by calling the [onTimetableTypesChanged]
- * and [onCategoriesChanged] functions respectively.
+ * and [onTrainCategoriesChanged] functions respectively.
  */
 @Composable
 fun TimetableFilterSelection(
-    timetableTypes: Set<TimetableRow.Type>,
-    onTimetableTypesChanged: (Set<TimetableRow.Type>) -> Unit,
-    categories: Set<Category>,
-    onCategoriesChanged: (Set<Category>) -> Unit,
+    timetableTypes: TimetableTypes,
+    onTimetableTypesChanged: (TimetableTypes) -> Unit,
+    trainCategories: TrainCategories,
+    onTrainCategoriesChanged: (TrainCategories) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(elevation = 2.dp) {
@@ -60,16 +60,22 @@ fun TimetableFilterSelection(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TimetableTypeSelection(
-                        timetableTypes, onTimetableTypesChanged, Modifier.weight(1f)
+                        timetableTypes,
+                        onTimetableTypesChanged,
+                        Modifier.weight(1f)
                     )
-                    CategorySelection(categories, onCategoriesChanged, Modifier.weight(1f))
+                    CategorySelection(
+                        trainCategories,
+                        onTrainCategoriesChanged,
+                        Modifier.weight(1f)
+                    )
                 }
             } else {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TimetableTypeSelection(timetableTypes, onTimetableTypesChanged)
-                    CategorySelection(categories, onCategoriesChanged)
+                    CategorySelection(trainCategories, onTrainCategoriesChanged)
                 }
             }
         }
@@ -82,8 +88,8 @@ private val SelectionButtonHeight = SelectionButtonContentPadding * 2 + Selectio
 
 @Composable
 private fun TimetableTypeSelection(
-    timetableTypes: Set<TimetableRow.Type>,
-    onTimetableTypesChanged: (Set<TimetableRow.Type>) -> Unit,
+    timetableTypes: TimetableTypes,
+    onTimetableTypesChanged: (TimetableTypes) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val timetableTypeSelected: (TimetableRow.Type) -> Unit = { type ->
@@ -97,7 +103,7 @@ private fun TimetableTypeSelection(
             } else {
                 timetableTypes + type
             }
-        onTimetableTypesChanged(updatedTypes)
+        onTimetableTypesChanged(TimetableTypes(updatedTypes))
     }
 
     val arrivingLabel = if (timetableTypes.contains(TimetableRow.Type.Arrival))
@@ -147,8 +153,8 @@ private fun TimetableTypeSelection(
 
 @Composable
 private fun CategorySelection(
-    categories: Set<Category>,
-    onCategoriesChanged: (Set<Category>) -> Unit,
+    categories: TrainCategories,
+    onCategoriesChanged: (TrainCategories) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val categorySelected: (Category) -> Unit = { category ->
@@ -162,7 +168,7 @@ private fun CategorySelection(
             } else {
                 categories + category
             }
-        onCategoriesChanged(updatedCategories)
+        onCategoriesChanged(TrainCategories(updatedCategories))
     }
 
     val image = remember { Icons.Rounded.Train }
@@ -199,7 +205,8 @@ private fun CategorySelection(
     }
 }
 
-@Composable private fun SelectionButton(
+@Composable
+private fun SelectionButton(
     onClick: () -> Unit,
     selected: Boolean,
     modifier: Modifier = Modifier,
@@ -214,7 +221,8 @@ private fun CategorySelection(
     }
 }
 
-@Composable private fun LightSelectionButton(
+@Composable
+private fun LightSelectionButton(
     onClick: () -> Unit,
     selected: Boolean,
     modifier: Modifier = Modifier,
@@ -232,7 +240,8 @@ private fun CategorySelection(
     )
 }
 
-@Composable private fun DarkSelectionButton(
+@Composable
+private fun DarkSelectionButton(
     onClick: () -> Unit,
     selected: Boolean,
     modifier: Modifier = Modifier,
@@ -274,8 +283,10 @@ private fun CategorySelection(
 private fun PreviewTimetableFilterSelection() {
     StationTheme {
         TimetableFilterSelection(
-            setOf(TimetableRow.Type.Arrival), {},
-            setOf(Category.LongDistance), {},
+            timetableTypes = TimetableTypes(TimetableRow.Type.Arrival),
+            onTimetableTypesChanged = {},
+            trainCategories = TrainCategories(Category.LongDistance),
+            onTrainCategoriesChanged = {},
         )
     }
 }
