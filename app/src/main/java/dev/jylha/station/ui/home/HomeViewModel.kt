@@ -1,20 +1,26 @@
 package dev.jylha.station.ui.home
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.jylha.station.BuildConfig
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val SKIP_HOME_SCREEN_ENABLED: Boolean = false
-
+/**
+ * A view model for the [HomeScreen].
+ *
+ * @param settingsRepository A repository of application settings.
+ * @param stationRepository A repository of train stations.
+ */
+@Stable
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
@@ -26,14 +32,14 @@ class HomeViewModel @Inject constructor(
     val state: StateFlow<HomeViewState> = _state.asStateFlow()
 
     init {
-        if (SKIP_HOME_SCREEN_ENABLED) {
+        if (BuildConfig.SKIP_HOME_SCREEN) {
             // When skipping home screen is enabled, most recently used station is loaded from the
             // application settings and its timetable is loaded and shown instead of home screen.
             viewModelScope.launch {
                 reduceState(LoadSettings.Loading)
                 settingsRepository.station().collect { stationCode ->
                     if (stationCode == null) {
-                        reduceState(LoadSettings.Success(stationCode))
+                        reduceState(LoadSettings.Success)
                     } else {
                         reduceState(LoadStation.Loading)
                         try {

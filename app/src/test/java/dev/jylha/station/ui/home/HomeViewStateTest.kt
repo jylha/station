@@ -22,11 +22,10 @@ class HomeViewStateTest {
 
     @Test fun `reduce state with LoadSettings_Success result`() {
         val state = HomeViewState(isLoadingSettings = true)
-        val result = state.reduce(LoadSettings.Success(null))
+        val result = state.reduce(LoadSettings.Success)
         assertThat(result.isLoadingSettings).isFalse()
         assertThat(result.isLoadingStation).isFalse()
         assertThat(result.isLoading).isFalse()
-        assertThat(result.stationCode).isEqualTo(null)
     }
 
     @Test fun `reduce state with LoadStation_Loading result`() {

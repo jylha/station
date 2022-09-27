@@ -43,13 +43,16 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            buildConfigField("boolean", "SKIP_HOME_SCREEN", "false")
         }
         debug {
             applicationIdSuffix ".debug"
+            buildConfigField("boolean", "SKIP_HOME_SCREEN", "false")
         }
         benchmark {
             initWith buildTypes.release
             signingConfig signingConfigs.debug
+            buildConfigField("boolean", "SKIP_HOME_SCREEN", "false")
             matchingFallbacks = ['release']
             debuggable false
         }

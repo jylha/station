@@ -26,13 +26,11 @@ class HomeViewModelTest {
     private lateinit var viewModel: HomeViewModel
 
     @Test fun `initialize view model`() = runTest(dispatcher) {
-        //whenCalled(settingsRepository.station()).thenReturn(flowOf(null))
         viewModel = HomeViewModel(settingsRepository, stationRepository)
         val result = viewModel.state.value
         val expected = HomeViewState(
             isLoadingSettings = false,
             isLoadingStation = false,
-            stationCode = null,
             station = null
         )
         assertThat(result).isEqualTo(expected)

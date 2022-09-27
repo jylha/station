@@ -1,6 +1,5 @@
 package dev.jylha.station.ui.home
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,12 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import dev.jylha.station.R
+import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.landscapeOrientation
@@ -46,7 +45,10 @@ import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
- * Home screen composable.
+ * Home screen displays a welcome text and an animation, and contains buttons for navigating
+ * to the stations screen, to the timetable screen of nearest station, and to the about screen.
+ *
+ * @param viewModel A view model for the home screen.
  * @param onNavigateToStations A callback function to navigate to the stations screen.
  * @param onNavigateToNearestStation A callback function to navigate to the timetable screen
  * of the nearest station.
@@ -62,10 +64,9 @@ fun HomeScreen(
     onNavigateToTimetable: (stationCode: Int) -> Unit,
     onNavigateToAbout: () -> Unit,
 ) {
-    val viewState by viewModel.state.collectAsState()
-
+    val state by viewModel.state.collectAsState()
     HomeScreen(
-        viewState,
+        state = state,
         onShowStationSelection = onNavigateToStations,
         onShowNearestStation = onNavigateToNearestStation,
         onShowTimetable = onNavigateToTimetable,
@@ -73,7 +74,8 @@ fun HomeScreen(
     )
 }
 
-@Composable fun HomeScreen(
+@Composable
+fun HomeScreen(
     state: HomeViewState,
     onShowStationSelection: () -> Unit = {},
     onShowNearestStation: () -> Unit = {},
@@ -90,6 +92,7 @@ fun HomeScreen(
             state.station != null -> LaunchedEffect(state.station.code) {
                 onShowTimetable(state.station.code)
             }
+
             else -> WelcomeCard(
                 onShowStationSelection = onShowStationSelection,
                 onShowNearestStation = {
@@ -105,7 +108,8 @@ fun HomeScreen(
     }
 }
 
-@Composable private fun LoadingSettings() {
+@Composable
+private fun LoadingSettings() {
     Loading(
         message = stringResource(R.string.message_loading_settings),
         textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f)
@@ -114,7 +118,8 @@ fun HomeScreen(
     )
 }
 
-@Composable private fun LoadingStation() {
+@Composable
+private fun LoadingStation() {
     Loading(
         message = stringResource(R.string.message_loading_timetable),
         textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f)
@@ -123,7 +128,8 @@ fun HomeScreen(
     )
 }
 
-@Composable private fun WelcomeCard(
+@Composable
+private fun WelcomeCard(
     onShowStationSelection: () -> Unit,
     onShowNearestStation: () -> Unit,
     onShowInfo: () -> Unit,
@@ -194,7 +200,8 @@ private fun HomeScreenButton(onClick: () -> Unit, content: @Composable RowScope.
     )
 }
 
-@Composable private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+@Composable
+private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     val buttonColor = with(MaterialTheme.colors) {
         (if (isLight) primary else onSurface).copy(alpha = 0.8f).compositeOver(surface)
     }
@@ -204,13 +211,15 @@ private fun HomeScreenButton(onClick: () -> Unit, content: @Composable RowScope.
     }
 }
 
-@Composable private fun Greeting(modifier: Modifier = Modifier) {
+@Composable
+private fun Greeting(modifier: Modifier = Modifier) {
     val color = MaterialTheme.colors.onSurface
     val text = stringResource(id = R.string.label_welcome)
     Text(text, modifier, color, style = MaterialTheme.typography.h4)
 }
 
-@Composable private fun Introduction(modifier: Modifier = Modifier) {
+@Composable
+private fun Introduction(modifier: Modifier = Modifier) {
     val text = stringResource(id = R.string.text_introduction)
     val color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
         .compositeOver(MaterialTheme.colors.surface)
@@ -221,7 +230,8 @@ private fun HomeScreenButton(onClick: () -> Unit, content: @Composable RowScope.
     )
 }
 
-@Composable private fun ButtonContainer(
+@Composable
+private fun ButtonContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -236,17 +246,17 @@ private fun HomeScreenButton(onClick: () -> Unit, content: @Composable RowScope.
     }
 }
 
-@Composable private fun WelcomeAnimation(modifier: Modifier = Modifier) {
+@Composable
+private fun WelcomeAnimation(modifier: Modifier = Modifier) {
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.train_animation)
     )
     LottieAnimation(composition, modifier)
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@LightAndDarkPreviews
 @Composable
-private fun PreviewHomeScreen() {
+private fun HomeScreenPreview() {
     StationTheme {
         HomeScreen(state = HomeViewState.Initial)
     }

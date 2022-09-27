@@ -4,11 +4,17 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import dev.jylha.station.model.Station
 
+/**
+ * A UI state for the [HomeScreen].
+ *
+ * @param isLoadingSettings Whether application settings are being loaded.
+ * @param isLoadingStation Whether train stations is being loaded.
+ * @param station Previously selected station, or null, if none was selected.
+ */
 @Immutable
 data class HomeViewState(
     val isLoadingSettings: Boolean = false,
     val isLoadingStation: Boolean = false,
-    val stationCode: Int? = null,
     val station: Station? = null
 ) {
     val isLoading: Boolean
