@@ -42,7 +42,7 @@ class StationsScreenTest {
             ),
         )
         rule.setThemedContent {
-            StationsScreen(viewState = state, onSelect = {}, onSelectNearest = {})
+            StationsScreen(state = state, onSelect = {}, onSelectNearest = {})
         }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
@@ -64,7 +64,7 @@ class StationsScreenTest {
             recentStations = listOf(1)
         )
         rule.setThemedContent(darkMode = false) {
-            StationsScreen(viewState = state, onSelect = {}, onSelectNearest = {})
+            StationsScreen(state = state, onSelect = {}, onSelectNearest = {})
         }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()
@@ -90,7 +90,7 @@ class StationsScreenTest {
             )
         )
         rule.setThemedContent {
-            StationsScreen(viewState = state, onSelect = {}, onSelectNearest = {})
+            StationsScreen(state = state, onSelect = {}, onSelectNearest = {})
         }
 
         rule.onNodeWithContentDescription(LABEL_NEAREST_STATION).assertIsDisplayed()

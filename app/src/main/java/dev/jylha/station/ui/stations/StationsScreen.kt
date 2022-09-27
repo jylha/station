@@ -1,6 +1,5 @@
 package dev.jylha.station.ui.stations
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
@@ -23,11 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
+import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.LocalLocationPermission
@@ -80,24 +79,28 @@ fun StationsScreen(
 
 @Composable
 fun StationsScreen(
-    viewState: StationsViewState,
+    state: StationsViewState,
     onSelect: (Station) -> Unit,
     onSelectNearest: () -> Unit,
 ) {
-    val allStations = viewState.stations
-    val recentStations = remember(allStations, viewState.recentStations) {
-        viewState.recentStations.mapNotNull { stationCode ->
-            allStations.firstOrNull { station -> station.code == stationCode }
-        }
+    val allStations = state.stations
+    val recentStations = remember(allStations, state.recentStations) {
+        Stations(
+            state.recentStations.mapNotNull { stationCode ->
+                allStations.firstOrNull { station -> station.code == stationCode }
+            }
+        )
     }
 
     var searchEnabled by rememberSaveable { mutableStateOf(false) }
     var searchText by rememberSaveable { mutableStateOf("") }
 
     val matchingStations = remember(searchEnabled, searchText, allStations) {
-        allStations.filterWhen(searchEnabled) { station ->
-            station.name.contains(searchText, ignoreCase = true)
-        }
+        Stations(
+            allStations.filterWhen(searchEnabled) { station ->
+                station.name.contains(searchText, ignoreCase = true)
+            }
+        )
     }
     val setSearchState: (Boolean) -> Unit = { enabled ->
         searchText = ""
@@ -111,18 +114,19 @@ fun StationsScreen(
                 onSearchEnabled = setSearchState,
                 searchText,
                 onSearchTextChanged = { text -> searchText = text },
-                showContent = !viewState.selectNearest,
+                showContent = !state.selectNearest,
                 onSelectNearest,
             )
         }
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding).imePadding()
         when {
-            viewState.nearestStation != null -> LaunchedEffect(viewState.nearestStation.code) {
-                onSelect(viewState.nearestStation)
+            state.nearestStation != null -> LaunchedEffect(state.nearestStation.code) {
+                onSelect(state.nearestStation)
             }
-            viewState.isFetchingLocation -> FetchingLocation()
-            viewState.isLoading -> LoadingStations()
+
+            state.isFetchingLocation -> FetchingLocation()
+            state.isLoading -> LoadingStations()
             matchingStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationList(
                 recentStations = recentStations,
@@ -198,10 +202,9 @@ private fun NoMatchingStations(modifier: Modifier = Modifier) {
     EmptyState(message, modifier)
 }
 
-@Preview(group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(group = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@LightAndDarkPreviews
 @Composable
-private fun PreviewStationsScreen(
+private fun StationsScreenPreview(
     @PreviewParameter(StationsViewStateProvider::class) state: StationsViewState
 ) {
     StationTheme {

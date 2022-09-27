@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.stations
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
@@ -15,7 +16,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlinx.coroutines.flow.update
 
-/** A view model for the [StationsScreen]. */
+/**
+ * A view model for the [StationsScreen].
+ *
+ *  @param stationRepository A repository of train stations.
+ *  @param settingsRepository A repository of application settings.
+ *  @param getLocation A use case for retrieving current device location.
+ */
+@Stable
 @HiltViewModel
 class StationsViewModel @Inject constructor(
     private val stationRepository: StationRepository,

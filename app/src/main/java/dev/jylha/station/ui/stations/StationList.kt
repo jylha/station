@@ -51,8 +51,8 @@ import dev.jylha.station.util.findAllMatches
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StationList(
-    recentStations: List<Station>,
-    stations: List<Station>,
+    recentStations: Stations,
+    stations: Stations,
     onSelect: (Station) -> Unit,
     modifier: Modifier,
     searchText: String = ""
@@ -92,7 +92,7 @@ fun StationList(
                     val station = group.first()
                     StationListEntry(
                         stationName = station.name,
-                        onSelect = { onSelect(station) },
+                        onSelect = remember(station) { { onSelect(station) } },
                         modifier = Modifier
                             .requiredHeight(Dp.Hairline)
                             .wrapContentHeight(align = Alignment.Top, unbounded = true),
@@ -105,7 +105,7 @@ fun StationList(
                 itemsIndexed(group) { index, station ->
                     StationListEntry(
                         stationName = station.name,
-                        onSelect = { onSelect(station) },
+                        onSelect = remember(station) { { onSelect(station) } },
                         modifier = Modifier.applyIf(index == 0) {
                             Modifier
                                 .requiredHeight(Dp.Hairline)

@@ -7,6 +7,9 @@ import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.data.stations.renameAndSort
 import dev.jylha.station.model.Station
 
+/**
+ * A UI state for the [StationsScreen].
+ */
 @Immutable
 data class StationsViewState(
     val stations: List<Station> = emptyList(),
