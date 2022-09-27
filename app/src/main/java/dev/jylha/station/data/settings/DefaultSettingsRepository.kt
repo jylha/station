@@ -10,9 +10,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore("preferences")
 
@@ -30,6 +31,7 @@ class DefaultSettingsRepository @Inject constructor(
 
     override fun station(): Flow<Int?> {
         return dataStore.data.map { preferences -> preferences[currentStationKey] }
+            .distinctUntilChanged()
     }
 
     override suspend fun setStation(stationCode: Int) {
@@ -52,7 +54,7 @@ class DefaultSettingsRepository @Inject constructor(
             (preferences[recentStationsKey] ?: emptySet())
                 .toList()
                 .map { it.toInt() }
-        }
+        }.distinctUntilChanged()
     }
 
     override fun trainCategories(): Flow<Set<Train.Category>?> {
@@ -64,7 +66,7 @@ class DefaultSettingsRepository @Inject constructor(
                     else -> null
                 }
             }?.toSet()
-        }
+        }.distinctUntilChanged()
     }
 
     override suspend fun setTrainCategories(categories: Set<Train.Category>) {
@@ -82,7 +84,7 @@ class DefaultSettingsRepository @Inject constructor(
                     else -> null
                 }
             }?.toSet()
-        }
+        }.distinctUntilChanged()
     }
 
     override suspend fun setTimetableTypes(types: Set<TimetableRow.Type>) {
