@@ -53,7 +53,7 @@ fun TimetableFilterSelection(
     onTrainCategoriesChanged: (TrainCategories) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(elevation = 2.dp) {
+    Surface(elevation = 4.dp) {
         BoxWithConstraints(modifier.padding(8.dp)) {
             if (maxWidth > 700.dp) {
                 Row(

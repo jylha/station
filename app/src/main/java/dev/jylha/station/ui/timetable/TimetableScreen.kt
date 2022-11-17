@@ -27,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -156,7 +157,7 @@ private fun TimetableScreenContent(
                 trainCategories = state.selectedTrainCategories,
                 onTrainCategoriesChanged = { categories ->
                     onEvent(TimetableEvent.SelectCategories(categories))
-                }
+                },
             )
         }
         when {
@@ -169,7 +170,7 @@ private fun TimetableScreenContent(
                 trainCategories = state.selectedTrainCategories,
                 onTrainSelected = onTrainSelected,
                 refreshing = state.isReloadingTimetable,
-                onRefresh = { onEvent(TimetableEvent.ReloadTimetable(state.station)) }
+                onRefresh = { onEvent(TimetableEvent.ReloadTimetable(state.station)) },
             )
 
             else -> ErrorState("Oops. Something went wrong.") {
@@ -204,7 +205,8 @@ private fun Timetable(
     trains: Trains,
     timetableTypes: TimetableTypes,
     trainCategories: TrainCategories,
-    onTrainSelected: (Train) -> Unit = {},
+    onTrainSelected: (Train) -> Unit,
+    modifier: Modifier = Modifier,
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {}
 ) {
@@ -215,7 +217,7 @@ private fun Timetable(
     }
     val pullRefreshState = rememberPullRefreshState(refreshing, onRefresh)
     Box(
-        modifier = Modifier.pullRefresh(pullRefreshState),
+        modifier = modifier.pullRefresh(pullRefreshState).clipToBounds(),
     ) {
         when {
             trains.isEmpty() -> EmptyTimetable()
@@ -339,7 +341,8 @@ private fun TimetablePreview() {
                         TimetableRow.Type.Arrival,
                         TimetableRow.Type.Departure
                     ),
-                    trainCategories = TrainCategories(Category.LongDistance)
+                    trainCategories = TrainCategories(Category.LongDistance),
+                    onTrainSelected = {},
                 )
             }
         }
