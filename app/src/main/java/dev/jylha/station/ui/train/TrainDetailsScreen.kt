@@ -1,9 +1,9 @@
 package dev.jylha.station.ui.train
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,12 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Train
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,19 +42,16 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.jylha.station.R
 import dev.jylha.station.model.Stop
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
+import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.StationNameProvider
 import dev.jylha.station.ui.common.TimeField
@@ -68,7 +69,8 @@ import java.time.ZonedDateTime
  * @param departureDate The date of train's departure.
  * @param trainNumber The train number identifying the train.
  */
-@Composable fun TrainDetailsScreen(
+@Composable
+fun TrainDetailsScreen(
     viewModel: TrainDetailsViewModel,
     departureDate: String,
     trainNumber: Int
@@ -81,7 +83,8 @@ import java.time.ZonedDateTime
     TrainDetailsScreen(viewState, onReload = { train -> viewModel.reload(train) })
 }
 
-@Composable fun TrainDetailsScreen(
+@Composable
+fun TrainDetailsScreen(
     viewState: TrainDetailsViewState,
     onReload: (Train) -> Unit = {},
 ) {
@@ -97,12 +100,15 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable private fun LoadingTrainDetails() {
+@Composable
+private fun LoadingTrainDetails() {
     val message = stringResource(R.string.message_loading_train_details)
     Loading(message)
 }
 
-@Composable private fun TrainDetails(
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun TrainDetails(
     train: Train,
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {},
@@ -114,13 +120,9 @@ import java.time.ZonedDateTime
         if (currentStop?.isDeparted() == true) currentStopIndex + 1 else -1
     }
 
-    val swipeRefreshState = rememberSwipeRefreshState(refreshing)
-    SwipeRefresh(swipeRefreshState, onRefresh,
-        indicator = { state, trigger ->
-            SwipeRefreshIndicator(
-                state, trigger, contentColor = MaterialTheme.colors.primary
-            )
-        }
+    val pullRefreshState = rememberPullRefreshState(refreshing, onRefresh)
+    Box(
+        modifier = Modifier.pullRefresh(pullRefreshState),
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             val routeBehindColor = MaterialTheme.colors.primary
@@ -141,9 +143,11 @@ import java.time.ZonedDateTime
                             stop.isOrigin() -> TrainOrigin(
                                 train, stop, isCurrent, isPassed, routeBehindColor, routeAheadColor
                             )
+
                             stop.isWaypoint() -> TrainWaypoint(
                                 stop, isCurrent, isNext, isPassed, routeBehindColor, routeAheadColor
                             )
+
                             stop.isDestination() -> TrainDestination(
                                 stop, isCurrent, isNext, routeBehindColor, routeAheadColor
                             )
@@ -152,10 +156,17 @@ import java.time.ZonedDateTime
                 }
             }
         }
+        PullRefreshIndicator(
+            refreshing = refreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
+            contentColor = MaterialTheme.colors.primary,
+        )
     }
 }
 
-@Composable private fun TrainDetailsHeading(train: Train, modifier: Modifier = Modifier) {
+@Composable
+private fun TrainDetailsHeading(train: Train, modifier: Modifier = Modifier) {
     Column(
         modifier.padding(16.dp).fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -172,7 +183,8 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable private fun TrainIdentification(train: Train) {
+@Composable
+private fun TrainIdentification(train: Train) {
     train.run {
         if (isCommuterTrain()) {
             if (commuterLineId != null) {
@@ -216,7 +228,8 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable private fun CommuterTrainIdentification(type: String, number: Int) {
+@Composable
+private fun CommuterTrainIdentification(type: String, number: Int) {
     val label = stringResource(R.string.accessibility_label_commuter_train, type, number)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -241,7 +254,8 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable private fun CommuterTrainIdentification(commuterLineId: String) {
+@Composable
+private fun CommuterTrainIdentification(commuterLineId: String) {
     val label = stringResource(R.string.accessibility_label_commuter_line, commuterLineId)
     Column(
         Modifier
@@ -258,7 +272,8 @@ import java.time.ZonedDateTime
     }
 }
 
-@Composable private fun TrainOrigin(
+@Composable
+private fun TrainOrigin(
     train: Train, origin: Stop, isCurrent: Boolean, isPassed: Boolean,
     routeBehindColor: Color, routeAheadColor: Color,
 ) {
@@ -288,7 +303,8 @@ import java.time.ZonedDateTime
     )
 }
 
-@Composable private fun TrainWaypoint(
+@Composable
+private fun TrainWaypoint(
     waypoint: Stop, isCurrent: Boolean, isNext: Boolean, isPassed: Boolean,
     routeBehindColor: Color, routeAheadColor: Color,
 ) {
@@ -332,7 +348,8 @@ import java.time.ZonedDateTime
     )
 }
 
-@Composable private fun TrainDestination(
+@Composable
+private fun TrainDestination(
     destination: Stop, isCurrent: Boolean, isNext: Boolean,
     routeBehindColor: Color, routeAheadColor: Color
 ) {
@@ -365,7 +382,8 @@ import java.time.ZonedDateTime
     )
 }
 
-@Composable private fun StopName(name: String?, modifier: Modifier = Modifier) {
+@Composable
+private fun StopName(name: String?, modifier: Modifier = Modifier) {
     if (!name.isNullOrBlank()) {
         Text(
             name,
@@ -381,7 +399,8 @@ import java.time.ZonedDateTime
  * @param isCurrent Whether train is currently on this stop.
  * @param isNext Whether train will arrive next on this stop.
  */
-@Composable private fun CommercialStop(
+@Composable
+private fun CommercialStop(
     name: @Composable (modifier: Modifier) -> Unit,
     stationIcon: @Composable (modifier: Modifier) -> Unit,
     modifier: Modifier = Modifier,
@@ -487,8 +506,7 @@ import java.time.ZonedDateTime
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@LightAndDarkPreviews
 @Composable
 private fun PreviewTrainDetails() {
     val train = Train(
