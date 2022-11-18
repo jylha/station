@@ -1,6 +1,7 @@
 package dev.jylha.station.ui.timetable
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -289,9 +290,13 @@ private fun Timetable(
 
     when {
         stops.isEmpty() -> NoMatchingTrains()
-        else -> LazyColumn(modifier, contentPadding = PaddingValues(8.dp)) {
+        else -> LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             items(stops) { (train, stop) ->
-                TimetableEntry(train, stop, onSelect, Modifier.padding(bottom = 8.dp))
+                TimetableEntry(train, stop, onSelect)
             }
         }
     }
