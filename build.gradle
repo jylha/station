@@ -1,28 +1,14 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    apply from: 'dependencies.gradle'
-    apply from: 'buildConfig.gradle'
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:$versions.gradle_plugin"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:${versions.hilt}"
-        classpath "com.google.android.gms:oss-licenses-plugin:${versions.oss_licenses_plugin}"
-        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${versions.ksp}"
-    }
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.dagger.hilt.android) apply false
+    alias(libs.plugins.google.play.licenses) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
 

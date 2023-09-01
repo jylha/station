@@ -1,10 +1,10 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
-    id 'com.google.android.gms.oss-licenses-plugin'
-    id 'com.google.devtools.ksp'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.google.play.licenses)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
 }
 
 def keystoreProperties = new Properties()
@@ -15,12 +15,12 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace 'dev.jylha.station'
-    compileSdkVersion buildConfig.compileSdk
+    compileSdk = libs.versions.compile.sdk.get().toInteger()
 
     defaultConfig {
         applicationId "dev.jylha.station"
-        minSdkVersion buildConfig.minSdk
-        targetSdkVersion buildConfig.targetSdk
+        minSdk = libs.versions.min.sdk.get().toInteger()
+        targetSdk = libs.versions.target.sdk.get().toInteger()
         versionCode 18
         versionName "1.2.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -62,12 +62,20 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += [
+                "-Xskip-prerelease-check",
+                "-opt-in=kotlin.RequiresOptIn"
+        ]
+    }
+
     buildFeatures {
         compose true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "${versions.compose_compiler}"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     ksp {
@@ -81,59 +89,48 @@ android {
 }
 
 dependencies {
-    implementation "androidx.activity:activity-compose:${versions.activity}"
-    implementation "androidx.compose.foundation:foundation:${versions.compose}"
-    implementation "androidx.compose.material:material:${versions.compose}"
-    implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
-    implementation "androidx.compose.ui:ui-tooling:${versions.compose}"
-    implementation "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout}"
-    implementation "androidx.core:core-splashscreen:${versions.splashscreen}"
-    implementation "androidx.datastore:datastore-preferences-core:${versions.datastore}"
-    implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
-    implementation "androidx.hilt:hilt-navigation:${versions.hilt_navigation}"
-    implementation "androidx.hilt:hilt-navigation-compose:${versions.hilt_navigation_compose}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle}"
-    implementation "androidx.navigation:navigation-compose:${versions.navigation}"
-    implementation "androidx.room:room-ktx:${versions.room}"
-    implementation "androidx.room:room-runtime:${versions.room}"
-    implementation "com.airbnb.android:lottie-compose:${versions.lottie}"
-    implementation "com.dropbox.mobile.store:store4:${versions.store}"
-    implementation "com.google.accompanist:accompanist-navigation-animation:${versions.accompanist}"
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
-    implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
-    implementation "com.google.android.material:material:${versions.material}"
-    implementation "com.google.dagger:hilt-android:${versions.hilt}"
-    implementation "com.jakewharton.timber:timber:${versions.timber}"
-    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.coroutines}"
+    implementation(libs.accompanist.navigation.animation)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core.splashcreen)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material)
+    implementation(libs.compose.material.icons)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.constraintlayout.compose)
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore.preferences.core)
+    implementation(libs.dropbox.store)
+    implementation(libs.google.material)
+    implementation(libs.google.play.services.location)
+    implementation(libs.google.play.services.oss.licenses)
+    implementation(libs.hilt.navigation)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lottie.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.okhttp3.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    implementation(libs.timber)
 
-    kapt "com.google.dagger:hilt-android-compiler:${versions.hilt}"
-    kapt "androidx.hilt:hilt-compiler:${versions.hilt_navigation}"
-    ksp "androidx.room:room-compiler:${versions.room}"
+    kapt(libs.dagger.hilt.android.compiler)
+    ksp(libs.room.compiler)
 
-    testImplementation "androidx.room:room-testing:${versions.room}"
-    testImplementation "com.google.truth:truth:${versions.truth}"
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.room.testing)
+    testImplementation(libs.truth)
 
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:${versions.compose}"
-    androidTestImplementation "androidx.test:core:1.5.0"
-    androidTestImplementation "com.google.truth:truth:${versions.truth}"
-    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
-    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += [
-                "-Xskip-prerelease-check",
-                "-opt-in=kotlin.RequiresOptIn"
-        ]
-    }
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.truth)
 }

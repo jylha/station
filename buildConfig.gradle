@@ -1,6 +1,0 @@
-def buildConfig = [
-        'compileSdk': 33,
-        'minSdk'    : 26,
-        'targetSdk' : 33,
-]
-ext.buildConfig = buildConfig
