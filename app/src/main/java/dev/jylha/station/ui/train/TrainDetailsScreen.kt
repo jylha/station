@@ -401,13 +401,13 @@ private fun StopName(name: String?, modifier: Modifier = Modifier) {
  */
 @Composable
 private fun CommercialStop(
-    name: @Composable (modifier: Modifier) -> Unit,
-    stationIcon: @Composable (modifier: Modifier) -> Unit,
+    name: @Composable (Modifier) -> Unit,
+    stationIcon: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier,
-    arrivalIcon: (@Composable (modifier: Modifier) -> Unit) = { Spacer(modifier) },
-    arrivalTime: (@Composable (modifier: Modifier) -> Unit)? = null,
-    departureIcon: (@Composable (modifier: Modifier) -> Unit) = { Spacer(modifier) },
-    departureTime: (@Composable (modifier: Modifier) -> Unit)? = null,
+    arrivalIcon: (@Composable (Modifier) -> Unit) = { Spacer(modifier) },
+    arrivalTime: (@Composable (Modifier) -> Unit)? = null,
+    departureIcon: (@Composable (Modifier) -> Unit) = { Spacer(modifier) },
+    departureTime: (@Composable (Modifier) -> Unit)? = null,
     isCurrent: Boolean = false,
     isNext: Boolean = false,
 ) {
@@ -428,14 +428,14 @@ private fun CommercialStop(
         val verticalGuideCenter = createGuidelineFromStart(0.5f)
         val verticalGuideEnd = createGuidelineFromStart(0.7f)
 
-        stationIcon(modifier = Modifier.constrainAs(stationIconRef) {
+        stationIcon(Modifier.constrainAs(stationIconRef) {
             centerAround(verticalGuideCenter)
             centerAround(horizontalGuideCenter)
             width = Dimension.value(20.dp)
             height = Dimension.value(20.dp)
         })
 
-        arrivalIcon(modifier = Modifier.constrainAs(arrivalIconRef) {
+        arrivalIcon(Modifier.constrainAs(arrivalIconRef) {
             centerAround(verticalGuideCenter)
             top.linkTo(parent.top)
             bottom.linkTo(stationIconRef.top)
@@ -443,7 +443,7 @@ private fun CommercialStop(
             height = Dimension.fillToConstraints
         })
 
-        departureIcon(modifier = Modifier.constrainAs(departureIconRef) {
+        departureIcon(Modifier.constrainAs(departureIconRef) {
             centerAround(verticalGuideCenter)
             top.linkTo(stationIconRef.bottom)
             bottom.linkTo(parent.bottom)
@@ -451,7 +451,7 @@ private fun CommercialStop(
             height = Dimension.fillToConstraints
         })
 
-        name(modifier = Modifier.constrainAs(nameRef) {
+        name(Modifier.constrainAs(nameRef) {
             centerAround(horizontalGuideCenter)
             linkTo(start = parent.start, end = stationIconRef.start, endMargin = 16.dp, bias = 1f)
             width = Dimension.preferredWrapContent
@@ -508,7 +508,7 @@ private fun CommercialStop(
 
 @LightAndDarkPreviews
 @Composable
-private fun PreviewTrainDetails() {
+private fun TrainDetailsPreview() {
     val train = Train(
         5, "IC", Train.Category.LongDistance, departureDate = LocalDate.parse("2020-01-01"),
         timetable = listOf(
