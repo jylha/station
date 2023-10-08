@@ -4,7 +4,7 @@ min-sdk = "26"
 target-sdk = "34"
 
 activity = "1.6.1"
-agp = "8.1.1"
+agp = "8.1.2"
 androidx-benchmark = "1.1.0"
 androidx-espresso = "3.4.0"
 androidx-junit = "1.1.3"
