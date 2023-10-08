@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.google.play.licenses)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 def keystoreProperties = new Properties()
@@ -48,17 +49,11 @@ android {
             applicationIdSuffix ".debug"
             buildConfigField("boolean", "SKIP_HOME_SCREEN", "false")
         }
-        benchmark {
-            initWith buildTypes.release
-            signingConfig signingConfigs.debug
-            matchingFallbacks = ["release"]
-            debuggable false
-        }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
@@ -86,6 +81,7 @@ android {
 dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashcreen)
+    implementation(libs.androidx.profileinstaller)
     implementation(libs.compose.foundation)
     implementation(libs.compose.material)
     implementation(libs.compose.material.icons)
@@ -127,4 +123,6 @@ dependencies {
     androidTestImplementation(libs.mockito.android)
     androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.truth)
+
+    baselineProfile(project(':baselineprofile'))
 }

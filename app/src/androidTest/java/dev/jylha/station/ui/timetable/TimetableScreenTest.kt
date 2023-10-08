@@ -214,6 +214,7 @@ class TimetableScreenTest {
 
             // Show filters
             onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
+            mainClock.advanceTimeBy(100)
 
             onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
             onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
@@ -325,6 +326,7 @@ class TimetableScreenTest {
 
             // Show filters.
             onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
+            mainClock.advanceTimeBy(100)
 
             onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
             onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()

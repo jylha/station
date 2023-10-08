@@ -1,21 +1,24 @@
-package dev.jylha.station.benchmark
+package dev.jylha.station.baselineprofile
 
-import androidx.benchmark.macro.ExperimentalBaselineProfilesApi
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@ExperimentalBaselineProfilesApi
 @RunWith(AndroidJUnit4::class)
+@LargeTest
 class BaselineProfileGenerator {
-    @get:Rule val baselineProfileRule = BaselineProfileRule()
+
+    @get:Rule
+    val rule = BaselineProfileRule()
 
     @Test
-    fun startup() =
-        baselineProfileRule.collectBaselineProfile(packageName = "dev.jylha.station") {
+    fun generate() {
+        rule.collect("dev.jylha.station") {
             pressHome()
             startActivityAndWait()
         }
+    }
 }

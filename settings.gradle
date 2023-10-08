@@ -23,4 +23,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "station"
 include ':app'
-include ':benchmark'
+include ':baselineprofile'

@@ -91,7 +91,10 @@ lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
-# lint/reports/
+lint/reports/
+
+# Baseline profiles
+app/src/release/generated/baselineProfiles/baseline-prof.txt
 
 ### Android Patch ###
 gen-external-apklibs
