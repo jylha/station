@@ -89,7 +89,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.accompanist.navigation.animation)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashcreen)
     implementation(libs.compose.foundation)

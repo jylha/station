@@ -3,7 +3,6 @@ package dev.jylha.station.ui
 import android.content.Intent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,10 +14,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dev.jylha.station.R
 import dev.jylha.station.ui.about.AboutScreen
@@ -29,12 +28,12 @@ import dev.jylha.station.ui.train.TrainDetailsScreen
 
 /** Navigation targets. */
 private sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object About : Screen("about")
-    object Stations : Screen("stations")
-    object NearestStation : Screen("nearest_station")
+    data object Home : Screen("home")
+    data object About : Screen("about")
+    data object Stations : Screen("stations")
+    data object NearestStation : Screen("nearest_station")
 
-    object Timetable : Screen("timetable/{stationCode}") {
+    data object Timetable : Screen("timetable/{stationCode}") {
         private const val STATION_CODE = "stationCode"
 
         fun route(stationCode: Int) = "timetable/$stationCode"
@@ -48,7 +47,7 @@ private sealed class Screen(val route: String) {
         }
     }
 
-    object TrainDetails : Screen("train_details/{departureDate}/{trainNumber}") {
+    data object TrainDetails : Screen("train_details/{departureDate}/{trainNumber}") {
         private const val DEPARTURE_DATE = "departureDate"
         private const val TRAIN_NUMBER = "trainNumber"
 
@@ -72,10 +71,9 @@ private sealed class Screen(val route: String) {
  * Station app navigation composable. The composable defines the navigation graph for the
  * application.
  */
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun StationAppNavigation() {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
     val context = LocalContext.current
     val ossLicensesTitle = stringResource(id = R.string.label_oss_licenses)
 
@@ -107,7 +105,7 @@ fun StationAppNavigation() {
         ContextCompat.startActivity(context, intent, null)
     }
 
-    AnimatedNavHost(
+    NavHost(
         navController, startDestination = Screen.Home.route,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
