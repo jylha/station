@@ -14,7 +14,7 @@ import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -107,7 +107,7 @@ class TimetableViewModel @Inject constructor(
         }
     }
 
-    @OptIn(FlowPreview::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun handleEvents() {
         eventChannel.consumeAsFlow()
             .flatMapMerge { event ->

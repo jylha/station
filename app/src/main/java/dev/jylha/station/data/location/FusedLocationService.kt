@@ -33,9 +33,10 @@ class FusedLocationService @Inject constructor(
 
     override fun locationUpdates(): Flow<Location> {
         return channelFlow {
-            val locationRequest = LocationRequest.create()
-            locationRequest.priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
-            locationRequest.maxWaitTime = 1000
+            val locationRequest = with(LocationRequest.Builder(1000)) {
+                setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
+                build()
+            }
 
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(result: LocationResult) {
