@@ -81,10 +81,6 @@ android {
         arg("room.schemaLocation", "$projectDir/schemas")
         arg("room.incremental", "true")
     }
-
-    lint {
-        baseline file("lint-baseline.xml")
-    }
 }
 
 dependencies {
