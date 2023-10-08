@@ -1,9 +1,5 @@
 package dev.jylha.station.ui.timetable
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -12,10 +8,6 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import dev.jylha.station.data.stations.LocalizedStationNames
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow
@@ -198,64 +190,94 @@ class TimetableScreenTest {
                 "to Pasila",
                 "arrives to track 5 at 14:15",
             )
-
     }
 
-    @Test fun changeTrainCategoryFromCommuterToLongDistance() {
-        val viewState = TimetableViewState(
+    @Test fun commuterTrainCategorySelected_clickCommuterTrainCategory() {
+        val receivedEvents = mutableListOf<TimetableEvent>()
+        val state = TimetableViewState(
             station = helsinki, timetable = trains, stationNameMapper = testStationMapper,
             selectedTrainCategories = TrainCategories(Train.Category.Commuter)
         )
-        val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
-        rule.setThemedContent {
-            var state by remember(viewState) { mutableStateOf(viewState) }
-            TimetableScreen(state = state, stationCode = helsinki.code,
-                onEvent = { event: TimetableEvent ->
-                    if (event is TimetableEvent.SelectCategories)
-                        state = state.copy(selectedTrainCategories = event.categories)
-                    onTimetableEvent(event)
-                }
-            )
+
+        rule.apply {
+            setThemedContent {
+                TimetableScreen(state = state, stationCode = helsinki.code,
+                    onEvent = { event -> receivedEvents += event }
+                )
+            }
+
+            onNodeWithText(TEXT_ALL_TRAINS).assertDoesNotExist()
+            onNodeWithText(TEXT_COMMUTER_TRAINS).assertIsDisplayed()
+            onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertDoesNotExist()
+            onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
+
+            // Show filters
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
+
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
+            onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
+
+            onNodeWithText(TEXT_LONG_DISTANCE)
+                .assertContentDescriptionEquals(LABEL_SHOW_LONG_DISTANCE_TRAINS)
+                .assertIsDisplayed()
+            onNodeWithText(TEXT_COMMUTER)
+                .assertContentDescriptionEquals(LABEL_HIDE_COMMUTER_TRAINS)
+                .assertIsDisplayed()
+
+            onNodeWithText(TEXT_COMMUTER).performClick()
         }
 
-        rule.onNodeWithText(TEXT_ALL_TRAINS).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_COMMUTER_TRAINS).assertIsDisplayed()
-        rule.onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertDoesNotExist()
-        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
-        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
-
-        // Show filters
-        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
-
-        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
-        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
-
-        rule.onNodeWithText(TEXT_LONG_DISTANCE)
-            .assertContentDescriptionEquals(LABEL_SHOW_LONG_DISTANCE_TRAINS)
-            .assertIsDisplayed()
-        rule.onNodeWithText(TEXT_COMMUTER)
-            .assertContentDescriptionEquals(LABEL_HIDE_COMMUTER_TRAINS)
-            .assertIsDisplayed()
-
-        // Change train categories to long-distance trains by hiding commuter trains
-        rule.onNodeWithText(TEXT_COMMUTER).performClick()
-
-        rule.onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertIsDisplayed()
-        rule.onNodeWithText(TEXT_COMMUTER_TRAINS).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_LONG_DISTANCE)
-            .assertContentDescriptionEquals(LABEL_HIDE_LONG_DISTANCE_TRAINS)
-        rule.onNodeWithText(TEXT_COMMUTER)
-            .assertContentDescriptionEquals(LABEL_SHOW_COMMUTER_TRAINS)
-
-        argumentCaptor<TimetableEvent>().apply {
-            verify(onTimetableEvent, times(1)).invoke(capture())
-            val event = firstValue as? TimetableEvent.SelectCategories
-            assertThat(event).isNotNull()
-            assertThat(event?.categories).containsExactly(Train.Category.LongDistance)
-        }
+        assertThat(receivedEvents).containsExactly(
+            TimetableEvent.SelectCategories(TrainCategories(Train.Category.LongDistance))
+        )
     }
 
-    @Test fun changeTimetableTypeFromArrivingToDeparting() {
+    @Test fun longDistanceTrainCategorySelected_clickCommuterTrainCategory() {
+        val receivedEvents = mutableListOf<TimetableEvent>()
+        val state = TimetableViewState(
+            station = helsinki, timetable = trains, stationNameMapper = testStationMapper,
+            selectedTrainCategories = TrainCategories(Train.Category.LongDistance)
+        )
+
+        rule.apply {
+            setThemedContent {
+                TimetableScreen(state = state, stationCode = helsinki.code,
+                    onEvent = { event -> receivedEvents += event }
+                )
+            }
+
+            onNodeWithText(TEXT_ALL_TRAINS).assertDoesNotExist()
+            onNodeWithText(TEXT_COMMUTER_TRAINS).assertDoesNotExist()
+            onNodeWithText(TEXT_LONG_DISTANCE_TRAINS).assertIsDisplayed()
+            onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
+
+            // Show filters
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
+
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
+            onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
+
+            onNodeWithText(TEXT_LONG_DISTANCE)
+                .assertContentDescriptionEquals(LABEL_HIDE_LONG_DISTANCE_TRAINS)
+                .assertIsDisplayed()
+            onNodeWithText(TEXT_COMMUTER)
+                .assertContentDescriptionEquals(LABEL_SHOW_COMMUTER_TRAINS)
+                .assertIsDisplayed()
+
+            onNodeWithText(TEXT_COMMUTER).performClick()
+        }
+
+        assertThat(receivedEvents).containsExactly(
+            TimetableEvent.SelectCategories(
+                TrainCategories(Train.Category.Commuter, Train.Category.LongDistance)
+            )
+        )
+
+    }
+
+    @Test fun arrivingTrainCategorySelected_clickArrivingTrainCategory() {
         val timetable = listOf(
             Train(
                 1, "ABC", Train.Category.LongDistance, timetable = listOf(
@@ -278,60 +300,47 @@ class TimetableScreenTest {
                 )
             )
         )
+        val receivedEvents = mutableListOf<TimetableEvent>()
         val viewState = TimetableViewState(
             station = pasila, timetable = timetable, stationNameMapper = testStationMapper,
             selectedTimetableTypes = TimetableTypes(TimetableRow.Type.Arrival)
         )
-        val onTimetableEvent = mock<(TimetableEvent) -> Unit>()
-        rule.setThemedContent {
-            var state by remember(viewState) { mutableStateOf(viewState) }
-            TimetableScreen(state = state,  pasila.code, onEvent = { event: TimetableEvent ->
-                if (event is TimetableEvent.SelectTimetableTypes)
-                    state = state.copy(selectedTimetableTypes = event.types)
-                onTimetableEvent(event)
-            })
+
+        rule.apply {
+            setThemedContent {
+                TimetableScreen(state = viewState, stationCode = pasila.code,
+                    onEvent = { event -> receivedEvents += event }
+                )
+            }
+
+            onNodeWithText(TEXT_ARRIVING).assertDoesNotExist()
+            onNodeWithText(TEXT_DEPARTING).assertDoesNotExist()
+            onNodeWithText(TEXT_ARRIVING_TRAINS).assertIsDisplayed()
+            onNodeWithText(TEXT_DEPARTING_TRAINS).assertDoesNotExist()
+            onNodeWithSubstring("ABC, 1").assertExists()
+            onNodeWithSubstring("DEF, 2").assertDoesNotExist()
+            onNodeWithSubstring("GHI, 3").assertExists()
+            onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
+
+            // Show filters.
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
+
+            onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
+            onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
+            onNodeWithText(TEXT_DEPARTING)
+                .assertContentDescriptionEquals(LABEL_SHOW_DEPARTING_TRAINS)
+                .assertIsDisplayed()
+            onNodeWithText(TEXT_ARRIVING)
+                .assertContentDescriptionEquals(LABEL_HIDE_ARRIVING_TRAINS)
+                .assertIsDisplayed()
+
+            // Change timetable type type to departing trains by hiding arriving trains.
+            onNodeWithText(TEXT_ARRIVING).performClick()
         }
 
-        rule.onNodeWithText(TEXT_ARRIVING).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_DEPARTING).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_ARRIVING_TRAINS).assertIsDisplayed()
-        rule.onNodeWithText(TEXT_DEPARTING_TRAINS).assertDoesNotExist()
-        rule.onNodeWithSubstring("ABC, 1").assertExists()
-        rule.onNodeWithSubstring("DEF, 2").assertDoesNotExist()
-        rule.onNodeWithSubstring("GHI, 3").assertExists()
-        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertDoesNotExist()
-        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertIsDisplayed()
-
-        // Show filters.
-        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).performClick()
-
-        rule.onNodeWithContentDescription(LABEL_HIDE_FILTERS).assertIsDisplayed()
-        rule.onNodeWithContentDescription(LABEL_SHOW_FILTERS).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_DEPARTING)
-            .assertContentDescriptionEquals(LABEL_SHOW_DEPARTING_TRAINS)
-            .assertIsDisplayed()
-        rule.onNodeWithText(TEXT_ARRIVING)
-            .assertContentDescriptionEquals(LABEL_HIDE_ARRIVING_TRAINS)
-            .assertIsDisplayed()
-
-        // Change timetable type type to departing trains by hiding arriving trains.
-        rule.onNodeWithText(TEXT_ARRIVING).performClick()
-
-        rule.onNodeWithText(TEXT_DEPARTING)
-            .assertContentDescriptionEquals(LABEL_HIDE_DEPARTING_TRAINS)
-        rule.onNodeWithText(TEXT_ARRIVING)
-            .assertContentDescriptionEquals(LABEL_SHOW_ARRIVING_TRAINS)
-        rule.onNodeWithText(TEXT_ARRIVING_TRAINS).assertDoesNotExist()
-        rule.onNodeWithText(TEXT_DEPARTING_TRAINS).assertIsDisplayed()
-        rule.onNodeWithSubstring("ABC, 1").assertExists()
-        rule.onNodeWithSubstring("DEF, 2").assertExists()
-        rule.onNodeWithSubstring("GHI, 3").assertDoesNotExist()
-
-        argumentCaptor<TimetableEvent>().apply {
-            verify(onTimetableEvent, times(1)).invoke(capture())
-            val event = firstValue as? TimetableEvent.SelectTimetableTypes
-            assertThat(event).isNotNull()
-            assertThat(event?.types).containsExactly(TimetableRow.Type.Departure)
-        }
+        assertThat(receivedEvents).containsExactly(
+            TimetableEvent.SelectTimetableTypes(TimetableTypes(TimetableRow.Type.Departure))
+        )
     }
 }
