@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.google.play.licenses)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
 }
 
@@ -118,7 +117,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.timber)
 
-    kapt(libs.dagger.hilt.android.compiler)
+    ksp(libs.dagger.hilt.android.compiler)
     ksp(libs.room.compiler)
 
     testImplementation(libs.junit)
