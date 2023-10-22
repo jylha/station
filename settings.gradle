@@ -21,6 +21,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "station"
+rootProject.name = "Asemat"
 include ':app'
 include ':baselineprofile'
