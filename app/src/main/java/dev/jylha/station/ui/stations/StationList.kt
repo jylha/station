@@ -132,7 +132,9 @@ private fun StationListLabel(label: String) {
 @Composable
 private fun StationListStickyLetter(letter: Char) {
     Box(
-        modifier = Modifier.requiredWidth(StickyLetterColumnWidth),
+        modifier = Modifier
+            .requiredWidth(StickyLetterColumnWidth)
+            .requiredHeight(StationListRowHeight),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -160,11 +162,13 @@ private fun StationListEntry(
     Box(
         modifier
             .fillMaxWidth()
+            .requiredHeight(StationListRowHeight)
             .padding(start = StickyLetterColumnWidth)
             .background(surfaceColor)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = onSelect)
-            .padding(horizontal = 8.dp, vertical = 10.dp)
+            .padding(horizontal = 8.dp),
+        contentAlignment = Alignment.CenterStart,
     ) {
         Text(text, style = MaterialTheme.typography.body1, color = textColor)
     }
@@ -190,4 +194,5 @@ private fun rememberHighlightedText(
     }
 }
 
+private val StationListRowHeight = 48.dp
 private val StickyLetterColumnWidth = 32.dp
