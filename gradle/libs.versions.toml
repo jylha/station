@@ -21,6 +21,7 @@ hilt-navigation = "1.0.0"
 hilt-navigation-compose = "1.0.0"
 junit = "4.13.2"
 kotlin = "1.9.10"
+kotlinx-collections = "0.3.5"
 ksp = "1.9.10-1.0.13"
 lifecycle = "2.6.2"
 location = "21.0.1"
@@ -66,6 +67,7 @@ google-play-services-oss-licenses = { group = "com.google.android.gms", name = "
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation", version.ref = "hilt-navigation" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }

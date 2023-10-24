@@ -34,6 +34,7 @@ import dev.jylha.station.ui.common.SearchBar
 import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.filterWhen
+import kotlinx.collections.immutable.toImmutableList
 
 /**
  * Stations screen composable. Stations screen displays a list of stations to select from,
@@ -85,22 +86,18 @@ fun StationsScreen(
 ) {
     val allStations = state.stations
     val recentStations = remember(allStations, state.recentStations) {
-        Stations(
-            state.recentStations.mapNotNull { stationCode ->
-                allStations.firstOrNull { station -> station.code == stationCode }
-            }
-        )
+        state.recentStations.mapNotNull { stationCode ->
+            allStations.firstOrNull { station -> station.code == stationCode }
+        }.toImmutableList()
     }
 
     var searchEnabled by rememberSaveable { mutableStateOf(false) }
     var searchText by rememberSaveable { mutableStateOf("") }
 
     val matchingStations = remember(searchEnabled, searchText, allStations) {
-        Stations(
-            allStations.filterWhen(searchEnabled) { station ->
-                station.name.contains(searchText, ignoreCase = true)
-            }
-        )
+        allStations.filterWhen(searchEnabled) { station ->
+            station.name.contains(searchText, ignoreCase = true)
+        }.toImmutableList()
     }
     val setSearchState: (Boolean) -> Unit = { enabled ->
         searchText = ""

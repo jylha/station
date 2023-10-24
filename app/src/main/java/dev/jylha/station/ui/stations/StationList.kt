@@ -36,6 +36,7 @@ import dev.jylha.station.R
 import dev.jylha.station.model.Station
 import dev.jylha.station.ui.util.applyIf
 import dev.jylha.station.util.findAllMatches
+import kotlinx.collections.immutable.ImmutableList
 
 /**
  * A component that displays a list of stations. The list is divided into two sections: the first
@@ -51,8 +52,8 @@ import dev.jylha.station.util.findAllMatches
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StationList(
-    recentStations: Stations,
-    stations: Stations,
+    recentStations: ImmutableList<Station>,
+    stations: ImmutableList<Station>,
     onSelect: (Station) -> Unit,
     modifier: Modifier,
     searchText: String = ""
