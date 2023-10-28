@@ -6,15 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardBackspace
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -49,20 +49,18 @@ fun SearchBar(
     placeholderText: String = "",
     onClose: (() -> Unit)? = {}
 ) {
-    val (textColor, surfaceColor) = with(MaterialTheme.colors) {
-        if (isLight) Pair(onPrimary, primary) else Pair(onSurface, surface)
-    }
-    val indicatorColor = with(MaterialTheme.colors) {
-        if (isLight) onPrimary else primaryVariant
-    }
+    val surfaceColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val indicatorColor = MaterialTheme.colorScheme.primary
 
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 
     Surface(
-        modifier,
+        modifier = modifier,
         color = surfaceColor,
-        elevation = 4.dp
+        contentColor = textColor,
+        shadowElevation = 4.dp,
     ) {
         Row(
             Modifier
@@ -83,7 +81,12 @@ fun SearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
-                placeholder = { Text(placeholderText, color = MaterialTheme.colors.onPrimary) },
+                placeholder = {
+                    Text(
+                        placeholderText,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     keyboardType = KeyboardType.Text,
@@ -97,10 +100,8 @@ fun SearchBar(
                 ),
                 singleLine = true,
                 maxLines = 1,
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = textColor,
+                colors = TextFieldDefaults.colors(
                     cursorColor = indicatorColor,
-                    backgroundColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = indicatorColor,
                 )

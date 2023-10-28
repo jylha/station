@@ -1,4 +1,3 @@
-
 package dev.jylha.station.ui.theme
 
 import androidx.compose.material3.darkColorScheme
@@ -20,14 +19,17 @@ private val Black = Color(0xFF000000)
 private val Red = Color(0xFFD32F2F)
 private val Blue = Color(0xFF005DB8)
 private val LightBlue = Color(0xFF1976D2)
+private val VLightBlue = Color(0xFFD6E3F0)
+
 
 /** A dark color scheme for the application. */
 val StationDarkColorScheme = darkColorScheme(
-    primary = LightBlue,
+    primary = Blue,
     onPrimary = White,
     surface = DarkGray1,
     onSurface = White,
-    onSurfaceVariant = LightGray2,
+    surfaceVariant = DarkGray2,
+    onSurfaceVariant = White,
     background = Black,
     onBackground = LightGray3,
 )
@@ -38,6 +40,7 @@ val StationLightColorScheme = lightColorScheme(
     onPrimary = White,
     surface = White,
     onSurface = Black,
+    surfaceVariant = VLightBlue,
     onSurfaceVariant = DarkGray2,
     background = Blue,
     onBackground = LightGray2,

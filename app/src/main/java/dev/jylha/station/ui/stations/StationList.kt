@@ -15,10 +15,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -62,7 +62,10 @@ fun StationList(
         stations.groupBy { station -> station.name.first() }
     }
 
-    Surface(modifier) {
+    Surface(
+        modifier,
+        color = MaterialTheme.colorScheme.surface,
+    ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(8.dp)
@@ -125,8 +128,8 @@ private fun StationListLabel(label: String) {
     Text(
         label.uppercase(),
         modifier = Modifier.padding(top = 8.dp, start = 8.dp),
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
-        style = MaterialTheme.typography.caption,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.labelSmall,
     )
 }
 
@@ -141,9 +144,9 @@ private fun StationListStickyLetter(letter: Char) {
         Text(
             text = letter.toString().uppercase(),
             modifier = Modifier.padding(vertical = 10.dp),
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -155,8 +158,8 @@ private fun StationListEntry(
     modifier: Modifier = Modifier,
     searchText: String = ""
 ) {
-    val surfaceColor = MaterialTheme.colors.surface
-    val highlightColor = MaterialTheme.colors.onSurface.compositeOver(surfaceColor)
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val highlightColor = MaterialTheme.colorScheme.onSurface
     val dimmedColor = highlightColor.copy(alpha = 0.7f).compositeOver(surfaceColor)
     val textColor = if (searchText.isBlank()) highlightColor else dimmedColor
     val text = rememberHighlightedText(stationName, searchText, highlightColor)
@@ -171,7 +174,7 @@ private fun StationListEntry(
             .padding(horizontal = 8.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
-        Text(text, style = MaterialTheme.typography.body1, color = textColor)
+        Text(text, style = MaterialTheme.typography.bodyLarge, color = textColor)
     }
 }
 
