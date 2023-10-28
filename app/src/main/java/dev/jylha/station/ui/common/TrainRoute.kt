@@ -3,12 +3,12 @@ package dev.jylha.station.ui.common
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowRightAlt
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,7 +36,7 @@ import dev.jylha.station.ui.theme.StationTheme
     origin: String,
     destination: String,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = MaterialTheme.typography.subtitle1,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
     fontWeight: FontWeight = FontWeight.Bold,
 ) {
     val trainOriginDescription =

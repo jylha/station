@@ -20,15 +20,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.ExpandLess
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
@@ -75,6 +75,8 @@ import dev.jylha.station.ui.common.heightFraction
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.common.toImmutable
 import dev.jylha.station.ui.theme.StationTheme
+import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
+import dev.jylha.station.ui.timetable.ExpandableState.Initial
 import dev.jylha.station.util.insertSpaces
 import java.time.ZonedDateTime
 
@@ -99,7 +101,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
  * @param onSelect A callback that is called when the entry is selected.
  * @param modifier An optional modifier for the entry.
  */
-@Composable fun TimetableEntry(
+@Composable
+fun TimetableEntry(
     train: Train,
     stop: Stop,
     onSelect: (Train) -> Unit,
@@ -159,7 +162,7 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
                 TrainRoute(
                     stationName(train.origin()) ?: "",
                     stationName(train.destination()) ?: "",
-                    textStyle = MaterialTheme.typography.body2,
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.constrainAs(routeRef) {
                         linkTo(parent.start, parent.end, startMargin = 40.dp, endMargin = 40.dp)
                         top.linkTo(parent.top)
@@ -208,7 +211,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
+@Composable
+private fun TrainIdentification(train: Train, modifier: Modifier = Modifier) {
     val label = trainIdentificationAccessibilityLabel(train)
     val accessibilityModifier = modifier.semantics { contentDescription = label }
     train.run {
@@ -220,7 +224,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun TrainTypeAndNumber(
+@Composable
+private fun TrainTypeAndNumber(
     type: String,
     number: Int,
     modifier: Modifier = Modifier
@@ -231,28 +236,29 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     ) {
         Text(
             type,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )
         Text(
             number.toString(),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )
     }
 }
 
-@Composable private fun CommuterLineId(lineId: String, modifier: Modifier = Modifier) {
+@Composable
+private fun CommuterLineId(lineId: String, modifier: Modifier = Modifier) {
     Box(
         modifier
             .size(36.dp)
-            .background(color = MaterialTheme.colors.primary, shape = CircleShape),
+            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(
             lineId,
-            style = MaterialTheme.typography.body1,
-            color = MaterialTheme.colors.onPrimary,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold
         )
     }
@@ -288,7 +294,8 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
+@Composable
+private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
     Column(
         modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -300,14 +307,15 @@ private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
     }
 }
 
-@Composable private fun TrackLabel() {
+@Composable
+private fun TrackLabel() {
     val context = LocalContext.current
     val label = remember {
         context.getString(R.string.label_track).uppercase()
     }
     Text(
         text = label,
-        style = MaterialTheme.typography.caption,
+        style = MaterialTheme.typography.labelSmall,
         color = Color.Gray
     )
 }
@@ -321,6 +329,7 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
                 time = { CancelledTime(type = TimetableRow.Type.Arrival) },
                 modifier
             )
+
             actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
                 time = {
@@ -333,6 +342,7 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
                 },
                 modifier
             )
+
             estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = {
@@ -345,6 +355,7 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
                 },
                 modifier
             )
+
             else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = {
@@ -361,7 +372,8 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier,
+private fun Departure(
+    departure: TimetableRow?, modifier: Modifier = Modifier,
     includeTrackLabel: Boolean = false
 ) {
     departure?.run {
@@ -372,6 +384,7 @@ private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier,
                 time = { CancelledTime(type = TimetableRow.Type.Departure) },
                 modifier
             )
+
             actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
                 time = {
@@ -382,6 +395,7 @@ private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier,
                 },
                 modifier
             )
+
             estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
@@ -394,6 +408,7 @@ private fun Departure(departure: TimetableRow?, modifier: Modifier = Modifier,
                 },
                 modifier
             )
+
             else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
@@ -412,7 +427,7 @@ private fun TimeLabel(label: String, modifier: Modifier = Modifier) {
     Text(
         text = label.uppercase(),
         modifier = modifier,
-        style = MaterialTheme.typography.caption,
+        style = MaterialTheme.typography.labelSmall,
         color = Color.Gray
     )
 }
@@ -457,11 +472,11 @@ private fun DelayCauses(
     modifier: Modifier = Modifier
 ) {
     val delayCauseNames = delayCauses.map { cause -> causeName(cause) }.distinct()
-    val contentColor = MaterialTheme.colors.onSurface
+    val contentColor = MaterialTheme.colorScheme.onSurface
     val labelColor = contentColor.copy(alpha = 0.7f)
-        .compositeOver(MaterialTheme.colors.surface)
+        .compositeOver(MaterialTheme.colorScheme.surface)
     val dividerColor = contentColor.copy(alpha = 0.5f)
-        .compositeOver(MaterialTheme.colors.surface)
+        .compositeOver(MaterialTheme.colorScheme.surface)
 
     Column(
         modifier
@@ -481,7 +496,7 @@ private fun DelayCauses(
                     delayCausesLabel.uppercase(),
                     Modifier.semantics { contentDescription = delayCausesLabel },
                     color = labelColor,
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.labelSmall,
                 )
                 delayCauseNames.forEach { causeName -> DelayCauseName(causeName, contentColor) }
             }
@@ -549,11 +564,13 @@ private fun TimetableEntryBubble(
     content: @Composable BoxScope.() -> Unit
 ) {
     Surface(
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        elevation = 2.dp,
-        shape = RoundedCornerShape(4.dp)
+        shape = RoundedCornerShape(4.dp),
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        shadowElevation = 2.dp,
     ) {
         Box(
             modifier = Modifier

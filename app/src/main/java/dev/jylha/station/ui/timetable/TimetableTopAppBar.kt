@@ -4,15 +4,17 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.rounded.LocationCity
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,6 +38,7 @@ import dev.jylha.station.ui.theme.StationTheme
  * @param onSelectStation Called to navigate to the stations list.
  * @param modifier An optional modifier applied to the top app bar.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetableTopAppBar(
     stationName: String?,
@@ -72,7 +75,10 @@ fun TimetableTopAppBar(
                     Icon(Icons.Default.FilterList, contentDescription = showFiltersLabel)
                 }
             }
-        }
+        },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
     )
 }
 
@@ -122,7 +128,7 @@ private fun TopAppBarSubtitle(
             stringResource(id = R.string.subtitle_all_trains)
         }
     }
-    Text(subtitleText, modifier, style = MaterialTheme.typography.caption)
+    Text(subtitleText, modifier, style = MaterialTheme.typography.labelMedium)
 }
 
 @LocalePreviews

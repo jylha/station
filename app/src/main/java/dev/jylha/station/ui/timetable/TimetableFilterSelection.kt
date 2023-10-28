@@ -2,6 +2,7 @@ package dev.jylha.station.ui.timetable
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -14,13 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.SnackbarDefaults.backgroundColor
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.runtime.Composable
@@ -53,7 +55,10 @@ fun TimetableFilterSelection(
     onTrainCategoriesChanged: (TrainCategories) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(elevation = 4.dp) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shadowElevation = 4.dp
+    ) {
         BoxWithConstraints(modifier.padding(8.dp)) {
             if (maxWidth > 700.dp) {
                 Row(
@@ -214,10 +219,10 @@ private fun SelectionButton(
 ) {
     val selectionButtonModifier = modifier
         .sizeIn(minHeight = SelectionButtonHeight, maxHeight = SelectionButtonHeight)
-    if (MaterialTheme.colors.isLight) {
-        LightSelectionButton(onClick, selected, selectionButtonModifier, content)
+    if (isSystemInDarkTheme()) {
+       DarkSelectionButton(onClick, selected, selectionButtonModifier, content)
     } else {
-        DarkSelectionButton(onClick, selected, selectionButtonModifier, content)
+        LightSelectionButton(onClick, selected, selectionButtonModifier, content)
     }
 }
 
@@ -228,12 +233,17 @@ private fun LightSelectionButton(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit
 ) {
+    val (containerColor, contentColor) = with(MaterialTheme.colorScheme) {
+        if (selected) secondary to onSecondary
+        else secondary.copy(alpha = 0.5f) to onSecondary.copy(alpha = 0.8f)
+    }
+
     Button(
         onClick,
         modifier,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (selected) MaterialTheme.colors.primaryVariant else Color.Gray,
-            contentColor = MaterialTheme.colors.onPrimary
+            containerColor = containerColor,
+            contentColor = contentColor,
         ),
         contentPadding = PaddingValues(SelectionButtonContentPadding),
         content = content
@@ -247,18 +257,19 @@ private fun DarkSelectionButton(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit
 ) {
-    val color = with(MaterialTheme.colors) {
-        if (selected) primaryVariant.copy(alpha = 0.9f).compositeOver(surface)
-        else Color.Gray.copy(alpha = 0.7f).compositeOver(surface)
+    val (containerColor, contentColor) = with(MaterialTheme.colorScheme) {
+        if (selected) secondary to onSecondary
+        else surfaceVariant to outline
     }
+    val outlineColor = MaterialTheme.colorScheme.outline
 
     OutlinedButton(
         onClick,
         modifier,
-        border = BorderStroke(2.dp, color),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Transparent,
-            contentColor = color,
+        border = BorderStroke(2.dp, outlineColor),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
         ),
         contentPadding = PaddingValues(SelectionButtonContentPadding),
         content = content

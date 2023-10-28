@@ -83,7 +83,7 @@ fun HomeScreen(
     onShowInfo: () -> Unit = {},
 ) {
     Box(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
         val locationPermission = LocalLocationPermission.current
         when {

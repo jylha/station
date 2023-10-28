@@ -10,15 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -121,7 +121,7 @@ fun TimetableScreen(
                     onHideFilters = remember { { filtersVisible = false } },
                     onSelectStation = onSelectStation
                 )
-            }
+            },
         ) { paddingValues ->
             CauseCategoriesProvider(state.causeCategories) {
                 TimetableScreenContent(
@@ -234,7 +234,7 @@ private fun Timetable(
             refreshing = refreshing,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
-            contentColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colorScheme.primary,
         )
     }
 }
@@ -338,7 +338,7 @@ private fun TimetablePreview() {
     val mapper = LocalizedStationNames.from(listOf(helsinki, turku), LocalContext.current)
     StationTheme {
         StationNameProvider(mapper) {
-            Surface(color = MaterialTheme.colors.background) {
+            Surface(color = MaterialTheme.colorScheme.surface) {
                 Timetable(
                     station = helsinki,
                     trains = trains,
