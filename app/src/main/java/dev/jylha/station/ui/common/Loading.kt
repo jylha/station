@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,9 +26,9 @@ import dev.jylha.station.ui.theme.StationTheme
 fun Loading(
     message: String,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colors.background,
-    textColor: Color = MaterialTheme.colors.onBackground,
-    indicatorColor: Color = MaterialTheme.colors.primary
+    containerColor: Color = MaterialTheme.colorScheme.background,
+    textColor: Color = MaterialTheme.colorScheme.onBackground,
+    indicatorColor: Color = MaterialTheme.colorScheme.primary
 ) {
     Surface(
         color = containerColor,

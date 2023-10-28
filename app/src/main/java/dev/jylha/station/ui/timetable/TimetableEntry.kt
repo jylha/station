@@ -162,7 +162,7 @@ fun TimetableEntry(
                 TrainRoute(
                     stationName(train.origin()) ?: "",
                     stationName(train.destination()) ?: "",
-                    textStyle = MaterialTheme.typography.bodyMedium,
+                    textStyle = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.constrainAs(routeRef) {
                         linkTo(parent.start, parent.end, startMargin = 40.dp, endMargin = 40.dp)
                         top.linkTo(parent.top)

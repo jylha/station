@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,22 +51,22 @@ fun EmptyState(
                         modifier = Modifier
                             .requiredSize(120.dp)
                             .background(
-                                MaterialTheme.colors.primary.copy(alpha = 0.1f)
-                                    .compositeOver(MaterialTheme.colors.surface),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                    .compositeOver(MaterialTheme.colorScheme.surface),
                                 RoundedCornerShape(percent = 50)
                             )
                             .padding(20.dp),
-                        tint = MaterialTheme.colors.primary.copy(alpha = 0.3f)
-                            .compositeOver(MaterialTheme.colors.surface),
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                            .compositeOver(MaterialTheme.colorScheme.surface),
                         contentDescription = null
                     )
                 Text(
                     message,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
-                        .compositeOver(MaterialTheme.colors.surface),
-                    lineHeight = MaterialTheme.typography.body1.fontSize * 1.5,
-                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                    lineHeight = MaterialTheme.typography.bodyLarge.fontSize * 1.5,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             }
         }
