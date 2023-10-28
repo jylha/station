@@ -12,23 +12,23 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -83,7 +83,7 @@ fun HomeScreen(
     onShowInfo: () -> Unit = {},
 ) {
     Box(
-        Modifier.background(with(MaterialTheme.colors) { if (isLight) primary else background })
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         val locationPermission = LocalLocationPermission.current
         when {
@@ -112,9 +112,9 @@ fun HomeScreen(
 private fun LoadingSettings() {
     Loading(
         message = stringResource(R.string.message_loading_settings),
-        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f)
-            .compositeOver(MaterialTheme.colors.surface),
-        indicatorColor = MaterialTheme.colors.onPrimary
+        containerColor = MaterialTheme.colorScheme.background,
+        textColor = MaterialTheme.colorScheme.onBackground,
+        indicatorColor = MaterialTheme.colorScheme.onBackground,
     )
 }
 
@@ -122,9 +122,9 @@ private fun LoadingSettings() {
 private fun LoadingStation() {
     Loading(
         message = stringResource(R.string.message_loading_timetable),
-        textColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.8f)
-            .compositeOver(MaterialTheme.colors.surface),
-        indicatorColor = MaterialTheme.colors.onPrimary
+        containerColor = MaterialTheme.colorScheme.background,
+        textColor = MaterialTheme.colorScheme.onBackground,
+        indicatorColor = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -138,6 +138,10 @@ private fun WelcomeCard(
     Card(
         modifier = modifier.fillMaxSize(),
         shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         Box {
             WelcomeAnimation(Modifier.width(400.dp).align(Alignment.Center))
@@ -169,7 +173,7 @@ private fun WelcomeCard(
                             text = stringResource(R.string.label_select_station),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.button
+                            style = MaterialTheme.typography.labelLarge
                         )
                     }
                     HomeScreenButton(onShowNearestStation) {
@@ -181,7 +185,7 @@ private fun WelcomeCard(
                             text = stringResource(R.string.label_nearest_station),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.button
+                            style = MaterialTheme.typography.labelLarge
                         )
                     }
                 }
@@ -202,31 +206,32 @@ private fun HomeScreenButton(onClick: () -> Unit, content: @Composable RowScope.
 
 @Composable
 private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val buttonColor = with(MaterialTheme.colors) {
-        (if (isLight) primary else onSurface).copy(alpha = 0.8f).compositeOver(surface)
-    }
     val label = stringResource(R.string.accessibility_label_show_application_info)
     IconButton(onClick, modifier) {
-        Icon(Icons.Outlined.Info, contentDescription = label, tint = buttonColor)
+        Icon(
+            Icons.Outlined.Info,
+            contentDescription = label,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
 @Composable
 private fun Greeting(modifier: Modifier = Modifier) {
-    val color = MaterialTheme.colors.onSurface
+    val color = MaterialTheme.colorScheme.onSurface
     val text = stringResource(id = R.string.label_welcome)
-    Text(text, modifier, color, style = MaterialTheme.typography.h4)
+    Text(text, modifier, color, style = MaterialTheme.typography.headlineMedium)
 }
 
 @Composable
 private fun Introduction(modifier: Modifier = Modifier) {
     val text = stringResource(id = R.string.text_introduction)
-    val color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
-        .compositeOver(MaterialTheme.colors.surface)
     Text(
-        text, modifier, color, textAlign = TextAlign.Center,
-        lineHeight = MaterialTheme.typography.body1.fontSize * 1.5,
-        style = MaterialTheme.typography.body1
+        text, modifier,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        lineHeight = MaterialTheme.typography.bodyLarge.fontSize * 1.5,
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 

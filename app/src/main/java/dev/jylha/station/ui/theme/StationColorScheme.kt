@@ -24,17 +24,21 @@ private val LightBlue = Color(0xFF1976D2)
 /** A dark color scheme for the application. */
 val StationDarkColorScheme = darkColorScheme(
     primary = LightBlue,
+    onPrimary = White,
     surface = DarkGray1,
     onSurface = White,
     onSurfaceVariant = LightGray2,
     background = Black,
+    onBackground = LightGray3,
 )
 
 /** A light color scheme for the application. */
 val StationLightColorScheme = lightColorScheme(
     primary = Blue,
+    onPrimary = White,
     surface = White,
     onSurface = Black,
     onSurfaceVariant = DarkGray2,
     background = Blue,
+    onBackground = LightGray2,
 )

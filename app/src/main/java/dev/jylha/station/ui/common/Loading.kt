@@ -26,10 +26,13 @@ import dev.jylha.station.ui.theme.StationTheme
 fun Loading(
     message: String,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colors.background,
     textColor: Color = MaterialTheme.colors.onBackground,
     indicatorColor: Color = MaterialTheme.colors.primary
 ) {
-    Surface {
+    Surface(
+        color = containerColor,
+    ) {
         Box(
             modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
