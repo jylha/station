@@ -160,6 +160,7 @@ private fun TrainDetails(
             refreshing = refreshing,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
+            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.primary,
         )
     }
