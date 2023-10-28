@@ -36,7 +36,7 @@ import dev.jylha.station.ui.theme.StationTheme
     origin: String,
     destination: String,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
     fontWeight: FontWeight = FontWeight.Bold,
 ) {
     val trainOriginDescription =

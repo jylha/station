@@ -338,7 +338,7 @@ private fun TimetablePreview() {
     val mapper = LocalizedStationNames.from(listOf(helsinki, turku), LocalContext.current)
     StationTheme {
         StationNameProvider(mapper) {
-            Surface(color = MaterialTheme.colorScheme.surface) {
+            Surface(color = MaterialTheme.colorScheme.background) {
                 Timetable(
                     station = helsinki,
                     trains = trains,

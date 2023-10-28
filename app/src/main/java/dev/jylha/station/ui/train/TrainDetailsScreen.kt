@@ -16,15 +16,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Train
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -125,9 +125,9 @@ private fun TrainDetails(
         modifier = Modifier.pullRefresh(pullRefreshState),
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
-            val routeBehindColor = MaterialTheme.colors.primary
-            val routeAheadColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
-                .compositeOver(MaterialTheme.colors.background)
+            val routeBehindColor = MaterialTheme.colorScheme.primary
+            val routeAheadColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                .compositeOver(MaterialTheme.colorScheme.background)
 
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
@@ -160,7 +160,7 @@ private fun TrainDetails(
             refreshing = refreshing,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
-            contentColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colorScheme.primary,
         )
     }
 }
@@ -212,17 +212,17 @@ private fun TrainIdentification(train: Train) {
             Icons.Rounded.Train, contentDescription = null,
             Modifier
                 .size(60.dp)
-                .background(MaterialTheme.colors.secondary, CircleShape)
+                .background(MaterialTheme.colorScheme.tertiary, CircleShape)
                 .padding(4.dp),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
         )
         Spacer(Modifier.height(8.dp))
         Row {
             Text(
                 "$type $number",
                 modifier = Modifier.semantics { contentDescription = label },
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.headlineMedium
             )
         }
     }
@@ -238,17 +238,17 @@ private fun CommuterTrainIdentification(type: String, number: Int) {
             Icons.Rounded.Train, contentDescription = null,
             Modifier
                 .size(60.dp)
-                .background(color = MaterialTheme.colors.primary, CircleShape)
+                .background(color = MaterialTheme.colorScheme.primary, CircleShape)
                 .padding(4.dp),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
         )
         Spacer(Modifier.height(8.dp))
         Row {
             Text(
                 "$type $number",
                 modifier = Modifier.semantics { contentDescription = label },
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.headlineMedium
             )
         }
     }
@@ -260,13 +260,15 @@ private fun CommuterTrainIdentification(commuterLineId: String) {
     Column(
         Modifier
             .size(60.dp)
-            .background(color = MaterialTheme.colors.primary, CircleShape)
+            .background(color = MaterialTheme.colorScheme.primary, CircleShape)
             .semantics { contentDescription = label },
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            commuterLineId, Modifier.fillMaxWidth(), textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h4, color = MaterialTheme.colors.onPrimary,
+            commuterLineId, Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold
         )
     }
@@ -389,7 +391,7 @@ private fun StopName(name: String?, modifier: Modifier = Modifier) {
             name,
             modifier.semantics { contentDescription = name },
             textAlign = TextAlign.End,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }
@@ -488,7 +490,7 @@ private fun CommercialStop(
                 Icons.Rounded.Train,
                 contentDescription = null,
                 Modifier
-                    .background(MaterialTheme.colors.secondary, CircleShape)
+                    .background(MaterialTheme.colorScheme.tertiary, CircleShape)
                     .size(24.dp)
                     .padding(2.dp)
                     .zIndex(1f)
@@ -500,7 +502,7 @@ private fun CommercialStop(
                             centerAround(horizontalGuideStart)
                         }
                     },
-                tint = MaterialTheme.colors.onSecondary
+                tint = MaterialTheme.colorScheme.onSecondary
             )
         }
     }

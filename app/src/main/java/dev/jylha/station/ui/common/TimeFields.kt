@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowRightAlt
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -37,7 +37,8 @@ import dev.jylha.station.util.toLocalTimeString
  * @param timetableRow Timetable row.
  * @param modifier Modifier.
  */
-@Composable fun TimeField(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
+@Composable
+fun TimeField(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
     timetableRow?.run {
         when {
             cancelled -> CancelledTime(type = timetableRow.type, modifier)
@@ -48,6 +49,7 @@ import dev.jylha.station.util.toLocalTimeString
                     timetableRow.type,
                     modifier
                 )
+
             estimatedTime != null && differenceInMinutes != 0 ->
                 EstimatedTime(
                     scheduledTime.toImmutable(),
@@ -55,6 +57,7 @@ import dev.jylha.station.util.toLocalTimeString
                     timetableRow.type,
                     modifier
                 )
+
             else -> ScheduledTime(scheduledTime.toImmutable(), timetableRow.type, modifier)
         }
     } ?: Box(modifier)
@@ -67,7 +70,8 @@ import dev.jylha.station.util.toLocalTimeString
  * @param modifier Modifier.
  * @param track Track name that will be included in the content description.
  */
-@Composable fun ScheduledTime(
+@Composable
+fun ScheduledTime(
     scheduledTime: ImmutableTime,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
@@ -89,8 +93,8 @@ import dev.jylha.station.util.toLocalTimeString
     Text(
         scheduledTimeText,
         modifier.semantics { contentDescription = description },
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
-        style = MaterialTheme.typography.body1,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+        style = MaterialTheme.typography.bodyLarge,
         fontStyle = FontStyle.Italic,
         fontWeight = FontWeight.Light
     )
@@ -104,7 +108,8 @@ import dev.jylha.station.util.toLocalTimeString
  * @param modifier Modifier.
  * @param track Track name that will be included in the content description.
  */
-@Composable fun EstimatedTime(
+@Composable
+fun EstimatedTime(
     scheduledTime: ImmutableTime,
     estimatedTime: ImmutableTime,
     type: TimetableRow.Type,
@@ -125,7 +130,7 @@ import dev.jylha.station.util.toLocalTimeString
             )
         else ""
     }
-    val textStyle = MaterialTheme.typography.body1
+    val textStyle = MaterialTheme.typography.bodyLarge
     val fontStyle = FontStyle.Italic
     val fontWeight = FontWeight.Light
     Row(
@@ -134,7 +139,7 @@ import dev.jylha.station.util.toLocalTimeString
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            scheduledTimeText, color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
+            scheduledTimeText, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
             style = textStyle, fontStyle = fontStyle, fontWeight = fontWeight
         )
         if (scheduledTimeText.isNotBlank() && estimatedTimeText.isNotBlank()) {
@@ -160,7 +165,8 @@ import dev.jylha.station.util.toLocalTimeString
  * @param modifier Modifier.
  * @param track Track name that will be included in the content description.
  */
-@Composable fun ActualTime(
+@Composable
+fun ActualTime(
     actualTime: ImmutableTime,
     differenceInMinutes: Int,
     type: TimetableRow.Type,
@@ -187,7 +193,7 @@ import dev.jylha.station.util.toLocalTimeString
     ) {
         Text(
             actualTimeText,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
         )
         if (actualTimeText.isNotBlank() && differenceInMinutes != 0) {
             Spacer(Modifier.width(4.dp))
@@ -195,7 +201,7 @@ import dev.jylha.station.util.toLocalTimeString
                 differenceInMinutes > 0 -> Pair("+$differenceInMinutes", StationTheme.colors.late)
                 else -> Pair("$differenceInMinutes", StationTheme.colors.early)
             }
-            Text(text, color = color, style = MaterialTheme.typography.caption)
+            Text(text, color = color, style = MaterialTheme.typography.labelSmall)
         }
     }
 }
@@ -205,7 +211,8 @@ import dev.jylha.station.util.toLocalTimeString
  * @param type TimetableRow type.
  * @param modifier Modifier.
  */
-@Composable fun CancelledTime(
+@Composable
+fun CancelledTime(
     type: TimetableRow.Type,
     modifier: Modifier = Modifier
 ) {
@@ -221,13 +228,14 @@ import dev.jylha.station.util.toLocalTimeString
     ) {
         Text(
             text = label,
-            color = Color.Red,
-            style = MaterialTheme.typography.body2,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
 
-@Composable private fun trackString(track: String?, type: TimetableRow.Type): String {
+@Composable
+private fun trackString(track: String?, type: TimetableRow.Type): String {
     return if (track?.isNotBlank() == true) {
         " " + stringResource(
             if (type == TimetableRow.Type.Arrival) R.string.accessibility_label_to_track
@@ -239,13 +247,15 @@ import dev.jylha.station.util.toLocalTimeString
     }
 }
 
-@Composable private fun produceLocalTime(time: ImmutableTime): State<String> {
+@Composable
+private fun produceLocalTime(time: ImmutableTime): State<String> {
     return produceState("", time) {
         value = time().toLocalTimeString()
     }
 }
 
-@Composable private fun produceLocalTimes(
+@Composable
+private fun produceLocalTimes(
     time1: ImmutableTime,
     time2: ImmutableTime
 ): State<Pair<String, String>> {
