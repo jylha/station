@@ -48,7 +48,7 @@ fun AboutScreen(
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.background)
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(

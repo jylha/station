@@ -231,7 +231,7 @@ private fun LightSelectionButton(
     content: @Composable RowScope.() -> Unit
 ) {
     val (containerColor, contentColor) = with(MaterialTheme.colorScheme) {
-        if (selected) secondary to onSecondary
+        if (selected) primary to onPrimary
         else secondary.copy(alpha = 0.5f) to onSecondary.copy(alpha = 0.8f)
     }
 
@@ -255,15 +255,17 @@ private fun DarkSelectionButton(
     content: @Composable RowScope.() -> Unit
 ) {
     val (containerColor, contentColor) = with(MaterialTheme.colorScheme) {
-        if (selected) secondary to onSecondary
+        if (selected) primary to onPrimary
         else surfaceVariant to outline
     }
-    val outlineColor = MaterialTheme.colorScheme.outline
+    val outlineColor = with(MaterialTheme.colorScheme) {
+        if (selected) primary else outline
+    }
 
     OutlinedButton(
         onClick,
         modifier,
-        border = BorderStroke(2.dp, outlineColor),
+        border = BorderStroke(1.dp, outlineColor),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = containerColor,
             contentColor = contentColor,

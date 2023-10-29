@@ -151,7 +151,6 @@ private fun StationsListTopAppBar(
 ) {
     val searchLabel = stringResource(R.string.accessibility_label_search)
     val searchStationLabel = stringResource(R.string.label_search_station)
-
     if (searchEnabled) {
         SearchBar(
             text = searchText,
@@ -183,6 +182,8 @@ private fun StationsListTopAppBar(
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             ),
         )
     }

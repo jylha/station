@@ -64,7 +64,8 @@ fun StationList(
 
     Surface(
         modifier,
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -129,7 +130,7 @@ private fun StationListLabel(label: String) {
         label.uppercase(),
         modifier = Modifier.padding(top = 8.dp, start = 8.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        style = MaterialTheme.typography.labelSmall,
+        style = MaterialTheme.typography.labelMedium,
     )
 }
 
@@ -158,8 +159,8 @@ private fun StationListEntry(
     modifier: Modifier = Modifier,
     searchText: String = ""
 ) {
-    val surfaceColor = MaterialTheme.colorScheme.surface
-    val highlightColor = MaterialTheme.colorScheme.onSurface
+    val surfaceColor = MaterialTheme.colorScheme.background
+    val highlightColor = MaterialTheme.colorScheme.onBackground
     val dimmedColor = highlightColor.copy(alpha = 0.7f).compositeOver(surfaceColor)
     val textColor = if (searchText.isBlank()) highlightColor else dimmedColor
     val text = rememberHighlightedText(stationName, searchText, highlightColor)

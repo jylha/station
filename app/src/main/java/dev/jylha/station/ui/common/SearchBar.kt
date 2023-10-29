@@ -3,7 +3,7 @@ package dev.jylha.station.ui.common
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -65,7 +65,7 @@ fun SearchBar(
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .height(64.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (onClose != null) {

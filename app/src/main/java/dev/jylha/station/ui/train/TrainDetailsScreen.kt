@@ -124,9 +124,12 @@ private fun TrainDetails(
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState),
     ) {
-        Surface(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
             val routeBehindColor = MaterialTheme.colorScheme.primary
-            val routeAheadColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            val routeAheadColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                 .compositeOver(MaterialTheme.colorScheme.background)
 
             LazyColumn(
@@ -161,7 +164,7 @@ private fun TrainDetails(
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
             backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.secondary,
         )
     }
 }
@@ -216,7 +219,7 @@ private fun TrainIdentification(train: Train) {
                 .background(MaterialTheme.colorScheme.tertiary, CircleShape)
                 .padding(4.dp),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
         )
         Spacer(Modifier.height(8.dp))
         Row {
@@ -242,7 +245,7 @@ private fun CommuterTrainIdentification(type: String, number: Int) {
                 .background(color = MaterialTheme.colorScheme.primary, CircleShape)
                 .padding(4.dp),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
         )
         Spacer(Modifier.height(8.dp))
         Row {
