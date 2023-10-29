@@ -1,4 +1,5 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
     <!-- Splash screen theme. -->
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
@@ -10,9 +11,8 @@
 
     <!-- Application theme. -->
     <style name="Theme.Station" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimary">@color/gray_dark</item>
         <item name="colorPrimaryVariant">@color/gray_dark</item>
-        <item name="colorOnPrimary">@color/white</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
 
