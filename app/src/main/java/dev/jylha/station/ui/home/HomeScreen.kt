@@ -1,6 +1,7 @@
 package dev.jylha.station.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +26,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -83,7 +88,7 @@ fun HomeScreen(
     onShowInfo: () -> Unit = {},
 ) {
     Box(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        modifier = Modifier.background(backgroundColor())
     ) {
         val locationPermission = LocalLocationPermission.current
         when {
@@ -112,9 +117,9 @@ fun HomeScreen(
 private fun LoadingSettings() {
     Loading(
         message = stringResource(R.string.message_loading_settings),
-        containerColor = MaterialTheme.colorScheme.background,
-        textColor = MaterialTheme.colorScheme.onBackground,
-        indicatorColor = MaterialTheme.colorScheme.onBackground,
+        containerColor = backgroundColor(),
+        textColor = onBackgroundColor(),
+        indicatorColor = MaterialTheme.colorScheme.primary,
     )
 }
 
@@ -122,10 +127,24 @@ private fun LoadingSettings() {
 private fun LoadingStation() {
     Loading(
         message = stringResource(R.string.message_loading_timetable),
-        containerColor = MaterialTheme.colorScheme.background,
-        textColor = MaterialTheme.colorScheme.onBackground,
-        indicatorColor = MaterialTheme.colorScheme.onBackground
+        containerColor = backgroundColor(),
+        textColor = onBackgroundColor(),
+        indicatorColor = MaterialTheme.colorScheme.primary,
     )
+}
+
+@Composable
+@ReadOnlyComposable
+private fun backgroundColor() : Color {
+    return  if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background
+    else MaterialTheme.colorScheme.surfaceVariant
+}
+
+@Composable
+@ReadOnlyComposable
+private fun onBackgroundColor() : Color {
+    return if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground
+    else MaterialTheme.colorScheme.onSurfaceVariant
 }
 
 @Composable
@@ -261,8 +280,19 @@ private fun WelcomeAnimation(modifier: Modifier = Modifier) {
 
 @LightAndDarkPreviews
 @Composable
-private fun HomeScreenPreview() {
+private fun HomeScreenPreview(
+    @PreviewParameter(HomeScreenPreviewParameterProvider::class) state: HomeViewState
+) {
     StationTheme {
-        HomeScreen(state = HomeViewState.Initial)
+        HomeScreen(state = state)
     }
+}
+
+internal class HomeScreenPreviewParameterProvider : PreviewParameterProvider<HomeViewState> {
+    override val values: Sequence<HomeViewState>
+        get() = sequenceOf(
+            HomeViewState.Initial,
+            HomeViewState(isLoadingSettings = true),
+            HomeViewState(isLoadingStation = true),
+        )
 }

@@ -200,7 +200,7 @@ fun ActualTime(
                 differenceInMinutes > 0 -> Pair("+$differenceInMinutes", StationTheme.colors.late)
                 else -> Pair("$differenceInMinutes", StationTheme.colors.early)
             }
-            Text(text, color = color, style = MaterialTheme.typography.labelSmall)
+            Text(text, color = color, style = MaterialTheme.typography.labelMedium)
         }
     }
 }

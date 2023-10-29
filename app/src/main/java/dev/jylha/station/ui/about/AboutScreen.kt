@@ -2,6 +2,7 @@ package dev.jylha.station.ui.about
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,10 +46,13 @@ fun AboutScreen(
         lineHeight = MaterialTheme.typography.bodyLarge.fontSize * 1.5
     )
 
+    val backgroundColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background
+    else MaterialTheme.colorScheme.surfaceVariant
+
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(backgroundColor)
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(
