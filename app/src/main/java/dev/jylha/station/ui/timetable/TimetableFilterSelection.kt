@@ -54,7 +54,6 @@ fun TimetableFilterSelection(
 ) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
-        shadowElevation = 4.dp
     ) {
         BoxWithConstraints(modifier.padding(8.dp)) {
             if (maxWidth > 700.dp) {

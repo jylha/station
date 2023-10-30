@@ -60,7 +60,6 @@ fun SearchBar(
         modifier = modifier,
         color = surfaceColor,
         contentColor = textColor,
-        shadowElevation = 4.dp,
     ) {
         Row(
             Modifier
