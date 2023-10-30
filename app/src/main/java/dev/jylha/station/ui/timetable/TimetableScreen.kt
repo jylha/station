@@ -51,6 +51,9 @@ import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 /**
  * Timetable screen displays the timetable for the specified train station.
@@ -122,6 +125,8 @@ fun TimetableScreen(
                     onSelectStation = onSelectStation
                 )
             },
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground,
         ) { paddingValues ->
             CauseCategoriesProvider(state.causeCategories) {
                 TimetableScreenContent(
@@ -166,7 +171,7 @@ private fun TimetableScreenContent(
             state.loadingTimetableFailed -> LoadingTimetableFailed(onRetry)
             state.station != null -> Timetable(
                 station = state.station,
-                trains = Trains(state.timetable),
+                trains = state.timetable,
                 timetableTypes = state.selectedTimetableTypes,
                 trainCategories = state.selectedTrainCategories,
                 onTrainSelected = onTrainSelected,
@@ -203,7 +208,7 @@ private fun LoadingTimetableFailed(onRetry: () -> Unit, modifier: Modifier = Mod
 @Composable
 private fun Timetable(
     station: Station,
-    trains: Trains,
+    trains: ImmutableList<Train>,
     timetableTypes: TimetableTypes,
     trainCategories: TrainCategories,
     onTrainSelected: (Train) -> Unit,
@@ -213,7 +218,8 @@ private fun Timetable(
 ) {
     val matchingTrains by remember(trains, trainCategories) {
         mutableStateOf(
-            Trains(trains.filter { trainCategories.contains(it.category) })
+            trains.filter { train -> trainCategories.contains(train.category) }
+                .toImmutableList()
         )
     }
     val pullRefreshState = rememberPullRefreshState(refreshing, onRefresh)
@@ -255,7 +261,7 @@ private fun NoMatchingTrains() {
 @Composable
 private fun Timetable(
     station: Station,
-    trains: Trains,
+    trains: ImmutableList<Train>,
     onSelect: (Train) -> Unit,
     selectedTimetableTypes: TimetableTypes,
     modifier: Modifier = Modifier
@@ -315,7 +321,7 @@ private fun TimetablePreview() {
         longitude = 1.0, latitude = 1.0
     )
     val date = LocalDate.parse("2020-01-01")
-    val trains = Trains(
+    val trains = persistentListOf(
         Train(
             1, "S", Category.LongDistance, departureDate = date, timetable = listOf(
                 departure(1, "1", ZonedDateTime.parse("2020-01-01T09:30Z")),

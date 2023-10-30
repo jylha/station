@@ -7,6 +7,9 @@ import dev.jylha.station.model.CauseCategories
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import timber.log.Timber
 
 /**
@@ -20,7 +23,7 @@ data class TimetableViewState(
     val loadingTimetableFailed: Boolean = false,
     val isReloadingTimetable: Boolean = false,
     val station: Station? = null,
-    val timetable: List<Train> = emptyList(),
+    val timetable: ImmutableList<Train> = persistentListOf(),
     val selectedTrainCategories: TrainCategories =
         TrainCategories(Train.Category.LongDistance, Train.Category.Commuter),
     val selectedTimetableTypes: TimetableTypes =
@@ -42,14 +45,14 @@ data class TimetableViewState(
                 isLoadingTimetable = true,
                 loadingTimetableFailed = false,
                 station = null,
-                timetable = emptyList()
+                timetable = persistentListOf()
             )
 
             is LoadTimetable.Success -> copy(
                 isLoadingTimetable = false,
                 loadingTimetableFailed = false,
                 station = result.station,
-                timetable = result.timetable
+                timetable = result.timetable.toImmutableList()
             )
 
             is LoadTimetable.Error -> copy(
@@ -57,7 +60,7 @@ data class TimetableViewState(
                 loadingTimetableFailed = true,
                 errorMessage = result.message,
                 station = null,
-                timetable = emptyList()
+                timetable = persistentListOf()
             )
 
             is SettingsUpdated -> copy(
@@ -90,7 +93,7 @@ data class TimetableViewState(
 
             is ReloadTimetable.Success -> copy(
                 isReloadingTimetable = false,
-                timetable = result.trains
+                timetable = result.trains.toImmutableList()
             )
 
             LoadCauseCategories.Loading -> copy(isLoadingCauseCategories = true)

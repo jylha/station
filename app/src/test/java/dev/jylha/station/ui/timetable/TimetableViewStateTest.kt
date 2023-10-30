@@ -7,6 +7,7 @@ import dev.jylha.station.model.CauseCategory
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.Test
 
 
@@ -14,7 +15,7 @@ class TimetableViewStateTest {
 
     private val helsinki = Station("Helsinki", "HKI", 1, 1.0, 1.0)
     private val pasila = Station("Pasila", "PSL", 2, 2.0, 2.0)
-    private val timetable = listOf(
+    private val timetable = persistentListOf(
         Train(1, "S", Train.Category.LongDistance)
     )
 
@@ -48,7 +49,7 @@ class TimetableViewStateTest {
             station = null,
             isLoadingTimetable = true,
             loadingTimetableFailed = true,
-            timetable = emptyList()
+            timetable = persistentListOf()
         )
         val result = state.reduce(LoadTimetable.Success(helsinki, timetable))
         assertThat(result.station).isEqualTo(helsinki)
@@ -104,7 +105,7 @@ class TimetableViewStateTest {
     @Test fun `reduce state with ReloadTimetable_Success result`() {
         val state = TimetableViewState(
             isReloadingTimetable = true, station = pasila,
-            timetable = listOf(Train(1, "A", Train.Category.LongDistance))
+            timetable = persistentListOf(Train(1, "A", Train.Category.LongDistance))
         )
         val timetable = listOf(Train(2, "B", Train.Category.Commuter))
         val result = state.reduce(ReloadTimetable.Success(timetable))
@@ -116,7 +117,7 @@ class TimetableViewStateTest {
     @Test fun `reduce state with ReloadTimetable_Error result`() {
         val state = TimetableViewState(
             isReloadingTimetable = true, station = pasila,
-            timetable = listOf(Train(1, "A", Train.Category.LongDistance))
+            timetable = persistentListOf(Train(1, "A", Train.Category.LongDistance))
         )
         val message = "Error!"
         val result = state.reduce(ReloadTimetable.Error(message))
