@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,10 +32,13 @@ import dev.jylha.station.ui.theme.StationTheme
 @Composable
 fun EmptyState(
     message: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.background,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground,
 ) {
     Surface(
-        modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        color = containerColor,
     ) {
         BoxWithConstraints {
             val height = maxHeight
@@ -52,19 +56,19 @@ fun EmptyState(
                             .requiredSize(120.dp)
                             .background(
                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                                    .compositeOver(MaterialTheme.colorScheme.surface),
+                                    .compositeOver(containerColor),
                                 RoundedCornerShape(percent = 50)
                             )
                             .padding(20.dp),
                         tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                            .compositeOver(MaterialTheme.colorScheme.surface),
+                            .compositeOver(containerColor),
                         contentDescription = null
                     )
                 Text(
                     message,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        .compositeOver(MaterialTheme.colorScheme.surface),
+                    color = contentColor.copy(alpha = 0.6f)
+                        .compositeOver(containerColor),
                     lineHeight = MaterialTheme.typography.bodyLarge.fontSize * 1.5,
                     style = MaterialTheme.typography.bodyLarge,
                 )
