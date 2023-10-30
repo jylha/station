@@ -18,6 +18,7 @@ import dev.jylha.station.testutil.at
 import dev.jylha.station.testutil.hasSubstring
 import dev.jylha.station.testutil.onNodeWithSubstring
 import dev.jylha.station.testutil.setThemedContent
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.Rule
 import org.junit.Test
 
@@ -72,7 +73,7 @@ class TimetableScreenTest {
             .assertIsDisplayed()
     }
 
-    private val trains = listOf(
+    private val trains = persistentListOf(
         Train(
             1, "IC", Train.Category.LongDistance, timetable = listOf(
                 departure(
@@ -279,7 +280,7 @@ class TimetableScreenTest {
     }
 
     @Test fun arrivingTrainCategorySelected_clickArrivingTrainCategory() {
-        val timetable = listOf(
+        val timetable = persistentListOf(
             Train(
                 1, "ABC", Train.Category.LongDistance, timetable = listOf(
                     departure(1, "1", at("12:00")),
