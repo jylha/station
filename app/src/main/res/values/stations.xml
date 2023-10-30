@@ -39,7 +39,7 @@
     <string name="station_name_0293_laihia">Laihia</string>
     <string name="station_name_0295_isokyro">Isokyrö</string>
     <string name="station_name_0298_lapua">Lapua</string>
-    <string name="station_name_0305_pietarsaari">Pietarsaari-Pännäinen</string>
+    <string name="station_name_0305_pietarsaari">Pietarsaari-\u200BPännäinen</string>
     <string name="station_name_0311_kruunupyy">Kruunupyy</string>
     <string name="station_name_0312_kokkola">Kokkola</string>
     <string name="station_name_0351_tornio">Tornio</string>
