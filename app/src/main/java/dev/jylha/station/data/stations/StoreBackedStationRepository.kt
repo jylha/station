@@ -7,12 +7,13 @@ import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.get
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jylha.station.data.StationDatabase
 import dev.jylha.station.data.stations.network.StationService
 import dev.jylha.station.model.Station
 import dev.jylha.station.util.toCacheEntity
 import dev.jylha.station.util.toDomainModel
-import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -20,7 +21,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * StationRepository implementation that uses Store to manage fetching station data from
@@ -35,11 +35,14 @@ class StoreBackedStationRepository @Inject constructor(
     private val mutex = Mutex()
     private lateinit var stationNameMapper: StationNameMapper
 
+    // This was needed because data contained incorrect value for the passengerTraffic field.
+    private val KempeleUicCode = 769
+
     private val store = StoreBuilder
         .from<Int, List<Station>, List<Station>>(
             fetcher = Fetcher.of { _ ->
                 stationService.fetchStations()
-                    .filter { it.passengerTraffic || it.code == 769 /* Kempele (incorrectly marked in the data). */ }
+                    .filter { it.countryCode == "FI" && (it.passengerTraffic || it.code == KempeleUicCode) }
                     .map { it.toDomainModel() }
                     .filter { it.type == Station.Type.Station || it.type == Station.Type.StoppingPoint }
             },
