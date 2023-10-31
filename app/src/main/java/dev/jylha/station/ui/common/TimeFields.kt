@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowRightAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -28,8 +29,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
 import dev.jylha.station.model.TimetableRow
+import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.toLocalTimeString
+import java.time.ZonedDateTime
 
 /**
  * Composable for displaying time field for arrival or departure.
@@ -99,6 +102,19 @@ fun ScheduledTime(
     )
 }
 
+@LightAndDarkPreviews
+@Composable
+private fun ScheduledTimePreview() {
+    StationTheme {
+        Surface {
+            ScheduledTime(
+                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z").toImmutable(),
+                type = TimetableRow.Type.Arrival
+            )
+        }
+    }
+}
+
 /**
  * Composable for displaying estimated time of arrival or departure.
  * @param scheduledTime Scheduled time.
@@ -155,6 +171,20 @@ fun EstimatedTime(
     }
 }
 
+@LightAndDarkPreviews
+@Composable
+private fun EstimatedTimePreview() {
+    StationTheme {
+        Surface {
+            EstimatedTime(
+                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z").toImmutable(),
+                estimatedTime = ZonedDateTime.parse("2020-01-01T09:32Z").toImmutable(),
+                type = TimetableRow.Type.Arrival
+            )
+        }
+    }
+}
+
 /**
  * Composable for displaying actual time of arrival or departure along with time difference
  * in minutes.
@@ -205,6 +235,20 @@ fun ActualTime(
     }
 }
 
+@LightAndDarkPreviews
+@Composable
+private fun ActualTimePreview() {
+    StationTheme {
+        Surface {
+            ActualTime(
+                actualTime = ZonedDateTime.parse("2020-01-01T09:30Z").toImmutable(),
+                differenceInMinutes = 1,
+                type = TimetableRow.Type.Arrival
+            )
+        }
+    }
+}
+
 /**
  * Composable function for displaying a cancellation instead of arrival or departure time.
  * @param type TimetableRow type.
@@ -230,6 +274,16 @@ fun CancelledTime(
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodyMedium,
         )
+    }
+}
+
+@LightAndDarkPreviews
+@Composable
+private fun CancelledTimePreview() {
+    StationTheme {
+        Surface {
+            CancelledTime(type = TimetableRow.Type.Arrival)
+        }
     }
 }
 
