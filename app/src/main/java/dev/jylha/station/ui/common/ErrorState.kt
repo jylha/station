@@ -1,6 +1,5 @@
 package dev.jylha.station.ui.common
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,21 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ReportProblem
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
  * An error state composable for displaying error states in the application.
  * @param message The error message to be displayed.
  * @param modifier Modifier.
- * @param content Composable content to be displayed below error message.
+ * @param content Optional content to be displayed below error message.
  */
 @Composable
 fun ErrorState(
@@ -67,11 +67,23 @@ fun ErrorState(
     }
 }
 
-@Preview(name = "Error - light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Error - dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@LightAndDarkPreviews
 @Composable
-private fun PreviewError() {
+private fun ErrorStatePreview() {
     StationTheme {
         ErrorState("Oops. Something went wrong.")
     }
 }
+
+@LightAndDarkPreviews
+@Composable
+private fun ErrorStateWithContentPreview() {
+    StationTheme {
+        ErrorState("Oops. Something went wrong.") {
+            Button(onClick = {}) {
+                Text("Hello")
+            }
+        }
+    }
+}
+

@@ -1,6 +1,5 @@
 package dev.jylha.station.ui.common
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
@@ -46,10 +45,9 @@ fun Loading(
     }
 }
 
-@Preview(name = "Loading - light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Loading - dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@LightAndDarkPreviews
 @Composable
-private fun PreviewLoading() {
+private fun LoadingPreview() {
     StationTheme {
         Loading("Loading something...")
     }

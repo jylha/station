@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
+import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
@@ -79,17 +80,19 @@ fun EmptyState(
 
 @Preview(name = "Empty", showBackground = true)
 @Composable
-private fun Empty() {
+private fun ShortEmptyStatePreview() {
     StationTheme(darkTheme = true) {
         EmptyState("(empty)")
     }
 }
 
-@Preview(name = "Long text", showBackground = true)
+@LightAndDarkPreviews
 @Composable
-private fun PreviewEmptyWithLongText() {
-    EmptyState(
-        "We are terribly sorry, but none of those thing you were looking for, " +
-                "could not be found. Maybe you should reconsider everything."
-    )
+private fun LongEmptyStatePreview() {
+    StationTheme {
+        EmptyState(
+            "We are terribly sorry, but none of those thing you were looking for, " +
+                    "could not be found. Maybe you should reconsider everything."
+        )
+    }
 }
