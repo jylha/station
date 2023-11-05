@@ -18,11 +18,10 @@ constraintlayout = "1.0.1"
 coroutines = "1.7.3"
 dagger = "2.48.1"
 datastore = "1.0.0"
-hilt-navigation = "1.0.0"
-hilt-navigation-compose = "1.0.0"
+hilt-navigation = "1.1.0"
 junit = "4.13.2"
 kotlin = "1.9.10"
-kotlinx-collections = "0.3.5"
+kotlinx-collections = "0.3.6"
 ksp = "1.9.10-1.0.13"
 lifecycle = "2.6.2"
 location = "21.0.1"
@@ -30,7 +29,7 @@ lottie = "5.2.0"
 material = "1.10.0"
 mockito = "3.8.0"
 mockito-kotlin = "2.2.0"
-navigation = "2.7.4"
+navigation = "2.7.5"
 okhttp = "4.9.0"
 oss-licenses = "17.0.1"
 oss-licenses-plugin = "0.10.5"
@@ -67,7 +66,7 @@ google-material = { group = "com.google.android.material", name = "material", ve
 google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "location" }
 google-play-services-oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "oss-licenses" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation", version.ref = "hilt-navigation" }
-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
