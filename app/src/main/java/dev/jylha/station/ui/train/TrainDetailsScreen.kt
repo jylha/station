@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,7 +38,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -185,97 +182,6 @@ private fun TrainDetailsHeading(train: Train, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun TrainIdentification(train: Train) {
-    train.run {
-        if (isCommuterTrain()) {
-            if (commuterLineId != null) {
-                CommuterTrainIdentification(commuterLineId)
-            } else {
-                CommuterTrainIdentification(type, number)
-            }
-        } else {
-            LongDistanceTrainIdentification(type, number)
-        }
-    }
-}
-
-@Composable
-private fun LongDistanceTrainIdentification(type: String, number: Int) {
-    val label = when (type) {
-        "IC" -> stringResource(R.string.accessibility_label_intercity_train, number)
-        "S" -> stringResource(R.string.accessibility_label_pendolino_train, number)
-        else -> stringResource(R.string.accessibility_label_long_distance_train, type, number)
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            Icons.Rounded.Train, contentDescription = null,
-            Modifier
-                .size(60.dp)
-                .background(MaterialTheme.colorScheme.tertiary, CircleShape)
-                .padding(4.dp),
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
-        )
-        Spacer(Modifier.height(8.dp))
-        Row {
-            Text(
-                "$type $number",
-                modifier = Modifier.semantics { contentDescription = label },
-                style = MaterialTheme.typography.headlineMedium
-            )
-        }
-    }
-}
-
-@Composable
-private fun CommuterTrainIdentification(type: String, number: Int) {
-    val label = stringResource(R.string.accessibility_label_commuter_train, type, number)
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            Icons.Rounded.Train, contentDescription = null,
-            Modifier
-                .size(60.dp)
-                .background(color = MaterialTheme.colorScheme.primary, CircleShape)
-                .padding(4.dp),
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-        )
-        Spacer(Modifier.height(8.dp))
-        Row {
-            Text(
-                "$type $number",
-                modifier = Modifier.semantics { contentDescription = label },
-                style = MaterialTheme.typography.headlineMedium
-            )
-        }
-    }
-}
-
-@Composable
-private fun CommuterTrainIdentification(commuterLineId: String) {
-    val label = stringResource(R.string.accessibility_label_commuter_line, commuterLineId)
-    Column(
-        Modifier
-            .size(60.dp)
-            .background(color = MaterialTheme.colorScheme.primary, CircleShape)
-            .semantics { contentDescription = label },
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            commuterLineId, Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
 
 @Composable
 private fun TrainOrigin(
