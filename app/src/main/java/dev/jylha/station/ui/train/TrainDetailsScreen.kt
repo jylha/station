@@ -124,15 +124,13 @@ private fun TrainDetails(
     Box(
         modifier = Modifier.pullRefresh(pullRefreshState),
     ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
-        ) {
+        Surface(color = MaterialTheme.colorScheme.background) {
             val routeBehindColor = MaterialTheme.colorScheme.primary
             val routeAheadColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                 .compositeOver(MaterialTheme.colorScheme.background)
 
             LazyColumn(
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -202,7 +200,8 @@ private fun TrainIdentification(train: Train) {
     }
 }
 
-@Composable private fun LongDistanceTrainIdentification(type: String, number: Int) {
+@Composable
+private fun LongDistanceTrainIdentification(type: String, number: Int) {
     val label = when (type) {
         "IC" -> stringResource(R.string.accessibility_label_intercity_train, number)
         "S" -> stringResource(R.string.accessibility_label_pendolino_train, number)
