@@ -1,12 +1,6 @@
 package dev.jylha.station.data.stations
 
 import android.content.Context
-import com.dropbox.android.external.store4.Fetcher
-import com.dropbox.android.external.store4.SourceOfTruth
-import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.StoreResponse
-import com.dropbox.android.external.store4.get
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jylha.station.data.StationDatabase
 import dev.jylha.station.data.stations.network.StationService
@@ -21,6 +15,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import org.mobilenativefoundation.store.store5.Fetcher
+import org.mobilenativefoundation.store.store5.SourceOfTruth
+import org.mobilenativefoundation.store.store5.StoreBuilder
+import org.mobilenativefoundation.store.store5.StoreReadRequest
+import org.mobilenativefoundation.store.store5.StoreReadResponse
+import org.mobilenativefoundation.store.store5.impl.extensions.get
 
 /**
  * StationRepository implementation that uses Store to manage fetching station data from
@@ -69,8 +69,8 @@ class StoreBackedStationRepository @Inject constructor(
         )
         .build()
 
-    override fun fetchStations(): Flow<StoreResponse<List<Station>>> {
-        return store.stream(StoreRequest.cached(key = 0, refresh = true))
+    override fun fetchStations(): Flow<StoreReadResponse<List<Station>>> {
+        return store.stream(StoreReadRequest.cached(key = 0, refresh = true))
             .flowOn(Dispatchers.IO)
     }
 

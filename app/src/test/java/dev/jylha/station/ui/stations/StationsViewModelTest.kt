@@ -1,15 +1,13 @@
 package dev.jylha.station.ui.stations
 
 import android.location.Location
-import com.dropbox.android.external.store4.ResponseOrigin
-import com.dropbox.android.external.store4.StoreResponse
 import com.google.common.truth.Truth.assertThat
-import dev.jylha.station.testutil.CoroutineScopeRule
 import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.data.stations.StationRepository
 import dev.jylha.station.domain.GetLocationUseCase
 import dev.jylha.station.model.Station
+import dev.jylha.station.testutil.CoroutineScopeRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -21,6 +19,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mobilenativefoundation.store.store5.StoreReadResponse
+import org.mobilenativefoundation.store.store5.StoreReadResponseOrigin
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -63,7 +63,7 @@ class StationsViewModelTest {
         whenCalled(stationRepository.getStationNameMapper()).thenReturn(testMapper)
         whenCalled(stationRepository.fetchStations()).thenReturn(
             flowOf(
-                StoreResponse.Data(testStations, origin = ResponseOrigin.Cache)
+                StoreReadResponse.Data(testStations, origin = StoreReadResponseOrigin.Cache)
             )
         )
         whenCalled(settingsRepository.recentStations()).thenReturn(flowOf(emptyList()))

@@ -1,9 +1,5 @@
 package dev.jylha.station.data.trains
 
-import com.dropbox.android.external.store4.Fetcher
-import com.dropbox.android.external.store4.SourceOfTruth
-import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.get
 import dev.jylha.station.data.StationDatabase
 import dev.jylha.station.data.trains.network.TrainService
 import dev.jylha.station.model.CauseCategory
@@ -18,6 +14,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.mobilenativefoundation.store.store5.Fetcher
+import org.mobilenativefoundation.store.store5.SourceOfTruth
+import org.mobilenativefoundation.store.store5.StoreBuilder
+import org.mobilenativefoundation.store.store5.impl.extensions.get
 
 /** Train repository that uses Store in orchestrating the data fetching and storing. */
 class StoreBackedTrainRepository @Inject constructor(
