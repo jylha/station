@@ -79,6 +79,7 @@ import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
 import dev.jylha.station.ui.timetable.ExpandableState.Initial
 import dev.jylha.station.util.insertSpaces
 import java.time.ZonedDateTime
+import kotlinx.collections.immutable.ImmutableList
 
 /**
  * Expandable states for a timetable entry. The [Initial] state is otherwise the same as the
@@ -109,9 +110,7 @@ fun TimetableEntry(
     modifier: Modifier = Modifier
 ) {
     val delayCauses = remember(train) { train.delayCauses() }
-    var expandableState by rememberSaveable(train.number, stop) {
-        mutableStateOf(ExpandableState.Initial)
-    }
+    var expandableState by rememberSaveable(train.number, stop) { mutableStateOf(Initial) }
     val transition = updateTransition(expandableState, label = "Entry state")
     val delayCausesShown = remember(transition.isRunning, transition.currentState) {
         transition.isRunning || transition.currentState == ExpandableState.Expanded
@@ -201,7 +200,7 @@ fun TimetableEntry(
             if (delayCauses.isNotEmpty() && delayCausesShown) {
                 DelayCauses(
                     delayCauses,
-                    onClose = { expandableState = ExpandableState.Collapsed },
+                    onClose = { expandableState = Collapsed },
                     modifier = Modifier
                         .heightFraction(contentHeightFraction)
                         .alpha(contentAlpha)
@@ -467,7 +466,7 @@ private fun ShowDelayCauseAction(
 
 @Composable
 private fun DelayCauses(
-    delayCauses: List<DelayCause>,
+    delayCauses: ImmutableList<DelayCause>,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {

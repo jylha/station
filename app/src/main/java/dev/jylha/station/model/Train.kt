@@ -6,6 +6,8 @@ import dev.jylha.station.model.TimetableRow.Type.Arrival
 import dev.jylha.station.model.TimetableRow.Type.Departure
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 /**
  * Domain Model for train information.
@@ -153,9 +155,9 @@ data class Train(
 
     /** Returns the causes for train's delay. */
     @Stable
-    fun delayCauses(): List<DelayCause> {
+    fun delayCauses(): ImmutableList<DelayCause> {
         return timetable.map { it.causes }
             .fold(emptySet<DelayCause>()) { set, causes -> set + causes }
-            .toList()
+            .toImmutableList()
     }
 }
