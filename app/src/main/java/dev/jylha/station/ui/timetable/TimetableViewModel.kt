@@ -4,10 +4,10 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jylha.station.data.settings.SettingsRepository
-import dev.jylha.station.data.stations.StationRepository
-import dev.jylha.station.data.trains.TrainRepository
 import dev.jylha.station.di.IoDispatcher
+import dev.jylha.station.domain.SettingsRepository
+import dev.jylha.station.domain.StationRepository
+import dev.jylha.station.domain.TrainRepository
 import dev.jylha.station.model.CauseCategories
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.TimetableRow

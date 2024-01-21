@@ -1,10 +1,9 @@
 package dev.jylha.station.ui.home
 
-import dev.jylha.station.data.settings.SettingsRepository
-import dev.jylha.station.data.stations.StationRepository
 import com.google.common.truth.Truth.assertThat
+import dev.jylha.station.domain.SettingsRepository
+import dev.jylha.station.domain.StationRepository
 import dev.jylha.station.testutil.CoroutineScopeRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule

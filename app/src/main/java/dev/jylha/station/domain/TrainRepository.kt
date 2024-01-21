@@ -1,4 +1,4 @@
-package dev.jylha.station.data.trains
+package dev.jylha.station.domain
 
 import dev.jylha.station.model.CauseCategory
 import dev.jylha.station.model.Station

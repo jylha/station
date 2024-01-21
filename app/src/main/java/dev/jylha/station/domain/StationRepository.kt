@@ -1,5 +1,6 @@
-package dev.jylha.station.data.stations
+package dev.jylha.station.domain
 
+import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.model.Station
 import kotlinx.coroutines.flow.Flow
 import org.mobilenativefoundation.store.store5.StoreReadResponse

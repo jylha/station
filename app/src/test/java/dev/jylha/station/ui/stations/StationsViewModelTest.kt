@@ -2,10 +2,10 @@ package dev.jylha.station.ui.stations
 
 import android.location.Location
 import com.google.common.truth.Truth.assertThat
-import dev.jylha.station.data.settings.SettingsRepository
 import dev.jylha.station.data.stations.StationNameMapper
-import dev.jylha.station.data.stations.StationRepository
 import dev.jylha.station.domain.GetLocationUseCase
+import dev.jylha.station.domain.SettingsRepository
+import dev.jylha.station.domain.StationRepository
 import dev.jylha.station.model.Station
 import dev.jylha.station.testutil.CoroutineScopeRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi

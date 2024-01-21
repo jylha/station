@@ -1,11 +1,11 @@
 package dev.jylha.station.di
 
-import dev.jylha.station.data.trains.StoreBackedTrainRepository
-import dev.jylha.station.data.trains.TrainRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.jylha.station.data.trains.StoreBackedTrainRepository
+import dev.jylha.station.domain.TrainRepository
 import javax.inject.Singleton
 
 @Module

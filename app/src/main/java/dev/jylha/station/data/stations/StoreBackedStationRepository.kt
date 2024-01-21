@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.jylha.station.data.StationDatabase
 import dev.jylha.station.data.stations.network.StationService
+import dev.jylha.station.domain.StationRepository
 import dev.jylha.station.model.Station
 import dev.jylha.station.util.toCacheEntity
 import dev.jylha.station.util.toDomainModel

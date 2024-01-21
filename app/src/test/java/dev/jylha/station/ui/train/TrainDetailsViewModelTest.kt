@@ -1,10 +1,10 @@
 package dev.jylha.station.ui.train
 
-import dev.jylha.station.data.stations.StationNameMapper
-import dev.jylha.station.data.stations.StationRepository
-import dev.jylha.station.data.trains.TrainRepository
-import dev.jylha.station.model.Train
 import com.google.common.truth.Truth.assertThat
+import dev.jylha.station.data.stations.StationNameMapper
+import dev.jylha.station.domain.StationRepository
+import dev.jylha.station.domain.TrainRepository
+import dev.jylha.station.model.Train
 import dev.jylha.station.testutil.CoroutineScopeRule
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.ExperimentalCoroutinesApi

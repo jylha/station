@@ -4,9 +4,9 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jylha.station.data.settings.SettingsRepository
-import dev.jylha.station.data.stations.StationRepository
 import dev.jylha.station.domain.GetLocationUseCase
+import dev.jylha.station.domain.SettingsRepository
+import dev.jylha.station.domain.StationRepository
 import dev.jylha.station.model.Station
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

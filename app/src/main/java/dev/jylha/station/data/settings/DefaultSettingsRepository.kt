@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.jylha.station.domain.SettingsRepository
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
 import javax.inject.Inject

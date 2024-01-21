@@ -2,6 +2,7 @@ package dev.jylha.station.data.trains
 
 import dev.jylha.station.data.StationDatabase
 import dev.jylha.station.data.trains.network.TrainService
+import dev.jylha.station.domain.TrainRepository
 import dev.jylha.station.model.CauseCategory
 import dev.jylha.station.model.Station
 import dev.jylha.station.model.Train

@@ -1,4 +1,4 @@
-package dev.jylha.station.data.settings
+package dev.jylha.station.domain
 
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train

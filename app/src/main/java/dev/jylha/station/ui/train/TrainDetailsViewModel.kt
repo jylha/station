@@ -4,8 +4,8 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.jylha.station.data.stations.StationRepository
-import dev.jylha.station.data.trains.TrainRepository
+import dev.jylha.station.domain.StationRepository
+import dev.jylha.station.domain.TrainRepository
 import dev.jylha.station.model.Train
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
