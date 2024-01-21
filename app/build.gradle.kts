@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.dagger.hilt.android)
@@ -7,46 +10,49 @@ plugins {
     alias(libs.plugins.androidx.baselineprofile)
 }
 
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("keystore.properties")
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
     namespace = "dev.jylha.station"
-    compileSdk = libs.versions.compile.sdk.get().toInteger()
+    compileSdk = libs.versions.compile.sdk.get().toInt()
 
     defaultConfig {
         applicationId = "dev.jylha.station"
-        minSdk = libs.versions.min.sdk.get().toInteger()
-        targetSdk = libs.versions.target.sdk.get().toInteger()
+        minSdk = libs.versions.min.sdk.get().toInt()
+        targetSdk = libs.versions.target.sdk.get().toInt()
         versionCode = 24
         versionName = "1.2.11"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
-        release {
+        create("release") {
             if (keystorePropertiesFile.exists()) {
-                storeFile file(keystoreProperties["storeFile"])
-                storePassword keystoreProperties["storePassword"]
-                keyAlias keystoreProperties["keyAlias"]
-                keyPassword keystoreProperties["keyPassword"]
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
             }
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            signingConfig signingConfigs.release
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("release")
             buildConfigField("boolean", "SKIP_HOME_SCREEN", "false")
         }
         debug {
-            applicationIdSuffix ".debug"
+            applicationIdSuffix = ".debug"
             buildConfigField("boolean", "SKIP_HOME_SCREEN", "false")
         }
     }
@@ -64,15 +70,15 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
-        freeCompilerArgs += [
-                "-Xskip-prerelease-check",
-                "-opt-in=kotlin.RequiresOptIn"
-        ]
+        freeCompilerArgs += listOf(
+            "-Xskip-prerelease-check",
+            "-opt-in=kotlin.RequiresOptIn"
+        )
     }
 
     buildFeatures {
         compose = true
-        buildConfig true
+        buildConfig = true
     }
 
     composeOptions {
@@ -87,29 +93,29 @@ android {
 
 dependencies {
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.core.splashcreen)
+    implementation(libs.androidx.hilt.navigation)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.profileinstaller)
     implementation(libs.compose.foundation)
     implementation(libs.compose.material)
     implementation(libs.compose.material.icons)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling)
-    implementation(libs.constraintlayout.compose)
     implementation(libs.dagger.hilt.android)
     implementation(libs.datastore.preferences)
     implementation(libs.datastore.preferences.core)
     implementation(libs.google.material)
     implementation(libs.google.play.services.location)
     implementation(libs.google.play.services.oss.licenses)
-    implementation(libs.hilt.navigation)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lottie.compose)
-    implementation(libs.navigation.compose)
     implementation(libs.okhttp3.logging.interceptor)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
@@ -133,5 +139,5 @@ dependencies {
     androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.truth)
 
-    baselineProfile(project(':baselineprofile'))
+    baselineProfile(project(":baselineprofile"))
 }

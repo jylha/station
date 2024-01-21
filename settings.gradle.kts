@@ -22,5 +22,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Asemat"
-include ':app'
-include ':baselineprofile'
+include(":app")
+include(":baselineprofile")
