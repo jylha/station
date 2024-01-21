@@ -1,5 +1,6 @@
 package dev.jylha.station.ui.train
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Stable
 @HiltViewModel
 class TrainDetailsViewModel @Inject constructor(
     private val trainRepository: TrainRepository,
