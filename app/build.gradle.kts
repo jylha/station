@@ -72,7 +72,10 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
         freeCompilerArgs += listOf(
             "-Xskip-prerelease-check",
-            "-opt-in=kotlin.RequiresOptIn"
+            "-opt-in=kotlin.RequiresOptIn",
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:stabilityConfigurationPath=" +
+                  "${project.projectDir.absolutePath}/compose_compiler_config.conf"
         )
     }
 

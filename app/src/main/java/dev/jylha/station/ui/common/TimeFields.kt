@@ -45,22 +45,12 @@ fun TimeField(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
         when {
             cancelled -> CancelledTime(type = timetableRow.type, modifier)
             actualTime != null ->
-                ActualTime(
-                    actualTime.toImmutable(),
-                    differenceInMinutes,
-                    timetableRow.type,
-                    modifier
-                )
+                ActualTime(actualTime, differenceInMinutes, timetableRow.type, modifier)
 
             estimatedTime != null && differenceInMinutes != 0 ->
-                EstimatedTime(
-                    scheduledTime.toImmutable(),
-                    estimatedTime.toImmutable(),
-                    timetableRow.type,
-                    modifier
-                )
+                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type, modifier)
 
-            else -> ScheduledTime(scheduledTime.toImmutable(), timetableRow.type, modifier)
+            else -> ScheduledTime(scheduledTime, timetableRow.type, modifier)
         }
     } ?: Box(modifier)
 }
@@ -74,7 +64,7 @@ fun TimeField(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
  */
 @Composable
 fun ScheduledTime(
-    scheduledTime: ImmutableTime,
+    scheduledTime: ZonedDateTime,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
     track: String? = null,
@@ -108,7 +98,7 @@ private fun ScheduledTimePreview() {
     StationTheme {
         Surface {
             ScheduledTime(
-                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z").toImmutable(),
+                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z"),
                 type = TimetableRow.Type.Arrival
             )
         }
@@ -125,8 +115,8 @@ private fun ScheduledTimePreview() {
  */
 @Composable
 fun EstimatedTime(
-    scheduledTime: ImmutableTime,
-    estimatedTime: ImmutableTime,
+    scheduledTime: ZonedDateTime,
+    estimatedTime: ZonedDateTime,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
     track: String? = null
@@ -177,8 +167,8 @@ private fun EstimatedTimePreview() {
     StationTheme {
         Surface {
             EstimatedTime(
-                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z").toImmutable(),
-                estimatedTime = ZonedDateTime.parse("2020-01-01T09:32Z").toImmutable(),
+                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z"),
+                estimatedTime = ZonedDateTime.parse("2020-01-01T09:32Z"),
                 type = TimetableRow.Type.Arrival
             )
         }
@@ -196,7 +186,7 @@ private fun EstimatedTimePreview() {
  */
 @Composable
 fun ActualTime(
-    actualTime: ImmutableTime,
+    actualTime: ZonedDateTime,
     differenceInMinutes: Int,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
@@ -241,7 +231,7 @@ private fun ActualTimePreview() {
     StationTheme {
         Surface {
             ActualTime(
-                actualTime = ZonedDateTime.parse("2020-01-01T09:30Z").toImmutable(),
+                actualTime = ZonedDateTime.parse("2020-01-01T09:30Z"),
                 differenceInMinutes = 1,
                 type = TimetableRow.Type.Arrival
             )
@@ -301,18 +291,16 @@ private fun trackString(track: String?, type: TimetableRow.Type): String {
 }
 
 @Composable
-private fun produceLocalTime(time: ImmutableTime): State<String> {
+private fun produceLocalTime(time: ZonedDateTime): State<String> {
     return produceState("", time) {
-        value = time().toLocalTimeString()
+        value = time.toLocalTimeString()
     }
 }
 
 @Composable
-private fun produceLocalTimes(
-    time1: ImmutableTime,
-    time2: ImmutableTime
-): State<Pair<String, String>> {
+private fun produceLocalTimes(time1: ZonedDateTime, time2: ZonedDateTime)
+        : State<Pair<String, String>> {
     return produceState(Pair("", ""), time1, time2) {
-        value = Pair(time1().toLocalTimeString(), time2().toLocalTimeString())
+        value = Pair(time1.toLocalTimeString(), time2.toLocalTimeString())
     }
 }

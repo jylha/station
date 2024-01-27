@@ -73,7 +73,6 @@ import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.causeName
 import dev.jylha.station.ui.common.heightFraction
 import dev.jylha.station.ui.common.stationName
-import dev.jylha.station.ui.common.toImmutable
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
 import dev.jylha.station.ui.timetable.ExpandableState.Initial
@@ -333,7 +332,7 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
                 time = {
                     ActualTime(
-                        actualTime.toImmutable(),
+                        actualTime,
                         differenceInMinutes,
                         TimetableRow.Type.Arrival,
                         track = track
@@ -346,8 +345,8 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = {
                     EstimatedTime(
-                        scheduledTime.toImmutable(),
-                        estimatedTime.toImmutable(),
+                        scheduledTime,
+                        estimatedTime,
                         TimetableRow.Type.Arrival,
                         track = track
                     )
@@ -359,7 +358,7 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = {
                     ScheduledTime(
-                        scheduledTime.toImmutable(),
+                        scheduledTime,
                         TimetableRow.Type.Arrival,
                         track = track
                     )
@@ -388,7 +387,7 @@ private fun Departure(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
                 time = {
                     ActualTime(
-                        actualTime.toImmutable(), differenceInMinutes, TimetableRow.Type.Departure,
+                        actualTime, differenceInMinutes, TimetableRow.Type.Departure,
                         track = trackLabel
                     )
                 },
@@ -399,8 +398,8 @@ private fun Departure(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
                     EstimatedTime(
-                        scheduledTime.toImmutable(),
-                        estimatedTime.toImmutable(),
+                        scheduledTime,
+                        estimatedTime,
                         TimetableRow.Type.Departure,
                         track = trackLabel
                     )
@@ -412,7 +411,7 @@ private fun Departure(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
                     ScheduledTime(
-                        scheduledTime.toImmutable(), TimetableRow.Type.Departure, track = trackLabel
+                        scheduledTime, TimetableRow.Type.Departure, track = trackLabel
                     )
                 },
                 modifier
