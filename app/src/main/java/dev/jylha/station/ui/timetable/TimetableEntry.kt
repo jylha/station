@@ -64,7 +64,8 @@ import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
 import dev.jylha.station.ui.LocalePreviews
 import dev.jylha.station.ui.common.ActualTime
-import dev.jylha.station.ui.common.CancelledTime
+import dev.jylha.station.ui.common.CancelledArrival
+import dev.jylha.station.ui.common.CancelledDeparture
 import dev.jylha.station.ui.common.CauseCategoriesProvider
 import dev.jylha.station.ui.common.EstimatedTime
 import dev.jylha.station.ui.common.ScheduledTime
@@ -324,7 +325,7 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
         when {
             cancelled -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
-                time = { CancelledTime(type = TimetableRow.Type.Arrival) },
+                time = { CancelledArrival() },
                 modifier
             )
             actualTime != null -> LabeledTimeField(
@@ -376,7 +377,7 @@ private fun Departure(
         when {
             cancelled -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
-                time = { CancelledTime(type = TimetableRow.Type.Departure) },
+                time = { CancelledDeparture() },
                 modifier
             )
             actualTime != null -> LabeledTimeField(

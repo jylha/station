@@ -44,7 +44,7 @@ import java.time.ZonedDateTime
 fun TimeOfArrival(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
     timetableRow?.run {
         when {
-            cancelled -> CancelledTime(timetableRow.type, modifier)
+            cancelled -> CancelledArrival(modifier)
             actualTime != null ->
                 ActualTime(actualTime, differenceInMinutes, timetableRow.type, modifier)
             estimatedTime != null && differenceInMinutes != 0 ->
@@ -64,7 +64,7 @@ fun TimeOfArrival(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
 fun TimeOfDeparture(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
     timetableRow?.run {
         when {
-            cancelled -> CancelledTime(timetableRow.type, modifier)
+            cancelled -> CancelledDeparture(modifier)
             actualTime != null ->
                 ActualTime(actualTime, differenceInMinutes, timetableRow.type, modifier)
             estimatedTime != null && differenceInMinutes != 0 ->
@@ -260,22 +260,32 @@ private fun ActualTimePreview() {
 }
 
 /**
- * Composable function for displaying a cancellation instead of arrival or departure time.
- * @param type TimetableRow type.
- * @param modifier Modifier.
+ * Displays a cancelled arrival.
+ *
+ * @param modifier An optional modifier.
  */
 @Composable
-fun CancelledTime(
-    type: TimetableRow.Type,
-    modifier: Modifier = Modifier
-) {
+fun CancelledArrival(modifier: Modifier = Modifier) {
+    val accessibilityLabel = stringResource(R.string.accessibility_label_cancelled_arrival)
+    CancelledLabel( modifier.semantics { contentDescription = accessibilityLabel })
+}
+
+/**
+ * Displays a cancelled departure.
+ *
+ * @param modifier An optional modifier.
+ */
+@Composable
+fun CancelledDeparture(modifier: Modifier = Modifier) {
+    val accessibilityLabel = stringResource(R.string.accessibility_label_cancelled_departure)
+    CancelledLabel( modifier.semantics { contentDescription = accessibilityLabel })
+}
+
+@Composable
+private fun CancelledLabel(modifier: Modifier) {
     val label = stringResource(R.string.label_cancelled).uppercase()
-    val accessibilityLabel = when (type) {
-        TimetableRow.Type.Arrival -> stringResource(R.string.accessibility_label_cancelled_arrival)
-        else -> stringResource(R.string.accessibility_label_cancelled_departure)
-    }
     Row(
-        modifier = modifier.semantics { contentDescription = accessibilityLabel },
+        modifier = modifier,
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -289,10 +299,10 @@ fun CancelledTime(
 
 @LightAndDarkPreviews
 @Composable
-private fun CancelledTimePreview() {
+private fun CancelledLabelPreview() {
     StationTheme {
         Surface {
-            CancelledTime(type = TimetableRow.Type.Arrival)
+            CancelledLabel(Modifier)
         }
     }
 }
