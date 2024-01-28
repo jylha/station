@@ -327,39 +327,36 @@ private fun Arrival(arrival: TimetableRow?, modifier: Modifier = Modifier) {
                 time = { CancelledTime(type = TimetableRow.Type.Arrival) },
                 modifier
             )
-
             actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrived)) },
                 time = {
                     ActualTime(
-                        actualTime,
-                        differenceInMinutes,
-                        TimetableRow.Type.Arrival,
+                        actualTime = actualTime,
+                        differenceInMinutes = differenceInMinutes,
+                        type = TimetableRow.Type.Arrival,
                         track = track
                     )
                 },
                 modifier
             )
-
             estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = {
                     EstimatedTime(
-                        scheduledTime,
-                        estimatedTime,
-                        TimetableRow.Type.Arrival,
+                        scheduledTime = scheduledTime,
+                        estimatedTime = estimatedTime,
+                        type = TimetableRow.Type.Arrival,
                         track = track
                     )
                 },
                 modifier
             )
-
             else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_arrives)) },
                 time = {
                     ScheduledTime(
-                        scheduledTime,
-                        TimetableRow.Type.Arrival,
+                        scheduledTime = scheduledTime,
+                        type = TimetableRow.Type.Arrival,
                         track = track
                     )
                 },
@@ -382,36 +379,37 @@ private fun Departure(
                 time = { CancelledTime(type = TimetableRow.Type.Departure) },
                 modifier
             )
-
             actualTime != null -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departed)) },
                 time = {
                     ActualTime(
-                        actualTime, differenceInMinutes, TimetableRow.Type.Departure,
+                        actualTime = actualTime,
+                        differenceInMinutes = differenceInMinutes,
+                        type = TimetableRow.Type.Departure,
                         track = trackLabel
                     )
                 },
                 modifier
             )
-
             estimatedTime != null && differenceInMinutes != 0 -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
                     EstimatedTime(
-                        scheduledTime,
-                        estimatedTime,
+                        scheduledTime = scheduledTime,
+                        estimatedTime = estimatedTime,
                         TimetableRow.Type.Departure,
                         track = trackLabel
                     )
                 },
                 modifier
             )
-
             else -> LabeledTimeField(
                 label = { TimeLabel(stringResource(R.string.label_departs)) },
                 time = {
                     ScheduledTime(
-                        scheduledTime, TimetableRow.Type.Departure, track = trackLabel
+                        scheduledTime = scheduledTime,
+                        type = TimetableRow.Type.Departure,
+                        track = trackLabel
                     )
                 },
                 modifier

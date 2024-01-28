@@ -35,28 +35,48 @@ import dev.jylha.station.util.toLocalTimeString
 import java.time.ZonedDateTime
 
 /**
- * Composable for displaying time field for arrival or departure.
+ * Displays time of arrival.
+ *
  * @param timetableRow Timetable row.
- * @param modifier Modifier.
+ * @param modifier An optional modifier.
  */
 @Composable
-fun TimeField(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
+fun TimeOfArrival(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
     timetableRow?.run {
         when {
-            cancelled -> CancelledTime(type = timetableRow.type, modifier)
+            cancelled -> CancelledTime(timetableRow.type, modifier)
             actualTime != null ->
                 ActualTime(actualTime, differenceInMinutes, timetableRow.type, modifier)
-
             estimatedTime != null && differenceInMinutes != 0 ->
                 EstimatedTime(scheduledTime, estimatedTime, timetableRow.type, modifier)
-
             else -> ScheduledTime(scheduledTime, timetableRow.type, modifier)
         }
     } ?: Box(modifier)
 }
 
 /**
- * Composable for displaying schedule time.
+ * Displays time of departure.
+ *
+ * @param timetableRow Timetable row.
+ * @param modifier An optional modifier.
+ */
+@Composable
+fun TimeOfDeparture(timetableRow: TimetableRow?, modifier: Modifier = Modifier) {
+    timetableRow?.run {
+        when {
+            cancelled -> CancelledTime(timetableRow.type, modifier)
+            actualTime != null ->
+                ActualTime(actualTime, differenceInMinutes, timetableRow.type, modifier)
+            estimatedTime != null && differenceInMinutes != 0 ->
+                EstimatedTime(scheduledTime, estimatedTime, timetableRow.type, modifier)
+            else -> ScheduledTime(scheduledTime, timetableRow.type, modifier)
+        }
+    } ?: Box(modifier)
+}
+
+/**
+ * Displays scheduled time.
+ *
  * @param scheduledTime Scheduled time.
  * @param type TimetableRow type.
  * @param modifier Modifier.
@@ -176,8 +196,8 @@ private fun EstimatedTimePreview() {
 }
 
 /**
- * Composable for displaying actual time of arrival or departure along with time difference
- * in minutes.
+ * Displays actual time of arrival or departure along with time difference in minutes.
+ *
  * @param actualTime Actual time.
  * @param differenceInMinutes Time difference from scheduled time in minutes.
  * @param type TimetableRow type.

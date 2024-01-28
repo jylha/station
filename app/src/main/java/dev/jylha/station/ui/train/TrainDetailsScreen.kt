@@ -51,7 +51,8 @@ import dev.jylha.station.model.departure
 import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.StationNameProvider
-import dev.jylha.station.ui.common.TimeField
+import dev.jylha.station.ui.common.TimeOfArrival
+import dev.jylha.station.ui.common.TimeOfDeparture
 import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.stationName
@@ -202,7 +203,7 @@ private fun TrainOrigin(
                 colorFilter = colorFilter
             )
         },
-        departureTime = { modifier -> TimeField(origin.departure, modifier) },
+        departureTime = { modifier -> TimeOfDeparture(origin.departure, modifier) },
         departureIcon = { modifier ->
             Image(
                 painterResource(R.drawable.line), contentDescription = null, modifier,
@@ -238,7 +239,7 @@ private fun TrainWaypoint(
                 colorFilter = arrivedColorFilter
             )
         },
-        arrivalTime = { modifier -> TimeField(waypoint.arrival, modifier) },
+        arrivalTime = { modifier -> TimeOfArrival(waypoint.arrival, modifier) },
         arrivalIcon = { modifier ->
             Image(
                 painterResource(R.drawable.line), contentDescription = null, modifier,
@@ -246,7 +247,7 @@ private fun TrainWaypoint(
                 colorFilter = arrivedColorFilter
             )
         },
-        departureTime = { modifier -> TimeField(waypoint.departure, modifier) },
+        departureTime = { modifier -> TimeOfDeparture(waypoint.departure, modifier) },
         departureIcon = { modifier ->
             Image(
                 painterResource(R.drawable.line), contentDescription = null, modifier,
@@ -287,7 +288,7 @@ private fun TrainDestination(
                 colorFilter = iconColorFilter
             )
         },
-        arrivalTime = { modifier -> TimeField(destination.arrival, modifier) },
+        arrivalTime = { modifier -> TimeOfArrival(destination.arrival, modifier) },
         isCurrent = isCurrent,
         isNext = isNext
     )
