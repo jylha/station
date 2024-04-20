@@ -23,7 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -76,6 +76,7 @@ import dev.jylha.station.ui.common.heightFraction
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
+import dev.jylha.station.ui.timetable.ExpandableState.Expanded
 import dev.jylha.station.ui.timetable.ExpandableState.Initial
 import dev.jylha.station.util.insertSpaces
 import java.time.ZonedDateTime
@@ -89,10 +90,10 @@ import kotlinx.collections.immutable.ImmutableList
 private enum class ExpandableState { Initial, Expanded, Collapsed }
 
 private fun Transition.Segment<ExpandableState>.collapsing(): Boolean =
-    initialState == ExpandableState.Expanded && targetState == ExpandableState.Collapsed
+    initialState == Expanded && targetState == Collapsed
 
 private fun Transition.Segment<ExpandableState>.expanding(): Boolean =
-    (initialState == ExpandableState.Initial || initialState == ExpandableState.Collapsed) &&
+    (initialState == Initial || initialState == Collapsed) &&
             targetState == ExpandableState.Expanded
 
 /**
@@ -113,7 +114,7 @@ fun TimetableEntry(
     var expandableState by rememberSaveable(train.number, stop) { mutableStateOf(Initial) }
     val transition = updateTransition(expandableState, label = "Entry state")
     val delayCausesShown = remember(transition.isRunning, transition.currentState) {
-        transition.isRunning || transition.currentState == ExpandableState.Expanded
+        transition.isRunning || transition.currentState == Expanded
     }
 
     val buttonAlpha by transition.animateFloat(
@@ -125,7 +126,7 @@ fun TimetableEntry(
                 else -> snap()
             }
         }
-    ) { state -> if (state == ExpandableState.Expanded) 0f else 1f }
+    ) { state -> if (state == Expanded) 0f else 1f }
 
     val contentAlpha by transition.animateFloat(
         label = "Content alpha",
@@ -136,12 +137,12 @@ fun TimetableEntry(
                 else -> snap()
             }
         }
-    ) { state -> if (state == ExpandableState.Expanded) 0.8f else 0f }
+    ) { state -> if (state == Expanded) 0.8f else 0f }
 
     val contentHeightFraction by transition.animateFloat(
         label = "Content height fraction",
         transitionSpec = { if (expanding() || collapsing()) tween(300) else snap() }
-    ) { state -> if (state == ExpandableState.Expanded) 1f else 0f }
+    ) { state -> if (state == Expanded) 1f else 0f }
 
     TimetableEntryBubble(onClick = { onSelect(train) }, modifier, statusColor(train, stop)) {
         Column {
@@ -184,8 +185,8 @@ fun TimetableEntry(
                 }, includeTrackLabel = stop.arrival == null)
                 if (delayCauses.isNotEmpty()) {
                     ShowDelayCauseAction(
-                        onClick = { expandableState = ExpandableState.Expanded },
-                        enabled = expandableState != ExpandableState.Expanded,
+                        onClick = { expandableState = Expanded },
+                        enabled = expandableState != Expanded,
                         modifier = Modifier
                             .constrainAs(showDelayRef) {
                                 end.linkTo(parent.end)
@@ -480,7 +481,7 @@ private fun DelayCauses(
             .fillMaxWidth()
             .padding(top = 8.dp)
     ) {
-        Divider(color = dividerColor)
+        HorizontalDivider(color = dividerColor)
         Row(
             Modifier
                 .fillMaxWidth()

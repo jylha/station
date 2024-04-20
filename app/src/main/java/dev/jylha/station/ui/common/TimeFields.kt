@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowRightAlt
+import androidx.compose.material.icons.automirrored.rounded.ArrowRightAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -169,7 +169,7 @@ fun EstimatedTime(
         )
         if (scheduledTimeText.isNotBlank() && estimatedTimeText.isNotBlank()) {
             Icon(
-                Icons.Rounded.ArrowRightAlt, contentDescription = null,
+                Icons.AutoMirrored.Rounded.ArrowRightAlt, contentDescription = null,
                 Modifier.padding(horizontal = 4.dp, vertical = 0.dp).size(16.dp),
                 tint = StationTheme.colors.delayed
             )

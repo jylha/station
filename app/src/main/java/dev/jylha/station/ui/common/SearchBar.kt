@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardBackspace
+import androidx.compose.material.icons.automirrored.filled.KeyboardBackspace
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -72,7 +72,10 @@ fun SearchBar(
             if (onClose != null) {
                 val closeSearchLabel = stringResource(R.string.accessibility_label_close_search)
                 IconButton(onClick = onClose) {
-                    Icon(Icons.Default.KeyboardBackspace, contentDescription = closeSearchLabel)
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardBackspace,
+                        contentDescription = closeSearchLabel
+                    )
                 }
             }
 

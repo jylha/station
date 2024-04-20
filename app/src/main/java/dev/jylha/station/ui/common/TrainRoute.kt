@@ -1,10 +1,9 @@
 package dev.jylha.station.ui.common
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowRightAlt
+import androidx.compose.material.icons.automirrored.rounded.ArrowRightAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,7 +16,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -32,7 +31,8 @@ import dev.jylha.station.ui.theme.StationTheme
  *  @param textStyle Text style used for station name texts.
  *  @param fontWeight Font weight used for station names texts.
  */
-@Composable fun TrainRoute(
+@Composable
+fun TrainRoute(
     origin: String,
     destination: String,
     modifier: Modifier = Modifier,
@@ -50,7 +50,7 @@ import dev.jylha.station.ui.theme.StationTheme
         val iconRef = createRef()
 
         Icon(
-            imageVector = Icons.Rounded.ArrowRightAlt, contentDescription = null,
+            imageVector = Icons.AutoMirrored.Rounded.ArrowRightAlt, contentDescription = null,
             modifier = Modifier.padding(horizontal = 4.dp).constrainAs(iconRef) {
                 centerTo(parent)
             }
@@ -86,10 +86,9 @@ import dev.jylha.station.ui.theme.StationTheme
     }
 }
 
-@Preview(name = "Train route - light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Train route - dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
 @Composable
-private fun PreviewTrainRoute() {
+private fun TrainRoutePreview() {
     StationTheme {
         Surface(Modifier.fillMaxWidth()) {
             TrainRoute(origin = "Origin", destination = "Destination")
