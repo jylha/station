@@ -83,6 +83,30 @@ class CauseCategoriesTest {
     @Test fun `top level cause without passenger friendly name`() {
         val cause = DelayCause(3)
         val result = causeCategories.passengerFriendlyNameFor(cause, english)
+        assertThat(result).isNull()
+    }
+
+    @Test fun `default name for top level cause without passenger friendly name`() {
+        val cause = DelayCause(3)
+        val result = causeCategories.nameFor(cause, english)
+        assertThat(result).isEqualTo("3")
+    }
+
+    @Test fun `default name for detailed cause without passenger friendly names`() {
+        val cause = DelayCause(3, 23)
+        val result = causeCategories.nameFor(cause, english)
+        assertThat(result).isEqualTo("23")
+    }
+
+    @Test fun `default name for third level cause without passenger friendly names`() {
+        val cause = DelayCause(3, 23, 303)
+        val result = causeCategories.nameFor(cause, english)
+        assertThat(result).isEqualTo("303")
+    }
+
+    @Test fun `name for unknown cause`() {
+        val cause = DelayCause(4, 41)
+        val result = causeCategories.nameFor(cause, english)
         assertThat(result).isEqualTo("-")
     }
 

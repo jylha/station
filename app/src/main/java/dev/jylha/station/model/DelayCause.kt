@@ -53,14 +53,31 @@ data class CauseCategories(
     val detailedCategories: List<CauseCategory>,
     val thirdLevelCategories: List<CauseCategory> = emptyList()
 ) {
+    /**
+     * Return the passenger friendly name for given delay cause in preferred language, or
+     * the default cause name, if passenger friendly name is not available.
+     */
+    fun nameFor(delayCause: DelayCause, localeList: LocaleList) : String {
+        val locale = localeList.getFirstMatch(arrayOf("fi", "sv", "en"))
+        return passengerFriendlyNameFor(delayCause, locale) ?: defaultNameFor(delayCause) ?: "-"
+    }
+
+    /**
+     * Returns the passenger friendly name for given delay cause in specified language, or
+     * the default cause name, if passenger friendly name is not available.
+     */
+    fun nameFor(delayCause: DelayCause, locale: Locale?): String {
+        return passengerFriendlyNameFor(delayCause, locale) ?: defaultNameFor(delayCause) ?: "-"
+    }
+
     /** Returns the passenger friendly name for given delay cause in preferred language. */
-    fun passengerFriendlyNameFor(delayCause: DelayCause, localeList: LocaleList): String {
+    fun passengerFriendlyNameFor(delayCause: DelayCause, localeList: LocaleList): String? {
         val locale = localeList.getFirstMatch(arrayOf("fi", "sv", "en"))
         return passengerFriendlyNameFor(delayCause, locale)
     }
 
     /** Returns the passenger friendly name for given delay cause in specified language. */
-    fun passengerFriendlyNameFor(delayCause: DelayCause, locale: Locale?): String {
+    fun passengerFriendlyNameFor(delayCause: DelayCause, locale: Locale?): String? {
         val categoryName = with(delayCause) {
             passengerFriendlyName(thirdLevelCategoryId, thirdLevelCategories)
                 ?.run { return@with this }
@@ -70,7 +87,19 @@ data class CauseCategories(
                 ?.run { return@with this }
             return@with null
         }
-        return categoryName?.forLocale(locale) ?: "-"
+        return categoryName?.forLocale(locale)
+    }
+
+    fun defaultNameFor(delayCause: DelayCause) : String? {
+        return with(delayCause) {
+            name(thirdLevelCategoryId, thirdLevelCategories)
+                ?.run { return@with this }
+            name(detailedCategoryId, detailedCategories)
+                ?.run { return@with this }
+            name(categoryId, categories)
+                ?.run { return@with this }
+            return@with null
+        }
     }
 
     override fun toString(): String = "CauseCategories(" +
@@ -83,8 +112,12 @@ private fun passengerFriendlyName(
     categoryId: Int?, categories: List<CauseCategory>
 ): PassengerFriendlyName? {
     return if (categoryId == null) null
-    else categories.firstOrNull { category -> category.id == categoryId }
-        ?.passengerFriendlyName
+    else categories.firstOrNull { category -> category.id == categoryId }?.passengerFriendlyName
 }
 
-
+private fun name(
+    categoryId: Int?, categories: List<CauseCategory>
+): String? {
+    return if (categoryId == null) null
+    else categories.firstOrNull { category -> category.id == categoryId }?.name
+}

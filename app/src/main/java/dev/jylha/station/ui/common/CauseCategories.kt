@@ -32,7 +32,7 @@ import dev.jylha.station.model.DelayCause
 @Composable fun causeName(delayCause: DelayCause): String {
     val categories = LocalCauseCategories.current
     val localeList = LocalConfiguration.current.locales
-    return categories.passengerFriendlyNameFor(delayCause, localeList)
+    return categories.nameFor(delayCause, localeList)
 }
 
 private val LocalCauseCategories = compositionLocalOf<CauseCategories> {
