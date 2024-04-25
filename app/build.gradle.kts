@@ -27,6 +27,7 @@ android {
         versionCode = 24
         versionName = "1.2.11"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        resourceConfigurations += listOf("en", "fi-rFI", "sv-rFI")
     }
 
     signingConfigs {

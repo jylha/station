@@ -91,7 +91,7 @@
     <string name="station_name_1333_leinela">Leinelä</string>
     <string name="station_name_1337_vehkala">Vehkala</string>
 
-    <string name="station_name_3820_st_petersburg_fin">St. Petersburg (Finljandski)</string>
-    <string name="station_name_3181_st_petersburg_lad">St. Petersburg (Ladozhki)</string>
-    <string name="station_name_6007_moscow">Moscow (Leningradski)</string>
+    <string name="station_name_3820_st_petersburg_fin">Mordor</string>
+    <string name="station_name_3181_st_petersburg_lad">Mordor</string>
+    <string name="station_name_6007_moscow">Mordor</string>
 </resources>
