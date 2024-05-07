@@ -7,14 +7,14 @@ sealed class HomeViewResult
 
 /** Results for loading the UIC Code of most recently used station from settings. */
 sealed class LoadSettings : HomeViewResult() {
-    object Loading : LoadSettings()
-    object Success : LoadSettings()
+    data object Loading : LoadSettings()
+    data object Success : LoadSettings()
     data class Error(val message: String?) : LoadSettings()
 }
 
 /** Results for loading a station. */
 sealed class LoadStation : HomeViewResult() {
-    object Loading : LoadStation()
+    data object Loading : LoadStation()
     data class Success(val station: Station?) : LoadStation()
     data class Error(val message: String?) : LoadStation()
 }
