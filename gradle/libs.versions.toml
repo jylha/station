@@ -3,7 +3,7 @@ compile-sdk = "34"
 min-sdk = "26"
 target-sdk = "34"
 
-activity = "1.8.2"
+activity = "1.9.0"
 agp = "8.2.2"
 androidx-baselineprofile = "1.2.2"
 androidx-benchmark = "1.2.2"
