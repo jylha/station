@@ -39,7 +39,7 @@ room = "2.6.1"
 splashscreen = "1.0.1"
 store = "5.0.0-beta02"
 timber = "5.0.1"
-truth = "1.2.0"
+truth = "1.4.2"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
