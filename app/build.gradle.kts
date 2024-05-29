@@ -3,6 +3,7 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.google.play.licenses)
     alias(libs.plugins.kotlin.android)
@@ -74,9 +75,6 @@ android {
         freeCompilerArgs += listOf(
             "-Xskip-prerelease-check",
             "-opt-in=kotlin.RequiresOptIn",
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:stabilityConfigurationPath=" +
-                  "${project.projectDir.absolutePath}/compose_compiler_config.conf"
         )
     }
 
@@ -85,8 +83,10 @@ android {
         buildConfig = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    composeCompiler {
+        reportsDestination = layout.buildDirectory.dir("reports")
+        metricsDestination = layout.buildDirectory.dir("reports")
+        stabilityConfigurationFile = project.layout.projectDirectory.file("compose_compiler_config.conf")
     }
 
     ksp {
