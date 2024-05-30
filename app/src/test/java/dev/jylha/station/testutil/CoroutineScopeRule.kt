@@ -9,7 +9,7 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CoroutineScopeRule constructor(
+class CoroutineScopeRule(
     private val dispatcher: TestDispatcher
 ) : TestWatcher() {
 
