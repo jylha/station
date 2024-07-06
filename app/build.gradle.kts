@@ -3,12 +3,13 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.google.play.licenses)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.androidx.baselineprofile)
 }
 
 val keystoreProperties = Properties()
@@ -118,6 +119,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.kotlinx.serialization.core)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lottie.compose)
     implementation(libs.okhttp3.logging.interceptor)
