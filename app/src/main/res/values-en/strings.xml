@@ -17,35 +17,18 @@
         https://lottiefiles.com/11580-winter-train
     </string>
     <string name="label_oss_licenses">Open source licenses</string>
-
-    <!-- The message shown when loading application settings. -->
     <string name="message_loading_settings">Retrieving application settings.</string>
-
-    <!-- The message shown when loading the list of stations. -->
     <string name="message_loading_stations">Retrieving stations.</string>
-
-    <!-- The message shown when loading a timetable for a station. -->
     <string name="message_loading_timetable">Retrieving timetable.</string>
-
-    <!-- The message shown when loading a timetable for a station fails. -->
     <string name="message_loading_timetable_failed">Retrieving timetable failed.</string>
-
-    <!-- The message shown when no station matching the search is found. -->
     <string name="message_no_matching_stations">No stations match the search.</string>
-
-    <!-- The message shown when waiting for user's current location. -->
     <string name="message_retrieving_location">Retrieving current location.</string>
-
-    <!-- The message shown when the timetable of the selected station is empty. -->
     <string name="message_empty_timetable">
         No trains are scheduled to stop at this station in the near future.
     </string>
-
-    <!-- The message shown when no trains in the selected category are in the station's timetable. -->
     <string name="message_no_matching_trains">
         No trains in the selected category are scheduled to stop at this station in the near future.
     </string>
-
     <string name="message_loading_train_details">Retrieving train details.</string>
 
     <string name="subtitle_all_trains">All trains</string>
@@ -94,11 +77,6 @@
     <string name="accessibility_label_commuter_train">Commuter train %1$s %2$d</string>
     <string name="accessibility_label_commuter_line">%1$s commuter train</string>
 
-    <!--
-        The content descriptions for arrival and departure times use the first parameter
-        for optional track information and the second parameter for the time.
-        Note: This string format works at least for the supported languages (en,fi,sv).
-    -->
     <string name="accessibility_label_actual_arrival">arrived%1$s at %2$s</string>
     <string name="accessibility_label_scheduled_arrival">arrives%1$s at %2$s</string>
     <string name="accessibility_label_estimated_arrival">estimated time of arrival%1$s at %2$s</string>
