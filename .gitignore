@@ -97,7 +97,7 @@ lint/tmp/
 lint/reports/
 
 # Baseline profiles
-app/src/release/generated/baselineProfiles/baseline-prof.txt
+app/src/release/generated/baselineProfiles/
 
 ### Android Patch ###
 gen-external-apklibs

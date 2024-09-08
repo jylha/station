@@ -16,7 +16,10 @@ class BaselineProfileGenerator {
 
     @Test
     fun generate() {
-        rule.collect("dev.jylha.station") {
+        rule.collect(
+            packageName = "dev.jylha.station",
+            includeInStartupProfile = true,
+        ) {
             pressHome()
             startActivityAndWait()
         }
