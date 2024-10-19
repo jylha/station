@@ -62,7 +62,6 @@ import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
-import dev.jylha.station.ui.LocalePreviews
 import dev.jylha.station.ui.common.ActualTime
 import dev.jylha.station.ui.common.CancelledArrival
 import dev.jylha.station.ui.common.CancelledDeparture
@@ -74,6 +73,7 @@ import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.causeName
 import dev.jylha.station.ui.common.heightFraction
 import dev.jylha.station.ui.common.stationName
+import dev.jylha.station.ui.preview.PreviewApplicationLocales
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
 import dev.jylha.station.ui.timetable.ExpandableState.Expanded
@@ -588,7 +588,7 @@ private fun TimetableEntryBubble(
 
 
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@LocalePreviews
+@PreviewApplicationLocales
 @Composable
 private fun TimetableEntryPreview() {
     val origin = Station(

@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.jylha.station.R
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.model.Train
-import dev.jylha.station.ui.LocalePreviews
+import dev.jylha.station.ui.preview.PreviewApplicationLocales
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
@@ -133,7 +133,7 @@ private fun TopAppBarSubtitle(
     Text(subtitleText, modifier, style = MaterialTheme.typography.labelMedium)
 }
 
-@LocalePreviews
+@PreviewApplicationLocales
 @Composable
 private fun TimetableTopAppBarPreview(
     @PreviewParameter(TimetableTopAppBarPreviewParameterProvider::class)
