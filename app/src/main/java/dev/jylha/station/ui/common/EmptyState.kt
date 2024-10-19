@@ -20,9 +20,9 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
@@ -86,7 +86,7 @@ private fun ShortEmptyStatePreview() {
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun LongEmptyStatePreview() {
     StationTheme {

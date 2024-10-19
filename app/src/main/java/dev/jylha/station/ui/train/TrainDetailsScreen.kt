@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -47,7 +48,6 @@ import dev.jylha.station.model.Stop
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.StationNameProvider
 import dev.jylha.station.ui.common.TimeOfArrival
@@ -422,7 +422,7 @@ private fun CommercialStop(
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun TrainDetailsPreview() {
     val train = Train(

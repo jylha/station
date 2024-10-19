@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import dev.jylha.station.R
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.landscapeOrientation
@@ -135,14 +135,14 @@ private fun LoadingStation() {
 
 @Composable
 @ReadOnlyComposable
-private fun backgroundColor() : Color {
-    return  if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background
+private fun backgroundColor(): Color {
+    return if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background
     else MaterialTheme.colorScheme.surfaceVariant
 }
 
 @Composable
 @ReadOnlyComposable
-private fun onBackgroundColor() : Color {
+private fun onBackgroundColor(): Color {
     return if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground
     else MaterialTheme.colorScheme.onSurfaceVariant
 }
@@ -278,7 +278,7 @@ private fun WelcomeAnimation(modifier: Modifier = Modifier) {
     LottieAnimation(composition, modifier)
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun HomeScreenPreview(
     @PreviewParameter(HomeScreenPreviewParameterProvider::class) state: HomeViewState

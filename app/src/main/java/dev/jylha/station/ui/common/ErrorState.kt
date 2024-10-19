@@ -19,8 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 
 /**
@@ -67,7 +67,7 @@ fun ErrorState(
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun ErrorStatePreview() {
     StationTheme {
@@ -75,7 +75,7 @@ private fun ErrorStatePreview() {
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun ErrorStateWithContentPreview() {
     StationTheme {

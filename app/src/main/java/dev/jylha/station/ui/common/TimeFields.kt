@@ -26,10 +26,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
 import dev.jylha.station.model.TimetableRow
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.toLocalTimeString
 import java.time.ZonedDateTime
@@ -112,7 +112,7 @@ fun ScheduledTime(
     )
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun ScheduledTimePreview() {
     StationTheme {
@@ -181,7 +181,7 @@ fun EstimatedTime(
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun EstimatedTimePreview() {
     StationTheme {
@@ -245,7 +245,7 @@ fun ActualTime(
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun ActualTimePreview() {
     StationTheme {
@@ -267,7 +267,7 @@ private fun ActualTimePreview() {
 @Composable
 fun CancelledArrival(modifier: Modifier = Modifier) {
     val accessibilityLabel = stringResource(R.string.accessibility_label_cancelled_arrival)
-    CancelledLabel( modifier.semantics { contentDescription = accessibilityLabel })
+    CancelledLabel(modifier.semantics { contentDescription = accessibilityLabel })
 }
 
 /**
@@ -278,7 +278,7 @@ fun CancelledArrival(modifier: Modifier = Modifier) {
 @Composable
 fun CancelledDeparture(modifier: Modifier = Modifier) {
     val accessibilityLabel = stringResource(R.string.accessibility_label_cancelled_departure)
-    CancelledLabel( modifier.semantics { contentDescription = accessibilityLabel })
+    CancelledLabel(modifier.semantics { contentDescription = accessibilityLabel })
 }
 
 @Composable
@@ -297,7 +297,7 @@ private fun CancelledLabel(modifier: Modifier) {
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun CancelledLabelPreview() {
     StationTheme {

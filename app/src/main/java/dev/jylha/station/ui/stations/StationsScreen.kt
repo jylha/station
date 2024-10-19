@@ -25,11 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.jylha.station.R
 import dev.jylha.station.model.Station
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.LocalLocationPermission
@@ -207,7 +207,7 @@ private fun NoMatchingStations(modifier: Modifier = Modifier) {
     EmptyState(message, modifier)
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun StationsScreenPreview(
     @PreviewParameter(StationsViewStateProvider::class) state: StationsViewState

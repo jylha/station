@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
 import dev.jylha.station.data.stations.LocalizedStationNames
@@ -40,7 +41,6 @@ import dev.jylha.station.model.Train
 import dev.jylha.station.model.Train.Category
 import dev.jylha.station.model.arrival
 import dev.jylha.station.model.departure
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.common.CauseCategoriesProvider
 import dev.jylha.station.ui.common.EmptyState
 import dev.jylha.station.ui.common.ErrorState
@@ -314,7 +314,7 @@ private fun Timetable(
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun TimetablePreview() {
     val helsinki = Station(

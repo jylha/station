@@ -26,12 +26,12 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.jylha.station.R
 import dev.jylha.station.model.Train
-import dev.jylha.station.ui.LightAndDarkPreviews
 import dev.jylha.station.ui.theme.StationTheme
 
 @Composable
@@ -128,7 +128,7 @@ private fun CommuterTrainIdentification(commuterLineId: String, modifier: Modifi
     }
 }
 
-@LightAndDarkPreviews
+@PreviewLightDark
 @Composable
 private fun TrainIdentificationPreview(
     @PreviewParameter(TrainIdentificationPreviewParameterProvider::class) train: Train
