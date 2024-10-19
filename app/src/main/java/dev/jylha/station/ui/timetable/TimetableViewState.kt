@@ -2,6 +2,7 @@ package dev.jylha.station.ui.timetable
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import co.touchlab.kermit.Logger
 import dev.jylha.station.data.stations.StationNameMapper
 import dev.jylha.station.model.CauseCategories
 import dev.jylha.station.model.Station
@@ -10,7 +11,6 @@ import dev.jylha.station.model.Train
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import timber.log.Timber
 
 /**
  * A UI state for the [TimetableScreen].
@@ -39,7 +39,7 @@ data class TimetableViewState(
 
     /** Reduce timetable state with given [TimetableResult]. */
     fun reduce(result: TimetableResult): TimetableViewState {
-        Timber.d("TimetableViewState.reduce(result = $result)")
+        Logger.d { "TimetableViewState.reduce(result = $result)" }
         return when (result) {
             is LoadTimetable.Loading -> copy(
                 isLoadingTimetable = true,

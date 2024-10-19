@@ -20,6 +20,7 @@ dagger = "2.51.1"
 datastore = "1.1.1"
 hilt = "1.2.0"
 junit = "4.13.2"
+kermit = "2.0.4"
 kotlin = "2.0.21"
 kotlinx-collections = "0.3.6"
 kotlinx-serialization = "1.7.1"
@@ -39,7 +40,6 @@ retrofit = "2.9.0"
 room = "2.6.1"
 splashscreen = "1.0.1"
 store = "5.0.0-beta02"
-timber = "5.0.1"
 truth = "1.4.2"
 
 [libraries]
@@ -68,6 +68,7 @@ google-material = { group = "com.google.android.material", name = "material", ve
 google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "location" }
 google-play-services-oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "oss-licenses" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -87,7 +88,6 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 store = { group = "org.mobilenativefoundation.store", name = "store5", version.ref = "store" }
-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 [plugins]

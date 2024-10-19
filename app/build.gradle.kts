@@ -119,6 +119,7 @@ dependencies {
     implementation(libs.google.material)
     implementation(libs.google.play.services.location)
     implementation(libs.google.play.services.oss.licenses)
+    implementation(libs.kermit)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
@@ -132,7 +133,6 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     implementation(libs.store)
-    implementation(libs.timber)
 
     ksp(libs.dagger.hilt.android.compiler)
     ksp(libs.room.compiler)
