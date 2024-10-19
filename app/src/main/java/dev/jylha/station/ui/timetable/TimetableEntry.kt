@@ -43,7 +43,6 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -309,12 +308,8 @@ private fun TrainTrack(track: String?, modifier: Modifier = Modifier) {
 
 @Composable
 private fun TrackLabel() {
-    val context = LocalContext.current
-    val label = remember {
-        context.getString(R.string.label_track).uppercase()
-    }
     Text(
-        text = label,
+        text = stringResource(R.string.label_track).uppercase(),
         style = MaterialTheme.typography.labelSmall,
         color = Color.Gray
     )
