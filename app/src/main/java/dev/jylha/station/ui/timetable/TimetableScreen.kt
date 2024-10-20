@@ -48,12 +48,12 @@ import dev.jylha.station.ui.common.Loading
 import dev.jylha.station.ui.common.StationNameProvider
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
-import java.time.LocalDate
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlin.time.Duration.Companion.minutes
 
 /**

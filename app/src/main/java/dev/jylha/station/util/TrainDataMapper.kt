@@ -4,7 +4,7 @@ import dev.jylha.station.data.trains.network.TrainNetworkEntity
 import dev.jylha.station.model.Train
 import dev.jylha.station.model.Train.Category.Commuter
 import dev.jylha.station.model.Train.Category.LongDistance
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
 
 /**
  * Maps a list of train network data transfer objects into domain model at the same time

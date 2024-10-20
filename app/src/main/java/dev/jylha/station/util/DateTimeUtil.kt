@@ -1,6 +1,8 @@
 package dev.jylha.station.util
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -33,3 +35,8 @@ fun Instant.differsFrom(other: Instant): Boolean {
     return difference >= 1.minutes
 }
 
+/**
+ * Returns the current date.
+ */
+fun LocalDate.Companion.now() =
+    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date

@@ -7,13 +7,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jylha.station.domain.StationRepository
 import dev.jylha.station.domain.TrainRepository
 import dev.jylha.station.model.Train
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
 
 @Stable
 @HiltViewModel
@@ -58,7 +59,7 @@ class TrainDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             reduceState(ReloadTrainDetails.Loading)
             try {
-                val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                val departureDate = train.departureDate.format(LocalDate.Formats.ISO)
                 val reloaded = trainRepository.train(departureDate, train.number, train.version)
                 reduceState(ReloadTrainDetails.Success(reloaded ?: train))
             } catch (e: Exception) {

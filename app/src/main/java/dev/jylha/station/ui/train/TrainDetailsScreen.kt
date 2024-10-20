@@ -56,8 +56,8 @@ import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
-import java.time.LocalDate
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 /**
  * Train details screen composable. Displays details about train's progress on its route.

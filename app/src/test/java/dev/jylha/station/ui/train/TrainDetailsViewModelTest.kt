@@ -6,11 +6,12 @@ import dev.jylha.station.domain.StationRepository
 import dev.jylha.station.domain.TrainRepository
 import dev.jylha.station.model.Train
 import dev.jylha.station.testutil.CoroutineScopeRule
-import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,7 +57,7 @@ class TrainDetailsViewModelTest {
 
     @Test fun `set train`() = runTest(dispatcher) {
         val train = Train(1, "A", Train.Category.LongDistance)
-        val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val departureDate = train.departureDate.format(LocalDate.Formats.ISO)
         whenCalled(trainRepository.train(departureDate, train.number)).thenReturn(train)
         viewModel.setTrain(departureDate, train.number)
         advanceUntilIdle()
@@ -75,7 +76,7 @@ class TrainDetailsViewModelTest {
     @Test fun `reload train details`() = runTest(dispatcher) {
         val train = Train(1, "A", Train.Category.LongDistance, isRunning = false, version = 100)
         val updated = Train(1, "A", Train.Category.LongDistance, isRunning = true, version = 200)
-        val departureDate = train.departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val departureDate = train.departureDate.format(LocalDate.Formats.ISO)
         whenCalled(trainRepository.train(departureDate, 1, 100)).thenReturn(updated)
         viewModel.reload(train)
         advanceUntilIdle()

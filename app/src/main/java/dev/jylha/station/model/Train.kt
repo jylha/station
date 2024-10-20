@@ -4,10 +4,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import dev.jylha.station.model.TimetableRow.Type.Arrival
 import dev.jylha.station.model.TimetableRow.Type.Departure
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import dev.jylha.station.util.now
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
 
 /**
  * Domain Model for train information.
@@ -43,7 +44,7 @@ data class Train(
 
     /** Train's departure date as a string. */
     val departureDateString: String
-        @Stable get() = departureDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        @Stable get() = departureDate.format(LocalDate.Formats.ISO)
 
     /** Returns whether train is a long-distance train. */
     @Stable

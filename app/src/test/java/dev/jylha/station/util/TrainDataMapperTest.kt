@@ -1,8 +1,8 @@
 package dev.jylha.station.util
 
+import com.google.common.truth.Truth.assertThat
 import dev.jylha.station.data.trains.network.TrainNetworkEntity
 import dev.jylha.station.model.Train
-import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 
@@ -84,7 +84,7 @@ class TrainDataMapperTest {
         val dto = entity.copy(departureDate = "2020-02-20")
         val result = dto.toDomainModel()
         assertThat(result?.departureDate?.year).isEqualTo(2020)
-        assertThat(result?.departureDate?.monthValue).isEqualTo(2)
+        assertThat(result?.departureDate?.monthNumber).isEqualTo(2)
         assertThat(result?.departureDate?.dayOfMonth).isEqualTo(20)
     }
 
