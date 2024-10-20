@@ -1,20 +1,35 @@
 package dev.jylha.station.util
 
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import kotlin.math.abs
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.minutes
 
-private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+/**
+ * Converts an [Instant] to a local time string using the system's default time zone.
+ */
+fun Instant.toLocalTimeString(): String {
+    return toLocalDateTime(TimeZone.currentSystemDefault()).format(shortTimeFormat)
+}
 
-fun ZonedDateTime.atLocalZone(): LocalDateTime =
-    this.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime()
+private val shortTimeFormat: DateTimeFormat<LocalDateTime> = LocalDateTime.Format {
+    time(
+        LocalTime.Format {
+            hour(); char(':'); minute()
+        }
+    )
+}
 
-fun ZonedDateTime.toLocalTimeString(): String = atLocalZone().format(formatter)
-
-/** Checks whether the difference between two times is at least a minute. */
-fun ZonedDateTime.differsFrom(other: ZonedDateTime): Boolean =
-    abs(ChronoUnit.MINUTES.between(this, other)) >= 1
+/**
+ *  Checks whether the difference between two times is at least a minute.
+ */
+fun Instant.differsFrom(other: Instant): Boolean {
+    val difference = (this - other).absoluteValue
+    return difference >= 1.minutes
+}
 

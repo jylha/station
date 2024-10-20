@@ -1,18 +1,19 @@
 package dev.jylha.station.util
 
+import com.google.common.truth.Truth.assertThat
 import dev.jylha.station.data.trains.network.CauseNetworkEntity
 import dev.jylha.station.data.trains.network.TimetableRowNetworkEntity
 import dev.jylha.station.model.TimetableRow
-import com.google.common.truth.Truth.assertThat
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import org.junit.Test
 
 class TimetableRowDataMapperTest {
 
     private val networkEntity = TimetableRowNetworkEntity(
         "ARRIVAL", "", 1, false, cancelled = false,
-        scheduledTime = "2020-01-01T00:00Z"
+        scheduledTime = "2020-01-01T00:00:00Z"
     )
 
     @Test fun `stationCode is mapped correctly into domain model`() {
@@ -59,10 +60,10 @@ class TimetableRowDataMapperTest {
         val result = networkEntity.copy(scheduledTime = "2020-09-05T10:40:20.000Z")
             .toDomainModel()
         assertThat(result.scheduledTime).isEqualTo(
-            ZonedDateTime.of(
+            LocalDateTime(
                 2020, 9, 5,
-                10, 40, 20, 0, ZoneOffset.UTC
-            )
+                10, 40, 20
+            ).toInstant(TimeZone.UTC)
         )
     }
 
@@ -70,10 +71,10 @@ class TimetableRowDataMapperTest {
         val result = networkEntity.copy(liveEstimateTime = "2020-09-05T10:40:15.000Z")
             .toDomainModel()
         assertThat(result.estimatedTime).isEqualTo(
-            ZonedDateTime.of(
+            LocalDateTime(
                 2020, 9, 5,
-                10, 40, 15, 0, ZoneOffset.UTC
-            )
+                10, 40, 15, 0
+            ).toInstant(TimeZone.UTC)
         )
     }
 
@@ -87,10 +88,10 @@ class TimetableRowDataMapperTest {
             actualTime = "2020-09-05T06:10:30.000Z"
         ).toDomainModel()
         assertThat(result.actualTime).isEqualTo(
-            ZonedDateTime.of(
+            LocalDateTime(
                 2020, 9, 5,
-                6, 10, 30, 0, ZoneOffset.UTC
-            )
+                6, 10, 30, 0
+            ).toInstant(TimeZone.UTC)
         )
     }
 

@@ -49,10 +49,12 @@ import dev.jylha.station.ui.common.StationNameProvider
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import java.time.LocalDate
-import java.time.ZonedDateTime
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Timetable screen displays the timetable for the specified train station.
@@ -287,7 +289,7 @@ private fun Timetable(
     }
 
     val stops = remember(trains, selectedTimetableTypes) {
-        val cutoffTime = ZonedDateTime.now().minusMinutes(5)
+        val cutoffTime = Clock.System.now().minus(5.minutes)
         trains.flatMap { train ->
             train.stopsAt(station.code).map { stop -> Pair(train, stop) }
         }
@@ -329,20 +331,20 @@ private fun TimetablePreview() {
     val trains = persistentListOf(
         Train(
             1, "S", Category.LongDistance, departureDate = date, timetable = listOf(
-                departure(1, "1", ZonedDateTime.parse("2020-01-01T09:30Z")),
-                arrival(130, "2", ZonedDateTime.parse("2020-01-01T10:30Z"))
+                departure(1, "1", Instant.parse("2020-01-01T09:30Z")),
+                arrival(130, "2", Instant.parse("2020-01-01T10:30Z"))
             )
         ),
         Train(
             2, "HDM", Category.LongDistance, departureDate = date, timetable = listOf(
-                departure(130, "3", ZonedDateTime.parse("2020-01-01T09:30Z")),
-                arrival(1, "4", ZonedDateTime.parse("2020-01-01T10:30Z"))
+                departure(130, "3", Instant.parse("2020-01-01T09:30Z")),
+                arrival(1, "4", Instant.parse("2020-01-01T10:30Z"))
             )
         ),
         Train(
             3, "IC", Category.LongDistance, departureDate = date, timetable = listOf(
-                departure(130, "4", ZonedDateTime.parse("2020-01-01T09:45Z"), cancelled = true),
-                arrival(1, "3", ZonedDateTime.parse("2020-01-01T10:50Z"), cancelled = true),
+                departure(130, "4", Instant.parse("2020-01-01T09:45Z"), cancelled = true),
+                arrival(1, "3", Instant.parse("2020-01-01T10:50Z"), cancelled = true),
             )
         )
     )

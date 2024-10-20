@@ -1,13 +1,13 @@
 package dev.jylha.station.model
 
 import com.google.common.truth.Truth.assertThat
-import java.time.ZonedDateTime
+import kotlinx.datetime.Instant
 import org.junit.Test
 
 class StopTest {
 
     private val arrival = arrival(
-        1, "1", ZonedDateTime.parse("2020-10-10T10:10Z")
+        1, "1", Instant.parse("2020-10-10T10:10:00Z")
     )
 
     private val departure = arrival.copy(type = TimetableRow.Type.Departure)
@@ -139,10 +139,10 @@ class StopTest {
         assertThat(result).isEqualTo("bar")
     }
 
-    private val time1 = ZonedDateTime.parse("2020-01-01T08:30Z")
-    private val time2 = ZonedDateTime.parse("2020-01-01T08:35Z")
-    private val time3 = ZonedDateTime.parse("2020-01-01T09:00Z")
-    private val time4 = ZonedDateTime.parse("2020-01-01T09:01Z")
+    private val time1 = Instant.parse("2020-01-01T08:30:00Z")
+    private val time2 = Instant.parse("2020-01-01T08:35:00Z")
+    private val time3 = Instant.parse("2020-01-01T09:00:00Z")
+    private val time4 = Instant.parse("2020-01-01T09:01:00Z")
 
     @Test
     fun `timeOfNextEvent() returns scheduled time of arrival when no actualTime or departure`() {
@@ -235,7 +235,7 @@ class StopTest {
 
     @Test fun `arrivalAfter() returns false for a origin station`() {
         val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = time2))
-        val result =  stop.arrivalAfter(time1)
+        val result = stop.arrivalAfter(time1)
         assertThat(result).isFalse()
     }
 
@@ -263,7 +263,8 @@ class StopTest {
         assertThat(result).isFalse()
     }
 
-    @Test fun `departureAfter() returns false when actual time of departure is before given time`() {
+    @Test
+    fun `departureAfter() returns false when actual time of departure is before given time`() {
         val stop = Stop(departure = departure.copy(scheduledTime = time1, actualTime = time1))
         val result = stop.departureAfter(time2)
         assertThat(result).isFalse()

@@ -1,17 +1,17 @@
 package dev.jylha.station.model
 
 import com.google.common.truth.Truth.assertThat
-import java.time.ZonedDateTime
+import kotlinx.datetime.Instant
 import org.junit.Test
 
 class TrainTest {
 
-    private val scheduledTime1 = ZonedDateTime.parse("2020-09-05T10:00Z")
-    private val actualTime1 = ZonedDateTime.parse("2020-09-05T10:02Z")
-    private val scheduledTime2 = ZonedDateTime.parse("2020-09-05T10:30Z")
-    private val actualTime2 = ZonedDateTime.parse("2020-09-05T10:31Z")
-    private val scheduledTime3 = ZonedDateTime.parse("2020-09-05T10:40Z")
-    private val scheduledTime4 = ZonedDateTime.parse("2020-09-05T11:10Z")
+    private val scheduledTime1 = Instant.parse("2020-09-05T10:00:00Z")
+    private val actualTime1 = Instant.parse("2020-09-05T10:02:00Z")
+    private val scheduledTime2 = Instant.parse("2020-09-05T10:30:00Z")
+    private val actualTime2 = Instant.parse("2020-09-05T10:31:00Z")
+    private val scheduledTime3 = Instant.parse("2020-09-05T10:40:00Z")
+    private val scheduledTime4 = Instant.parse("2020-09-05T11:10:00Z")
 
     private val train = Train(
         1, "S", Train.Category.LongDistance, timetable = listOf(
@@ -249,16 +249,16 @@ class TrainTest {
 
     private val delayedTrain = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            departure(1, "1", ZonedDateTime.parse("2020-10-10T08:30Z")),
+            departure(1, "1", Instant.parse("2020-10-10T08:30:00Z")),
             arrival(
-                2, "2", ZonedDateTime.parse("2020-10-10T09:30Z"),
+                2, "2", Instant.parse("2020-10-10T09:30:00Z"),
                 causes = listOf(DelayCause(1))
             ),
             departure(
-                2, "2", ZonedDateTime.parse("2020-10-10T09:35Z"),
+                2, "2", Instant.parse("2020-10-10T09:35:00Z"),
                 causes = listOf(DelayCause(2))
             ),
-            arrival(3, "3", ZonedDateTime.parse("2020-10-10T10:30Z"))
+            arrival(3, "3", Instant.parse("2020-10-10T10:30:00Z"))
         )
     )
 
@@ -271,17 +271,17 @@ class TrainTest {
 
     private val trainWithDuplicatedDelayCause = trainWithEmptyTimetable.copy(
         timetable = listOf(
-            departure(1, "1", ZonedDateTime.parse("2020-10-10T08:30Z")),
+            departure(1, "1", Instant.parse("2020-10-10T08:30:00Z")),
             arrival(
-                2, "2", ZonedDateTime.parse("2020-10-10T09:30Z"),
+                2, "2", Instant.parse("2020-10-10T09:30:00Z"),
                 causes = listOf(DelayCause(1, 2))
             ),
             departure(
-                2, "2", ZonedDateTime.parse("2020-10-10T09:35Z"),
+                2, "2", Instant.parse("2020-10-10T09:35:00Z"),
                 causes = listOf(DelayCause(1, 2))
             ),
             arrival(
-                3, "3", ZonedDateTime.parse("2020-10-10T10:30Z"),
+                3, "3", Instant.parse("2020-10-10T10:30:00Z"),
                 causes = listOf(DelayCause(1, 1))
             )
         )

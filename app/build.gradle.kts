@@ -87,7 +87,8 @@ android {
     composeCompiler {
         reportsDestination = layout.buildDirectory.dir("reports")
         metricsDestination = layout.buildDirectory.dir("reports")
-        stabilityConfigurationFile = project.layout.projectDirectory.file("compose_compiler_config.conf")
+        stabilityConfigurationFile =
+            project.layout.projectDirectory.file("compose_compiler_config.conf")
     }
 
     ksp {
@@ -124,6 +125,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lottie.compose)

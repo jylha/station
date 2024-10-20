@@ -32,7 +32,7 @@ import dev.jylha.station.R
 import dev.jylha.station.model.TimetableRow
 import dev.jylha.station.ui.theme.StationTheme
 import dev.jylha.station.util.toLocalTimeString
-import java.time.ZonedDateTime
+import kotlinx.datetime.Instant
 
 /**
  * Displays time of arrival.
@@ -84,7 +84,7 @@ fun TimeOfDeparture(timetableRow: TimetableRow?, modifier: Modifier = Modifier) 
  */
 @Composable
 fun ScheduledTime(
-    scheduledTime: ZonedDateTime,
+    scheduledTime: Instant,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
     track: String? = null,
@@ -118,7 +118,7 @@ private fun ScheduledTimePreview() {
     StationTheme {
         Surface {
             ScheduledTime(
-                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z"),
+                scheduledTime = Instant.parse("2020-01-01T09:30Z"),
                 type = TimetableRow.Type.Arrival
             )
         }
@@ -135,8 +135,8 @@ private fun ScheduledTimePreview() {
  */
 @Composable
 fun EstimatedTime(
-    scheduledTime: ZonedDateTime,
-    estimatedTime: ZonedDateTime,
+    scheduledTime: Instant,
+    estimatedTime: Instant,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
     track: String? = null
@@ -187,8 +187,8 @@ private fun EstimatedTimePreview() {
     StationTheme {
         Surface {
             EstimatedTime(
-                scheduledTime = ZonedDateTime.parse("2020-01-01T09:30Z"),
-                estimatedTime = ZonedDateTime.parse("2020-01-01T09:32Z"),
+                scheduledTime = Instant.parse("2020-01-01T09:30Z"),
+                estimatedTime = Instant.parse("2020-01-01T09:32Z"),
                 type = TimetableRow.Type.Arrival
             )
         }
@@ -206,7 +206,7 @@ private fun EstimatedTimePreview() {
  */
 @Composable
 fun ActualTime(
-    actualTime: ZonedDateTime,
+    actualTime: Instant,
     differenceInMinutes: Int,
     type: TimetableRow.Type,
     modifier: Modifier = Modifier,
@@ -251,7 +251,7 @@ private fun ActualTimePreview() {
     StationTheme {
         Surface {
             ActualTime(
-                actualTime = ZonedDateTime.parse("2020-01-01T09:30Z"),
+                actualTime = Instant.parse("2020-01-01T09:30Z"),
                 differenceInMinutes = 1,
                 type = TimetableRow.Type.Arrival
             )
@@ -321,14 +321,14 @@ private fun trackString(track: String?, type: TimetableRow.Type): String {
 }
 
 @Composable
-private fun produceLocalTime(time: ZonedDateTime): State<String> {
+private fun produceLocalTime(time: Instant): State<String> {
     return produceState("", time) {
         value = time.toLocalTimeString()
     }
 }
 
 @Composable
-private fun produceLocalTimes(time1: ZonedDateTime, time2: ZonedDateTime)
+private fun produceLocalTimes(time1: Instant, time2: Instant)
         : State<Pair<String, String>> {
     return produceState(Pair("", ""), time1, time2) {
         value = Pair(time1.toLocalTimeString(), time2.toLocalTimeString())

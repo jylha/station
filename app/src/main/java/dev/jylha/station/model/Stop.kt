@@ -2,8 +2,7 @@ package dev.jylha.station.model
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import java.lang.IllegalStateException
-import java.time.ZonedDateTime
+import kotlinx.datetime.Instant
 
 /**
  * A data class for a train's stop at a stopping point. The stop consists of a [TimetableRow] for
@@ -55,7 +54,7 @@ data class Stop(
      * Returns the time of the next scheduled event on the stop, or the most recent event, if there
      * are no more scheduled events. */
     @Stable
-    fun timeOfNextEvent(): ZonedDateTime {
+    fun timeOfNextEvent(): Instant {
         return when {
             departure?.actualTime != null -> departure.actualTime
             departure != null && (arrival == null || arrival.actualTime != null) -> departure.scheduledTime
@@ -67,13 +66,17 @@ data class Stop(
 
     /** Checks whether the train either has not yet arrived to the stop or arrived after given time. */
     @Stable
-    fun arrivalAfter(time: ZonedDateTime): Boolean {
+    fun arrivalAfter(time: Instant): Boolean {
         return arrival?.run { actualTime?.isAfter(time) ?: true } ?: false
     }
 
     /** Checks whether the train has either not yet departed from the stop or departed after given time. */
     @Stable
-    fun departureAfter(time: ZonedDateTime): Boolean {
+    fun departureAfter(time: Instant): Boolean {
         return departure?.run { actualTime?.isAfter(time) ?: true } ?: false
     }
+}
+
+private fun Instant.isAfter(instant: Instant): Boolean {
+    return toEpochMilliseconds() > instant.toEpochMilliseconds()
 }

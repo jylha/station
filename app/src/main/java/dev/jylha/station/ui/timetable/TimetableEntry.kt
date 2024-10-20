@@ -78,8 +78,10 @@ import dev.jylha.station.ui.timetable.ExpandableState.Collapsed
 import dev.jylha.station.ui.timetable.ExpandableState.Expanded
 import dev.jylha.station.ui.timetable.ExpandableState.Initial
 import dev.jylha.station.util.insertSpaces
-import java.time.ZonedDateTime
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.datetime.Clock
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Expandable states for a timetable entry. The [Initial] state is otherwise the same as the
@@ -600,14 +602,14 @@ private fun TimetableEntryPreview() {
     )
     val train = Train(
         1, "IC", Train.Category.LongDistance, timetable = listOf(
-            departure(123, "1", ZonedDateTime.now()),
+            departure(123, "1", Clock.System.now()),
             arrival(
-                555, "3", ZonedDateTime.now().plusMinutes(60),
-                actualTime = ZonedDateTime.now().plusMinutes(64),
+                555, "3", Clock.System.now().plus(60.minutes),
+                actualTime = Clock.System.now().plus(64.minutes),
                 differenceInMinutes = 4, causes = listOf(DelayCause(1))
             ),
-            departure(555, "3", ZonedDateTime.now().plusHours(1)),
-            arrival(456, "2", ZonedDateTime.now().plusHours(2))
+            departure(555, "3", Clock.System.now().plus(1.hours)),
+            arrival(456, "2", Clock.System.now().plus(2.hours))
         )
     )
     val stop = train.stopsAt(555).first()

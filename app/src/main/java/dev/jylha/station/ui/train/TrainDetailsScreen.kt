@@ -57,7 +57,7 @@ import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import kotlinx.datetime.Instant
 
 /**
  * Train details screen composable. Displays details about train's progress on its route.
@@ -429,32 +429,32 @@ private fun TrainDetailsPreview() {
         5, "IC", Train.Category.LongDistance, departureDate = LocalDate.parse("2020-01-01"),
         timetable = listOf(
             departure(
-                1, "2", ZonedDateTime.parse("2020-01-01T09:30Z"),
-                actualTime = ZonedDateTime.parse("2020-01-01T09:31Z"),
+                1, "2", Instant.parse("2020-01-01T09:30Z"),
+                actualTime = Instant.parse("2020-01-01T09:31Z"),
                 differenceInMinutes = 1, markedReady = true
             ),
             arrival(
-                5, "3", ZonedDateTime.parse("2020-01-01T09:40Z"),
-                actualTime = ZonedDateTime.parse("2020-01-01T09:38Z"),
+                5, "3", Instant.parse("2020-01-01T09:40Z"),
+                actualTime = Instant.parse("2020-01-01T09:38Z"),
                 differenceInMinutes = -2
             ),
             departure(
-                5, "3", ZonedDateTime.parse("2020-01-01T09:43Z"),
-                actualTime = ZonedDateTime.parse("2020-01-01T09:43Z")
+                5, "3", Instant.parse("2020-01-01T09:43Z"),
+                actualTime = Instant.parse("2020-01-01T09:43Z")
             ),
             arrival(
-                4, "4", ZonedDateTime.parse("2020-01-01T10:11Z"),
-                actualTime = ZonedDateTime.parse("2020-01-01T10:10Z"),
+                4, "4", Instant.parse("2020-01-01T10:11Z"),
+                actualTime = Instant.parse("2020-01-01T10:10Z"),
                 differenceInMinutes = -1
             ),
-            departure(4, "4", ZonedDateTime.parse("2020-01-01T10:12Z")),
+            departure(4, "4", Instant.parse("2020-01-01T10:12Z")),
             arrival(
-                3, "1", ZonedDateTime.parse("2020-01-01T10:30Z"),
-                estimatedTime = ZonedDateTime.parse("2020-01-01T10:32Z"),
+                3, "1", Instant.parse("2020-01-01T10:30Z"),
+                estimatedTime = Instant.parse("2020-01-01T10:32Z"),
                 differenceInMinutes = 2
             ),
-            departure(3, "1", ZonedDateTime.parse("2020-01-01T10:34Z"), cancelled = true),
-            arrival(2, "3", ZonedDateTime.parse("2020-01-01T11:30Z"), cancelled = true)
+            departure(3, "1", Instant.parse("2020-01-01T10:34Z"), cancelled = true),
+            arrival(2, "3", Instant.parse("2020-01-01T11:30Z"), cancelled = true)
         )
     )
 

@@ -1,7 +1,7 @@
 package dev.jylha.station.model
 
 import androidx.compose.runtime.Immutable
-import java.time.ZonedDateTime
+import kotlinx.datetime.Instant
 
 /**
  * Domain model for train's timetable row data.
@@ -27,9 +27,9 @@ data class TimetableRow(
     val commercialStop: Boolean? = null,
     val track: String? = null,
     val cancelled: Boolean = false,
-    val scheduledTime: ZonedDateTime,
-    val estimatedTime: ZonedDateTime? = null,
-    val actualTime: ZonedDateTime? = null,
+    val scheduledTime: Instant,
+    val estimatedTime: Instant? = null,
+    val actualTime: Instant? = null,
     val differenceInMinutes: Int = 0,
     val markedReady: Boolean = false,
     val causes: List<DelayCause> = emptyList(),
@@ -46,9 +46,9 @@ data class TimetableRow(
 internal fun arrival(
     stationCode: Int,
     track: String,
-    scheduledTime: ZonedDateTime,
-    estimatedTime: ZonedDateTime? = null,
-    actualTime: ZonedDateTime? = null,
+    scheduledTime: Instant,
+    estimatedTime: Instant? = null,
+    actualTime: Instant? = null,
     differenceInMinutes: Int = 0,
     trainStopping: Boolean = true,
     commercialStop: Boolean? = true,
@@ -74,9 +74,9 @@ internal fun arrival(
 internal fun departure(
     stationCode: Int,
     track: String,
-    scheduledTime: ZonedDateTime,
-    estimatedTime: ZonedDateTime? = null,
-    actualTime: ZonedDateTime? = null,
+    scheduledTime: Instant,
+    estimatedTime: Instant? = null,
+    actualTime: Instant? = null,
     differenceInMinutes: Int = 0,
     markedReady: Boolean = false,
     trainStopping: Boolean = true,
