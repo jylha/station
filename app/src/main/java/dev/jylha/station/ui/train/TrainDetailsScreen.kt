@@ -6,10 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -56,6 +63,7 @@ import dev.jylha.station.ui.common.TrainRoute
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.stationName
 import dev.jylha.station.ui.theme.StationTheme
+import dev.jylha.station.ui.theme.backgroundColor
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
@@ -85,14 +93,25 @@ fun TrainDetailsScreen(
     viewState: TrainDetailsViewState,
     onReload: (Train) -> Unit = {},
 ) {
+    val windowInsets =
+        WindowInsets.systemBars.union(WindowInsets.displayCutout)
+            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+
     StationNameProvider(viewState.nameMapper) {
-        when {
-            viewState.isLoading -> LoadingTrainDetails()
-            viewState.train != null -> TrainDetails(
-                viewState.train,
-                viewState.isReloading,
-                onRefresh = { onReload(viewState.train) }
-            )
+        Surface(
+            modifier = Modifier
+                .background(backgroundColor())
+                .windowInsetsPadding(windowInsets),
+            color = Color.Red
+        ) {
+            when {
+                viewState.isLoading -> LoadingTrainDetails()
+                viewState.train != null -> TrainDetails(
+                    viewState.train,
+                    viewState.isReloading,
+                    onRefresh = { onReload(viewState.train) }
+                )
+            }
         }
     }
 }

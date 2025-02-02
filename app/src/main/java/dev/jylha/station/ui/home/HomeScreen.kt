@@ -1,7 +1,6 @@
 package dev.jylha.station.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,12 +26,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -48,6 +46,8 @@ import dev.jylha.station.ui.common.landscapeOrientation
 import dev.jylha.station.ui.common.portraitOrientation
 import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.ui.theme.StationTheme
+import dev.jylha.station.ui.theme.backgroundColor
+import dev.jylha.station.ui.theme.onBackgroundColor
 
 /**
  * Home screen displays a welcome text and an animation, and contains buttons for navigating
@@ -88,7 +88,9 @@ fun HomeScreen(
     onShowInfo: () -> Unit = {},
 ) {
     Box(
-        modifier = Modifier.background(backgroundColor())
+        modifier = Modifier
+            .background(backgroundColor())
+            .safeDrawingPadding()
     ) {
         val locationPermission = LocalLocationPermission.current
         when {
@@ -131,20 +133,6 @@ private fun LoadingStation() {
         textColor = onBackgroundColor(),
         indicatorColor = MaterialTheme.colorScheme.primary,
     )
-}
-
-@Composable
-@ReadOnlyComposable
-private fun backgroundColor(): Color {
-    return if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background
-    else MaterialTheme.colorScheme.surfaceVariant
-}
-
-@Composable
-@ReadOnlyComposable
-private fun onBackgroundColor(): Color {
-    return if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground
-    else MaterialTheme.colorScheme.onSurfaceVariant
 }
 
 @Composable

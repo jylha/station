@@ -1,7 +1,15 @@
 package dev.jylha.station.ui.stations
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.MyLocation
@@ -36,6 +44,7 @@ import dev.jylha.station.ui.common.LocalLocationPermission
 import dev.jylha.station.ui.common.SearchBar
 import dev.jylha.station.ui.common.withPermission
 import dev.jylha.station.ui.theme.StationTheme
+import dev.jylha.station.ui.theme.backgroundColor
 import dev.jylha.station.util.filterWhen
 import kotlinx.collections.immutable.toImmutableList
 
@@ -107,7 +116,14 @@ fun StationsScreen(
         searchEnabled = enabled
     }
 
+    val windowInsets =
+        WindowInsets.systemBars.union(WindowInsets.displayCutout)
+            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+
     Scaffold(
+        modifier = Modifier
+            .background(backgroundColor())
+            .windowInsetsPadding(windowInsets),
         topBar = {
             StationsListTopAppBar(
                 searchEnabled,

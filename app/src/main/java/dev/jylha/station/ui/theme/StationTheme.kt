@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 
 /** Composable that provides StationColorPalette and MaterialTheme elements. */
 @Composable
@@ -46,3 +47,16 @@ fun ProvideStationColors(
     }
 }
 
+@Composable
+@ReadOnlyComposable
+fun backgroundColor(): Color {
+    return if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background
+    else MaterialTheme.colorScheme.surfaceVariant
+}
+
+@Composable
+@ReadOnlyComposable
+fun onBackgroundColor(): Color {
+    return if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground
+    else MaterialTheme.colorScheme.onSurfaceVariant
+}
