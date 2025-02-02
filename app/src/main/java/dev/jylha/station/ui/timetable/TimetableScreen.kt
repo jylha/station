@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -103,7 +106,6 @@ fun TimetableScreen(
  *
  * @param state A UI state of the timetable screen.
  * @param stationCode The UIC code of a train station.
- * @param modifier An optional modifier applied to the screen.
  * @param onEvent Called to handle a timetable event.
  * @param onRetry Called to navigate to a train details screen.
  * @param onSelectStation Called to navigate to the station list screen.
@@ -113,7 +115,6 @@ fun TimetableScreen(
 fun TimetableScreen(
     state: TimetableViewState,
     stationCode: Int,
-    modifier: Modifier = Modifier,
     onEvent: (TimetableEvent) -> Unit = {},
     onTrainSelected: (Train) -> Unit = {},
     onSelectStation: () -> Unit = {},
@@ -127,7 +128,7 @@ fun TimetableScreen(
 
     StationNameProvider(state.stationNameMapper) {
         Scaffold(
-            modifier = modifier
+            modifier = Modifier
                 .background(backgroundColor())
                 .windowInsetsPadding(windowInsets),
             topBar = {
@@ -143,7 +144,7 @@ fun TimetableScreen(
             },
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onBackground,
-        ) { paddingValues ->
+        ) { contentPadding ->
             CauseCategoriesProvider(state.causeCategories) {
                 TimetableScreenContent(
                     state = state,
@@ -152,7 +153,8 @@ fun TimetableScreen(
                     onRetry = onRetry,
                     onTrainSelected = onTrainSelected,
                     onSelectStation = onSelectStation,
-                    modifier = Modifier.padding(paddingValues)
+                    modifier = Modifier,
+                    contentPadding = contentPadding
                 )
             }
         }
@@ -168,8 +170,9 @@ private fun TimetableScreenContent(
     onTrainSelected: (Train) -> Unit,
     onSelectStation: () -> Unit,
     modifier: Modifier,
+    contentPadding: PaddingValues,
 ) {
-    Column(modifier.fillMaxSize()) {
+    Column(modifier.fillMaxSize().padding(top = contentPadding.calculateTopPadding())) {
         AnimatedVisibility(timetablesFiltersVisible) {
             TimetableFilterSelection(
                 timetableTypes = state.selectedTimetableTypes,
@@ -193,6 +196,11 @@ private fun TimetableScreenContent(
                 onTrainSelected = onTrainSelected,
                 refreshing = state.isReloadingTimetable,
                 onRefresh = { onEvent(TimetableEvent.ReloadTimetable(state.station)) },
+                contentPadding = PaddingValues(
+                    start = contentPadding.calculateStartPadding(LocalLayoutDirection.current),
+                    end = contentPadding.calculateEndPadding(LocalLayoutDirection.current),
+                    bottom = contentPadding.calculateBottomPadding()
+                ),
             )
 
             else -> ErrorState("Oops. Something went wrong.") {
@@ -229,6 +237,7 @@ private fun Timetable(
     trainCategories: TrainCategories,
     onTrainSelected: (Train) -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
     refreshing: Boolean = false,
     onRefresh: () -> Unit = {}
 ) {
@@ -256,28 +265,28 @@ private fun Timetable(
         }
     ) {
         when {
-            trains.isEmpty() -> EmptyTimetable()
-            matchingTrains.isEmpty() -> NoMatchingTrains()
+            trains.isEmpty() -> EmptyTimetable(Modifier.padding(paddingValues = contentPadding))
             else -> Timetable(
-                station,
-                matchingTrains,
-                onTrainSelected,
-                timetableTypes
+                station = station,
+                trains = matchingTrains,
+                onSelect = onTrainSelected,
+                selectedTimetableTypes = timetableTypes,
+                contentPadding = contentPadding
             )
         }
     }
 }
 
 @Composable
-private fun EmptyTimetable() {
+private fun EmptyTimetable(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_empty_timetable)
-    EmptyState(message = message)
+    EmptyState(message = message, modifier)
 }
 
 @Composable
-private fun NoMatchingTrains() {
+private fun NoMatchingTrains(modifier: Modifier = Modifier) {
     val message = stringResource(R.string.message_no_matching_trains)
-    EmptyState(message = message)
+    EmptyState(message = message, modifier)
 }
 
 @Composable
@@ -286,7 +295,7 @@ private fun Timetable(
     trains: ImmutableList<Train>,
     onSelect: (Train) -> Unit,
     selectedTimetableTypes: TimetableTypes,
-    modifier: Modifier = Modifier
+    contentPadding: PaddingValues
 ) {
     val timeOfSelectedStopType = remember(selectedTimetableTypes) {
         when {
@@ -318,10 +327,15 @@ private fun Timetable(
     }
 
     when {
-        stops.isEmpty() -> NoMatchingTrains()
+        stops.isEmpty() -> NoMatchingTrains(Modifier.padding(paddingValues = contentPadding))
         else -> LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                top = contentPadding.calculateTopPadding() + 8.dp,
+                bottom = contentPadding.calculateBottomPadding() + 8.dp,
+                start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + 8.dp,
+                end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + 8.dp,
+            ),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(stops) { (train, stop) ->
