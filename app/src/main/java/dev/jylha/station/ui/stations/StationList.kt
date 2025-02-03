@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -46,7 +49,8 @@ import kotlinx.collections.immutable.ImmutableList
  * @param recentStations The list of stations displayed in the first section.
  * @param stations The list of stations displayed in the second section.
  * @param onSelect Called when a station is selected from the list.
- * @param modifier Optional modifier applied to the list.
+ * @param modifier Modifier applied to the list.
+ * @param contentPadding Content padding applied to the list.
  * @param searchText A text that will have all its occurrences in the list highlighted.
  */
 @OptIn(ExperimentalFoundationApi::class)
@@ -56,6 +60,7 @@ fun StationList(
     stations: ImmutableList<Station>,
     onSelect: (Station) -> Unit,
     modifier: Modifier,
+    contentPadding: PaddingValues,
     searchText: String = ""
 ) {
     val groups = remember(stations) {
@@ -69,7 +74,12 @@ fun StationList(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(
+                top = contentPadding.calculateTopPadding() + 8.dp,
+                bottom = contentPadding.calculateBottomPadding() + 8.dp,
+                start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + 8.dp,
+                end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + 8.dp
+            ),
         ) {
             if (searchText.isBlank() && recentStations.isNotEmpty()) {
                 item { StationListLabel(stringResource(R.string.label_recent)) }

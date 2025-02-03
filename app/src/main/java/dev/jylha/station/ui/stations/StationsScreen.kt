@@ -141,14 +141,15 @@ fun StationsScreen(
                 onSelect(state.nearestStation)
             }
 
-            state.isFetchingLocation -> FetchingLocation()
-            state.isLoading -> LoadingStations()
+            state.isFetchingLocation -> FetchingLocation(modifier)
+            state.isLoading -> LoadingStations(modifier)
             matchingStations.isEmpty() -> NoMatchingStations(modifier)
             else -> StationList(
                 recentStations = recentStations,
                 stations = matchingStations,
                 onSelect = { station -> setSearchState(false); onSelect(station) },
-                modifier,
+                modifier = Modifier.imePadding(),
+                contentPadding = innerPadding,
                 searchText
             )
         }
