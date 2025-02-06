@@ -139,6 +139,7 @@ dependencies {
     ksp(libs.dagger.hilt.android.compiler)
     ksp(libs.room.compiler)
 
+    testImplementation(libs.androidx.test.core.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockito.core)

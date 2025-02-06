@@ -15,8 +15,12 @@
       <name>java.nio.file.WatchEvent.Modifier</name>
       <name>java.time.format.TextStyle</name>
       <name>java.util.concurrent.Flow</name>
+      <name>java.util.prefs</name>
       <name>javax.annotation.concurrent.Immutable</name>
+      <name>net.bytebuddy.implementation.Implementation.Context</name>
       <name>org.intellij.lang.annotations.Flow</name>
+      <name>org.junit.runner.manipulation.Ordering.Context</name>
+      <name>org.mockito.MockedConstruction.Context</name>
       <name>org.w3c.dom.Text</name>
     </excluded-names>
   </component>
