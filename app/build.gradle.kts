@@ -29,7 +29,6 @@ android {
         versionCode = 27
         versionName = "1.2.14"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        resourceConfigurations += listOf("en", "fi-rFI", "sv-rFI")
     }
 
     signingConfigs {
@@ -99,6 +98,8 @@ android {
     androidResources {
         @Suppress("UnstableApiUsage")
         generateLocaleConfig = true
+        @Suppress("UnstableApiUsage")
+        localeFilters += listOf("en", "fi-rFI", "sv-rFI")
     }
 }
 
