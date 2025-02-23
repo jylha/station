@@ -86,8 +86,9 @@ android {
     composeCompiler {
         reportsDestination = layout.buildDirectory.dir("reports")
         metricsDestination = layout.buildDirectory.dir("reports")
-        stabilityConfigurationFile =
+        stabilityConfigurationFiles.add(
             project.layout.projectDirectory.file("compose_compiler_config.conf")
+        )
     }
 
     ksp {
