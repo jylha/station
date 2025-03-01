@@ -73,9 +73,9 @@ fun StationList(
         contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(top = contentPadding.calculateTopPadding()),
             contentPadding = PaddingValues(
-                top = contentPadding.calculateTopPadding() + 8.dp,
+                top = 8.dp,
                 bottom = contentPadding.calculateBottomPadding() + 8.dp,
                 start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + 8.dp,
                 end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + 8.dp
