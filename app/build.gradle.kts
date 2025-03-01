@@ -26,8 +26,8 @@ android {
         applicationId = "dev.jylha.station"
         minSdk = libs.versions.min.sdk.get().toInt()
         targetSdk = libs.versions.target.sdk.get().toInt()
-        versionCode = 27
-        versionName = "1.2.14"
+        versionCode = 28
+        versionName = "1.2.15"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
